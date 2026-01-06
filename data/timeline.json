@@ -1,0 +1,47 @@
+{
+  "title": {
+    "media": {
+      "url": "",
+      "caption": "",
+      "credit": ""
+    },
+    "text": {
+      "headline": "水墨风 视频时间线（Bilibili 示例）",
+      "text": "点击卡片将在上方播放器中使用 B 站官方播放器播放视频（player.bilibili.com）。"
+    }
+  },
+  "events": [
+    {
+      "start_date": {
+        "year": "2026",
+        "month": "01",
+        "day": "06"
+      },
+      "text": {
+        "headline": "杨猪猪:雨哥去武汉第一件事就是买房真的假的？  那过年可以一起吃饭  平时可以找我玩 我这人很好相处的",
+        "text": ""
+      },
+      "media": {
+        "url": "https://www.bilibili.com/video/BV1P6vRB7E2N",
+        "type": "bilibili",
+        "thumbnail": "media/thumbs/BV1P6vRB7E2N-0.jpg"
+      }
+    },
+    {
+      "start_date": {
+        "year": "2026",
+        "month": "01",
+        "day": "06"
+      },
+      "text": {
+        "headline": "林菜儿深夜跟雨哥合唱表白演唱《需要人陪》  😭最后泪洒直播间   林菜儿: 雨哥我想你   雨哥没有你我可怎么办啊 雨哥😛",
+        "text": ""
+      },
+      "media": {
+        "url": "https://www.bilibili.com/video/BV1qAipBjEyh",
+        "type": "bilibili",
+        "thumbnail": "media/thumbs/BV1qAipBjEyh-1.jpg"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "targets": [
+    {
+      "url": "https://www.bilibili.com/video/BV1P6vRB7E2N"
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1qAipBjEyh"
+    }
+  ],
+  "crawler": {
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "delay_seconds": 1.0,
+    "timeout": 15,
+    "max_retries": 3
+  },
+  "output": {
+    "title": "水墨风 视频时间线（Bilibili 示例）",
+    "description": "点击卡片将在上方播放器中使用 B 站官方播放器播放视频（player.bilibili.com）。"
+  }
+}
