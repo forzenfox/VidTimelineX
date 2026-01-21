@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>原神-哔哩哔哩_bilibili</title>
+    
+      <meta name="description" content="bilibili是国内知名的视频弹幕网站，这里有及时的动漫新番，活跃的ACG氛围，有创意的Up主。大家可以在这里找到许多欢乐。" />
+      <meta name="keywords" content="B站,弹幕,字幕,AMV,MAD,MTV,ANIME,动漫,动漫音乐,游戏,游戏解说,ACG,galgame,动画,番组,新番,初音,洛天依,vocaloid" />
+    
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="spm_prefix" content="333.337" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+    <meta name="applicable-device" content="pc">
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="dns-prefetch" href="//s1.hdslb.com" />
+    <link rel="dns-prefetch" href="//i0.hdslb.com" />
+    <link rel="apple-touch-icon" href="https://i0.hdslb.com/bfs/static/jinkela/long/images/512.png" />
+    <link rel="shortcut icon" href="https://i0.hdslb.com/bfs/static/jinkela/long/images/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="//s1.hdslb.com/bfs/static/jinkela/long/font/medium.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    <link
+      rel="stylesheet"
+      href="//s1.hdslb.com/bfs/static/jinkela/long/font/regular.css"
+      media="print"
+      onload="this.media='all'"
+    />
+    
+    <script>window._BiliGreyResult={"method":"gray","grayVersion":"186003"}</script><script src="//s1.hdslb.com/bfs/static/laputa-search/client/assets/svgfont.0430dee1.js" async></script><script src="https://www.bilibili.com/gentleman/polyfill.js?features=es2015%2Ces2016%2Ces2017%2Ces2018%2Ces2019%2Ces2020%2Ces2021%2Ces2022%2CglobalThis&flags=gated"></script>
+    <script type="text/javascript" src="//s1.hdslb.com/bfs/seed/jinkela/short/bmg/register/fallback.js"></script>
+    <link
+      rel="preload"
+      href="//s1.hdslb.com/bfs/seed/log/report/log-reporter.js"
+      as="script"
+    />
+    <link
+      rel="preload"
+      href="//s1.hdslb.com/bfs/seed/laputa-footer/bili-footer.umd.js"
+      as="script"
+    />
+    <link
+      rel="preload"
+      href="//s1.hdslb.com/bfs/seed/jinkela/short/b-mirror/biliMirror.umd.mini.js"
+      as="script"
+    />
+    <link
+      rel="preload"
+      href="//s1.hdslb.com/bfs/cm/cm-sdk/static/js/bili-collect.js"
+      as="script"
+    />
+    
+    <link rel="stylesheet" href="//s1.hdslb.com/bfs/seed/jinkela/short/bili-theme/map.css"/>
+    <link rel="stylesheet" href="//s1.hdslb.com/bfs/seed/jinkela/short/bili-theme/light_u.css"/>
+    <link id="__css-map__" rel="stylesheet" href="//s1.hdslb.com/bfs/seed/jinkela/short/bili-theme/light.css"/>
+  
+    <!--server-config-->
+    <script type="text/javascript">
+    window.__NANO_VERSION_HASH__ = "616268d3"
+  </script>
+    <script type="text/javascript">
+      ;(function () {
+        var ua = window.navigator.userAgent,
+          agents = ['Android', 'Phone', 'SymbianOS', 'iPod'],
+          isPC = true
+        if (/\sVR\s/g.test(ua)) return
+        for (var i = 0, len = agents.length; i < len; i++) {
+          if (ua.indexOf(agents[i]) > 0) {
+            isPC = false
+            break
+          }
+        }
+        if (!isPC) {
+          window.location.href = 'https://m.bilibili.com/search/' + window.location.search
+        }
+      })()
+    </script>
+    <script type="text/javascript">
+      window.spmReportData = {}
+      window.reportConfig = {
+        sample: 1,
+        msgObjects: 'spmReportData',
+        errorTracker: true,
+      }
+      function getCookie(name) {
+        var reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)')
+        var r = document.cookie.match(reg)
+        return r ? unescape(r[2]) : null
+      }
+      // 图片降级使用
+      function imgOnError(img) {
+        typeof window.imgAutoFallbackOnError === 'function' && window.imgAutoFallbackOnError(img)
+      }
+      // 图片降级使用
+      function imgOnLoad(img) {
+        typeof window.imgAutoFallbackOnLoad === 'function' && window.imgAutoFallbackOnLoad(img)
+      }
+      function fsrCb() {
+        if (window.performance && window.performance.timing) {
+          window.performance.timing.firstscreenfinish = new Date().getTime()
+        }
+      }
+      function lqipCb(img) {
+        var lqip = img && img.parentNode && img.parentNode.querySelector('.lqip')
+        if (lqip) {
+          lqip.classList.add('is-active')
+        }
+      }
+      if (history.scrollRestoration) {
+        history.scrollRestoration = 'manual'
+      }
+
+      var isFirstVideoCardImgLoadReported = false
+      function firstVideoCardImgLoaded(index) {
+        if (!isFirstVideoCardImgLoadReported) {
+          isFirstVideoCardImgLoadReported = true
+          if (window && window.__MIRROR_REPORT__ && typeof window.__MIRROR_REPORT__.customPerformanceQuota === 'function') {
+            window.__MIRROR_REPORT__.customPerformanceQuota({
+              name: 'videocard_img_load',
+              value: +new Date() - window.performance.timing.navigationStart,
+         

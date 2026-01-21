@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频审核系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-secondary {
+            background-color: #008CBA;
+        }
+        .btn-secondary:hover {
+            background-color: #007bb5;
+        }
+        .btn-danger {
+            background-color: #f44336;
+        }
+        .btn-danger:hover {
+            background-color: #da190b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>视频审核系统</h1>
+        <p>欢迎使用视频审核系统，您可以在这里审核自动爬取的视频，决定是否添加到最终的时间线中。</p>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <h3>待审核</h3>
+                <p>{{ pending_count }}</p>
+                <a href="/pending" class="btn">查看</a>
+            </div>
+            <div class="stat-box">
+                <h3>已通过</h3>
+                <p>{{ approved_count }}</p>
+                <a href="/approved" class="btn btn-secondary">查看</a>
+            </div>
+            <div class="stat-box">
+                <h3>已拒绝</h3>
+                <p>{{ rejected_count }}</p>
+                <a href="/rejected" class="btn btn-danger">查看</a>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/generate" class="btn">生成时间线</a>
+        </div>
+    </div>
+</body>
+</html>

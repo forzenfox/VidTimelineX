@@ -59,12 +59,46 @@ const isPlayerOpen = ref(false);
 // 加载时光轴数据
 async function loadTimelineData() {
   try {
-    // 尝试从相对路径获取数据
-    const response = await axios.get('../data/timeline.json');
-    timelineData.value = response.data;
+    // 从public目录加载数据
+    const response = await axios.get('/timeline.json');
+    // 转换数据结构以匹配前端期望
+    timelineData.value = {
+      events: response.data.map(item => ({
+        id: item.id,
+        date: item.date,
+        title: item.title,
+        content: item.content,
+        media: {
+          bv: item.video?.bv,
+          url: item.video?.url
+        },
+        thumbnail: item.thumbnail,
+        views: item.views,
+        danmaku: item.danmaku,
+        up主: item.up主
+      }))
+    };
   } catch (error) {
     console.error('加载 timeline.json 失败:', error);
-    // 可以添加错误处理逻辑，如显示错误提示
+    // 添加错误处理，使用默认数据
+    timelineData.value = {
+      events: [
+        {
+          id: 1,
+          date: "2026-01-21",
+          title: "示例视频",
+          content: "这是一个示例视频，用于测试时光轴功能",
+          media: {
+            bv: "1ZHiyBkExG",
+            url: "https://www.bilibili.com/video/BV1ZHiyBkExG"
+          },
+          thumbnail: "//i1.hdslb.com/bfs/archive/57b7a6358b0a552852242e66d1610eada2ac61b6.jpg@100w_100h_1c.png",
+          views: 1000000,
+          danmaku: 10000,
+          up主: "示例UP主"
+        }
+      ]
+    };
   }
 }
 

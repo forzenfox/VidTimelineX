@@ -1,162 +1,276 @@
-# 时光视频集 (Mohen Time Video Collection)
-
-一个用于展示和管理主播视频的时光轴集合，方便粉丝群体了解主播的视频历史。
+# Bilibili视频时光轴项目
 
 ## 项目概述
 
-本项目是一个基于网页的视频时光轴展示系统，主要功能包括：
-- 从B站(Bilibili)爬取视频元数据
-- 下载和管理视频缩略图
-- 以时光轴形式展示视频历史
-- 响应式设计，支持移动端浏览
-- 美观的UI界面，带有动画效果
+本项目是一个个人非商用的视频爬取、审核和发布系统，用于从B站根据关键词搜索视频，爬取视频信息，经过人工审核后生成时光轴并部署到GitHub Pages。
 
-## 功能特点
+### 核心功能
 
-- **视频元数据爬取**：自动从B站获取视频标题和发布时间
-- **缩略图管理**：自动下载和处理视频缩略图
-- **时光轴展示**：以时间顺序展示视频，带有动画效果
-- **响应式设计**：适配不同屏幕尺寸
-- **美观UI**：采用电影胶片风格的设计元素
-- **无版权字体**：使用适合非商业用途的字体
-
-## 文件结构
-
-```
-mohen-shiguang/
-├── .trae/              # 保持不变
-├── backend/            # 后端Python脚本
-│   ├── crawl_metadata.py
-│   └── download_thumbs.py
-├── data/               # 数据目录（保持不变）
-│   ├── bv.txt
-│   ├── config.json
-│   └── timeline.json
-├── docs/               # 文档目录
-│   └── 项目分析文档.md
-├── frontend/           # 前端文件
-│   ├── index.html
-│   ├── scripts/
-│   │   └── main.js
-│   └── styles/
-│       └── main.css
-├── media/              # 媒体文件目录（保持不变）
-│   └── thumbs/
-├── .gitignore          # 保持不变
-├── README.md           # 保持不变
-└── requirements.txt    # Python依赖管理
-```
+- **自动化爬取**：定时从B站搜索并爬取视频信息
+- **人工审核**：通过Flask审核界面管理视频数据
+- **时光轴展示**：在前端以时光轴形式展示审核通过的视频
+- **GitHub Pages部署**：支持将前端部署到GitHub Pages
 
 ## 技术栈
 
-- **前端**：HTML5, CSS3, JavaScript
-- **后端**：Python 3
-- **爬虫**：requests, BeautifulSoup4
-- **数据格式**：JSON
+### 前端
+- Vue 3 + Vite
+- Tailwind CSS
+- Vue Router
+- Pinia
+- Axios
 
-## 设置指南
+### 后端
+- Python
+- Flask
+- BeautifulSoup4
+- Requests
 
-### 1. 环境准备
+### 数据存储
+- JSON文件存储（适用于个人非商用项目）
 
-1. 确保安装了 Python 3.6 或更高版本
-2. 安装所需依赖：
+### 部署
+- GitHub Pages
+
+## 系统架构
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Bilibili API   │ ──> │  后端爬取脚本   │ ──> │  审核界面       │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                                                      │
+                                                      ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ GitHub Pages    │ <── │  前端构建       │ <── │  数据存储       │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+## 安装和配置
+
+### 1. 环境要求
+
+- Python 3.8+
+- Node.js 16+
+- npm 7+
+
+### 2. 后端安装
 
 ```bash
-pip install requests beautifulsoup4
+# 进入后端目录
+cd backend
+
+# 安装依赖
+pip install requests beautifulsoup4 flask
 ```
 
-### 2. 配置爬虫目标
-
-编辑 `data/config.json` 文件，添加要爬取的视频URL：
-
-```json
-{
-  "targets": [
-    {
-      "url": "https://www.bilibili.com/video/BV1xx411c7mW"
-    },
-    {
-      "url": "https://www.bilibili.com/video/BV1yy4y1t75U"
-    }
-  ]
-}
-```
-
-### 3. 运行爬虫
-
-执行爬虫脚本以获取视频元数据并下载缩略图：
+### 3. 前端安装
 
 ```bash
-python backend/crawl_metadata.py
-```
+# 进入前端目录
+cd frontend
 
-该脚本会：
-1. 读取 `config.json` 中的视频URL
-2. 爬取视频元数据（标题、发布时间）
-3. 调用 `download_thumbs.py` 下载缩略图
-4. 更新 `timeline.json` 文件
+# 安装依赖
+npm install
+```
 
 ## 使用说明
 
-### 查看时光轴
+### 1. 自动化爬取
 
-1. **启动本地HTTP服务器**：
+```bash
+# 进入后端目录
+cd backend
+
+# 运行爬取脚本
+python auto_crawler.py
+```
+
+### 2. 审核界面
+
+```bash
+# 进入后端目录
+cd backend
+
+# 运行审核界面
+python test_review_interface.py
+
+# 打开浏览器访问
+# http://localhost:5000
+```
+
+### 3. 前端开发
+
+```bash
+# 进入前端目录
+cd frontend
+
+# 启动开发服务器
+npm run dev
+
+# 构建生产版本
+npm run build
+```
+
+## 部署指南
+
+### GitHub Pages部署
+
+1. **构建前端**：
    ```bash
-   python -m http.server 8000
+   cd frontend
+   npm run build
    ```
 
-2. **通过浏览器访问**：
-   - 打开任何现代浏览器（Chrome、Firefox、Edge等）
-   - 在地址栏输入 `http://localhost:8000/frontend` 并按回车
-   - 浏览器会加载 `index.html` 页面，显示时光视频集的时光轴效果
+2. **创建gh-pages分支**：
+   ```bash
+   git checkout -b gh-pages
+   ```
 
-3. **停止服务器**：
-   - 回到运行服务器的终端窗口
-   - 按下 `Ctrl+C` 组合键停止服务器
+3. **添加构建产物**：
+   ```bash
+   git add dist/*
+   git commit -m "Deploy to GitHub Pages"
+   ```
 
-### 添加新视频
+4. **推送分支**：
+   ```bash
+   git push origin gh-pages
+   ```
 
-1. 编辑 `data/config.json` 文件，在 `targets` 数组中添加新的视频URL
-2. 重新运行爬虫脚本：`python backend/crawl_metadata.py`
-3. 刷新浏览器页面 (`http://localhost:8000/frontend`) 查看更新后的时光轴
+5. **配置GitHub Pages**：
+   - 进入GitHub仓库设置
+   - 选择"Pages"
+   - 源设置为"gh-pages分支"
+   - 保存设置
 
-## 技术细节
+6. **访问网站**：
+   等待部署完成后，通过GitHub Pages提供的URL访问网站。
 
-### 爬虫功能
+## 项目结构
 
-- **crawl_metadata.py**：负责从B站爬取视频元数据
-  - 提取视频标题和发布时间
-  - 当无法获取发布时间时，使用当前日期作为默认值
-  - 调用 `download_thumbs.py` 处理缩略图
+```
+├── backend/                # 后端代码
+│   ├── auto_crawler.py     # 自动化爬取脚本
+│   ├── test_search_api.py  # 搜索API测试
+│   ├── test_video_metadata.py  # 视频元数据测试
+│   ├── test_storage_solutions.py  # 存储方案测试
+│   └── test_review_interface.py  # 审核界面测试
+├── frontend/               # 前端代码
+│   ├── public/             # 静态资源
+│   │   └── timeline.json   # 时光轴数据
+│   ├── src/                # 源代码
+│   │   ├── components/     # 组件
+│   │   ├── App.vue         # 主应用
+│   │   └── main.js         # 入口文件
+│   ├── vite.config.js      # Vite配置
+│   └── package.json        # 依赖配置
+├── docs/                   # 文档
+│   ├── 技术调研计划.md      # 技术调研计划
+│   ├── 法律法规与合规性调研报告.md  # 合规性调研报告
+│   └── 自动化爬取构建发布技术方案.md  # 技术方案
+└── README.md               # 项目文档
+```
 
-- **download_thumbs.py**：负责下载和管理缩略图
-  - 确保URL协议正确
-  - 计算缩略图存储路径
-  - 更新 `timeline.json` 文件中的缩略图路径
+## 维护和更新
 
-### 前端功能
+### 1. 更新爬取关键词
 
-- **index.html**：时光轴展示页面
-  - 加载 `timeline.json` 数据
-  - 以时光轴形式展示视频
-  - 实现动画效果和响应式设计
-  - 支持视频播放
+编辑 `backend/auto_crawler.py` 文件中的关键词列表：
 
-## 注意事项
+```python
+# 配置关键词
+keywords = ["原神", "崩坏星穹铁道", "塞尔达传说"]
+```
 
-1. **非商业用途**：本项目仅用于粉丝群体的非商业传播
-2. **遵守robots协议**：爬虫会遵守B站的robots.txt规则
-3. **版权声明**：视频内容版权归原作者所有
-4. **字体使用**：使用无版权要求的字体，适合非商业用途
+### 2. 更新爬取频率
+
+可以使用系统的定时任务工具（如crontab或Windows任务计划程序）来定期运行爬取脚本。
+
+### 3. 更新前端界面
+
+修改前端组件文件，添加新功能或优化用户体验。
+
+## 法律法规合规性
+
+本项目为个人非商用项目，严格遵守以下原则：
+
+- **合理使用**：仅用于个人学习、研究目的
+- **遵守robots.txt**：尊重B站的爬虫协议
+- **低频率请求**：避免对服务器造成负担
+- **仅提供链接**：不存储视频内容，仅提供跳转链接
+- **保护个人信息**：不收集和存储用户个人敏感信息
+
+详细的合规性分析请参考 `docs/法律法规与合规性调研报告.md`。
+
+## 常见问题和解决方案
+
+### 1. 爬取失败
+
+**原因**：可能是网络问题、B站反爬机制或页面结构变化。
+
+**解决方案**：
+- 检查网络连接
+- 增加请求延迟
+- 更新爬取代码以适应页面结构变化
+
+### 2. 审核界面无法启动
+
+**原因**：可能是Flask未安装或依赖版本冲突。
+
+**解决方案**：
+- 确保安装了Flask
+- 升级Flask到与Jinja2兼容的版本
+
+### 3. 前端无法加载数据
+
+**原因**：可能是timeline.json文件不存在或格式错误。
+
+**解决方案**：
+- 运行审核界面并生成时间线数据
+- 检查timeline.json文件格式
+
+### 4. GitHub Pages部署失败
+
+**原因**：可能是构建配置错误或分支设置问题。
+
+**解决方案**：
+- 检查Vite配置中的base路径
+- 确保gh-pages分支正确设置
+
+## 开发指南
+
+### 代码风格
+
+- 前端：遵循Vue 3的Composition API风格
+- 后端：遵循PEP 8代码风格
+
+### 提交规范
+
+- 使用清晰的提交信息
+- 按功能模块提交代码
+- 提交前运行测试
+
+### 测试建议
+
+- 定期运行爬取脚本测试
+- 测试审核界面功能
+- 验证前端构建和部署流程
+
+## 未来计划
+
+- **自动化部署**：设置GitHub Actions实现自动构建和部署
+- **数据持久化**：考虑使用SQLite提升数据存储性能
+- **用户体验**：优化前端界面，添加更多交互功能
+- **监控系统**：添加简单的监控和日志记录
 
 ## 许可证
 
-本项目采用 MIT 许可证，仅用于非商业目的。
+本项目为个人非商用项目，仅供学习和研究使用。
 
-## 更新日志
+## 联系方式
 
-- 2026-01-06：项目初始化，实现基本功能
-  - 创建视频元数据爬虫
-  - 实现缩略图下载功能
-  - 设计时光轴UI界面
-  - 设置Git版本控制
+如有问题或建议，欢迎联系项目维护者。
+
+---
+
+**注意**：本项目为个人非商用项目，使用时请严格遵守相关法律法规和平台规则。
