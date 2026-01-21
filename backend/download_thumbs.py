@@ -148,7 +148,7 @@ def main():
             计算相对于项目根目录的相对路径
             """
             # 确保所有路径都是绝对路径
-            project_root = Path(__file__).parent.absolute()
+            project_root = Path(__file__).parent.parent.absolute()
             outpath_abs = outpath.absolute()
             
             # 计算相对路径

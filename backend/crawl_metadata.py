@@ -3,10 +3,11 @@
 网络爬虫程序，用于爬取 Bilibili 视频的元数据信息
 
 功能：
-1. 读取配置文件 config.json
+1. 从 bv.txt 读取要爬取的 URL
 2. 检查目标网站的 robots.txt 协议
 3. 爬取指定视频的元数据信息
-4. 生成 timeline.json 文件
+4. 生成 timeline.json 文件（保留旧数据，只添加新数据）
+5. 在 config.json 中标记已爬取的 URL
 
 使用方法：
 python crawl_metadata.py
@@ -28,14 +29,16 @@ from bs4 import BeautifulSoup
 class VideoCrawler:
     """视频元数据爬虫类"""
     
-    def __init__(self, config_path):
+    def __init__(self, config_path, bv_file_path):
         """
         初始化爬虫
         
         Args:
             config_path: 配置文件路径
+            bv_file_path: bv.txt 文件路径
         """
         self.config_path = config_path
+        self.bv_file_path = bv_file_path
         self.config = self._load_config()
         self.robot_parser = RobotFileParser()
         self.headers = {
@@ -58,6 +61,69 @@ class VideoCrawler:
         except Exception as e:
             print(f"错误：加载配置文件失败 - {e}")
             raise
+    
+    def _save_config(self):
+        """
+        保存配置文件
+        """
+        try:
+            with open(self.config_path, 'w', encoding='utf-8') as f:
+                json.dump(self.config, f, ensure_ascii=False, indent=2)
+            print(f"成功保存配置文件：{self.config_path}")
+        except Exception as e:
+            print(f"错误：保存配置文件失败 - {e}")
+            raise
+    
+    def _load_bv_file(self):
+        """
+        从 bv.txt 文件读取 URL
+        
+        Returns:
+            list: URL 列表
+        """
+        try:
+            with open(self.bv_file_path, 'r', encoding='utf-8') as f:
+                urls = [line.strip() for line in f if line.strip()]
+            # 去重
+            urls = list(set(urls))
+            print(f"从 bv.txt 读取到 {len(urls)} 个 URL")
+            return urls
+        except Exception as e:
+            print(f"错误：读取 bv.txt 文件失败 - {e}")
+            return []
+    
+    def _merge_urls(self):
+        """
+        合并 bv.txt 中的 URL 到 config.json 的 targets
+        
+        Returns:
+            list: 合并后的 target 列表
+        """
+        # 读取 bv.txt 中的 URL
+        bv_urls = self._load_bv_file()
+        
+        # 获取现有 targets
+        existing_targets = self.config.get('targets', [])
+        
+        # 提取现有 URL
+        existing_urls = [target['url'] for target in existing_targets]
+        
+        # 添加新 URL
+        for url in bv_urls:
+            if url not in existing_urls:
+                existing_targets.append({'url': url, 'crawled': False})
+        
+        # 确保所有 target 都有 crawled 字段
+        for target in existing_targets:
+            if 'crawled' not in target:
+                target['crawled'] = False
+        
+        # 更新 config
+        self.config['targets'] = existing_targets
+        self._save_config()
+        
+        print(f"合并后共有 {len(existing_targets)} 个目标 URL")
+        return existing_targets
     
     def check_robots(self, url):
         """
@@ -229,26 +295,94 @@ class VideoCrawler:
         
         return publish_date
     
+    def load_existing_timeline(self, output_path):
+        """
+        加载现有的 timeline.json 文件
+        
+        Args:
+            output_path: 输出文件路径
+            
+        Returns:
+            dict: 现有 timeline 数据
+        """
+        if output_path.exists():
+            try:
+                with open(output_path, 'r', encoding='utf-8') as f:
+                    timeline_data = json.load(f)
+                print(f"成功加载现有 timeline.json 文件，包含 {len(timeline_data.get('events', []))} 个事件")
+                return timeline_data
+            except Exception as e:
+                print(f"错误：加载现有 timeline.json 文件失败 - {e}")
+                return None
+        else:
+            print(f"timeline.json 文件不存在，将创建新文件")
+            return None
+    
+    def get_existing_urls(self, timeline_data):
+        """
+        从现有 timeline 数据中提取已存在的 URL
+        
+        Args:
+            timeline_data: 现有 timeline 数据
+            
+        Returns:
+            set: 已存在的 URL 集合
+        """
+        existing_urls = set()
+        if timeline_data and 'events' in timeline_data:
+            for event in timeline_data['events']:
+                if 'media' in event and 'url' in event['media']:
+                    existing_urls.add(event['media']['url'])
+        print(f"已存在 {len(existing_urls)} 个 URL")
+        return existing_urls
+    
     def generate_timeline(self, output_path):
         """
-        生成 timeline.json 文件
+        生成 timeline.json 文件（保留旧数据，只添加新数据）
         
         Args:
             output_path: 输出文件路径
         """
-        timeline_data = {
-            "title": {
-                "media": { "url": "", "caption": "", "credit": "" },
-                "text": {
-                    "headline": self.config['output']['title'],
-                    "text": self.config['output']['description']
-                }
-            },
-            "events": []
-        }
+        # 合并 URL
+        targets = self._merge_urls()
         
-        for target in self.config['targets']:
+        # 加载现有 timeline 数据
+        existing_timeline = self.load_existing_timeline(output_path)
+        
+        # 提取已存在的 URL
+        existing_urls = self.get_existing_urls(existing_timeline)
+        
+        # 构建 timeline 数据
+        if existing_timeline:
+            timeline_data = existing_timeline
+        else:
+            timeline_data = {
+                "title": {
+                    "media": { "url": "", "caption": "", "credit": "" },
+                    "text": {
+                        "headline": self.config['output']['title'],
+                        "text": self.config['output']['description']
+                    }
+                },
+                "events": []
+            }
+        
+        # 遍历目标 URL
+        new_events = []
+        for target in targets:
             url = target['url']
+            
+            # 跳过已爬取的 URL
+            if target.get('crawled', False):
+                print(f"跳过已爬取的 URL：{url}")
+                continue
+            
+            # 跳过已存在的 URL
+            if url in existing_urls:
+                print(f"跳过已存在的 URL：{url}")
+                # 标记为已爬取
+                target['crawled'] = True
+                continue
             
             # 检查 robots 协议
             if not self.check_robots(url):
@@ -307,20 +441,32 @@ class VideoCrawler:
                 }
             }
             
-            timeline_data['events'].append(event)
+            new_events.append(event)
+            # 标记为已爬取
+            target['crawled'] = True
             
             # 延迟，避免请求过快
             time.sleep(self.config['crawler']['delay_seconds'])
+        
+        # 添加新事件到 timeline 数据
+        if new_events:
+            timeline_data['events'].extend(new_events)
+            print(f"添加了 {len(new_events)} 个新事件")
+        else:
+            print("没有新事件需要添加")
         
         # 保存 timeline.json
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
                 json.dump(timeline_data, f, ensure_ascii=False, indent=2)
-            print(f"成功生成 timeline.json 文件：{output_path}")
-            print(f"共爬取 {len(timeline_data['events'])} 个视频")
+            print(f"成功保存 timeline.json 文件：{output_path}")
+            print(f"共包含 {len(timeline_data['events'])} 个事件")
         except Exception as e:
             print(f"错误：保存 timeline.json 失败 - {e}")
             raise
+        
+        # 保存配置文件（更新 crawled 状态）
+        self._save_config()
 
 
 def main():
@@ -329,6 +475,7 @@ def main():
     """
     # 配置文件和输出文件路径
     config_path = Path('data/config.json')
+    bv_file_path = Path('data/bv.txt')
     output_path = Path('data/timeline.json')
     
     # 检查配置文件是否存在
@@ -338,7 +485,7 @@ def main():
     
     try:
         # 创建爬虫实例
-        crawler = VideoCrawler(config_path)
+        crawler = VideoCrawler(config_path, bv_file_path)
         
         # 生成 timeline.json
         crawler.generate_timeline(output_path)
@@ -346,7 +493,7 @@ def main():
         # 调用 download_thumbs.py 下载缩略图
         print("\n调用 download_thumbs.py 下载缩略图...")
         download_script = Path(__file__).parent / "download_thumbs.py"
-        thumbs_dir = Path(__file__).parent / "media" / "thumbs"
+        thumbs_dir = Path(__file__).parent.parent / "media" / "thumbs"
         
         # 运行 download_thumbs.py 脚本
         subprocess.run([

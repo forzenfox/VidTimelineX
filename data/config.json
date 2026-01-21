@@ -1,10 +1,28 @@
 {
   "targets": [
     {
-      "url": "https://www.bilibili.com/video/BV1P6vRB7E2N"
+      "url": "https://www.bilibili.com/video/BV1gk4y1r77A",
+      "crawled": true
     },
     {
-      "url": "https://www.bilibili.com/video/BV1qAipBjEyh"
+      "url": "https://www.bilibili.com/video/BV1Q7411E7X4",
+      "crawled": true
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1f4411k7bM",
+      "crawled": true
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1ct4y1Y79d",
+      "crawled": true
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1jJ411g7pZ",
+      "crawled": true
+    },
+    {
+      "url": "https://www.bilibili.com/video/BV1Wo4y1o7HZ",
+      "crawled": true
     }
   ],
   "crawler": {
