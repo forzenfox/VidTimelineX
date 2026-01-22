@@ -204,6 +204,26 @@ button:active {
   outline: none;
 }
 
+/* 针对小屏设备优化字体大小 */
+@media (max-width: 360px) {
+  .text-xs {
+    font-size: 0.8125rem; /* 13px */
+    line-height: 1.4;
+  }
+  
+  .text-sm {
+    font-size: 0.9375rem; /* 15px */
+    line-height: 1.5;
+  }
+  
+  /* 视频卡片标题 */
+  .video-title {
+    font-size: 0.95rem;
+    line-clamp: 3;
+    min-height: 4.5rem;
+  }
+}
+
 .tiger-stripe {
   background-image: repeating-linear-gradient(
     45deg,

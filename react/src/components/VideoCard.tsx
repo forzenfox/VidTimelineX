@@ -45,17 +45,17 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
       
       {/* Content */}
       <div className="p-4">
-        <h3 id={`video-title-${video.id}`} className="font-bold text-foreground line-clamp-2 h-12 group-hover:text-primary transition-colors">
+        <h3 id={`video-title-${video.id}`} className="font-bold text-foreground line-clamp-2 min-h-[3rem] leading-[1.4] group-hover:text-primary transition-colors text-sm sm:text-base video-title">
           {video.title}
         </h3>
         
         <div className="flex items-center justify-between mt-3 text-xs text-muted-foreground" aria-label="视频信息">
-          <div className="flex items-center space-x-1">
-            <Calendar size={12} aria-hidden="true" />
+          <div className="flex items-center gap-1.5">
+            <Calendar size={12} className="flex-shrink-0" aria-hidden="true" />
             <span>{video.date}</span>
           </div>
-          <div className="flex items-center space-x-1">
-            <Eye size={12} aria-hidden="true" />
+          <div className="flex items-center gap-1.5">
+            <Eye size={12} className="flex-shrink-0" aria-hidden="true" />
             <span>{video.views} 播放</span>
           </div>
         </div>
