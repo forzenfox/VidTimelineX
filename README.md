@@ -60,7 +60,7 @@
 cd backend
 
 # 安装依赖
-pip install requests beautifulsoup4 flask
+pip install -r requirements.txt
 ```
 
 ### 3. 前端安装

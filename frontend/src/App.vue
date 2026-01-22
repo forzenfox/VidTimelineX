@@ -1,9 +1,9 @@
 <template>
   <div class="app min-h-screen flex flex-col">
     <!-- 加载动画 -->
-    <div class="loading-overlay fixed inset-0 bg-bg flex items-center justify-center z-50 animate-fadeOut">
+    <div v-if="isLoading" class="loading-overlay fixed inset-0 bg-bg flex items-center justify-center z-50">
       <div class="loading-animation w-15 h-15 border-4 border-light-brown border-t-4 border-ink-blue rounded-full animate-spin relative">
-        <div class="loading-animation::before absolute inset-[-12px] border-4 border-light-cyan rounded-full opacity-30 animate-pulse"></div>
+        <div class="absolute inset-[-12px] border-4 border-light-cyan rounded-full opacity-30 animate-pulse"></div>
       </div>
     </div>
     
@@ -55,6 +55,7 @@ import axios from 'axios';
 const timelineData = ref({ events: [] });
 const currentMedia = ref(null);
 const isPlayerOpen = ref(false);
+const isLoading = ref(true); // 加载状态
 
 // 加载时光轴数据
 async function loadTimelineData() {
@@ -63,21 +64,36 @@ async function loadTimelineData() {
     const response = await axios.get('/timeline.json');
     // 转换数据结构以匹配前端期望
     timelineData.value = {
-      events: response.data.map(item => ({
-        id: item.id,
-        date: item.date,
-        title: item.title,
-        content: item.content,
-        media: {
-          bv: item.video?.bv,
-          url: item.video?.url
-        },
-        thumbnail: item.thumbnail,
-        views: item.views,
-        danmaku: item.danmaku,
-        up主: item.up主
-      }))
+      events: response.data.map(item => {
+        // 解析日期字符串为对象格式
+        const dateParts = item.date.split('-');
+        const start_date = {
+          year: parseInt(dateParts[0]),
+          month: parseInt(dateParts[1]),
+          day: parseInt(dateParts[2])
+        };
+        
+        return {
+          id: item.id,
+          start_date: start_date,
+          text: {
+            headline: item.title,
+            text: item.content
+          },
+          media: {
+            bv: item.video?.bv,
+            url: item.video?.url,
+            thumbnail: item.video?.thumbnail
+          },
+          views: item.views,
+          danmaku: item.danmaku,
+          up主: item.up主
+        };
+      })
     };
+    
+    // 数据加载完成后隐藏加载动画
+    isLoading.value = false;
   } catch (error) {
     console.error('加载 timeline.json 失败:', error);
     // 添加错误处理，使用默认数据
@@ -85,20 +101,29 @@ async function loadTimelineData() {
       events: [
         {
           id: 1,
-          date: "2026-01-21",
-          title: "示例视频",
-          content: "这是一个示例视频，用于测试时光轴功能",
+          start_date: {
+            year: 2026,
+            month: 1,
+            day: 21
+          },
+          text: {
+            headline: "示例视频",
+            text: "这是一个示例视频，用于测试时光轴功能"
+          },
           media: {
             bv: "1ZHiyBkExG",
-            url: "https://www.bilibili.com/video/BV1ZHiyBkExG"
+            url: "https://www.bilibili.com/video/BV1ZHiyBkExG",
+            thumbnail: "//i1.hdslb.com/bfs/archive/57b7a6358b0a552852242e66d1610eada2ac61b6.jpg@100w_100h_1c.png"
           },
-          thumbnail: "//i1.hdslb.com/bfs/archive/57b7a6358b0a552852242e66d1610eada2ac61b6.jpg@100w_100h_1c.png",
           views: 1000000,
           danmaku: 10000,
           up主: "示例UP主"
         }
       ]
     };
+    
+    // 数据加载完成后隐藏加载动画
+    isLoading.value = false;
   }
 }
 

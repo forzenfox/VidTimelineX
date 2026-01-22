@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "原神3.4版本更新",
+    "content": "原神3.4版本上线，新增角色艾尔海森和瑶瑶，以及全新的沙漠地图",
+    "date": "2023-01-18",
+    "video": {
+      "bv": "BV1e8411z7y4",
+      "url": "https://www.bilibili.com/video/BV1e8411z7y4",
+      "thumbnail": "https://i0.hdslb.com/bfs/archive/57b7a6358b0a552852242e66d1610eada2ac61b6.jpg@160w_100h_1c_100q.jpg"
+    },
+    "author": "原神官方",
+    "views": 1500000,
+    "danmaku": 50000
+  },
+  {
+    "id": 2,
+    "title": "崩坏星穹铁道公测",
+    "content": "米哈游全新回合制RPG游戏《崩坏星穹铁道》正式公测",
+    "date": "2023-04-26",
+    "video": {
+      "bv": "BV1uX4y1C7rD",
+      "url": "https://www.bilibili.com/video/BV1uX4y1C7rD",
+      "thumbnail": "https://i1.hdslb.com/bfs/archive/8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c.jpg@160w_100h_1c_100q.jpg"
+    },
+    "author": "崩坏星穹铁道",
+    "views": 2000000,
+    "danmaku": 80000
+  },
+  {
+    "id": 3,
+    "title": "塞尔达传说：王国之泪发售",
+    "content": "任天堂旗下大作《塞尔达传说：王国之泪》正式发售，开放世界新体验",
+    "date": "2023-05-12",
+    "video": {
+      "bv": "BV1oK411W7QZ",
+      "url": "https://www.bilibili.com/video/BV1oK411W7QZ",
+      "thumbnail": "https://i2.hdslb.com/bfs/archive/9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d9d.jpg@160w_100h_1c_100q.jpg"
+    },
+    "author": "任天堂Switch",
+    "views": 3000000,
+    "danmaku": 120000
+  },
+  {
+    "id": 4,
+    "title": "原神4.0版本枫丹上线",
+    "content": "原神4.0版本开放全新区域枫丹，水之国的冒险正式开启",
+    "date": "2023-08-16",
+    "video": {
+      "bv": "BV1zu411Z7kL",
+      "url": "https://www.bilibili.com/video/BV1zu411Z7kL",
+      "thumbnail": "https://i3.hdslb.com/bfs/archive/5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e.jpg@160w_100h_1c_100q.jpg"
+    },
+    "author": "原神官方",
+    "views": 1800000,
+    "danmaku": 60000
+  },
+  {
+    "id": 5,
+    "title": "崩坏：星穹铁道1.3版本",
+    "content": "崩坏星穹铁道1.3版本更新，新增角色符玄和饮月君",
+    "date": "2023-08-30",
+    "video": {
+      "bv": "BV1zt421W7Zk",
+      "url": "https://www.bilibili.com/video/BV1zt421W7Zk",
+      "thumbnail": "https://i4.hdslb.com/bfs/archive/6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f.jpg@160w_100h_1c_100q.jpg"
+    },
+    "author": "崩坏星穹铁道",
+    "views": 1200000,
+    "danmaku": 40000
+  }
+]
