@@ -1,0 +1,158 @@
+/* 站酷快乐体 */
+@font-face {
+  font-family: 'ZCOOLKuaiLe';
+  src: url('./fonts/ZCOOLKuaiLe-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 站酷庆科黄油体 */
+@font-face {
+  font-family: 'ZCOOLQingKeHuangYou';
+  src: url('./fonts/ZCOOLQingKeHuangYou-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  
+  --shadow-custom: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
+  
+  --animate-scroll-left: scroll-left 20s linear infinite;
+  --animate-scroll-up: scroll-up 30s linear infinite;
+  --animate-scroll-down: scroll-down 30s linear infinite;
+  --animate-danmaku: danmaku 8s linear forwards;
+  
+  @keyframes scroll-left {
+    from { transform: translateX(100%); }
+    to { transform: translateX(-100%); }
+  }
+  
+  @keyframes scroll-up {
+    from { transform: translateY(0); }
+    to { transform: translateY(-33.33%); }
+  }
+  
+  @keyframes scroll-down {
+    from { transform: translateY(-33.33%); }
+    to { transform: translateY(0); }
+  }
+  
+  @keyframes danmaku {
+    from { transform: translateX(100vw); }
+    to { transform: translateX(-100%); }
+  }
+}
+
+:root {
+  /* Tiger主题 */
+  --tiger-background: rgb(255, 250, 245);
+  --tiger-foreground: rgb(50, 40, 30);
+  --tiger-primary: rgb(255, 95, 0);
+  --tiger-secondary: rgb(255, 190, 40);
+  --tiger-accent: rgb(139, 69, 19); /* 深棕色 */
+  --tiger-card: rgb(255, 255, 255);
+  --tiger-card-foreground: rgb(30, 30, 30);
+  --tiger-muted: rgb(245, 245, 245);
+  --tiger-muted-foreground: rgb(120, 120, 120);
+  --tiger-border: rgb(255, 210, 150);
+  --tiger-shadow-color: rgb(255, 180, 100);
+  
+  /* Sweet主题 */
+  --sweet-background: rgb(255, 248, 220);
+  --sweet-foreground: rgb(60, 60, 60);
+  --sweet-primary: rgb(255, 140, 180);
+  --sweet-secondary: rgb(255, 215, 0);
+  --sweet-accent: rgb(218, 112, 214); /* 浅紫色 */
+  --sweet-card: rgb(255, 255, 255);
+  --sweet-card-foreground: rgb(60, 60, 60);
+  --sweet-muted: rgb(255, 250, 240);
+  --sweet-muted-foreground: rgb(150, 130, 130);
+  --sweet-border: rgb(255, 230, 150);
+  --sweet-shadow-color: rgb(255, 200, 200);
+  
+  /* 通用变量 */
+  --shadow-x: 4px;
+  --shadow-y: 4px;
+  --shadow-blur: 10px;
+  --shadow-spread: 0px;
+}
+
+/* 默认主题（Tiger） */
+:root {
+  --background: var(--tiger-background);
+  --foreground: var(--tiger-foreground);
+  --primary: var(--tiger-primary);
+  --primary-foreground: rgb(255, 255, 255);
+  --secondary: var(--tiger-secondary);
+  --secondary-foreground: rgb(30, 30, 30);
+  --accent: var(--tiger-accent);
+  --accent-foreground: rgb(255, 255, 255);
+  --card: var(--tiger-card);
+  --card-foreground: var(--tiger-card-foreground);
+  --muted: var(--tiger-muted);
+  --muted-foreground: var(--tiger-muted-foreground);
+  --border: var(--tiger-border);
+  --shadow-color: var(--tiger-shadow-color);
+}
+
+/* 甜筒时刻 (Sweet Mode) */
+.theme-sweet {
+  --background: var(--sweet-background);
+  --foreground: var(--sweet-foreground);
+  --primary: var(--sweet-primary);
+  --primary-foreground: rgb(255, 255, 255);
+  --secondary: var(--sweet-secondary);
+  --secondary-foreground: rgb(60, 60, 60);
+  --accent: var(--sweet-accent);
+  --accent-foreground: rgb(255, 255, 255);
+  --card: var(--sweet-card);
+  --card-foreground: var(--sweet-card-foreground);
+  --muted: var(--sweet-muted);
+  --muted-foreground: var(--sweet-muted-foreground);
+  --border: var(--sweet-border);
+  --shadow-color: var(--sweet-shadow-color);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  border-color: var(--border);
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  overflow-x: hidden;
+}
+
+.tiger-stripe {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.1) 10px,
+    rgba(255, 255, 255, 0.1) 20px
+  );
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
