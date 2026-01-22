@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Pause, Play, TrendingUp, Trash2, Zap, MessageCircle, Gift, Crown } from 'lucide-react';
 import { danmuPool, Danmu } from '@/data/mockData';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // 模拟用户数据
 const mockUsers = [
@@ -21,6 +22,7 @@ interface SidebarDanmuProps {
 }
 
 const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = 'tiger' }) => {
+  const isMobile = useIsMobile();
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState<'normal' | 'fast' | 'slow'>('normal');
   const [localDanmuPool, setLocalDanmuPool] = useState<Danmu[]>(danmuPool);
@@ -76,7 +78,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = 'tiger' }) => {
   const repeatedItems = [...displayItems, ...displayItems, ...displayItems];
 
   return (
-    <div className="h-[calc(100vh-100px)] sticky top-4 flex flex-col bg-card border-2 border-border rounded-xl shadow-custom overflow-hidden">
+    <div className={`${isMobile ? 'fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b' : 'h-[calc(100vh-100px)] sticky top-4 border-2'} flex flex-col bg-card border-border rounded-xl shadow-custom overflow-hidden`}>
       {/* 顶部信息栏 - 模仿斗鱼 */}
       <div className={`p-3 ${colors.headerBg} border-b ${colors.border} tiger-stripe`}>
         {/* 模仿斗鱼排行榜 */}

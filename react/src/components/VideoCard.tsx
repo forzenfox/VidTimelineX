@@ -20,11 +20,12 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
         <img 
           src={video.cover} 
           alt={video.title}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300">
-            <Play fill="rgb(255, 95, 0)" className="text-[rgb(255,95,0)] ml-1" size={24} />
+            <Play fill="var(--primary)" className="text-primary ml-1" size={24} />
           </div>
         </div>
         

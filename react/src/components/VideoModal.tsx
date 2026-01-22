@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { X, MessageCircle, ExternalLink } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { X, MessageCircle, ExternalLink, Loader2 } from 'lucide-react';
 import { Video } from '@/data/mockData';
 
 interface VideoModalProps {
@@ -9,6 +9,8 @@ interface VideoModalProps {
 }
 
 const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = 'tiger' }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  
   // 按 ESC 键关闭弹窗
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -88,6 +90,14 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = 'tiger'
         
         {/* 视频播放器 */}
         <div className={`relative ${theme === 'tiger' ? 'bg-[#1a1a1a]' : 'bg-[#fff5f8]'}`} style={{ paddingBottom: '56.25%' }}>
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <div className="flex flex-col items-center">
+                <Loader2 size={48} className="animate-spin text-white mb-4" />
+                <p className="text-white font-medium">视频加载中...</p>
+              </div>
+            </div>
+          )}
           <iframe
             src={`https://player.bilibili.com/player.html?bvid=${mockBvid}&page=1&high_quality=1&danmaku=1`}
             className="absolute inset-0 w-full h-full"
@@ -96,6 +106,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = 'tiger'
             scrolling="no"
             frameBorder="0"
             title={video.title}
+            onLoad={() => setIsLoading(false)}
           />
         </div>
         

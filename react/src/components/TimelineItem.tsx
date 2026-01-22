@@ -59,7 +59,7 @@ export const TimelineItem: React.FC<TimelineItemProps> = ({
       </div>
 
       {/* 时间线右侧 - 视频卡片 */}
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {videos.map((video) => (
           <VideoCard 
             key={video.id} 

@@ -13,6 +13,9 @@ const Home = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   // 弹幕消息
   const danmakuMessages = [
@@ -47,6 +50,54 @@ const Home = () => {
     } else {
       document.documentElement.classList.remove('theme-sweet');
     }
+  };
+
+  // 搜索处理函数
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // 添加到搜索历史
+      setSearchHistory(prev => {
+        const newHistory = [searchQuery.trim(), ...prev.filter(item => item !== searchQuery.trim())].slice(0, 5);
+        return newHistory;
+      });
+      setShowSuggestions(false);
+    }
+  };
+
+  // 处理搜索输入变化，生成自动补全建议
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    if (value.trim()) {
+      // 从视频标题中生成建议
+      const videoTitles = videos.map(video => video.title);
+      const filteredSuggestions = videoTitles
+        .filter(title => title.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 5);
+      setSuggestions(filteredSuggestions);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
+    }
+  };
+
+  // 选择搜索建议
+  const selectSuggestion = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    setShowSuggestions(false);
+  };
+
+  // 清除搜索历史
+  const clearSearchHistory = () => {
+    setSearchHistory([]);
+  };
+
+  // 从搜索历史中选择
+  const selectFromHistory = (item: string) => {
+    setSearchQuery(item);
+    setShowSuggestions(false);
   };
 
   const filteredVideos = videos.filter(video => {
@@ -95,6 +146,7 @@ const Home = () => {
                       (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&q=80";
                     }}
                     alt="亿口甜筒" 
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -124,14 +176,66 @@ const Home = () => {
             <div className="flex items-center space-x-6">
               {/* Search */}
               <div className="hidden md:flex relative group">
-                <input 
-                  type="text" 
-                  placeholder="搜索视频..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-2 rounded-full border-2 border-border bg-muted/30 focus:bg-background focus:border-primary focus:outline-none w-48 transition-all group-focus-within:w-64"
-                />
-                <Search className="absolute left-3 top-2.5 text-muted-foreground" size={18} />
+                <form onSubmit={handleSearch} className="relative w-full">
+                  <input 
+                    type="text" 
+                    placeholder="搜索视频..." 
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    className="pl-9 pr-4 py-2 rounded-full border-2 border-border bg-muted/30 focus:bg-background focus:border-primary focus:outline-none w-48 transition-all group-focus-within:w-64"
+                  />
+                  <Search className="absolute left-3 top-2.5 text-muted-foreground" size={18} />
+                  
+                  {/* 搜索建议和历史 */}
+                  {showSuggestions && (
+                    <div className="absolute left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg py-2 z-50">
+                      {/* 搜索建议 */}
+                      {suggestions.length > 0 && (
+                        <div>
+                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border">
+                            搜索建议
+                          </div>
+                          {suggestions.map((suggestion, index) => (
+                            <div 
+                              key={index}
+                              className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                              onClick={() => selectSuggestion(suggestion)}
+                            >
+                              {suggestion}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* 搜索历史 */}
+                      {searchHistory.length > 0 && (
+                        <div>
+                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between">
+                            <span>搜索历史</span>
+                            <button 
+                              type="button"
+                              onClick={clearSearchHistory}
+                              className="text-xs text-primary hover:underline"
+                            >
+                              清除
+                            </button>
+                          </div>
+                          {searchHistory.map((item, index) => (
+                            <div 
+                              key={index}
+                              className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                              onClick={() => selectFromHistory(item)}
+                            >
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </form>
               </div>
               
               {/* Theme Toggle */}
@@ -235,7 +339,7 @@ const Home = () => {
            <SidebarDanmu theme={theme} />
            
            {/* Additional Widget: Anchor Profile or Announcement */}
-           <div className="mt-6 p-5 bg-gradient-to-br from-secondary/10 to-primary/5 rounded-xl border border-border">
+           <div className="mt-6 p-5 bg-gradient-to-br from-secondary/10 to-primary/5 rounded-xl border border-border hidden md:block">
              <h4 className="font-bold flex items-center mb-3">
                <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
                直播公告
