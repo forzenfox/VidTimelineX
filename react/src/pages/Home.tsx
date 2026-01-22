@@ -1,12 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { Github, ExternalLink, Search, Filter, Heart, TrendingUp, Calendar } from 'lucide-react';
 import { videos, highlightCategories, Video } from '@/data/mockData';
-import SidebarDanmu from '@/components/SidebarDanmu';
 import VideoCard from '@/components/VideoCard';
-import VideoModal from '@/components/VideoModal';
 import ThemeToggle from '@/components/ThemeToggle';
 import TimelineItem from '@/components/TimelineItem';
 import DanmakuWelcome from '@/components/DanmakuWelcome';
+
+// 懒加载较重的组件
+const VideoModal = React.lazy(() => import('@/components/VideoModal'));
+const SidebarDanmu = React.lazy(() => import('@/components/SidebarDanmu'));
 
 const Home = () => {
   const [theme, setTheme] = useState<'tiger' | 'sweet'>('tiger');
@@ -16,6 +18,8 @@ const Home = () => {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   // 弹幕消息
   const danmakuMessages = [
@@ -132,7 +136,7 @@ const Home = () => {
       />
       
       {/* 1. Header & Hero Section */}
-      <header className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border shadow-sm">
+      <header className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border shadow-sm" role="banner">
         <div className="max-w-[1440px] mx-auto">
           
           <div className="px-6 py-4 flex items-center justify-between">
@@ -148,9 +152,10 @@ const Home = () => {
                     alt="亿口甜筒" 
                     loading="lazy"
                     className="w-full h-full object-cover"
+                    aria-label="亿口甜筒" 
                   />
                 </div>
-                <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm">
+                <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm" aria-label="直播中">
                   LIVE
                 </div>
               </div>
@@ -162,11 +167,11 @@ const Home = () => {
                     {theme === 'tiger' ? '🦁 威虎大将军' : '🍦 软萌小甜筒'}
                   </span>
                 </h1>
-                <div className="flex items-center space-x-3 text-sm text-muted-foreground mt-1">
-                  <span>房间号: <span className="font-mono font-bold text-foreground">12195609</span></span>
-                  <span className="w-1 h-1 bg-border rounded-full"></span>
-                  <a href="#" className="hover:text-primary transition-colors flex items-center">
-                    鱼吧 <ExternalLink size={12} className="ml-0.5" />
+                <div className="flex items-center space-x-3 text-sm text-muted-foreground mt-1" role="contentinfo">
+                  <span>房间号: <a href="https://www.douyu.com/12195609" target="_blank" rel="noopener noreferrer" className="font-mono font-bold text-foreground hover:text-primary transition-colors">12195609</a></span>
+                  <span className="w-1 h-1 bg-border rounded-full" aria-hidden="true"></span>
+                  <a href="https://yuba.douyu.com/discussion/11242628/posts" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center" aria-label="访问鱼吧">
+                    鱼吧 <ExternalLink size={12} className="ml-0.5" aria-hidden="true" />
                   </a>
                 </div>
               </div>
@@ -174,34 +179,41 @@ const Home = () => {
 
             {/* Actions */}
             <div className="flex items-center space-x-6">
-              {/* Search */}
+              {/* Desktop Search */}
               <div className="hidden md:flex relative group">
-                <form onSubmit={handleSearch} className="relative w-full">
+                <form onSubmit={handleSearch} className="relative w-full" role="search">
+                  <label htmlFor="search" className="sr-only">搜索视频</label>
                   <input 
                     type="text" 
+                    id="search"
                     placeholder="搜索视频..." 
                     value={searchQuery}
                     onChange={handleSearchChange}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                     className="pl-9 pr-4 py-2 rounded-full border-2 border-border bg-muted/30 focus:bg-background focus:border-primary focus:outline-none w-48 transition-all group-focus-within:w-64"
+                    aria-label="搜索视频"
+                    aria-expanded={showSuggestions}
+                    aria-haspopup="listbox"
                   />
-                  <Search className="absolute left-3 top-2.5 text-muted-foreground" size={18} />
+                  <Search className="absolute left-3 top-2.5 text-muted-foreground" size={18} aria-hidden="true" />
                   
                   {/* 搜索建议和历史 */}
-                  {showSuggestions && (
-                    <div className="absolute left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg py-2 z-50">
+                  {showSuggestions && searchQuery.trim() && (suggestions.length > 0 || searchHistory.length > 0) && (
+                    <div className="absolute left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg py-2 z-50" role="listbox" aria-labelledby="search">
                       {/* 搜索建议 */}
                       {suggestions.length > 0 && (
-                        <div>
-                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border">
+                        <div className="search-suggestions">
+                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border bg-primary/5">
                             搜索建议
                           </div>
                           {suggestions.map((suggestion, index) => (
                             <div 
                               key={index}
-                              className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                              className="px-3 py-2 hover:bg-primary/10 cursor-pointer text-sm"
                               onClick={() => selectSuggestion(suggestion)}
+                              role="option"
+                              aria-selected="false"
                             >
                               {suggestion}
                             </div>
@@ -210,14 +222,15 @@ const Home = () => {
                       )}
                       
                       {/* 搜索历史 */}
-                      {searchHistory.length > 0 && (
-                        <div>
-                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between">
+                      {searchHistory.length > 0 && suggestions.length === 0 && (
+                        <div className="search-history">
+                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between bg-secondary/5">
                             <span>搜索历史</span>
                             <button 
                               type="button"
                               onClick={clearSearchHistory}
                               className="text-xs text-primary hover:underline"
+                              aria-label="清除搜索历史"
                             >
                               清除
                             </button>
@@ -225,8 +238,10 @@ const Home = () => {
                           {searchHistory.map((item, index) => (
                             <div 
                               key={index}
-                              className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                              className="px-3 py-2 hover:bg-secondary/10 cursor-pointer text-sm"
                               onClick={() => selectFromHistory(item)}
+                              role="option"
+                              aria-selected="false"
                             >
                               {item}
                             </div>
@@ -238,6 +253,16 @@ const Home = () => {
                 </form>
               </div>
               
+              {/* Mobile Search Button */}
+              <button
+                onClick={() => setShowMobileSearch(!showMobileSearch)}
+                className="md:hidden p-2 rounded-full hover:bg-primary/10 transition-all"
+                aria-label="切换搜索框"
+                aria-pressed={showMobileSearch}
+              >
+                <Search size={20} />
+              </button>
+              
               {/* Theme Toggle */}
               <div className="flex items-center">
                 <ThemeToggle currentTheme={theme} onToggle={toggleTheme} />
@@ -246,22 +271,99 @@ const Home = () => {
           </div>
         </div>
       </header>
+      
+      {/* Mobile Search Bar */}
+      {showMobileSearch && (
+        <div className="sticky top-[72px] z-30 bg-card/90 backdrop-blur-md border-b border-border px-6 py-3 md:hidden">
+          <form onSubmit={handleSearch} className="relative w-full" role="search">
+            <label htmlFor="mobile-search" className="sr-only">搜索视频</label>
+            <input 
+              type="text" 
+              id="mobile-search"
+              placeholder="搜索视频..." 
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              className="pl-9 pr-4 py-2 rounded-full border-2 border-border bg-muted/30 focus:bg-background focus:border-primary focus:outline-none w-full"
+              aria-label="搜索视频"
+              aria-expanded={showSuggestions}
+              aria-haspopup="listbox"
+              autoFocus
+            />
+            <Search className="absolute left-3 top-2.5 text-muted-foreground" size={18} aria-hidden="true" />
+            
+            {/* 搜索建议和历史 */}
+            {showSuggestions && searchQuery.trim() && (suggestions.length > 0 || searchHistory.length > 0) && (
+              <div className="absolute left-6 right-6 mt-1 bg-white border border-border rounded-lg shadow-lg py-2 z-50" role="listbox" aria-labelledby="mobile-search">
+                {/* 搜索建议 */}
+                {suggestions.length > 0 && (
+                  <div className="search-suggestions">
+                    <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border bg-primary/5">
+                      搜索建议
+                    </div>
+                    {suggestions.map((suggestion, index) => (
+                      <div 
+                        key={index}
+                        className="px-3 py-2 hover:bg-primary/10 cursor-pointer text-sm"
+                        onClick={() => selectSuggestion(suggestion)}
+                        role="option"
+                        aria-selected="false"
+                      >
+                        {suggestion}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* 搜索历史 */}
+                {searchHistory.length > 0 && suggestions.length === 0 && (
+                  <div className="search-history">
+                    <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between bg-secondary/5">
+                      <span>搜索历史</span>
+                      <button 
+                        type="button"
+                        onClick={clearSearchHistory}
+                        className="text-xs text-primary hover:underline"
+                        aria-label="清除搜索历史"
+                      >
+                        清除
+                      </button>
+                    </div>
+                    {searchHistory.map((item, index) => (
+                      <div 
+                        key={index}
+                        className="px-3 py-2 hover:bg-secondary/10 cursor-pointer text-sm"
+                        onClick={() => selectFromHistory(item)}
+                        role="option"
+                        aria-selected="false"
+                      >
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </form>
+        </div>
+      )}
 
       {/* Main Content Layout */}
-      <main className="max-w-[1440px] mx-auto px-6 py-8 flex flex-col md:flex-row gap-8">
+      <main className="max-w-[1440px] mx-auto px-6 py-8 flex flex-col md:flex-row gap-8" role="main">
         
         {/* Left: Video Timeline (Flexible width) */}
-        <section className="flex-1 w-full min-w-0">
+        <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
           <div className="mb-8">
-            <h2 className="text-3xl font-black mb-2 flex items-center">
-              <span className="bg-primary w-2 h-8 mr-3 rounded-full"></span>
+            <h2 id="timeline-title" className="text-3xl font-black mb-2 flex items-center">
+              <span className="bg-primary w-2 h-8 mr-3 rounded-full" aria-hidden="true"></span>
               时光视频集
             </h2>
             <p className="text-muted-foreground">记录亿口甜筒的每一个高光时刻，从霸气控场到软萌破防。</p>
           </div>
 
           {/* Category Filter */}
-          <div className="flex flex-wrap gap-3 mb-8 pb-2">
+          <div className="flex flex-wrap gap-3 mb-8 pb-2" role="navigation" aria-label="视频分类">
             {highlightCategories.map((cat) => {
               const Icon = cat.icon;
               const isActive = activeCategory === cat.id;
@@ -275,8 +377,9 @@ const Home = () => {
                       ? 'bg-primary border-primary text-primary-foreground shadow-lg scale-105' 
                       : 'bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'}
                   `}
+                  aria-pressed={isActive}
                 >
-                  <Icon size={18} className="mr-2" />
+                  <Icon size={18} className="mr-2" aria-hidden="true" />
                   {cat.name}
                 </button>
               );
@@ -284,9 +387,9 @@ const Home = () => {
           </div>
 
           {/* 结果提示 */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8" aria-live="polite">
             <div className="flex items-center gap-2 text-gray-600">
-              <TrendingUp className="w-5 h-5" />
+              <TrendingUp className="w-5 h-5" aria-hidden="true" />
               <span>
                 找到{' '}
                 <span 
@@ -298,15 +401,11 @@ const Home = () => {
                 个视频
               </span>
             </div>
-            <div className="flex items-center gap-2 text-gray-500 text-sm">
-              <Calendar className="w-4 h-4" />
-              <span>按时间倒序排列</span>
-            </div>
           </div>
 
           {/* 时间线 */}
           {groupedVideos.length > 0 ? (
-            <div className="relative">
+            <div className="relative transition-all duration-300 animate-in fade-in" role="feed">
               {groupedVideos.map((group, index) => (
                 <TimelineItem
                   key={group.date}
@@ -319,14 +418,15 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-card rounded-3xl border border-dashed border-border">
-               <div className="text-6xl mb-4">😿</div>
+            <div className="text-center py-20 bg-card rounded-3xl border border-dashed border-border transition-all duration-300 animate-in fade-in" role="status">
+               <div className="text-6xl mb-4" aria-hidden="true">😿</div>
                <h3 className="text-xl font-bold text-muted-foreground">
                  没有找到相关的视频喵~
                </h3>
                <button 
                  onClick={() => {setActiveCategory('all'); setSearchQuery('')}} 
                  className="mt-4 text-primary font-bold hover:underline"
+                 aria-label="查看全部视频"
                >
                  查看全部
                </button>
@@ -335,34 +435,25 @@ const Home = () => {
         </section>
 
         {/* Right: Interactive Sidebar (Fixed Width) */}
-        <aside className="w-full md:w-80 shrink-0">
-           <SidebarDanmu theme={theme} />
-           
-           {/* Additional Widget: Anchor Profile or Announcement */}
-           <div className="mt-6 p-5 bg-gradient-to-br from-secondary/10 to-primary/5 rounded-xl border border-border hidden md:block">
-             <h4 className="font-bold flex items-center mb-3">
-               <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"></span>
-               直播公告
-             </h4>
-             <p className="text-sm text-foreground/80 leading-relaxed">
-               感谢大家支持甜筒！<br/>
-               直播时间：每晚 20:00 - 24:00<br/>
-               商务合作请私信~ ❤️
-             </p>
-           </div>
+        <aside className="w-full md:w-80 shrink-0" role="complementary" aria-label="互动区域">
+           <Suspense fallback={<div className="h-[300px] bg-card rounded-xl border border-border animate-pulse"></div>}>
+             <SidebarDanmu theme={theme} />
+           </Suspense>
         </aside>
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-12 bg-card py-8 text-center text-sm text-muted-foreground">
+      <footer className="border-t border-border mt-12 bg-card py-8 text-center text-sm text-muted-foreground" role="contentinfo">
         <p>© 2024 亿口甜筒 · 时光视频集. All rights reserved.</p>
         <p className="mt-2 flex items-center justify-center gap-2">
-          Designed with <Heart size={12} className="text-red-500 fill-current" /> for 224
+          Designed with <Heart size={12} className="text-red-500 fill-current" aria-hidden="true" /> for 224
         </p>
       </footer>
 
       {/* Video Modal */}
-      <VideoModal video={selectedVideo} onClose={() => setSelectedVideo(null)} theme={theme} />
+      <Suspense fallback={null}>
+        <VideoModal video={selectedVideo} onClose={() => setSelectedVideo(null)} theme={theme} />
+      </Suspense>
     </div>
   );
 };

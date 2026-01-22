@@ -78,7 +78,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = 'tiger' }) => {
   const repeatedItems = [...displayItems, ...displayItems, ...displayItems];
 
   return (
-    <div className={`${isMobile ? 'fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b' : 'h-[calc(100vh-100px)] sticky top-4 border-2'} flex flex-col bg-card border-border rounded-xl shadow-custom overflow-hidden`}>
+    <div className={`${isMobile ? 'fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b' : 'h-[calc(100vh-120px)] sticky top-20 border-2 z-30'} flex flex-col bg-card border-border rounded-xl shadow-custom overflow-hidden`}>
       {/* 顶部信息栏 - 模仿斗鱼 */}
       <div className={`p-3 ${colors.headerBg} border-b ${colors.border} tiger-stripe`}>
         {/* 模仿斗鱼排行榜 */}
@@ -110,6 +110,18 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = 'tiger' }) => {
             </button>
           </div>
         </div>
+      </div>
+      
+      {/* 直播公告卡片 */}
+      <div className="p-4 bg-gradient-to-br from-secondary/10 to-primary/5 border-b border-border order-first">
+        <h4 className="font-bold flex items-center mb-2 text-sm">
+          <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse" aria-hidden="true"></span>
+          直播公告
+        </h4>
+        <p className="text-xs text-foreground/80 leading-relaxed">
+          感谢大家支持甜筒！❤️<br/>
+          👸大小姐驾到，统统闪开！✨
+        </p>
       </div>
 
       {/* 聊天区域 - 模仿斗鱼聊天框 */}

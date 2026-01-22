@@ -71,15 +71,20 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = 'tiger'
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* 背景遮罩 */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-all duration-500 ease-in-out opacity-0 scale-100 animate-in fade-in"
         onClick={onClose}
       />
 
       {/* 弹窗内容 */}
-      <div className={`relative w-full max-w-5xl mx-4 ${colors.cardBg} rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200`}>
+      <div 
+        className={`relative w-full max-w-5xl mx-4 ${colors.cardBg} rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 ease-in-out opacity-0 scale-95 animate-in fade-in zoom-in`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         {/* 头部 */}
         <div className={`flex items-center justify-between px-6 py-4 border-b ${colors.border} ${colors.headerBg}`}>
-          <h3 className={`text-lg font-bold truncate flex-1 mr-4 ${colors.headerText}`}>{video.title}</h3>
+          <h3 id="modal-title" className={`text-lg font-bold truncate flex-1 mr-4 ${colors.headerText}`}>{video.title}</h3>
           <button 
             onClick={onClose}
             className="p-2 hover:bg-muted rounded-full transition-colors"
@@ -91,16 +96,19 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = 'tiger'
         {/* 视频播放器 */}
         <div className={`relative ${theme === 'tiger' ? 'bg-[#1a1a1a]' : 'bg-[#fff5f8]'}`} style={{ paddingBottom: '56.25%' }}>
           {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <div className="flex flex-col items-center">
-                <Loader2 size={48} className="animate-spin text-white mb-4" />
-                <p className="text-white font-medium">视频加载中...</p>
+            <div className="absolute inset-0 flex flex-col">
+              {/* 加载动画 */}
+              <div className="flex-1 flex items-center justify-center bg-black/50">
+                <div className="flex flex-col items-center">
+                  <Loader2 size={48} className="animate-spin text-white mb-4" />
+                  <p className="text-white font-medium">视频加载中...</p>
+                </div>
               </div>
             </div>
           )}
           <iframe
             src={`https://player.bilibili.com/player.html?bvid=${mockBvid}&page=1&high_quality=1&danmaku=1`}
-            className="absolute inset-0 w-full h-full"
+            className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
             allowFullScreen
             allow="autoplay; fullscreen"
             scrolling="no"
