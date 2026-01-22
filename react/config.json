@@ -1,0 +1,15 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "src": "src/pages/Home.tsx"
+    }
+  ],
+  "components": [
+    {"name": "Header", "src": "src/components/HorizontalDanmu.tsx"},
+    {"name": "SideBar", "src": "src/components/SidebarDanmu.tsx"},
+    {"name": "VideoCard", "src": "src/components/VideoCard.tsx"},
+    {"name": "VideoModal", "src": "src/components/VideoModal.tsx"},
+    {"name": "ThemeToggle", "src": "src/components/ThemeToggle.tsx"}
+  ]
+}
