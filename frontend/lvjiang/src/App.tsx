@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { Home, PlayCircle } from "lucide-react";
 import Lvjiang from "./Lvjiang";
+import Tiantong from "./Tiantong";
 
 // 首页组件
 const HomePage = () => {
@@ -33,18 +34,21 @@ const HomePage = () => {
             </div>
           </Link>
           
-          {/* 其他视频集卡片（占位） */}
-          <div className="p-8 bg-white rounded-2xl shadow-xl border-2 border-gray-100 opacity-75">
+          {/* 甜筒视频集卡片 */}
+          <Link 
+            to="/tiantong" 
+            className="group p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-pink-200"
+          >
             <div className="flex flex-col items-center justify-center">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                <PlayCircle size={48} className="text-gray-400" />
+              <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <PlayCircle size={48} className="text-pink-600" />
               </div>
-              <h2 className="text-2xl font-bold mb-3 text-gray-800">更多视频集</h2>
+              <h2 className="text-2xl font-bold mb-3 text-gray-800">甜筒视频集</h2>
               <p className="text-gray-500 text-center">
-                敬请期待更多精彩视频集内容
+                记录亿口甜筒的时光碎片，包含唱歌、跳舞、搞笑等精彩内容
               </p>
             </div>
-          </div>
+          </Link>
         </div>
         
         {/* 页脚 */}
@@ -62,6 +66,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/lvjiang" element={<Lvjiang />} />
+      <Route path="/tiantong" element={<Tiantong />} />
       <Route path="*" element={<HomePage />} />
     </Routes>
   );
