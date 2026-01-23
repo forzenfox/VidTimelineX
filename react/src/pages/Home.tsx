@@ -186,11 +186,11 @@ const Home = () => {
       <header className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300 ease-in-out" role="banner" id="main-header" ref={headerRef} style={{ backgroundColor: `rgba(var(--card-rgb), ${headerBgOpacity})` }}>
         <div className="max-w-[1440px] mx-auto">
           
-          <div className="px-4 sm:px-6 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
-            {/* Logo & Streamer Info */}
-            <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4 sm:gap-6 lg:gap-10">
+            {/* Logo & Streamer Info - 品牌区信息重组 */}
+            <div className="flex items-center gap-3 sm:gap-4 lg:gap-6 flex-shrink-0">
               <div className="relative flex-shrink-0 group">
-                <div className={`w-10 sm:w-12 md:w-16 h-10 sm:h-12 md:h-16 rounded-full border-2 sm:border-3 md:border-4 overflow-hidden shadow-custom transition-all duration-300 hover:scale-105 hover:shadow-lg ${theme === 'tiger' ? 'border-[rgb(255,110,20)] hover:border-[rgb(255,130,40)]' : 'border-[rgb(255,120,160)] hover:border-[rgb(255,100,140)]'}`}>
+                <div className={`w-12 sm:w-14 md:w-16 h-12 sm:h-14 md:h-16 rounded-full border-3 sm:border-3 md:border-4 overflow-hidden shadow-custom transition-all duration-300 hover:scale-105 hover:shadow-lg ${theme === 'tiger' ? 'border-[rgb(255,110,20)]' : 'border-[rgb(255,120,160)]'}`}>
                   <img 
                     src="/image.png" 
                     onError={(e) => {
@@ -202,38 +202,44 @@ const Home = () => {
                     aria-label="亿口甜筒" 
                   />
                 </div>
-                <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold shadow-sm transition-all duration-300 hover:scale-110 hover:shadow-md animate-pulse" aria-label="直播中">
+                <div className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full font-bold shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg animate-pulse" aria-label="直播中">
                   LIVE
                 </div>
               </div>
               
-              <div className="min-w-0 flex-1">
-                <h1 className="text-base sm:text-lg md:text-2xl lg:text-3xl font-extrabold tracking-tight flex items-center overflow-hidden text-ellipsis whitespace-nowrap">
-                  亿口甜筒
-                  <span className={`ml-1 sm:ml-2 text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded border border-current opacity-80 transition-all duration-300 ${theme === 'tiger' ? 'text-[rgb(255,210,60)] bg-[rgb(255,110,20)/20]' : 'text-[rgb(255,80,120)] bg-[rgb(255,120,160)/20]'}`}>
-                    {theme === 'tiger' ? '威虎大将军' : '软萌小甜筒'}
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-black tracking-tight">
+                    亿口甜筒
+                  </h1>
+                  {/* 徽章样式优化 - 醒目的小徽章 */}
+                  <span className={`inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-bold shadow-sm border transition-all duration-300 ${theme === 'tiger' 
+                    ? 'bg-gradient-to-r from-[rgb(255,110,20)] to-[rgb(255,190,40)] text-white border-transparent' 
+                    : 'bg-gradient-to-r from-[rgb(255,140,180)] to-[rgb(255,192,203)] text-white border-transparent'}`}>
+                    {theme === 'tiger' ? '🦁 威虎大将军' : '🍦 软萌小甜筒'}
                   </span>
-                </h1>
-                <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4 text-[10px] sm:text-xs text-muted-foreground mt-1 overflow-hidden text-ellipsis whitespace-nowrap" role="contentinfo">
-                  <span className="flex items-center">
-                    <a href="https://www.douyu.com/12195609" target="_blank" rel="noopener noreferrer" className="font-mono font-bold text-foreground hover:text-primary transition-colors">12195609</a>
-                  </span>
-                  <span className="w-1 h-1 bg-border rounded-full" aria-hidden="true"></span>
-                  <span className="flex items-center">
-                    <a href="https://yuba.douyu.com/discussion/11242628/posts" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors flex items-center" aria-label="访问鱼吧">
-                      鱼吧
-                      <ExternalLink size={9} sm:size={10} className="ml-0.5" aria-hidden="true" />
-                    </a>
-                  </span>
+                </div>
+                {/* 辅助信息 - 等级和鱼吧图标移至昵称下方 */}
+                <div className="flex items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-muted-foreground">
+                  <a href="https://www.douyu.com/12195609" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                    <span className="font-mono font-bold">12195609</span>
+                  </a>
+                  <span className="w-1 h-1 bg-border rounded-full"></span>
+                  <a href="https://yuba.douyu.com/discussion/11242628/posts" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" size={12} className="sm:size-13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                    <span>鱼吧</span>
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6">
-              {/* 搜索框 - 平板和桌面设备均可见 */}
-              <div className="flex relative group">
-                <form onSubmit={handleSearch} className="relative w-full" role="search">
+            {/* Actions - 搜索框与按钮优化 */}
+            <div className="flex items-center gap-3 sm:gap-5 lg:gap-8 flex-shrink-0">
+              {/* 搜索框优化 - 增加圆角和内边距 */}
+              <div className="relative group flex-shrink-0">
+                <form onSubmit={handleSearch} className="relative" role="search">
                   <label htmlFor="search" className="sr-only">搜索视频</label>
                   <input 
                     type="text" 
@@ -243,26 +249,26 @@ const Home = () => {
                     onChange={handleSearchChange}
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                    className="pl-9 pr-4 py-2 rounded-full border-2 border-border bg-muted/30 focus:bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 w-40 md:w-48 lg:w-64 transition-all duration-300 ease-in-out"
+                    className="pl-10 pr-4 py-2.5 sm:py-3 rounded-full border-2 border-border bg-muted/50 focus:bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 w-44 sm:w-52 lg:w-64 transition-all duration-300 text-sm sm:text-base"
                     aria-label="搜索视频"
                     aria-expanded={showSuggestions}
                     aria-haspopup="listbox"
                   />
-                  <Search className="absolute left-3 top-2.5 text-muted-foreground transition-colors duration-300" size={18} aria-hidden="true" />
+                  <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-muted-foreground transition-colors duration-300" size={18} sm:size={19} aria-hidden="true" />
                   
                   {/* 搜索建议和历史 */}
                   {showSuggestions && searchQuery.trim() && (suggestions.length > 0 || searchHistory.length > 0) && (
-                    <div className="absolute left-0 right-0 mt-1 bg-white border border-border rounded-lg shadow-lg py-2 z-50 transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-top-1" role="listbox" aria-labelledby="search">
+                    <div className="absolute left-0 right-0 mt-2 bg-white border border-border rounded-xl shadow-lg py-2 z-50 transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-top-2" role="listbox" aria-labelledby="search">
                       {/* 搜索建议 */}
                       {suggestions.length > 0 && (
                         <div className="search-suggestions">
-                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border bg-primary/5">
+                          <div className="px-4 py-2 text-xs font-medium text-muted-foreground border-b border-border bg-primary/5">
                             搜索建议
                           </div>
                           {suggestions.map((suggestion, index) => (
                             <div 
                               key={index}
-                              className="px-3 py-2 hover:bg-primary/10 cursor-pointer text-sm transition-all duration-200"
+                              className="px-4 py-2.5 hover:bg-primary/10 cursor-pointer text-sm transition-all duration-200"
                               onClick={() => selectSuggestion(suggestion)}
                               role="option"
                               aria-selected="false"
@@ -276,7 +282,7 @@ const Home = () => {
                       {/* 搜索历史 */}
                       {searchHistory.length > 0 && suggestions.length === 0 && (
                         <div className="search-history">
-                          <div className="px-3 py-1 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between bg-secondary/5">
+                          <div className="px-4 py-2 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between bg-secondary/5">
                             <span>搜索历史</span>
                             <button 
                               type="button"
@@ -290,7 +296,7 @@ const Home = () => {
                           {searchHistory.map((item, index) => (
                             <div 
                               key={index}
-                              className="px-3 py-2 hover:bg-secondary/10 cursor-pointer text-sm transition-all duration-200"
+                              className="px-4 py-2.5 hover:bg-secondary/10 cursor-pointer text-sm transition-all duration-200"
                               onClick={() => selectFromHistory(item)}
                               role="option"
                               aria-selected="false"
@@ -306,7 +312,7 @@ const Home = () => {
               </div>
               
               {/* Theme Toggle */}
-              <div className="flex items-center">
+              <div className="flex items-center flex-shrink-0">
                 <ThemeToggle currentTheme={theme} onToggle={toggleTheme} />
               </div>
             </div>
@@ -320,15 +326,15 @@ const Home = () => {
         {/* Left: Video Timeline (Flexible width) */}
         <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
           <div className="mb-8">
-            <h2 id="timeline-title" className="text-3xl font-black mb-2 flex items-center">
-              <span className="bg-primary w-2 h-8 mr-3 rounded-full" aria-hidden="true"></span>
+            <h2 id="timeline-title" className="text-2xl sm:text-3xl font-black mb-2 flex items-center">
+              <span className="bg-primary w-2 h-7 sm:h-8 mr-3 rounded-full" aria-hidden="true"></span>
               亿口时光
             </h2>
-            <p className="text-muted-foreground">记录亿口甜筒的时光碎片，从霸气控场到软萌破防。</p>
+            <p className="text-muted-foreground text-sm sm:text-base">记录亿口甜筒的时光碎片</p>
           </div>
 
-          {/* Category Filter */}
-          <div className="flex flex-wrap gap-3 sm:gap-4 mb-8 pb-2 px-0.5 sm:px-0" role="navigation" aria-label="视频分类">
+          {/* Category Filter - 分类标签栏优化 */}
+          <div className="flex flex-wrap gap-3 sm:gap-4 mb-8" role="navigation" aria-label="视频分类">
             {highlightCategories.map((cat) => {
               const Icon = cat.icon;
               const isActive = activeCategory === cat.id;
@@ -337,33 +343,26 @@ const Home = () => {
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
                   className={`
-                    flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl border-2 font-bold transition-all transform hover:-translate-y-0.5 min-h-[2.5rem] sm:min-h-[2.75rem] min-w-[6rem]
+                    flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl border-2 font-bold transition-all duration-300 min-h-[2.75rem] sm:min-h-[3rem]
                     ${isActive 
                       ? 'bg-primary border-primary text-primary-foreground shadow-lg scale-105' 
-                      : 'bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-foreground'}
+                      : 'bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-primary/5'}
                   `}
                   aria-pressed={isActive}
                 >
-                  <Icon size={18} className="flex-shrink-0" aria-hidden="true" />
-                  <span>{cat.name}</span>
+                  <Icon size={18} sm:size={19} className="flex-shrink-0" aria-hidden="true" />
+                  <span className="text-sm sm:text-base">{cat.name}</span>
                 </button>
               );
             })}
           </div>
 
-          {/* 结果提示 */}
+          {/* 结果提示 - 辅助信息整合 */}
           <div className="flex items-center justify-between mb-8" aria-live="polite">
-            <div className="flex items-center gap-2 text-gray-600">
-              <TrendingUp className="w-5 h-5" aria-hidden="true" />
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
               <span>
-                找到{' '}
-                <span 
-                  className="font-bold"
-                  style={{ color: theme === 'tiger' ? 'rgb(255, 95, 0)' : 'rgb(255, 140, 180)' }}
-                >
-                  {filteredVideos.length}
-                </span>{' '}
-                个视频
+                共 <span className="font-bold">{filteredVideos.length}</span> 个视频
               </span>
             </div>
           </div>
@@ -407,7 +406,7 @@ const Home = () => {
 
       {/* Footer */}
       <footer className="border-t border-border mt-12 bg-card py-8 text-center text-sm text-muted-foreground" role="contentinfo">
-        <p>© 2024 亿口甜筒 · 时光视频集. All rights reserved.</p>
+        <p>© 2024 亿口甜筒 · 亿口时光. All rights reserved.</p>
         <p className="mt-2 flex items-center justify-center gap-2">
           Designed with <Heart size={12} className="text-red-500 fill-current" aria-hidden="true" /> for 224
         </p>
