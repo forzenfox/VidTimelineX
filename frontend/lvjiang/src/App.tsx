@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
-import { LoadingAnimation } from "./components/LoadingAnimation";
-import { Header } from "./components/Header";
-import { VideoTimeline } from "./components/VideoTimeline";
-import { VideoModal } from "./components/VideoModal";
-import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
-import { SideDanmaku } from "./components/SideDanmaku";
-import type { Video } from "./data/videos";
+import { LoadingAnimation } from "./components/lv_LoadingAnimation";
+import { Header } from "./components/lv_Header";
+import { VideoTimeline } from "./components/lv_VideoTimeline";
+import { VideoModal } from "./components/lv_VideoModal";
+import { HorizontalDanmaku } from "./components/lv_HorizontalDanmaku";
+import { SideDanmaku } from "./components/lv_SideDanmaku";
+import type { Video } from "./data/lv_videos";
 
 // 主页组件
 const Home = () => {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Video } from '@/data/mockData';
-import VideoCard from './VideoCard';
+import { Video } from '@/data/hu_mockData';
+import VideoCard from './hu_VideoCard';
 
 interface TimelineItemProps {
   date: string;

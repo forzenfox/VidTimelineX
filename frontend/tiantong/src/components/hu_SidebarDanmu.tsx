@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Pause, Play, TrendingUp, Trash2, Zap, MessageCircle, Gift, Crown } from 'lucide-react';
-import { danmuPool, Danmu } from '@/data/mockData';
+import { danmuPool, Danmu } from '@/data/hu_mockData';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 // 模拟用户数据

@@ -1,5 +1,5 @@
 import { Play, Calendar, Clock } from 'lucide-react';
-import { videos, type Video } from '../data/videos';
+import { videos, type Video } from '../data/lv_videos';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 interface VideoTimelineProps {

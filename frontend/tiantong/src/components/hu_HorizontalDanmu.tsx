@@ -1,5 +1,5 @@
 import React from 'react';
-import { danmuPool } from '@/data/mockData';
+import { danmuPool } from '@/data/hu_mockData';
 
 const HorizontalDanmu: React.FC = () => {
   // Triple the data to ensure smooth infinite scroll without gaps

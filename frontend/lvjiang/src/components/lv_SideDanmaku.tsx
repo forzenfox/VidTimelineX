@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { dongzhuDanmaku, kaigeDanmaku } from '../data/danmaku';
+import { dongzhuDanmaku, kaigeDanmaku } from '../data/lv_danmaku';
 
 interface SideDanmakuProps {
   theme: 'dongzhu' | 'kaige';

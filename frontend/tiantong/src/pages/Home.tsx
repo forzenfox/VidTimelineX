@@ -1,15 +1,15 @@
 import React, { useState, useMemo, Suspense } from 'react';
 import { Github, ExternalLink, Search, Filter, Heart, TrendingUp, Calendar } from 'lucide-react';
-import { videos, highlightCategories, Video } from '@/data/mockData';
-import VideoCard from '@/components/VideoCard';
-import ThemeToggle from '@/components/ThemeToggle';
-import TimelineItem from '@/components/TimelineItem';
-import DanmakuWelcome from '@/components/DanmakuWelcome';
+import { videos, highlightCategories, Video } from '@/data/hu_mockData';
+import VideoCard from '@/components/hu_VideoCard';
+import ThemeToggle from '@/components/hu_ThemeToggle';
+import TimelineItem from '@/components/hu_TimelineItem';
+import DanmakuWelcome from '@/components/hu_DanmakuWelcome';
 import { withDeviceSpecificComponent } from '@/hooks/use-dynamic-component';
 
 // 懒加载较重的组件
-const VideoModal = React.lazy(() => import('@/components/VideoModal'));
-const DesktopSidebarDanmu = React.lazy(() => import('@/components/SidebarDanmu'));
+const VideoModal = React.lazy(() => import('@/components/hu_VideoModal'));
+const DesktopSidebarDanmu = React.lazy(() => import('@/components/hu_SidebarDanmu'));
 
 // 设备特定侧边栏组件 - 移除移动端支持
 const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
