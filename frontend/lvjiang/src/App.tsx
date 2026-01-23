@@ -1,260 +1,56 @@
-import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-import { LoadingAnimation } from "./components/lv_LoadingAnimation";
-import { Header } from "./components/lv_Header";
-import { VideoTimeline } from "./components/lv_VideoTimeline";
-import { VideoModal } from "./components/lv_VideoModal";
-import { HorizontalDanmaku } from "./components/lv_HorizontalDanmaku";
-import { SideDanmaku } from "./components/lv_SideDanmaku";
-import type { Video } from "./data/lv_videos";
+import { Routes, Route, Link } from "react-router-dom";
+import { Home, PlayCircle } from "lucide-react";
+import Lvjiang from "./Lvjiang";
 
-// 主页组件
-const Home = () => {
-  const [theme, setTheme] = useState<"dongzhu" | "kaige">("dongzhu");
-  const [isLoading, setIsLoading] = useState(true);
-  const [showDanmaku, setShowDanmaku] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
-
-  // 设置主题属性
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
-
-  // 加载完成后显示弹幕
-  const handleLoadingComplete = (selectedTheme: "dongzhu" | "kaige") => {
-    setTheme(selectedTheme); // 设置用户选择的主题
-    setIsLoading(false);
-    setShowDanmaku(true);
-
-    // 3秒后隐藏水平弹幕
-    setTimeout(() => {
-      setShowDanmaku(false);
-    }, 10000);
-  };
-
-  const handleThemeToggle = () => {
-    setTheme((prev) => prev === "dongzhu" ? "kaige" : "dongzhu");
-  };
-
-  const handleVideoClick = (video: Video) => {
-    setSelectedVideo(video);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedVideo(null);
-  };
-
-  if (isLoading) {
-    return (
-      <LoadingAnimation
-        onComplete={handleLoadingComplete}
-      />
-    );
-  }
-
+// 首页组件
+const HomePage = () => {
   return (
-    <div
-      className="min-h-screen theme-transition pb-20"
-      style={{
-        background:
-          theme === "dongzhu"
-            ? "linear-gradient(to bottom, #FFFEF7, #FFF9E6)"
-            : "linear-gradient(to bottom, #1A1A2E, #0F3460)",
-      }}
-    >
-      {/* 水平弹幕 */}
-      <HorizontalDanmaku
-        theme={theme}
-        isVisible={showDanmaku}
-      />
-
-      {/* 顶部导航 */}
-      <Header theme={theme} onThemeToggle={handleThemeToggle} />
-
-      {/* 主内容区 */}
-      <main className="relative">
-        {/* 背景装饰 */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-5">
-          {theme === "dongzhu" ? (
-            // 家猪装饰 - 小猪脚印
-            <div className="relative w-full h-full">
-              {[...Array(30)].map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute text-4xl"
-                  style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                    transform: `rotate(${Math.random() * 360}deg)`,
-                    opacity: Math.random() * 0.5,
-                    color: "#AED6F1",
-                  }}
-                >
-                  🐾
-                </div>
-              ))}
-            </div>
-          ) : (
-            // 野猪装饰 - 棱角纹路
-            <div className="relative w-full h-full">
-              <div
-                className="absolute inset-0"
-                style={{
-                  backgroundImage: `
-                    repeating-linear-gradient(45deg, transparent, transparent 40px, #E74C3C 40px, #E74C3C 42px),
-                    repeating-linear-gradient(-45deg, transparent, transparent 40px, #E74C3C 40px, #E74C3C 42px)
-                  `,
-                }}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* 时光视频集 */}
-        <div className="relative z-10">
-          <VideoTimeline
-            theme={theme}
-            onVideoClick={handleVideoClick}
-          />
-        </div>
-
-        {/* 底部装饰信息 */}
-        <div className="max-w-5xl mx-auto px-6 py-12 text-center">
-          <div className="flex flex-wrap justify-center gap-6 mb-6">
-            {/* 梗徽章 */}
-            {theme === "dongzhu" ? (
-              <>
-                <div
-                  className="px-6 py-3 rounded-full font-bold theme-transition"
-                  style={{
-                    background: "rgba(174, 214, 241, 0.4)",
-                    border: "2px solid #AED6F1",
-                    color: "#5D6D7E",
-                  }}
-                >
-                  🎯 凯哥我点了
-                </div>
-                <div
-                  className="px-6 py-3 rounded-full font-bold theme-transition"
-                  style={{
-                    background: "rgba(174, 214, 241, 0.4)",
-                    border: "2px solid #AED6F1",
-                    color: "#5D6D7E",
-                  }}
-                >
-                  👶 峡谷养爹人
-                </div>
-                <div
-                  className="px-6 py-3 rounded-full font-bold theme-transition"
-                  style={{
-                    background: "rgba(174, 214, 241, 0.4)",
-                    border: "2px solid #AED6F1",
-                    color: "#5D6D7E",
-                  }}
-                >
-                  🌿 飞天大草
-                </div>
-              </>
-            ) : (
-              <>
-                <div
-                  className="px-6 py-3 rounded-full font-bold theme-transition"
-                  style={{
-                    background: "rgba(231, 76, 60, 0.3)",
-                    border: "2px solid #E74C3C",
-                    color: "#ECF0F1",
-                  }}
-                >
-                  🌱 武汉植物人
-                </div>
-                <div
-                  className="px-6 py-3 rounded-full font-bold theme-transition"
-                  style={{
-                    background: "rgba(231, 76, 60, 0.3)",
-                    border: "2px solid #E74C3C",
-                    color: "#ECF0F1",
-                  }}
-                >
-                  🚫 技能全空
-                </div>
-                <div
-                  className="px-6 py-3 rounded-full font-bold theme-transition"
-                  style={{
-                    background: "rgba(231, 76, 60, 0.3)",
-                    border: "2px solid #E74C3C",
-                    color: "#ECF0F1",
-                  }}
-                >
-                  👑 之神
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* 通用梗 */}
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
-            <div
-              className="px-4 py-2 rounded-full font-medium text-sm"
-              style={{
-                background: "rgba(255, 215, 0, 0.2)",
-                border: "2px solid #FFD700",
-                color: "#B8860B",
-              }}
-            >
-              🌉 桥头仪仗队
-            </div>
-            <div
-              className="px-4 py-2 rounded-full font-medium text-sm"
-              style={{
-                background: "rgba(155, 89, 182, 0.2)",
-                border: "2px solid #9B59B6",
-                color: "#8E44AD",
-              }}
-            >
-              🎭 电竞相声兄弟
-            </div>
-          </div>
-
-          {/* 底部文字 */}
-          <div
-            className="text-sm opacity-70"
-            style={{
-              color:
-                theme === "dongzhu" ? "#85929E" : "#BDC3C7",
-            }}
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center justify-center p-4">
+      <div className="text-center max-w-3xl">
+        {/* 标题区域 */}
+        <h1 className="text-5xl font-black mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+          哔哩哔哩时间线
+        </h1>
+        <p className="text-xl text-gray-600 mb-12">
+          探索哔哩哔哩视频集，发现精彩内容
+        </p>
+        
+        {/* 导航卡片 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* 驴酱视频集卡片 */}
+          <Link 
+            to="/lvjiang" 
+            className="group p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-blue-200"
           >
-            <p className="mb-2">洞主 & 凯哥 时光视频集</p>
-            <p>驴酱公会 · 陪伴是最长情的告白</p>
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                <PlayCircle size={48} className="text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-bold mb-3 text-gray-800">驴酱视频集</h2>
+              <p className="text-gray-500 text-center">
+                探索驴酱公会的精彩视频内容，包含洞主、凯哥等主播的经典时刻
+              </p>
+            </div>
+          </Link>
+          
+          {/* 其他视频集卡片（占位） */}
+          <div className="p-8 bg-white rounded-2xl shadow-xl border-2 border-gray-100 opacity-75">
+            <div className="flex flex-col items-center justify-center">
+              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                <PlayCircle size={48} className="text-gray-400" />
+              </div>
+              <h2 className="text-2xl font-bold mb-3 text-gray-800">更多视频集</h2>
+              <p className="text-gray-500 text-center">
+                敬请期待更多精彩视频集内容
+              </p>
+            </div>
           </div>
         </div>
-      </main>
-
-      {/* 右侧弹幕墙 */}
-      <SideDanmaku theme={theme} />
-
-      {/* 视频弹窗 */}
-      <VideoModal
-        video={selectedVideo}
-        theme={theme}
-        onClose={handleCloseModal}
-      />
-    </div>
-  );
-};
-
-// 404页面组件
-const NotFound = () => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-#FFFEF7 to-#FFF9E6">
-      <div className="text-center">
-        <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-8">页面未找到</p>
-        <a 
-          href="/" 
-          className="px-6 py-3 rounded-full font-bold bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-        >
-          返回首页
-        </a>
+        
+        {/* 页脚 */}
+        <footer className="mt-16 text-gray-500 text-sm">
+          <p>© 2024 哔哩哔哩时间线 - 探索精彩视频内容</p>
+        </footer>
       </div>
     </div>
   );
@@ -264,8 +60,9 @@ const NotFound = () => {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="/" element={<HomePage />} />
+      <Route path="/lvjiang" element={<Lvjiang />} />
+      <Route path="*" element={<HomePage />} />
     </Routes>
   );
 }

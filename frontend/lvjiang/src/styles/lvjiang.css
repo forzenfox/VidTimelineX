@@ -1,0 +1,209 @@
+@import "tailwindcss";
+
+
+/* ============================================ 
+   主题配色系统
+   ============================================ */
+
+:root {
+  /* 洞主主题 - 天蓝色系 */
+  --dongzhu-primary: #D4E8F0;      /* 淡蓝 */
+  --dongzhu-secondary: #FFFEF7;    /* 米白 */
+  --dongzhu-accent: #5DADE2;       /* 天蓝 */
+  --dongzhu-bg: #FFFEF7;           /* 米白 */
+  --dongzhu-surface: #FFF9E6;      /* 淡黄白 */
+  --dongzhu-text: #5D6D7E;         /* 暖灰 */
+  --dongzhu-text-secondary: #85929E; /* 浅灰 */
+  --dongzhu-border: #AED6F1;       /* 浅蓝边框 */
+  --dongzhu-shadow: rgba(93, 173, 226, 0.3);
+  
+  /* 凯哥主题 */
+  --kaige-primary: #2C3E50;        /* 深钢蓝 */
+  --kaige-secondary: #34495E;      /* 湿沥青 */
+  --kaige-accent: #E74C3C;         /* 警戒红 */
+  --kaige-bg: #1A1A2E;             /* 深夜蓝 */
+  --kaige-surface: #16213E;        /* 深蓝灰 */
+  --kaige-text: #ECF0F1;           /* 云白 */
+  --kaige-text-secondary: #BDC3C7; /* 银灰 */
+  --kaige-border: #E74C3C;         /* 边框红 */
+  --kaige-shadow: rgba(231, 76, 60, 0.4);
+  
+  /* 驴酱公会通用色 */
+  --lvjiang-gold: #FFD700;         /* 公会金 */
+  --lvjiang-purple: #9B59B6;       /* 公会紫 */
+}
+
+/* 动态主题变量 */
+[data-theme="dongzhu"] {
+  --theme-primary: var(--dongzhu-primary);
+  --theme-secondary: var(--dongzhu-secondary);
+  --theme-accent: var(--dongzhu-accent);
+  --theme-bg: var(--dongzhu-bg);
+  --theme-surface: var(--dongzhu-surface);
+  --theme-text: var(--dongzhu-text);
+  --theme-text-secondary: var(--dongzhu-text-secondary);
+  --theme-border: var(--dongzhu-border);
+  --theme-shadow: var(--dongzhu-shadow);
+}
+
+[data-theme="kaige"] {
+  --theme-primary: var(--kaige-primary);
+  --theme-secondary: var(--kaige-secondary);
+  --theme-accent: var(--kaige-accent);
+  --theme-bg: var(--kaige-bg);
+  --theme-surface: var(--kaige-surface);
+  --theme-text: var(--kaige-text);
+  --theme-text-secondary: var(--kaige-text-secondary);
+  --theme-border: var(--kaige-border);
+  --theme-shadow: var(--kaige-shadow);
+}
+
+/* ============================================ 
+   全局样式
+   ============================================ */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ============================================ 
+   滚动条样式
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+[data-theme="dongzhu"] ::-webkit-scrollbar-track {
+  background: var(--dongzhu-secondary);
+}
+
+[data-theme="dongzhu"] ::-webkit-scrollbar-thumb {
+  background: var(--dongzhu-primary);
+  border-radius: 5px;
+}
+
+[data-theme="dongzhu"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--dongzhu-accent);
+}
+
+[data-theme="kaige"] ::-webkit-scrollbar-track {
+  background: var(--kaige-secondary);
+}
+
+[data-theme="kaige"] ::-webkit-scrollbar-thumb {
+  background: var(--kaige-primary);
+  border-radius: 5px;
+}
+
+[data-theme="kaige"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--kaige-accent);
+}
+
+/* ============================================ 
+   弹幕动画
+   ============================================ */
+
+@keyframes danmaku-horizontal {
+  from {
+    transform: translateX(100vw);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes danmaku-vertical {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+}
+
+/* ============================================ 
+   加载动画
+   ============================================ */
+
+@keyframes pig-footprint {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(5deg);
+  }
+}
+
+@keyframes boar-pattern {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.8) translateX(-20px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) translateX(0);
+  }
+}
+
+@keyframes logo-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 10px var(--theme-accent));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px var(--theme-accent));
+  }
+}
+
+/* ============================================ 
+   响应式布局
+   ============================================ */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* ============================================ 
+   工具类
+   ============================================ */
+
+.theme-transition {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="kaige"] .glass-effect {
+  background: rgba(0, 0, 0, 0.3);
+}
