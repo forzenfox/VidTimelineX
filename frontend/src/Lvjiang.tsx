@@ -21,28 +21,28 @@ const Lvjiang = () => {
   }, [theme]);
 
   // 加载完成后显示弹幕
-  const handleLoadingComplete = (selectedTheme: "dongzhu" | "kaige") => {
+  const handleLoadingComplete = React.useCallback((selectedTheme: "dongzhu" | "kaige") => {
     setTheme(selectedTheme); // 设置用户选择的主题
     setIsLoading(false);
     setShowDanmaku(true);
 
-    // 3秒后隐藏水平弹幕
+    // 10秒后隐藏水平弹幕
     setTimeout(() => {
       setShowDanmaku(false);
     }, 10000);
-  };
+  }, []);
 
-  const handleThemeToggle = () => {
+  const handleThemeToggle = React.useCallback(() => {
     setTheme((prev) => prev === "dongzhu" ? "kaige" : "dongzhu");
-  };
+  }, []);
 
-  const handleVideoClick = (video: Video) => {
+  const handleVideoClick = React.useCallback((video: Video) => {
     setSelectedVideo(video);
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = React.useCallback(() => {
     setSelectedVideo(null);
-  };
+  }, []);
 
   if (isLoading) {
     return (

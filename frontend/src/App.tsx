@@ -1,7 +1,19 @@
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Suspense } from "react-router-dom";
 import { Home, PlayCircle } from "lucide-react";
-import Lvjiang from "./Lvjiang";
-import Tiantong from "./Tiantong";
+
+// 使用 React.lazy 懒加载组件
+const Lvjiang = React.lazy(() => import("./Lvjiang"));
+const Tiantong = React.lazy(() => import("./Tiantong"));
+
+// 加载中组件
+const Loading = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+      <p className="text-gray-600">加载中...</p>
+    </div>
+  </div>
+);
 
 // 首页组件
 const HomePage = () => {
@@ -22,6 +34,7 @@ const HomePage = () => {
           <Link 
             to="/lvjiang" 
             className="group p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-blue-200"
+            aria-label="查看驴酱视频集"
           >
             <div className="flex flex-col items-center justify-center">
               <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -38,6 +51,7 @@ const HomePage = () => {
           <Link 
             to="/tiantong" 
             className="group p-8 bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-pink-200"
+            aria-label="查看甜筒视频集"
           >
             <div className="flex flex-col items-center justify-center">
               <div className="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -63,11 +77,13 @@ const HomePage = () => {
 // 主应用组件
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/lvjiang" element={<Lvjiang />} />
-      <Route path="/tiantong" element={<Tiantong />} />
-      <Route path="*" element={<HomePage />} />
-    </Routes>
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/lvjiang" element={<Lvjiang />} />
+        <Route path="/tiantong" element={<Tiantong />} />
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </Suspense>
   );
 }

@@ -4,7 +4,7 @@ interface LoadingAnimationProps {
   onComplete: (theme: 'kaige' | 'dongzhu') => void;
 }
 
-export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
+export const LoadingAnimation = React.memo(function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
   const [progress, setProgress] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
@@ -218,6 +218,8 @@ export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
             className={`enter-button ${isEntering ? 'entering' : ''}`}
             onClick={() => handleEnter('kaige')}
             disabled={isEntering}
+            aria-label="选择凯哥主题"
+            aria-pressed="false"
             style={{
               // 凯哥主题红色渐变按钮
               background: 'linear-gradient(135deg, #1A1A2E 0%, #E74C3C 50%, #C0392B 100%)',
@@ -232,7 +234,12 @@ export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
               boxShadow: '0 4px 25px rgba(231, 76, 60, 0.5), 0 0 35px rgba(231, 76, 60, 0.3)',
               position: 'relative',
               overflow: 'hidden',
-              minWidth: '180px'
+              minWidth: '180px',
+              outline: 'none',
+              // 添加键盘焦点样式
+              ':focus-visible': {
+                boxShadow: '0 4px 25px rgba(231, 76, 60, 0.5), 0 0 35px rgba(231, 76, 60, 0.3), 0 0 0 3px rgba(255, 255, 255, 0.5)'
+              }
             }}
           >
             <span className="button-content flex items-center justify-center gap-2" style={{ position: 'relative', zIndex: 2 }}>
@@ -267,6 +274,8 @@ export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
             className={`enter-button ${isEntering ? 'entering' : ''}`}
             onClick={() => handleEnter('dongzhu')}
             disabled={isEntering}
+            aria-label="选择洞主主题"
+            aria-pressed="false"
             style={{
               // 洞主主题天蓝色渐变按钮
               background: 'linear-gradient(135deg, #FFFEF7 0%, #5DADE2 50%, #85C1E2 100%)',
@@ -281,7 +290,12 @@ export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
               boxShadow: '0 4px 25px rgba(93, 173, 226, 0.5), 0 0 35px rgba(93, 173, 226, 0.3)',
               position: 'relative',
               overflow: 'hidden',
-              minWidth: '180px'
+              minWidth: '180px',
+              outline: 'none',
+              // 添加键盘焦点样式
+              ':focus-visible': {
+                boxShadow: '0 4px 25px rgba(93, 173, 226, 0.5), 0 0 35px rgba(93, 173, 226, 0.3), 0 0 0 3px rgba(255, 255, 255, 0.5)'
+              }
             }}
           >
             <span className="button-content flex items-center justify-center gap-2" style={{ position: 'relative', zIndex: 2 }}>

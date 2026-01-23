@@ -13,7 +13,22 @@ import './styles/tiantong.css';
 const VideoModal = React.lazy(() => import('@/components/hu/hu_VideoModal'));
 const DesktopSidebarDanmu = React.lazy(() => import('@/components/hu/hu_SidebarDanmu'));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 数据5分钟后过期
+      cacheTime: 30 * 60 * 1000, // 缓存30分钟
+      retry: 2, // 失败重试2次
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // 指数退避重试
+      refetchOnWindowFocus: false, // 窗口聚焦时不重新获取数据
+      refetchOnMount: false, // 组件挂载时不重新获取数据
+      refetchOnReconnect: true, // 网络重连时重新获取数据
+    },
+    mutations: {
+      retry: 1, // 突变失败重试1次
+    },
+  },
+});
 
 // 设备特定侧边栏组件 - 移除移动端支持
 const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
@@ -97,7 +112,7 @@ const Tiantong = () => {
     ? ['rgb(255, 95, 0)', 'rgb(255, 190, 40)', 'rgb(255, 215, 0)', 'rgb(255, 165, 0)', 'rgb(255, 140, 0)']
     : ['rgb(255, 140, 180)', 'rgb(255, 192, 203)', 'rgb(255, 105, 180)', 'rgb(255, 127, 80)', 'rgb(255, 20, 147)'];
 
-  const toggleTheme = () => {
+  const toggleTheme = React.useCallback(() => {
     const newTheme = theme === 'tiger' ? 'sweet' : 'tiger';
     setTheme(newTheme);
     // Apply theme class to body
@@ -106,10 +121,10 @@ const Tiantong = () => {
     } else {
       document.documentElement.classList.remove('theme-sweet');
     }
-  };
+  }, [theme]);
 
   // 搜索处理函数
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = React.useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       // 添加到搜索历史
@@ -119,10 +134,10 @@ const Tiantong = () => {
       });
       setShowSuggestions(false);
     }
-  };
+  }, [searchQuery]);
 
   // 处理搜索输入变化，生成自动补全建议
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
     
@@ -137,24 +152,24 @@ const Tiantong = () => {
     } else {
       setShowSuggestions(false);
     }
-  };
+  }, [videos]);
 
   // 选择搜索建议
-  const selectSuggestion = (suggestion: string) => {
+  const selectSuggestion = React.useCallback((suggestion: string) => {
     setSearchQuery(suggestion);
     setShowSuggestions(false);
-  };
+  }, []);
 
   // 清除搜索历史
-  const clearSearchHistory = () => {
+  const clearSearchHistory = React.useCallback(() => {
     setSearchHistory([]);
-  };
+  }, []);
 
   // 从搜索历史中选择
-  const selectFromHistory = (item: string) => {
+  const selectFromHistory = React.useCallback((item: string) => {
     setSearchQuery(item);
     setShowSuggestions(false);
-  };
+  }, []);
 
   const filteredVideos = videos.filter(video => {
     return (activeCategory === 'all' || video.category === activeCategory) &&
