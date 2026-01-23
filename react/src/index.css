@@ -154,43 +154,6 @@ button:active {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* 移动端交互元素优化 */
-@media (max-width: 768px) {
-  /* 增大可点击元素的最小尺寸 */
-  button, a, [role="button"], [role="link"], [tabindex="0"] {
-    min-height: 44px;
-    min-width: 44px;
-    padding: 0.5rem;
-  }
-  
-  /* 增强按钮悬停效果 */
-  button:hover, [role="button"]:hover {
-    background-color: var(--primary-foreground);
-    color: var(--primary);
-  }
-  
-  /* 增强链接样式 */
-  a {
-    transition: color 0.2s, text-decoration 0.2s;
-  }
-  
-  a:hover {
-    color: var(--primary);
-    text-decoration: underline;
-  }
-  
-  /* 增强输入框焦点样式 */
-  input:focus, textarea:focus {
-    outline: 3px solid var(--primary);
-    outline-offset: 2px;
-  }
-  
-  /* 增强视频卡片点击反馈 */
-  [role="article"]:active {
-    transform: scale(0.95);
-  }
-}
-
 /* 优化焦点状态，提高键盘用户可访问性 */
 *:focus-visible {
   outline: 3px solid var(--primary);
@@ -204,23 +167,57 @@ button:active {
   outline: none;
 }
 
-/* 针对小屏设备优化字体大小 */
-@media (max-width: 360px) {
-  .text-xs {
-    font-size: 0.8125rem; /* 13px */
-    line-height: 1.4;
+/* 优化可点击元素和交互效果，适用于平板和桌面设备 */
+button, a, [role="button"], [role="link"], [tabindex="0"] {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* 增强链接样式 */
+a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* 增强输入框焦点样式 */
+input:focus, textarea:focus {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 增强视频卡片点击反馈 */
+[role="article"]:active {
+  transform: scale(0.95);
+}
+
+/* 优化按钮悬停和点击效果 */
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 平板设备特定优化（768px - 1024px） */
+@media (max-width: 1024px) {
+  /* 调整平板设备上的字体大小 */
+  .text-base {
+    font-size: 0.95rem;
   }
   
-  .text-sm {
-    font-size: 0.9375rem; /* 15px */
-    line-height: 1.5;
+  .text-lg {
+    font-size: 1.125rem;
   }
   
-  /* 视频卡片标题 */
+  /* 视频卡片标题优化 */
   .video-title {
     font-size: 0.95rem;
-    line-clamp: 3;
-    min-height: 4.5rem;
+    line-clamp: 2;
   }
 }
 
