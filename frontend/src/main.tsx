@@ -1,4 +1,3 @@
-
 /**
  * 纯静态站点开发环境配置
  * 抑制Vite HMR相关的WebSocket错误
@@ -20,8 +19,19 @@ if (typeof window !== 'undefined') {
 }
 
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import App from "./App";
 import "./index.css";
 import "./styles/globals.css";
 
-createRoot(document.getElementById("root")!).render(<App />);
+// 创建QueryClient实例
+const queryClient = new QueryClient();
+
+createRoot(document.getElementById("root")!).render(
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </QueryClientProvider>
+);

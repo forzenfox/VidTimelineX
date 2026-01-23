@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { LoadingAnimation } from "./components/LoadingAnimation";
 import { Header } from "./components/Header";
 import { VideoTimeline } from "./components/VideoTimeline";
@@ -7,14 +8,12 @@ import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { SideDanmaku } from "./components/SideDanmaku";
 import type { Video } from "./data/videos";
 
-export default function App() {
-  const [theme, setTheme] = useState<"dongzhu" | "kaige">(
-    "dongzhu",
-  );
+// 主页组件
+const Home = () => {
+  const [theme, setTheme] = useState<"dongzhu" | "kaige">("dongzhu");
   const [isLoading, setIsLoading] = useState(true);
   const [showDanmaku, setShowDanmaku] = useState(false);
-  const [selectedVideo, setSelectedVideo] =
-    useState<Video | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
 
   // 设置主题属性
   useEffect(() => {
@@ -34,9 +33,7 @@ export default function App() {
   };
 
   const handleThemeToggle = () => {
-    setTheme((prev) =>
-      prev === "dongzhu" ? "kaige" : "dongzhu",
-    );
+    setTheme((prev) => prev === "dongzhu" ? "kaige" : "dongzhu");
   };
 
   const handleVideoClick = (video: Video) => {
@@ -242,5 +239,33 @@ export default function App() {
         onClose={handleCloseModal}
       />
     </div>
+  );
+};
+
+// 404页面组件
+const NotFound = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-#FFFEF7 to-#FFF9E6">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold text-gray-800 mb-4">404</h1>
+        <p className="text-xl text-gray-600 mb-8">页面未找到</p>
+        <a 
+          href="/" 
+          className="px-6 py-3 rounded-full font-bold bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+        >
+          返回首页
+        </a>
+      </div>
+    </div>
+  );
+};
+
+// 主应用组件
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
