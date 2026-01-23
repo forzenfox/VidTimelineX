@@ -235,6 +235,27 @@ export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
               <span>🐗</span>
               <span>{isEntering ? '正在进入...' : '凯哥'}</span>
             </span>
+            <span className="button-shine" style={{
+              position: 'absolute',
+              top: 0,
+              left: '-100%',
+              width: '50%',
+              height: '100%',
+              background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+              transition: 'left 0.5s ease-in-out'
+            }}></span>
+            <span className="button-ripple" style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: 0,
+              height: 0,
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.3)',
+              transform: 'translate(-50%, -50%)',
+              transition: 'width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out',
+              opacity: 0
+            }}></span>
           </button>
           
           {/* 右侧：洞主主题按钮 */}
@@ -263,6 +284,27 @@ export function LoadingAnimation({ onComplete }: LoadingAnimationProps) {
               <span>🐷</span>
               <span>{isEntering ? '正在进入...' : '洞主'}</span>
             </span>
+            <span className="button-shine" style={{
+              position: 'absolute',
+              top: 0,
+              left: '-100%',
+              width: '50%',
+              height: '100%',
+              background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+              transition: 'left 0.5s ease-in-out'
+            }}></span>
+            <span className="button-ripple" style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              width: 0,
+              height: 0,
+              borderRadius: '50%',
+              background: 'rgba(255, 255, 255, 0.3)',
+              transform: 'translate(-50%, -50%)',
+              transition: 'width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out',
+              opacity: 0
+            }}></span>
           </button>
         </div>
       </div>
