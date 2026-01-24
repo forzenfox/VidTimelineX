@@ -173,6 +173,34 @@
   animation: theme-sweep 0.5s ease-in-out; /* 匹配需求文档中的0.5秒时长 */
 }
 
+/* 虎头咆哮微动画 */
+@keyframes tiger-roar {
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.2) rotate(10deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1) rotate(-5deg);
+    opacity: 0.9;
+  }
+  75% {
+    transform: scale(1.2) rotate(5deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.tiger-roar-animation {
+  animation: tiger-roar 0.5s ease-in-out;
+}
+
 /* 旋转动画 - 1秒/圈 */
 @keyframes spin {
   from {

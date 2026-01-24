@@ -1,5 +1,5 @@
 import React from "react";
-import type { Video } from "../../../modules/tiantong";
+import type { Video } from "../data/types";
 import VideoCard from "./VideoCard";
 
 interface TimelineItemProps {

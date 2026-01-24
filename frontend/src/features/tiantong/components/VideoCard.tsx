@@ -1,6 +1,6 @@
 import React from "react";
 import { Play, Eye, Calendar } from "lucide-react";
-import type { Video } from "../../../modules/tiantong";
+import type { Video } from "../data/types";
 
 interface VideoCardProps {
   video: Video;
@@ -10,14 +10,27 @@ interface VideoCardProps {
 const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
   const Icon = video.icon;
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Video card clicked:', video.title);
+    onClick(video);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      console.log('Video card Enter pressed:', video.title);
+      onClick(video);
+    }
+  };
+
   return (
     <div
-      onClick={() => onClick(video)}
+      onClick={handleClick}
       className="group relative bg-card rounded-2xl overflow-hidden border border-border cursor-pointer shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] active:shadow-md sm:hover:-translate-y-2 sm:hover:shadow-2xl sm:active:scale-[0.99]"
       role="article"
       aria-labelledby={`video-title-${video.id}`}
       tabIndex={0}
-      onKeyDown={e => e.key === "Enter" && onClick(video)}
+      onKeyDown={handleKeyDown}
     >
       <div className="relative aspect-video overflow-hidden">
         <img

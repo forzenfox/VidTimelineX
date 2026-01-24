@@ -28,19 +28,29 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ currentTheme, onToggle }) => 
     >
       {/* 渐变扫过动画 - 当主题切换时显示 */}
       {isAnimating && <div className="theme-sweep-overlay"></div>}
+      
+      {/* 虎头咆哮微动画 */}
+      {isAnimating && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+          style={{ fontSize: '48px', transformOrigin: 'center center' }}
+        >
+          <span className="tiger-roar-animation">🐯</span>
+        </div>
+      )}
 
       {/* 主题文字标签 */}
       <div
-        className={`absolute inset-0 flex items-center px-3 text-xs font-bold w-full h-full z-10 transition-all duration-300 ${currentTheme === "tiger" ? "justify-start" : "justify-end"}`}
+        className="absolute inset-0 flex items-center text-xs font-bold w-full h-full z-10 transition-all duration-300"
       >
         <span
-          className={`transition-all duration-300 ease-in-out ${currentTheme === "tiger" ? "text-white opacity-100 translate-x-0" : "opacity-0 -translate-x-2"}`}
+          className={`transition-all duration-300 ease-in-out ml-3 ${currentTheme === "tiger" ? "text-white opacity-100 translate-x-0" : "opacity-0 -translate-x-2"}`}
           style={{ textShadow: "0 0 2px rgba(230, 126, 34, 0.8)" }}
         >
           TIGER
         </span>
         <span
-          className={`transition-all duration-300 ease-in-out ml-auto ${currentTheme === "tiger" ? "opacity-0 translate-x-2" : "text-[rgb(255,80,120)] opacity-100 translate-x-0"}`}
+          className={`transition-all duration-300 ease-in-out mr-3 ml-auto ${currentTheme === "tiger" ? "opacity-0 translate-x-2" : "text-[rgb(255,80,120)] opacity-100 translate-x-0"}`}
           style={{ textShadow: "0 0 2px rgba(255,255,255,0.8)" }}
         >
           SWEET
@@ -51,10 +61,10 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ currentTheme, onToggle }) => 
       <div
         className={`
           absolute top-1 bottom-1 w-8 rounded-full flex items-center justify-center transition-all duration-400 transform ease-in-out z-0 shadow-inner
-          ${currentTheme === "tiger" ? "translate-x-14 bg-[#E67E22]" : "translate-x-0 bg-[rgb(255,140,180)]"}
+          ${currentTheme === "tiger" ? "translate-x-12 bg-[#E67E22]" : "translate-x-0 bg-[rgb(255,140,180)]"}
         `}
       >
-        <div className="transition-transform duration-300 ease-in-out">
+        <div className="p-1 transition-transform duration-300 ease-in-out">
           {currentTheme === "tiger" ? (
             <Crown size={16} className="text-white" />
           ) : (

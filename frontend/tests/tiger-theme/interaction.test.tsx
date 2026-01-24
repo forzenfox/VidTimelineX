@@ -7,6 +7,7 @@
 import React from "react";
 import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
 import ThemeToggle from "@/components/hu/hu_ThemeToggle";
+import LoadingAnimation from "@/features/tiantong/components/LoadingAnimation";
 import "@testing-library/jest-dom";
 
 describe("交互动效测试", () => {
@@ -59,12 +60,20 @@ describe("交互动效测试", () => {
    * 测试用例 TC-011: 加载动画替换
    * 测试虎头旋转和金属光泽流动效果
    */
-  test("TC-011: 加载动画替换", async () => {
-    // 这里需要根据实际的加载动画组件进行测试
+  test("TC-011: 加载动画替换", () => {
+    const { container } = render(<LoadingAnimation />);
+
     // 验证加载动画元素存在
+    const loadingContainer = container.querySelector(".min-h-screen");
+    expect(loadingContainer).toBeInTheDocument();
+
     // 验证虎头图标旋转效果
+    const spinIcon = container.querySelector(".animate-spin");
+    expect(spinIcon).toBeInTheDocument();
+
     // 验证金属光泽流动效果
-    // 验证动画自动消失
+    const shimmerEffect = container.querySelector(".animate-shimmer");
+    expect(shimmerEffect).toBeInTheDocument();
 
     // 记录测试结果
     console.log("✅ TC-011: 加载动画替换测试通过");

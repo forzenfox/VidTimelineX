@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { X, MessageCircle, ExternalLink, Loader2 } from "lucide-react";
-import type { Video } from "../../../modules/tiantong";
+import type { Video } from "../data/types";
 
 interface VideoModalProps {
   video: Video | null;
@@ -68,78 +68,53 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
   const colors = modalTheme[theme];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80">
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-all duration-500 ease-in-out opacity-0 scale-100 animate-in fade-in"
-        onClick={onClose}
-      />
-
-      <div
-        className={`relative w-full max-w-5xl mx-4 ${colors.cardBg} rounded-2xl shadow-2xl overflow-hidden transition-all duration-500 ease-in-out opacity-0 scale-95 animate-in fade-in zoom-in`}
+        className="relative w-full max-w-5xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
       >
-        <div
-          className={`flex items-center justify-between px-6 py-4 border-b ${colors.border} ${colors.headerBg}`}
-        >
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <h3
             id="modal-title"
-            className={`text-lg font-bold truncate flex-1 mr-4 ${colors.headerText}`}
+            className="text-lg font-bold truncate flex-1 mr-4 text-gray-800"
           >
             {video.title}
           </h3>
-          <button onClick={onClose} className="p-2 hover:bg-muted rounded-full transition-colors">
-            <X size={20} />
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+            <X size={20} className="text-gray-800" />
           </button>
         </div>
 
-        <div
-          className={`relative ${theme === "tiger" ? "bg-[#1a1a1a]" : "bg-[#fff5f8]"}`}
-          style={{ paddingBottom: "56.25%" }}
-        >
-          {isLoading && (
-            <div className="absolute inset-0 flex flex-col">
-              <div className="flex-1 flex items-center justify-center bg-black/50">
-                <div className="flex flex-col items-center">
-                  <Loader2 size={48} className="animate-spin text-white mb-4" />
-                  <p className="text-white font-medium">视频加载中...</p>
-                </div>
-              </div>
-            </div>
-          )}
+        <div className="relative" style={{ paddingBottom: "56.25%" }}>
           <iframe
             src={`https://player.bilibili.com/player.html?bvid=${mockBvid}&page=1&high_quality=1&danmaku=1`}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
+            className="absolute inset-0 w-full h-full"
             allowFullScreen
             allow="autoplay; fullscreen"
             scrolling="no"
             frameBorder="0"
             title={video.title}
-            onLoad={() => setIsLoading(false)}
           />
         </div>
 
-        <div className={`p-4 flex items-center justify-between ${colors.footerBg}`}>
+        <div className="p-4 flex items-center justify-between bg-gray-50">
           <div>
             <a
               href={`https://www.bilibili.com/video/${mockBvid}`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center px-4 py-2 ${colors.buttonBg} rounded-full transition-colors font-medium`}
+              className="flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-full transition-colors hover:bg-blue-600"
             >
               <ExternalLink size={18} className="mr-2" />
               跳转原站
             </a>
           </div>
-          <div className={`flex items-center ${colors.footerText} text-sm`}>
+          <div className="flex items-center text-gray-600 text-sm">
             <MessageCircle size={16} className="mr-1" />
             <span>328 条弹幕装填中...</span>
           </div>
-        </div>
-
-        <div className={`px-6 py-3 ${colors.tooltipBg} text-center text-sm ${colors.tooltipText}`}>
-          视频来源：哔哩哔哩 (bilibili.com) • 按 ESC 键或点击外部区域关闭
         </div>
       </div>
     </div>

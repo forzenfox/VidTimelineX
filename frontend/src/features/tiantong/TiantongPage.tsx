@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Github, ExternalLink, Search, Filter, Heart, TrendingUp, Calendar } from "lucide-react";
 import { videos, highlightCategories, Video } from "./data";
 import VideoCard from "./components/VideoCard";
-import ThemeToggle from "./components/ThemeToggle";
+import ThemeToggle from "@/components/hu/hu_ThemeToggle";
 import TimelineItem from "./components/TimelineItem";
 import DanmakuWelcome from "./components/DanmakuWelcome";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
@@ -475,7 +475,10 @@ const Tiantong = () => {
                       date={group.date}
                       videos={group.videos}
                       isLast={index === groupedVideos.length - 1}
-                      onVideoClick={setSelectedVideo}
+                      onVideoClick={(video) => {
+                        console.log('Video click passed to TiantongPage:', video.title);
+                        setSelectedVideo(video);
+                      }}
                       theme={theme}
                     />
                   ))}
@@ -523,13 +526,13 @@ const Tiantong = () => {
             </p>
           </footer>
 
-          <Suspense fallback={null}>
+          {selectedVideo && (
             <VideoModal
               video={selectedVideo}
               onClose={() => setSelectedVideo(null)}
               theme={theme}
             />
-          </Suspense>
+          )}
         </div>
       </Suspense>
     </QueryClientProvider>
