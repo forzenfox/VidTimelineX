@@ -205,7 +205,21 @@ const Tiantong = () => {
       <Suspense
         fallback={<div className="flex items-center justify-center min-h-screen">加载中...</div>}
       >
-        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
+        <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 tiger-stripe relative overflow-hidden">
+          {/* 页面边角装饰图标 */}
+          <div className="absolute top-4 left-4 text-primary opacity-30 text-4xl pointer-events-none">
+            🐯
+          </div>
+          <div className="absolute top-4 right-4 text-primary opacity-30 text-4xl pointer-events-none">
+            🐯
+          </div>
+          <div className="absolute bottom-4 left-4 text-primary opacity-30 text-4xl pointer-events-none">
+            🐯
+          </div>
+          <div className="absolute bottom-4 right-4 text-primary opacity-30 text-4xl pointer-events-none">
+            🐯
+          </div>
+          
           <DanmakuWelcome
             messages={danmakuMessages}
             colors={danmakuColors}

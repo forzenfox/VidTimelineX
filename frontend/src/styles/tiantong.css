@@ -62,18 +62,18 @@
 
 :root {
   /* Tiger主题 */
-  --tiger-background: rgb(255, 250, 245);
-  --tiger-foreground: rgb(50, 40, 30);
-  --tiger-primary: rgb(255, 95, 0);
-  --tiger-secondary: rgb(255, 190, 40);
-  --tiger-accent: rgb(139, 69, 19); /* 深棕色 */
-  --tiger-card: rgb(255, 255, 255);
-  --tiger-card-foreground: rgb(30, 30, 30);
-  --tiger-muted: rgb(245, 245, 245);
-  --tiger-muted-foreground: rgb(120, 120, 120);
-  --tiger-border: rgb(255, 210, 150);
-  --tiger-shadow-color: rgb(255, 180, 100);
-  --tiger-card-rgb: 255, 255, 255;
+  --tiger-background: #2C3E50; /* 哑光黑 - 需求文档定义 */
+  --tiger-foreground: #BDC3C7; /* 金属银 - 需求文档定义 */
+  --tiger-primary: #E67E22;     /* 深橙 - 需求文档定义 */
+  --tiger-secondary: #F39C12;   /* 亮橙 - 需求文档定义 */
+  --tiger-accent: #D35400;      /* 暗橙色 - 需求文档定义 */
+  --tiger-card: #34495E;        /* 深灰色 - 需求文档定义 */
+  --tiger-card-foreground: #BDC3C7;
+  --tiger-muted: #2C3E50;
+  --tiger-muted-foreground: #7F8C8D; /* 中灰色 */
+  --tiger-border: #E67E22;
+  --tiger-shadow-color: rgba(230, 126, 34, 0.3);
+  --tiger-card-rgb: 52, 73, 94;
 
   /* Sweet主题 */
   --sweet-background: rgb(255, 248, 220);
@@ -251,14 +251,69 @@ button:active {
   }
 }
 
+/* 主虎纹 - 线性渐变实现 */
 .tiger-stripe {
   background-image: repeating-linear-gradient(
     45deg,
     transparent,
     transparent 10px,
-    rgba(255, 255, 255, 0.1) 10px,
-    rgba(255, 255, 255, 0.1) 20px
+    rgba(230, 126, 34, 0.1) 10px,
+    rgba(230, 126, 34, 0.1) 20px
   );
+  background-size: cover;
+  background-position: center;
+}
+
+/* 径向渐变虎纹 - 用于按钮和装饰元素 */
+.tiger-stripe-radial {
+  background-image: radial-gradient(
+    ellipse at center,
+    rgba(230, 126, 34, 0.15) 0%,
+    transparent 70%
+  );
+  background-size: 40px 40px;
+  background-repeat: repeat;
+}
+
+/* 视频封面虎纹滤镜 */
+.tiger-stripe-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(230, 126, 34, 0.1) 10px,
+    rgba(230, 126, 34, 0.1) 20px
+  );
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+/* 分类标签虎纹背景 */
+.tiger-tag-bg {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(230, 126, 34, 0.1) 8px,
+    rgba(230, 126, 34, 0.1) 16px
+  );
+  background-size: 32px 32px;
+}
+
+/* 虎纹脉冲动画 */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 10%;
+  }
+  50% {
+    opacity: 15%;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

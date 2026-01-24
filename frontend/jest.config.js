@@ -23,6 +23,7 @@ module.exports = {
     "**/?(*.)(spec|test).(ts|tsx|js|jsx)",
     "src/features/**/*.(spec|test).(ts|tsx|js|jsx)",
     "tests/integration/**/*.(spec|test).(ts|tsx|js|jsx)",
+    "tests/tiger-theme/**/*.(spec|test).(ts|tsx|js|jsx)",
   ],
   // 设置测试覆盖率阈值
   coverageThreshold: {

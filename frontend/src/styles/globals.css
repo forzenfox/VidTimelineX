@@ -146,6 +146,62 @@
   }
 }
 
+/* 主题切换过渡动画 */
+.theme-transition {
+  transition: all 0.3s ease;
+}
+
+/* 渐变扫过动画 - 匹配需求文档PHASE3-001 */
+@keyframes theme-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.theme-sweep-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.8), transparent);
+  pointer-events: none;
+  z-index: 9999;
+  animation: theme-sweep 0.5s ease-in-out; /* 匹配需求文档中的0.5秒时长 */
+}
+
+/* 旋转动画 - 1秒/圈 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite; /* 匹配需求文档中的1秒/圈 */
+}
+
+/* 金属光泽流动动画 - 深橙→亮橙渐变 */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite linear;
+}
+
+
 /* ============================================
    猪纹路图案（CSS Pattern）
    ============================================ */
@@ -172,4 +228,127 @@
     0 0,
     10px 10px;
   opacity: 0.05;
+}
+
+/* ============================================ 
+   统一Hover反馈动效
+   ============================================ */
+
+/* 金属反光效果 - 文字/边框变为亮橙 */
+.hover-effect {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.hover-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+
+.hover-effect:hover::before {
+  transform: translateX(100%);
+}
+
+/* 虎纹扩散动效 - 从中心向外，10%透明度，0.3秒 */
+.hover-effect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(230, 126, 34, 0.1) 10px,
+    rgba(230, 126, 34, 0.1) 20px
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  transform: scale(0.8);
+  border-radius: inherit;
+}
+
+.hover-effect:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 将hover效果应用到所有可交互元素 */
+button,
+a,
+[role="button"],
+[role="link"],
+[tabindex="0"] {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+button:hover,
+a:hover,
+[role="button"]:hover,
+[role="link"]:hover,
+[tabindex="0"]:hover {
+  color: var(--secondary); /* 文字变为亮橙 */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
+}
+
+button::before,
+a::before,
+[role="button"]::before,
+[role="link"]::before,
+[tabindex="0"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+  pointer-events: none;
+}
+
+button:hover::before,
+a:hover::before,
+[role="button"]:hover::before,
+[role="link"]:hover::before,
+[tabindex="0"]:hover::before {
+  transform: translateX(100%);
+}
+
+button::after,
+a::after,
+[role="button"]::after,
+[role="link"]::after,
+[tabindex="0"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(230, 126, 34, 0.1) 10px,
+    rgba(230, 126, 34, 0.1) 20px
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  transform: scale(0.8);
+  border-radius: inherit;
+}
+
+button:hover::after,
+a:hover::after,
+[role="button"]:hover::after,
+[role="link"]:hover::after,
+[tabindex="0"]:hover::after {
+  opacity: 1;
+  transform: scale(1);
 }
