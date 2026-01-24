@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 interface DanmakuItem {
   id: number;
@@ -11,15 +11,15 @@ interface DanmakuItem {
 interface DanmakuWelcomeProps {
   messages: string[];
   colors: string[];
-  style?: 'normal' | 'colorful' | 'neon';
-  theme?: 'tiger' | 'sweet';
+  style?: "normal" | "colorful" | "neon";
+  theme?: "tiger" | "sweet";
 }
 
-const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({ 
-  messages, 
-  colors, 
-  style = 'normal',
-  theme = 'tiger'
+const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
+  messages,
+  colors,
+  style = "normal",
+  theme = "tiger",
 }) => {
   const [danmakus, setDanmakus] = useState<DanmakuItem[]>([]);
   const [show, setShow] = useState(true);
@@ -34,6 +34,7 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
       color: colors[Math.floor(Math.random() * colors.length)],
     }));
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDanmakus(newDanmakus);
 
     // 8秒后隐藏弹幕
@@ -48,14 +49,14 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
 
   const getTextStyle = () => {
     switch (style) {
-      case 'neon':
+      case "neon":
         return {
-          filter: 'drop-shadow(0 0 8px currentColor)',
-          fontWeight: 'bold' as const,
+          filter: "drop-shadow(0 0 8px currentColor)",
+          fontWeight: "bold" as const,
         };
-      case 'colorful':
+      case "colorful":
         return {
-          fontWeight: 'bold' as const,
+          fontWeight: "bold" as const,
         };
       default:
         return {};
@@ -64,7 +65,7 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[60] overflow-hidden">
-      {danmakus.map((danmaku) => (
+      {danmakus.map(danmaku => (
         <div
           key={danmaku.id}
           className="absolute whitespace-nowrap text-lg font-bold animate-danmaku"
@@ -72,9 +73,10 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
             top: `${danmaku.top}%`,
             animationDelay: `${danmaku.delay}s`,
             color: danmaku.color,
-            textShadow: theme === 'tiger' 
-              ? '2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8)'
-              : '2px 2px 4px rgba(255,140,180,0.5), -1px -1px 2px rgba(255,140,180,0.3)',
+            textShadow:
+              theme === "tiger"
+                ? "2px 2px 4px rgba(0,0,0,0.8), -1px -1px 2px rgba(0,0,0,0.8)"
+                : "2px 2px 4px rgba(255,140,180,0.5), -1px -1px 2px rgba(255,140,180,0.3)",
             ...getTextStyle(),
           }}
         >

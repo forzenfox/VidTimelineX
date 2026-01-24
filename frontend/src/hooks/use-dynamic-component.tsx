@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from 'react';
-import { useDeviceDetect, DeviceType } from './use-mobile';
+import React, { lazy, Suspense } from "react";
+import { useDeviceDetect, DeviceType } from "./use-mobile";
 
 /**
  * 设备特定组件加载器配置 - 移除移动端支持
@@ -20,15 +20,15 @@ export function withDeviceSpecificComponent<T extends React.ComponentType<unknow
 ) {
   const DeviceSpecificComponent = (props: React.ComponentProps<T>) => {
     const device = useDeviceDetect();
-    
+
     // 根据设备类型选择组件 - 只支持平板和桌面设备
     let Component: T | undefined;
     switch (device) {
-      case 'tablet':
+      case "tablet":
         // 平板设备优先使用tablet组件，否则使用desktop组件
         Component = options.tablet || options.desktop;
         break;
-      case 'desktop':
+      case "desktop":
         // 桌面设备使用desktop组件
         Component = options.desktop;
         break;
@@ -36,15 +36,15 @@ export function withDeviceSpecificComponent<T extends React.ComponentType<unknow
         // 默认使用桌面组件
         Component = options.desktop;
     }
-    
+
     // 如果没有匹配的组件，返回fallback或null
     if (!Component) {
       return <>{options.fallback || null}</>;
     }
-    
+
     return <Component {...props} />;
   };
-  
+
   return DeviceSpecificComponent;
 }
 
@@ -59,20 +59,20 @@ export function useDynamicComponent<T extends React.ComponentType<unknown>>(
   fallback?: React.ReactNode
 ) {
   const device = useDeviceDetect();
-  
+
   // 根据设备类型选择加载器 - 只支持平板和桌面设备
   const loader = device ? loaders[device] : loaders.desktop;
-  
+
   // 使用React.lazy异步加载组件
   const DynamicComponent = lazy(loader);
-  
+
   // 返回Suspense包装的组件
   const Component = (props: React.ComponentProps<T>) => (
     <Suspense fallback={fallback || <div className="animate-pulse">加载中...</div>}>
       <DynamicComponent {...props} />
     </Suspense>
   );
-  
+
   return Component;
 }
 
@@ -81,11 +81,9 @@ export function useDynamicComponent<T extends React.ComponentType<unknown>>(
  * @param props 组件属性
  * @returns 根据设备类型渲染的组件
  */
-export function DeviceAwareComponent(
-  props: {
-    children: (device: DeviceType | undefined) => React.ReactNode;
-  }
-) {
+export function DeviceAwareComponent(props: {
+  children: (device: DeviceType | undefined) => React.ReactNode;
+}) {
   const device = useDeviceDetect();
   return <>{props.children(device)}</>;
 }

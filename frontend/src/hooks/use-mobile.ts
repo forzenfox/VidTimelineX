@@ -1,50 +1,50 @@
-import * as React from "react"
+import * as React from "react";
 
 // 设备断点定义 - 移除移动端支持，最小支持宽度为768px
 export const BREAKPOINTS = {
   tablet: 1024,
-  desktop: 1440
-} as const
+  desktop: 1440,
+} as const;
 
-export type DeviceType = 'tablet' | 'desktop'
+export type DeviceType = "tablet" | "desktop";
 
 /**
  * 设备检测钩子，支持平板和桌面设备检测
  * @returns 当前设备类型
  */
 export function useDeviceDetect() {
-  const [device, setDevice] = React.useState<DeviceType | undefined>(undefined)
+  const [device, setDevice] = React.useState<DeviceType | undefined>(undefined);
 
   React.useEffect(() => {
     // 设备检测逻辑 - 只支持平板和桌面设备
     const detectDevice = (): DeviceType => {
-      const width = window.innerWidth
+      const width = window.innerWidth;
       // 平板设备：768px - 1024px
-      if (width < BREAKPOINTS.tablet) return 'tablet'
+      if (width < BREAKPOINTS.tablet) return "tablet";
       // 桌面设备：1024px及以上
-      return 'desktop'
-    }
+      return "desktop";
+    };
 
     // 初始化设备检测
-    setDevice(detectDevice())
+    setDevice(detectDevice());
 
     // 使用媒体查询API监听断点变化，性能更优
-    const tabletMql = window.matchMedia(`(max-width: ${BREAKPOINTS.tablet - 1}px)`)
+    const tabletMql = window.matchMedia(`(max-width: ${BREAKPOINTS.tablet - 1}px)`);
 
     const mqlHandler = () => {
-      setDevice(detectDevice())
-    }
+      setDevice(detectDevice());
+    };
 
     // 添加事件监听 - 只监听平板断点
-    tabletMql.addEventListener("change", mqlHandler)
+    tabletMql.addEventListener("change", mqlHandler);
 
     // 清理函数
     return () => {
-      tabletMql.removeEventListener("change", mqlHandler)
-    }
-  }, [])
+      tabletMql.removeEventListener("change", mqlHandler);
+    };
+  }, []);
 
-  return device
+  return device;
 }
 
 /**
@@ -53,7 +53,7 @@ export function useDeviceDetect() {
  */
 export function useIsMobile() {
   // 已移除移动端支持，始终返回false
-  return false
+  return false;
 }
 
 /**
@@ -61,8 +61,8 @@ export function useIsMobile() {
  * @returns 是否为平板设备（768px - 1024px）
  */
 export function useIsTablet() {
-  const device = useDeviceDetect()
-  return device === 'tablet'
+  const device = useDeviceDetect();
+  return device === "tablet";
 }
 
 /**
@@ -70,6 +70,6 @@ export function useIsTablet() {
  * @returns 是否为桌面设备（1024px及以上）
  */
 export function useIsDesktop() {
-  const device = useDeviceDetect()
-  return device === 'desktop'
+  const device = useDeviceDetect();
+  return device === "desktop";
 }
