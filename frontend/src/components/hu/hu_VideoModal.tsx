@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { X, MessageCircle, ExternalLink, Loader2 } from "lucide-react";
-import { Video } from "@/data/hu_mockData";
+import type { Video } from "@/features/tiantong/data/types";
 
 interface VideoModalProps {
   video: Video | null;

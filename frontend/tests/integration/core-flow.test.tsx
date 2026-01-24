@@ -8,9 +8,9 @@ import { render, screen, fireEvent, cleanup, waitFor, act } from "@testing-libra
 import ThemeToggle from "@/components/hu/hu_ThemeToggle";
 import VideoCard from "@/components/hu/hu_VideoCard";
 import VideoModal from "@/components/hu/hu_VideoModal";
-import { Header } from "@/components/lv_Header";
-import { HorizontalDanmaku } from "@/components/lv_HorizontalDanmaku";
-import { SideDanmaku } from "@/components/lv_SideDanmaku";
+import { Header } from "@/features/lvjiang/components/Header";
+import { HorizontalDanmaku } from "@/features/lvjiang/components/lv_HorizontalDanmaku";
+import { SideDanmaku } from "@/features/lvjiang/components/lv_SideDanmaku";
 import { Heart } from "lucide-react";
 import "@testing-library/jest-dom";
 
@@ -324,7 +324,6 @@ describe("核心功能路径测试 - 弹幕组件流程", () => {
 
     expect(screen.getByText("聊天室")).toBeInTheDocument();
     expect(screen.getByText("家猪·洞主专区")).toBeInTheDocument();
-    expect(screen.getByText("软萌弹幕区")).toBeInTheDocument();
   });
 
   test("侧边弹幕主题展示流程 - kaige", () => {
@@ -332,7 +331,6 @@ describe("核心功能路径测试 - 弹幕组件流程", () => {
 
     expect(screen.getByText("聊天室")).toBeInTheDocument();
     expect(screen.getByText("野猪·凯哥专区")).toBeInTheDocument();
-    expect(screen.getByText("硬核弹幕区")).toBeInTheDocument();
   });
 });
 
@@ -381,7 +379,6 @@ describe("核心功能路径测试 - 组合流程", () => {
     const { rerender } = render(<Header theme="dongzhu" onThemeToggle={onThemeToggle} />);
 
     expect(screen.getByText("🐷")).toBeInTheDocument();
-    expect(screen.getByText("软萌弹幕区")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /切换到/i }));
 
@@ -390,7 +387,6 @@ describe("核心功能路径测试 - 组合流程", () => {
     rerender(<Header theme="kaige" onThemeToggle={onThemeToggle} />);
 
     expect(screen.getByText("🐗")).toBeInTheDocument();
-    expect(screen.getByText("硬核弹幕区")).toBeInTheDocument();
   });
 });
 

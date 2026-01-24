@@ -1,6 +1,6 @@
 import React from "react";
 import { Play, Eye, Calendar } from "lucide-react";
-import { Video } from "@/data/hu_mockData";
+import type { Video } from "@/features/tiantong/data/types";
 
 interface VideoCardProps {
   video: Video;

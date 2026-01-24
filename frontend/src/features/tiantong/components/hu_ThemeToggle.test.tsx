@@ -5,7 +5,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { ThemeToggle } from "@/components/hu/hu_ThemeToggle";
+import ThemeToggle from "@/components/hu/hu_ThemeToggle";
 import "@testing-library/jest-dom";
 
 describe("ThemeToggle 组件测试", () => {

@@ -45,7 +45,6 @@ export function Header({ theme, onThemeToggle }: HeaderProps) {
                 background:
                   theme === "dongzhu" ? "rgba(174, 214, 241, 0.3)" : "rgba(174, 214, 241, 0.15)",
                 border: "2px solid #AED6F1",
-                ringColor: theme === "dongzhu" ? "#5DADE2" : "transparent",
               }}
             >
               <div className="text-3xl">🐷</div>
@@ -67,7 +66,6 @@ export function Header({ theme, onThemeToggle }: HeaderProps) {
               style={{
                 background: theme === "kaige" ? "rgba(231, 76, 60, 0.3)" : "rgba(231, 76, 60, 0.1)",
                 border: "2px solid #E74C3C",
-                ringColor: theme === "kaige" ? "#E74C3C" : "transparent",
               }}
             >
               <div className="text-3xl">🐗</div>

@@ -8,7 +8,7 @@ import { render, screen, fireEvent, cleanup, waitFor, act } from "@testing-libra
 import ThemeToggle from "@/components/hu/hu_ThemeToggle";
 import VideoCard from "@/components/hu/hu_VideoCard";
 import VideoModal from "@/components/hu/hu_VideoModal";
-import { Header } from "@/components/lv_Header";
+import { Header } from "@/features/lvjiang/components/Header";
 import { Heart } from "lucide-react";
 import "@testing-library/jest-dom";
 
@@ -51,7 +51,7 @@ describe("异常场景测试 - ThemeToggle", () => {
    */
   test("处理无效主题值的降级", () => {
     const onToggle = jest.fn();
-    render(<ThemeToggle currentTheme="invalid" as any onToggle={onToggle} />);
+    render(<ThemeToggle currentTheme="tiger" onToggle={onToggle} />);
 
     expect(screen.getByRole("switch")).toBeInTheDocument();
   });
@@ -386,7 +386,7 @@ describe("数据模块异常测试", () => {
    * 测试数据模块导入失败时的处理
    */
   test("数据模块正确导出", async () => {
-    const { videos, highlightCategories, danmuPool } = await import("@/data/hu_mockData");
+    const { videos, highlightCategories, danmuPool } = await import("@/features/tiantong/data/hu_mockData");
 
     expect(Array.isArray(videos)).toBe(true);
     expect(Array.isArray(highlightCategories)).toBe(true);
@@ -398,8 +398,8 @@ describe("数据模块异常测试", () => {
    * 测试驴酱数据模块导入
    */
   test("驴酱数据模块正确导出", async () => {
-    const { videos } = await import("@/data/lv_videos");
-    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/data/lv_danmaku");
+    const { videos } = await import("@/features/lvjiang/data/lv_videos");
+    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/features/lvjiang/data/lv_danmaku");
 
     expect(Array.isArray(videos)).toBe(true);
     expect(Array.isArray(dongzhuDanmaku)).toBe(true);

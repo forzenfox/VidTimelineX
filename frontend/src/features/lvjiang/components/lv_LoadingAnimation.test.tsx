@@ -1,6 +1,6 @@
 import React from "react";
 import { render, act } from "@testing-library/react";
-import { LoadingAnimation } from "../lv_LoadingAnimation";
+import { LoadingAnimation } from "./lv_LoadingAnimation";
 
 describe("LoadingAnimation 组件测试", () => {
   let mockOnComplete: jest.Mock;

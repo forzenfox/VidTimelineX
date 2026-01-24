@@ -8,7 +8,7 @@ import { render, screen, fireEvent, cleanup, waitFor, act } from "@testing-libra
 import ThemeToggle from "@/components/hu/hu_ThemeToggle";
 import VideoCard from "@/components/hu/hu_VideoCard";
 import VideoModal from "@/components/hu/hu_VideoModal";
-import { Header } from "@/components/lv_Header";
+import { Header } from "@/features/lvjiang/components/Header";
 import { Heart, Trophy, Music, Smile, Zap } from "lucide-react";
 import "@testing-library/jest-dom";
 

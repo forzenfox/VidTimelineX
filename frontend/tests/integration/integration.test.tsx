@@ -5,8 +5,8 @@
 
 import React from "react";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
-import { HorizontalDanmaku } from "@/components/lv_HorizontalDanmaku";
-import { SideDanmaku } from "@/components/lv_SideDanmaku";
+import { HorizontalDanmaku } from "@/features/lvjiang/components/lv_HorizontalDanmaku";
+import { SideDanmaku } from "@/features/lvjiang/components/lv_SideDanmaku";
 import "@testing-library/jest-dom";
 
 describe("弹幕组件集成测试", () => {
@@ -77,7 +77,7 @@ describe("数据模块测试", () => {
    * 测试hu_mockData中的视频数据完整
    */
   test("甜筒视频数据完整", async () => {
-    const { videos } = await import("@/data/hu_mockData");
+    const { videos } = await import("@/features/tiantong/data/hu_mockData");
 
     expect(videos.length).toBeGreaterThan(0);
     videos.forEach(video => {
@@ -95,7 +95,7 @@ describe("数据模块测试", () => {
    * 测试highlightCategories数据完整
    */
   test("甜筒分类数据完整", async () => {
-    const { highlightCategories } = await import("@/data/hu_mockData");
+    const { highlightCategories } = await import("@/features/tiantong/data/hu_mockData");
 
     expect(highlightCategories.length).toBeGreaterThan(0);
     highlightCategories.forEach(category => {
@@ -110,7 +110,7 @@ describe("数据模块测试", () => {
    * 测试danmuPool数据完整
    */
   test("弹幕池数据完整", async () => {
-    const { danmuPool } = await import("@/data/hu_mockData");
+    const { danmuPool } = await import("@/features/tiantong/data/hu_mockData");
 
     expect(danmuPool.length).toBeGreaterThan(0);
     danmuPool.forEach(danmu => {
@@ -125,7 +125,7 @@ describe("数据模块测试", () => {
    * 测试lv_videos中的视频数据完整
    */
   test("驴酱视频数据完整", async () => {
-    const { videos } = await import("@/data/lv_videos");
+    const { videos } = await import("@/features/lvjiang/data/lv_videos");
 
     expect(videos.length).toBeGreaterThan(0);
     videos.forEach(video => {
@@ -143,7 +143,7 @@ describe("数据模块测试", () => {
    * 测试lv_danmaku中的弹幕数据完整
    */
   test("驴酱弹幕数据完整", async () => {
-    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/data/lv_danmaku");
+    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/features/lvjiang/data/lv_danmaku");
 
     expect(dongzhuDanmaku.length).toBeGreaterThan(0);
     expect(kaigeDanmaku.length).toBeGreaterThan(0);
