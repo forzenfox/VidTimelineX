@@ -109,24 +109,24 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<HTMLDivElement>(null);
 
-  // 根据主题设置颜色 - 优化：从「割裂式强对比」到「统一式柔和层次」
+  // 根据设计文档设置老虎主题颜色
   const themeColors = {
     tiger: {
-      headerBg: "bg-secondary/10",
-      headerText: "text-muted-foreground",
-      chatBg: "bg-[#F5F0E6]", // 浅暖灰，与主背景暖色调统一
-      chatText: "text-[#333333]", // 深灰色，保证清晰可读
-      inputBg: "bg-[#EEE8D9]", // 稍深的暖灰色
-      border: "border-border",
-      buttonBg: "hover:bg-gray-200",
-      buttonText: "text-gray-800",
-      onlineBadge: "bg-primary/20 text-primary",
-      vipButton: "bg-[#FFF0E3] text-primary border-primary/30", // 浅橙底+深橙字，与左侧分类标签风格统一
-      normalButton: "bg-transparent text-muted-foreground border-border",
+      headerBg: "bg-[#2C3E50] tiger-stripe-primary",
+      headerText: "text-[#BDC3C7]",
+      chatBg: "bg-[#2C3E50] tiger-stripe-primary",
+      chatText: "text-[#BDC3C7]",
+      inputBg: "bg-[#34495E]",
+      border: "border-[#E67E22]",
+      buttonBg: "hover:bg-[#E67E22]/20",
+      buttonText: "text-[#BDC3C7]",
+      onlineBadge: "bg-[#E67E22] text-white",
+      vipButton: "bg-gradient-to-r from-[#E67E22] to-[#2C3E50] text-white border-[#E67E22]",
+      normalButton: "bg-transparent text-[#BDC3C7] border-[#7F8C8D]",
     },
     sweet: {
-      headerBg: "bg-secondary/10",
-      headerText: "text-muted-foreground",
+      headerBg: "bg-[#fff5f8]",
+      headerText: "text-gray-800",
       chatBg: "bg-[#fff5f8]",
       chatText: "text-gray-800",
       inputBg: "bg-[#fff0f5]",
@@ -175,70 +175,82 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
 
   return (
     <div
-      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b" : "h-[calc(100vh-120px)] sticky top-20 border border-border z-30"} flex flex-col bg-card rounded-xl shadow-custom overflow-hidden`}
+      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b border-[#E67E22]" : "h-[calc(100vh-120px)] sticky top-20 border-2 border-[#E67E22] z-30"} flex flex-col bg-[#2C3E50] tiger-stripe-primary overflow-hidden shadow-tiger`}
     >
-      {/* 顶部信息栏 - 优化版 */}
+      {/* 顶部标签栏 - 设计文档优化版 */}
+      <div className={`h-12 bg-[#2C3E50] tiger-stripe-primary border-b border-[#E67E22] flex items-center justify-between px-4`}>
+        {/* 排行榜标签 - 均匀分布 */}
+        <button
+          className={`flex-1 flex items-center justify-center transition-all ${theme === "tiger" ? "text-[#F39C12] border-b-2 border-[#E67E22]" : "text-[#BDC3C7] hover:text-[#F39C12]"} font-bold text-xs md:text-sm`}
+        >
+          <span className="hidden sm:inline">在线榜</span>
+          <span className="sm:hidden">在线</span>
+        </button>
+        <button
+          className={`flex-1 flex items-center justify-center transition-all ${theme === "tiger" ? "text-[#BDC3C7] hover:text-[#F39C12]" : "text-[#BDC3C7] hover:text-[#F39C12]"} font-bold text-xs md:text-sm`}
+        >
+          <span className="hidden sm:inline">活跃榜</span>
+          <span className="sm:hidden">活跃</span>
+        </button>
+        <button
+          className={`flex-1 flex items-center justify-center transition-all ${theme === "tiger" ? "text-[#BDC3C7] hover:text-[#F39C12]" : "text-[#BDC3C7] hover:text-[#F39C12]"} font-bold text-xs md:text-sm`}
+        >
+          <span className="hidden sm:inline">贵宾</span>
+          <span className="sm:hidden">V</span>
+          ({vipCount})
+        </button>
+        <button
+          className={`flex-1 flex items-center justify-center transition-all ${theme === "tiger" ? "text-[#BDC3C7] hover:text-[#F39C12]" : "text-[#BDC3C7] hover:text-[#F39C12]"} font-bold text-xs md:text-sm`}
+        >
+          <span className="hidden sm:inline">钻粉</span>
+          <span className="sm:hidden">D</span>
+          ({diamondCount})
+        </button>
+      </div>
+      
+      {/* 提示信息 - 独立模块 */}
       <div className={`p-3 sm:p-4 ${colors.headerBg} border-b ${colors.border}`}>
-        {/* 排行榜标签 - 样式统一 */}
-        <div className="flex items-center gap-2 mb-3 overflow-x-auto scrollbar-hide">
-          <button
-            className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${theme === "tiger" ? colors.onlineBadge : colors.onlineBadge}`}
-          >
-            在线榜
-          </button>
-          <button
-            className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${colors.normalButton}`}
-          >
-            活跃榜
-          </button>
-          <button
-            className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${colors.normalButton}`}
-          >
-            贵宾({vipCount})
-          </button>
-          <button
-            className={`px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${colors.normalButton}`}
-          >
-            钻粉({diamondCount})
-          </button>
-        </div>
-
-        {/* 提示信息 */}
         <div className={`flex items-center justify-between text-xs ${colors.headerText}`}>
           <span className="text-xs">斗鱼严禁未成年人打赏</span>
           <button
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${colors.vipButton}`}
+            className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${colors.vipButton} flex items-center gap-1.5 tiger-spread-effect`}
           >
+            <Zap size={14} />
             钻粉权益
           </button>
         </div>
       </div>
 
-      {/* 直播公告区 - 优化版：强化模块感，保持风格统一 */}
-      <div className="p-4 bg-[#FFF5E8] border-b border-border">
-        <h4 className="font-bold flex items-center mb-2.5 text-sm text-primary">
-          <span
-            className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2 animate-pulse"
-            aria-hidden="true"
-          ></span>
-          直播公告
-        </h4>
-        <p className="text-sm text-foreground/80 leading-relaxed">
-          感谢大家支持甜筒！❤️
-          <br />
-          👸大小姐驾到，统统闪开！✨
-        </p>
+      {/* 直播公告区 - 设计文档优化版 */}
+      <div className="h-16 bg-gradient-to-r from-[#E67E22] to-[#2C3E50] border border-[#BDC3C7] flex items-center p-4">
+        {/* 左侧虎头图标 */}
+        <div className="mr-3 text-[#BDC3C7]">
+          🐯
+        </div>
+        {/* 公告文字 - 金属光泽流动效果 */}
+        <div className="flex-1">
+          <div className="text-sm font-bold text-white announcement-text">
+            感谢大家支持甜筒！❤️
+          </div>
+          <div className="text-xs text-white/80">
+            👸大小姐驾到，统统闪开！✨
+          </div>
+        </div>
+        {/* 右侧虎爪图标 */}
+        <div className="ml-3 text-[#BDC3C7]">
+          👆
+        </div>
       </div>
 
-      {/* 聊天区域 - 优化版：行间距、头像左对齐，柔和颜色 */}
+      {/* 弹幕互动区 - 设计文档优化版 */}
       <div
-        className={`flex-1 overflow-hidden ${colors.chatBg} ${colors.chatText} p-4 relative`}
+        className={`flex-1 overflow-hidden ${colors.chatBg} ${colors.chatText} p-4 relative border-t border-b border-[#E67E22]`}
         ref={scrollRef}
       >
         {localDanmuPool.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-muted-foreground p-6 text-center h-full">
-            <Zap size={48} className="mb-4 opacity-20" />
-            <p>弹幕池空空如也~</p>
+          <div className="flex flex-col items-center justify-center text-[#7F8C8D] p-6 text-center h-full">
+            <Zap size={48} className="mb-4 opacity-20 text-[#E67E22]" />
+            <p className="text-base font-medium">弹幕池空空如也~</p>
             <p className="text-xs mt-2">等待弹幕中...</p>
           </div>
         ) : (
@@ -249,7 +261,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
               animation: isPlaying ? `scroll-up ${getAnimationDuration()} linear infinite` : "none",
             }}
           >
-            <div className="space-y-4 py-4">
+            <div className="space-y-3 py-4">
               {repeatedItems.map((item, idx) => (
                 <DanmuItem key={`${item.id}-${idx}`} item={item} theme={theme} />
               ))}
@@ -258,22 +270,22 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
         )}
       </div>
 
-      {/* 底部操作栏 - 优化版：柔和颜色，统一风格 */}
-      <div className={`p-3 sm:p-4 border-t ${colors.border} ${colors.inputBg}`}>
+      {/* 底部操作栏 - 设计文档优化版 */}
+      <div className={`p-3 sm:p-4 border-t border-[#E67E22] ${colors.inputBg}`}>
         <div className="flex items-center gap-2 sm:gap-3">
-          <button className={`p-2 rounded-lg ${colors.buttonBg} transition-colors`}>
+          <button className={`p-2 rounded-lg ${colors.buttonBg} transition-colors tiger-spread-effect`}>
             <Gift size={18} className={colors.buttonText} />
           </button>
           <div className="flex-1 relative">
             <input
               type="text"
               placeholder="这里输入聊天内容"
-              className={`w-full pl-4 pr-10 py-2.5 rounded-full ${theme === "tiger" ? "bg-[#EEE8D9] text-[#333333] border border-[#DDD1C1]" : "bg-white text-gray-800 border border-gray-200"} focus:outline-none focus:border-primary text-sm`}
+              className={`w-full pl-4 pr-10 py-2.5 rounded-full ${theme === "tiger" ? "bg-[#34495E] text-[#BDC3C7] border border-[#7F8C8D]" : "bg-white text-gray-800 border border-gray-200"} focus:outline-none focus:border-[#E67E22] text-sm`}
               disabled
             />
           </div>
           <button
-            className="px-5 py-2.5 rounded-full bg-primary text-white font-medium hover:bg-primary/90 transition-colors text-sm"
+            className={`px-5 py-2.5 rounded-full ${theme === "tiger" ? "bg-[#E67E22] text-white" : "bg-primary text-white"} font-medium hover:bg-[#D35400] transition-colors text-sm tiger-spread-effect`}
             disabled
           >
             发送
@@ -303,17 +315,17 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
   const isGift = item.type === "gift";
   const isSuper = item.type === "super";
 
-  // 根据主题设置弹幕颜色 - 优化：用色彩深浅替代强对比
+  // 根据设计文档设置弹幕颜色
   const danmuTheme = {
     tiger: {
-      nickname: "text-[#555555]", // 中度灰色，视觉权重低于发言内容
-      levelBg: "bg-[#FFE6D0]", // 柔和浅橙背景
-      levelText: "text-[#FF9A56]", // 柔和浅橙文字，呼应主品牌色
-      badgeBg: "bg-[#FFE6D0]",
-      badgeText: "text-[#FF9A56]",
-      normalText: "text-[#333333]", // 深灰色主文字，保证清晰可读
-      giftText: "text-[#FF9A56]",
-      superText: "text-[#FF824D]",
+      nickname: "text-[#BDC3C7]", // 金属银，保证清晰可读
+      levelBg: "bg-[#E67E22]/20", // 深橙背景，20%透明度
+      levelText: "text-[#F39C12]", // 亮橙文字
+      badgeBg: "bg-[#E67E22]/30", // 深橙背景，30%透明度
+      badgeText: "text-[#F39C12]", // 亮橙文字
+      normalText: "text-[#BDC3C7]", // 金属银主文字
+      giftText: "text-[#F39C12]", // 亮橙礼物文字
+      superText: "text-[#D35400]", // 暗橙超级弹幕文字
     },
     sweet: {
       nickname: "text-gray-800",
@@ -333,7 +345,7 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
     <div className="flex items-start gap-3">
       {/* 用户头像 - 左对齐 */}
       <div className="shrink-0 mt-0.5">
-        <div className="w-9 h-9 rounded-full overflow-hidden border border-primary/30">
+        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#E67E22]">
           <img
             src={
               item.user?.avatar ||
@@ -345,22 +357,22 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
         </div>
       </div>
 
-      {/* 弹幕内容 - 优化版：信息层级清晰 */}
+      {/* 弹幕内容 - 设计文档优化版 */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1.5">
-          {/* 用户昵称 - 中度灰色，视觉权重略低于发言内容 */}
-          <span className={`font-medium text-sm ${danmuColors.nickname}`}>
+        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+          {/* 用户昵称 - 金属银，保证清晰可读 */}
+          <span className={`font-medium text-sm sm:text-base ${danmuColors.nickname}`}>
             {item.user?.name || "游客"}
           </span>
 
-          {/* 用户等级 - 柔和浅橙，呼应主品牌色 */}
+          {/* 用户等级 - 深橙背景，亮橙文字 */}
           <span
             className={`text-xs ${danmuColors.levelBg} ${danmuColors.levelText} px-1.5 py-0.5 rounded`}
           >
             Lv.{item.user?.level || 1}
           </span>
 
-          {/* 徽章 - 柔和浅橙，保持风格统一 */}
+          {/* 徽章 - 深橙背景，亮橙文字 */}
           {item.user?.badge && (
             <span
               className={`text-xs ${danmuColors.badgeBg} ${danmuColors.badgeText} px-1.5 py-0.5 rounded flex items-center gap-1`}
@@ -371,8 +383,8 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
           )}
         </div>
 
-        {/* 弹幕文本 - 深灰色主文字，保证清晰可读 */}
-        <div className={`text-sm leading-relaxed ${danmuColors.normalText}`}>
+        {/* 弹幕文本 - 设计文档优化版 */}
+        <div className={`leading-relaxed ${danmuColors.normalText} p-2 bg-[#34495E] border border-[#E67E22] rounded text-sm sm:text-base`}>
           {isGift && (
             <span className={`flex items-center gap-1.5 ${danmuColors.giftText}`}>
               <Gift size={14} />

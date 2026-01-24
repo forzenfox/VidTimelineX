@@ -296,8 +296,9 @@ const Tiantong = () => {
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            size={12}
-                            className="sm:size-13"
+                            width="12"
+                            height="12"
+                            className="sm:w-3.25 sm:h-3.25"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -334,9 +335,7 @@ const Tiantong = () => {
                           aria-haspopup="listbox"
                         />
                         <Search
-                          className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-muted-foreground transition-colors duration-300"
-                          size={18}
-                          sm:size={19}
+                          className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-muted-foreground transition-colors duration-300 w-4.5 h-4.5 sm:w-[19px] sm:h-[19px]"
                           aria-hidden="true"
                         />
 
@@ -448,7 +447,7 @@ const Tiantong = () => {
                       `}
                       aria-pressed={isActive}
                     >
-                      <Icon size={18} sm:size={19} className="flex-shrink-0" aria-hidden="true" />
+                      <Icon className="flex-shrink-0 w-4.5 h-4.5 sm:w-[19px] sm:h-[19px]" aria-hidden="true" />
                       <span className="text-sm sm:text-base">{cat.name}</span>
                     </button>
                   );

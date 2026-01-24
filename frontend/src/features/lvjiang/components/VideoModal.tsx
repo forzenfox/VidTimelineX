@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import type { Video } from "../../../modules/lvjiang";
+import type { Video } from "../data/lv_videos";
 
 interface VideoModalProps {
   video: Video | null;

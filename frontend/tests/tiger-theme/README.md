@@ -8,16 +8,21 @@
 
 ```
 tests/tiger-theme/
-├── visual-baseline.test.tsx    # 核心视觉基底测试（TC-001 ~ TC-004）
-├── content-area.test.tsx        # 核心内容区测试（TC-005 ~ TC-008）
-├── interaction.test.tsx          # 交互动效测试（TC-009 ~ TC-011）
-├── details.test.tsx             # 细节打磨测试（TC-012 ~ TC-013）
-├── compatibility.test.tsx       # 兼容性测试（TC-014 ~ TC-016）
-├── performance.test.tsx        # 性能测试（TC-017 ~ TC-019）
-├── animation-visibility.test.tsx # 主题切换动画可见性测试（TC-020 ~ TC-021）
-├── video-modal.test.tsx         # 视频弹窗功能测试（TC-022 ~ TC-027）
-├── loading-animation.test.tsx   # 加载动画测试（TC-028 ~ TC-034）
-└── README.md                   # 本文档
+├── visual-baseline.test.tsx        # 核心视觉基底测试（TC-001 ~ TC-004）
+├── content-area.test.tsx            # 核心内容区测试（TC-005 ~ TC-008）
+├── interaction.test.tsx              # 交互动效测试（TC-009 ~ TC-011）
+├── details.test.tsx                 # 细节打磨测试（TC-012 ~ TC-013）
+├── compatibility.test.tsx           # 兼容性测试（TC-014 ~ TC-016）
+├── performance.test.tsx             # 性能测试（TC-017 ~ TC-019）
+├── animation-visibility.test.tsx    # 主题切换动画可见性测试（TC-020 ~ TC-021）
+├── video-modal.test.tsx            # 视频弹窗功能测试（TC-022 ~ TC-027）
+├── loading-animation.test.tsx      # 加载动画测试（TC-028 ~ TC-034）
+├── timeline-item.test.tsx         # TimelineItem组件测试（TC-035 ~ TC-037）
+├── video-card-tiantong.test.tsx    # VideoCard组件测试（甜筒）（TC-038 ~ TC-040）
+├── video-modal-tiantong.test.tsx   # VideoModal组件测试（甜筒）（TC-041 ~ TC-043）
+├── theme-toggle-tiantong.test.tsx   # ThemeToggle组件测试（甜筒）（TC-044 ~ TC-046）
+├── danmaku-welcome.test.tsx        # DanmakuWelcome组件测试（老虎）（TC-047 ~ TC-049）
+└── README.md                       # 本文档
 ```
 
 ## 测试用例说明
@@ -47,6 +52,31 @@ tests/tiger-theme/
 - **TC-032**: 断网环境加载动画测试 - 验证断网环境下加载动画的表现
 - **TC-033**: VideoModal 加载动画测试 - 验证视频弹窗中的加载动画
 - **TC-034**: 加载动画性能测试 - 验证加载动画的性能表现
+
+### TimelineItem组件测试（TC-035 ~ TC-037）
+- **TC-035**: TimelineItem渲染测试 - 验证TimelineItem组件正确渲染
+- **TC-036**: TimelineItem点击事件测试 - 验证点击视频时正确触发onClick事件
+- **TC-037**: TimelineItem主题适配测试 - 验证TimelineItem在不同主题下都能正确渲染
+
+### VideoCard组件测试（甜筒）（TC-038 ~ TC-040）
+- **TC-038**: VideoCard渲染测试（甜筒）- 验证VideoCard组件正确渲染
+- **TC-039**: VideoCard点击事件测试（甜筒）- 验证点击视频卡片时正确触发onClick事件
+- **TC-040**: VideoCard hover效果测试（甜筒）- 验证VideoCard的hover效果
+
+### VideoModal组件测试（甜筒）（TC-041 ~ TC-043）
+- **TC-041**: VideoModal渲染测试（甜筒）- 验证VideoModal组件正确渲染
+- **TC-042**: VideoModal关闭测试（甜筒）- 验证弹窗可以正确关闭
+- **TC-043**: VideoModal主题切换测试（甜筒）- 验证弹窗在不同主题下都能正常显示
+
+### ThemeToggle组件测试（甜筒）（TC-044 ~ TC-046）
+- **TC-044**: ThemeToggle渲染测试（甜筒）- 验证ThemeToggle组件正确渲染
+- **TC-045**: ThemeToggle切换测试（甜筒）- 验证点击主题切换按钮时正确触发onToggle事件
+- **TC-046**: ThemeToggle主题状态测试（甜筒）- 验证ThemeToggle在不同主题状态下的正确显示
+
+### DanmakuWelcome组件测试（老虎）（TC-047 ~ TC-049）
+- **TC-047**: DanmakuWelcome渲染测试（老虎）- 验证DanmakuWelcome组件正确渲染
+- **TC-048**: DanmakuWelcome动画测试（老虎）- 验证DanmakuWelcome的动画效果
+- **TC-049**: DanmakuWelcome主题适配测试（老虎）- 验证DanmakuWelcome在不同主题下都能正确显示
 
 ### 细节打磨测试（TC-012 ~ TC-013）
 - **TC-012**: 页面边角装饰图标 - 验证装饰图标的显示
@@ -127,6 +157,21 @@ npm test -- tests/tiger-theme/video-modal.test.tsx
 
 # 执行加载动画测试
 npm test -- tests/tiger-theme/loading-animation.test.tsx
+
+# 执行TimelineItem组件测试
+npm test -- tests/tiger-theme/timeline-item.test.tsx
+
+# 执行VideoCard组件测试（甜筒）
+npm test -- tests/tiger-theme/video-card-tiantong.test.tsx
+
+# 执行VideoModal组件测试（甜筒）
+npm test -- tests/tiger-theme/video-modal-tiantong.test.tsx
+
+# 执行ThemeToggle组件测试（甜筒）
+npm test -- tests/tiger-theme/theme-toggle-tiantong.test.tsx
+
+# 执行DanmakuWelcome组件测试（老虎）
+npm test -- tests/tiger-theme/danmaku-welcome.test.tsx
 ```
 
 ### 执行特定测试用例
@@ -152,10 +197,10 @@ npm test -- tests/tiger-theme --coverage
 
 ### 测试输出示例
 ```
-Test Suites: 9 passed, 9 total
-Tests:       34 passed, 34 total
+Test Suites: 14 passed, 14 total
+Tests:       49 passed, 49 total
 Snapshots:   0 total
-Time:        6.174 s
+Time:        7.296 s
 ```
 
 ### 控制台输出

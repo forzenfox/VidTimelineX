@@ -307,6 +307,88 @@
   transform: scale(1);
 }
 
+/* 虎纹元素系统 */
+
+/* 主虎纹 - 线性渐变实现 */
+.tiger-stripe-primary {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(230, 126, 34, 0.1) 10px,
+    rgba(230, 126, 34, 0.1) 20px
+  );
+  background-size: cover;
+  background-position: center;
+}
+
+/* 次级虎纹 - 背景图片实现 */
+.tiger-stripe-secondary {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 8px,
+    rgba(230, 126, 34, 0.08) 8px,
+    rgba(230, 126, 34, 0.08) 16px
+  );
+  background-size: 32px 32px;
+  background-repeat: repeat;
+}
+
+/* 微虎纹 - 径向渐变实现 */
+.tiger-stripe-micro {
+  background-image: radial-gradient(
+    ellipse at center,
+    rgba(230, 126, 34, 0.05) 0%,
+    transparent 70%
+  );
+  background-size: 40px 40px;
+  background-repeat: repeat;
+}
+
+/* 基础阴影 */
+.shadow-tiger {
+  box-shadow: 2px 2px 8px rgba(230, 126, 34, 0.2);
+}
+
+/* 悬浮阴影 */
+.shadow-tiger-hover {
+  transition: box-shadow 0.3s ease;
+}
+
+.shadow-tiger-hover:hover {
+  box-shadow: 4px 4px 12px rgba(230, 126, 34, 0.3);
+}
+
+/* 突出阴影 */
+.shadow-tiger-highlight {
+  box-shadow: 6px 6px 16px rgba(230, 126, 34, 0.4);
+}
+
+/* 虎纹中心扩散效果 */
+.tiger-spread-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.tiger-spread-effect::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(230, 126, 34, 0.2) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.tiger-spread-effect:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
 /* 将hover效果应用到所有可交互元素 */
 button,
 a,

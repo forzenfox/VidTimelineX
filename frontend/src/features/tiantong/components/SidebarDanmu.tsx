@@ -275,13 +275,15 @@ interface User {
 }
 
 interface DanmuItemProps {
-  item: Danmu & { user?: User };
+  item: Danmu | (Danmu & { user: User });
   theme?: "tiger" | "sweet";
 }
 
 const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
   const isGift = item.type === "gift";
   const isSuper = item.type === "super";
+
+  const user = typeof item.user === "string" ? null : item.user;
 
   const danmuTheme = {
     tiger: {
@@ -314,10 +316,10 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
         <div className="w-9 h-9 rounded-full overflow-hidden border border-primary/30">
           <img
             src={
-              item.user?.avatar ||
+              user?.avatar ||
               "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face"
             }
-            alt={item.user?.name}
+            alt={user?.name}
             className="w-full h-full object-cover"
           />
         </div>
@@ -326,19 +328,19 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1.5">
           <span className={`font-medium text-sm ${danmuColors.nickname}`}>
-            {item.user?.name || "游客"}
+            {user?.name || "游客"}
           </span>
           <span
             className={`text-xs ${danmuColors.levelBg} ${danmuColors.levelText} px-1.5 py-0.5 rounded`}
           >
-            Lv.{item.user?.level || 1}
+            Lv.{user?.level || 1}
           </span>
-          {item.user?.badge && (
+          {user?.badge && (
             <span
               className={`text-xs ${danmuColors.badgeBg} ${danmuColors.badgeText} px-1.5 py-0.5 rounded flex items-center gap-1`}
             >
               <Crown size={10} />
-              {item.user.badge}
+              {user.badge}
             </span>
           )}
         </div>
