@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Github, ExternalLink, Search, Filter, Heart, TrendingUp, Calendar } from "lucide-react";
 import { videos, highlightCategories, Video } from "./data";
 import VideoCard from "./components/VideoCard";
-import ThemeToggle from "@/components/hu/hu_ThemeToggle";
+import ThemeToggle from "./components/ThemeToggle";
 import TimelineItem from "./components/TimelineItem";
 import DanmakuWelcome from "./components/DanmakuWelcome";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
@@ -272,7 +272,7 @@ const Tiantong = () => {
                               : "bg-gradient-to-r from-[rgb(255,140,180)] to-[rgb(255,192,203)] text-white border-transparent"
                           }`}
                         >
-                          {theme === "tiger" ? "🦁 威虎大将军" : "🍦 软萌小甜筒"}
+                          {theme === "tiger" ? "🐯 威虎大将军" : "🍦 软萌小甜筒"}
                         </span>
                       </div>
 
