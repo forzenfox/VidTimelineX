@@ -120,7 +120,7 @@ export function Header({ theme, onThemeToggle }: HeaderProps) {
 
         <div className="mt-4 flex items-center justify-center gap-6 text-sm">
           <a
-            href="https://www.douyu.com"
+            href="https://www.douyu.com/138243"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 hover:underline theme-transition"
@@ -133,7 +133,7 @@ export function Header({ theme, onThemeToggle }: HeaderProps) {
           </a>
           <div style={{ color: theme === "dongzhu" ? "#AED6F1" : "#34495E" }}>|</div>
           <a
-            href="https://space.bilibili.com"
+            href="https://space.bilibili.com/393671271"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 hover:underline theme-transition"
@@ -146,7 +146,7 @@ export function Header({ theme, onThemeToggle }: HeaderProps) {
           </a>
           <div style={{ color: theme === "dongzhu" ? "#AED6F1" : "#34495E" }}>|</div>
           <a
-            href="https://www.douyu.com"
+            href="https://yuba.douyu.com/discussion/199511/posts"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 hover:underline theme-transition"
