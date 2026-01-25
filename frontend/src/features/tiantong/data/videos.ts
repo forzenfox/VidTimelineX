@@ -19,8 +19,10 @@ export interface Danmu {
 // 从 JSON 文件导入数据
 import videosData from "./videos.json";
 import danmuData from "./danmaku.json";
+import usersData from "./users.json";
 
 export const videos: Video[] = videosData;
 export const danmuPool: Danmu[] = danmuData;
+export const users = usersData;
 
 export * from "./types";

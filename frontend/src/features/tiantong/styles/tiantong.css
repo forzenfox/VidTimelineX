@@ -58,6 +58,15 @@
       transform: translateX(-100%);
     }
   }
+
+  @keyframes danmaku-horizontal {
+    from {
+      transform: translateX(100vw);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
 }
 
 :root {

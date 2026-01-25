@@ -1,90 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Pause, Play, TrendingUp, Trash2, Zap, MessageCircle, Gift, Crown } from "lucide-react";
-import { danmuPool, Danmu } from "../data";
+import { danmuPool, Danmu, users } from "../data";
 import { useIsMobile } from "@/hooks/use-mobile";
-
-const mockUsers = [
-  {
-    id: "1",
-    name: "叫我润浩",
-    level: 34,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "2",
-    name: "甜筒",
-    level: 21,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "3",
-    name: "Phoenix_IND",
-    level: 28,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "4",
-    name: "皇甫德德",
-    level: 16,
-    badge: "",
-    avatar:
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "5",
-    name: "护驾...",
-    level: 30,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "6",
-    name: "漫游未来wt",
-    level: 27,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108275-2616b612b5bc?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "7",
-    name: "熊熊要的奶垫",
-    level: 19,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "8",
-    name: "提着酱油的少年",
-    level: 27,
-    badge: "",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "9",
-    name: "宇宇吃饱饱",
-    level: 45,
-    badge: "火箭筒",
-    avatar:
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face",
-  },
-  {
-    id: "10",
-    name: "WHWDD1",
-    level: 11,
-    badge: "",
-    avatar:
-      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=40&h=40&fit=crop&crop=face",
-  },
-];
 
 interface SidebarDanmuProps {
   theme?: "tiger" | "sweet";
@@ -92,18 +9,19 @@ interface SidebarDanmuProps {
 
 const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
   const isMobile = useIsMobile();
-  const [vipCount, setVipCount] = useState(150);
-  const [diamondCount, setDiamondCount] = useState(250);
+  const [vipCount, setVipCount] = useState(1314);
+  const [diamondCount, setDiamondCount] = useState(1000);
   const [isPlaying, setIsPlaying] = useState(true);
   const [speed, setSpeed] = useState<"slow" | "normal" | "fast">("normal");
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setVipCount(prev => Math.floor(Math.random() * 50) + prev);
-      setDiamondCount(prev => Math.floor(Math.random() * 100) + prev);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // 移除动态更新，保持数值固定
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setVipCount(prev => Math.floor(Math.random() * 50) + prev);
+  //     setDiamondCount(prev => Math.floor(Math.random() * 100) + prev);
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const [localDanmuPool, setLocalDanmuPool] = useState<Danmu[]>(danmuPool);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -141,6 +59,21 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
 
   const colors = themeColors[theme];
 
+  // 根据主题动态生成用户数据
+  const mockUsers = useMemo(() => {
+    return users.map(user => {
+      let badge = user.badge;
+      if (theme === "sweet" && badge === "火箭筒") {
+        // 随机替换为甜筒或爱心
+        badge = Math.random() > 0.5 ? "甜筒" : "爱心";
+      }
+      return {
+        ...user,
+        badge,
+      };
+    });
+  }, [theme]);
+
   const getAnimationDuration = () => {
     switch (speed) {
       case "slow":
@@ -158,13 +91,13 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       // eslint-disable-next-line react-hooks/purity
       user: mockUsers[Math.floor(Math.random() * mockUsers.length)],
     }));
-  }, [localDanmuPool]);
+  }, [localDanmuPool, mockUsers]);
 
   const repeatedItems = [...displayItems, ...displayItems, ...displayItems];
 
   return (
     <div
-      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b" : "h-[calc(100vh-120px)] sticky top-20 z-30"} flex flex-col relative ${theme === "tiger" ? "bg-[#2C3E50] tiger-stripe-primary border-2 border-[#E67E22] shadow-tiger" : "bg-card rounded-xl shadow-custom"} overflow-hidden`}
+      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b" : "h-[calc(100vh-180px)] sticky top-20 z-30"} flex flex-col relative ${theme === "tiger" ? "bg-[#2C3E50] tiger-stripe-primary border-2 border-[#E67E22] shadow-tiger" : "bg-card rounded-xl shadow-custom"} overflow-hidden`}
       style={theme === "tiger" ? { boxShadow: "inset 0 0 0 1px #2C3E50" } : {}}
     >
       {/* 顶部标签栏 - 设计文档优化版 */}
@@ -173,42 +106,26 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       >
         {/* 排行榜标签 - 均匀分布 */}
         <button
-          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm ${
-            theme === "tiger"
-              ? "text-[#F39C12] border-b-2 border-[#E67E22]"
-              : "text-[#F793B1] border-b-2 border-[#F4729C] flex gap-1.5"
-          }`}
+          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm whitespace-nowrap ${theme === "tiger" ? "text-[#F39C12] border-b-2 border-[#E67E22]" : "text-[#F793B1] border-b-2 border-[#F4729C] flex gap-1.5"}`}
         >
           <span className="hidden sm:inline">在线榜</span>
           <span className="sm:hidden">在线</span>
           {theme === "sweet" && <span className="text-xs">💖</span>}
         </button>
         <button
-          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm ${
-            theme === "tiger"
-              ? "text-[#BDC3C7] hover:text-[#F39C12]"
-              : "text-[#F793B1] hover:text-[#F4729C] hover:border-b-2 hover:border-[#F4729C] transition-all duration-200"
-          }`}
+          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm whitespace-nowrap ${theme === "tiger" ? "text-[#BDC3C7] hover:text-[#F39C12]" : "text-[#F793B1] hover:text-[#F4729C] hover:border-b-2 hover:border-[#F4729C] transition-all duration-200"}`}
         >
           <span className="hidden sm:inline">活跃榜</span>
           <span className="sm:hidden">活跃</span>
         </button>
         <button
-          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm ${
-            theme === "tiger"
-              ? "text-[#BDC3C7] hover:text-[#F39C12]"
-              : "text-[#F793B1] hover:text-[#F4729C] hover:border-b-2 hover:border-[#F4729C] transition-all duration-200"
-          }`}
+          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm whitespace-nowrap ${theme === "tiger" ? "text-[#BDC3C7] hover:text-[#F39C12]" : "text-[#F793B1] hover:text-[#F4729C] hover:border-b-2 hover:border-[#F4729C] transition-all duration-200"}`}
         >
           <span className="hidden sm:inline">贵宾</span>
           <span className="sm:hidden">V</span>({vipCount})
         </button>
         <button
-          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm ${
-            theme === "tiger"
-              ? "text-[#BDC3C7] hover:text-[#F39C12]"
-              : "text-[#F793B1] hover:text-[#F4729C] hover:border-b-2 hover:border-[#F4729C] transition-all duration-200"
-          }`}
+          className={`flex-1 flex items-center justify-center transition-all font-bold text-xs md:text-sm whitespace-nowrap ${theme === "tiger" ? "text-[#BDC3C7] hover:text-[#F39C12]" : "text-[#F793B1] hover:text-[#F4729C] hover:border-b-2 hover:border-[#F4729C] transition-all duration-200"}`}
         >
           <span className="hidden sm:inline">钻粉</span>
           <span className="sm:hidden">D</span>({diamondCount})
@@ -216,13 +133,13 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       </div>
 
       {/* 提示信息 - 独立模块 */}
-      <div className={`p-3 sm:p-4 ${colors.headerBg} border-b ${colors.border}`}>
-        <div className={`flex items-center justify-between text-xs ${colors.headerText}`}>
-          <span className="text-xs">斗鱼严禁未成年人打赏</span>
+      <div className={`p-2 ${colors.headerBg} border-b ${colors.border}`}>
+        <div className={`flex items-center justify-center gap-4 text-xs ${colors.headerText}`}>
+          <span className="flex-1 text-center">斗鱼严禁未成年人打赏</span>
           <button
-            className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${colors.vipButton} flex items-center gap-1.5 tiger-spread-effect`}
+            className={`px-2.5 py-1 rounded text-xs font-medium transition-all ${colors.vipButton} flex items-center gap-1 tiger-spread-effect`}
           >
-            <Zap size={14} />
+            <Zap size={12} />
             钻粉权益
           </button>
         </div>

@@ -48,6 +48,7 @@ export function HorizontalDanmaku({ theme, isVisible }: HorizontalDanmakuProps) 
           className="absolute whitespace-nowrap font-bold"
           style={{
             top: `${item.top}%`,
+            transform: "translateX(100vw)",
             animation: `danmaku-horizontal ${item.duration}s linear ${item.delay}s forwards`,
             fontSize: theme === "dongzhu" ? "18px" : "20px",
             color: theme === "dongzhu" ? "#5DADE2" : "#E74C3C",
