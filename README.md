@@ -14,11 +14,12 @@
 ## 技术栈
 
 ### 前端
-- Vue 3 + Vite
+- React 19 + Vite
 - Tailwind CSS
-- Vue Router
-- Pinia
-- Axios
+- React Router
+- TypeScript
+- Radix UI
+- Jest
 
 ### 后端
 - Python
@@ -150,24 +151,43 @@ npm run build
 
 ```
 ├── backend/                # 后端代码
+│   ├── data/               # 数据存储目录
+│   │   ├── approved.json   # 已审核通过的视频数据
+│   │   ├── pending.json    # 待审核的视频数据
+│   │   └── rejected.json   # 已拒绝的视频数据
+│   ├── templates/          # HTML模板
 │   ├── auto_crawler.py     # 自动化爬取脚本
+│   ├── crawl_metadata.py   # 爬取视频元数据
+│   ├── download_thumbs.py  # 下载视频缩略图
 │   ├── test_search_api.py  # 搜索API测试
 │   ├── test_video_metadata.py  # 视频元数据测试
 │   ├── test_storage_solutions.py  # 存储方案测试
 │   └── test_review_interface.py  # 审核界面测试
 ├── frontend/               # 前端代码
-│   ├── public/             # 静态资源
-│   │   └── timeline.json   # 时光轴数据
 │   ├── src/                # 源代码
+│   │   ├── app/            # 应用核心配置
 │   │   ├── components/     # 组件
-│   │   ├── App.vue         # 主应用
-│   │   └── main.js         # 入口文件
-│   ├── vite.config.js      # Vite配置
-│   └── package.json        # 依赖配置
+│   │   ├── features/       # 功能模块
+│   │   ├── hooks/          # 自定义钩子
+│   │   └── styles/         # 样式文件
+│   ├── tests/              # 测试文件
+│   ├── .env.development    # 开发环境变量
+│   ├── package.json        # 依赖配置
+│   ├── vite.config.ts      # Vite配置
+│   ├── tailwind.config.js  # Tailwind CSS配置
+│   └── tsconfig.json       # TypeScript配置
+├── data/                   # 共享数据
+│   ├── bv.txt              # BV号列表
+│   ├── config.json         # 配置文件
+│   └── timeline.json       # 时光轴数据
 ├── docs/                   # 文档
-│   ├── 技术调研计划.md      # 技术调研计划
+│   ├── 前端编码规范.md       # 前端编码规范
+│   ├── 后端编码规范.md       # 后端编码规范
 │   ├── 法律法规与合规性调研报告.md  # 合规性调研报告
-│   └── 自动化爬取构建发布技术方案.md  # 技术方案
+│   ├── 自动化爬取构建发布技术方案.md  # 技术方案
+│   └── 项目分析文档.md        # 项目分析文档
+├── media/                  # 媒体资源
+│   └── thumbs/             # 视频缩略图
 └── README.md               # 项目文档
 ```
 
@@ -241,7 +261,7 @@ keywords = ["原神", "崩坏星穹铁道", "塞尔达传说"]
 
 ### 代码风格
 
-- 前端：遵循Vue 3的Composition API风格
+- 前端：遵循React Hooks + TypeScript风格，使用ESLint和Prettier进行代码检查和格式化
 - 后端：遵循PEP 8代码风格
 
 ### 提交规范
