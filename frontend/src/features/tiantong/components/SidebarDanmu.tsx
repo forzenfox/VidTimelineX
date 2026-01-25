@@ -221,7 +221,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       </div>
 
       {/* 直播公告区 - 设计文档优化版 */}
-      <div className={`h-10 md:h-12 flex items-center p-4 rounded-xl ${theme === "tiger" ? 
+      <div className={`h-10 md:h-12 flex items-center p-4 ${theme === "tiger" ? 
         "bg-gradient-to-r from-[#E67E22] to-[#2C3E50] border border-[#BDC3C7]" : 
         "bg-gradient-to-r from-[#FFFDF9] to-[#FDE6E0] border border-[#FDE6E0] shadow-sm"}`}>
         {/* 左侧图标 */}

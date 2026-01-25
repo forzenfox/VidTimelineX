@@ -82,9 +82,9 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
           >
             {video.title}
           </h3>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-            <X size={20} className="text-gray-800" />
-          </button>
+          <button onClick={onClose} className="flex items-center justify-center p-2 hover:bg-gray-100 rounded-full transition-colors w-8 h-8">
+          <X size={20} className="text-gray-800" />
+        </button>
         </div>
 
         <div className="relative" style={{ paddingBottom: "56.25%" }}>

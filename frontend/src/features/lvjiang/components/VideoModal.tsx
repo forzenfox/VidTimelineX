@@ -54,7 +54,7 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
 
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full theme-transition hover:scale-110"
+          className="absolute top-4 right-4 z-10 flex items-center justify-center p-2 rounded-full theme-transition hover:scale-110 w-10 h-10"
           style={{
             background: theme === "dongzhu" ? "rgba(93, 173, 226, 0.8)" : "rgba(231, 76, 60, 0.9)",
             color: "#fff",
