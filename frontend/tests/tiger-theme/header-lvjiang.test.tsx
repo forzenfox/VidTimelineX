@@ -5,7 +5,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { Header } from "./Header";
+import { Header } from "@/features/lvjiang/components/Header";
 import "@testing-library/jest-dom";
 
 describe("Header 组件测试", () => {

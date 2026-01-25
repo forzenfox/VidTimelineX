@@ -398,8 +398,8 @@ describe("数据模块异常测试", () => {
    * 测试驴酱数据模块导入
    */
   test("驴酱数据模块正确导出", async () => {
-    const { videos } = await import("@/features/lvjiang/data/lv_videos");
-    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/features/lvjiang/data/lv_danmaku");
+    const { videos } = await import("@/features/lvjiang/data/videos");
+    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/features/lvjiang/data/danmaku");
 
     expect(Array.isArray(videos)).toBe(true);
     expect(Array.isArray(dongzhuDanmaku)).toBe(true);

@@ -77,16 +77,16 @@ describe("数据模块测试", () => {
    * 测试hu_mockData中的视频数据完整
    */
   test("甜筒视频数据完整", async () => {
-    const { videos } = await import("@/features/tiantong/data/hu_mockData");
+    const { videos } = await import("@/features/tiantong/data/videos");
 
     expect(videos.length).toBeGreaterThan(0);
     videos.forEach(video => {
       expect(video.id).toBeDefined();
       expect(video.title).toBeDefined();
-      expect(video.category).toBeDefined();
+      expect(video.bvid).toBeDefined();
       expect(video.cover).toBeDefined();
       expect(video.date).toBeDefined();
-      expect(video.views).toBeDefined();
+      expect(video.duration).toBeDefined();
     });
   });
 
@@ -94,14 +94,13 @@ describe("数据模块测试", () => {
    * 测试用例 TC-DATA-002: 甜筒分类数据完整性
    * 测试highlightCategories数据完整
    */
-  test("甜筒分类数据完整", async () => {
-    const { highlightCategories } = await import("@/features/tiantong/data/hu_mockData");
+  test("甜筒视频标签完整性测试", async () => {
+    const { videos } = await import("@/features/tiantong/data/videos");
 
-    expect(highlightCategories.length).toBeGreaterThan(0);
-    highlightCategories.forEach(category => {
-      expect(category.id).toBeDefined();
-      expect(category.name).toBeDefined();
-      expect(category.icon).toBeDefined();
+    // 检查视频标签完整性
+    videos.forEach(video => {
+      expect(video.tags).toBeDefined();
+      expect(Array.isArray(video.tags)).toBe(true);
     });
   });
 
@@ -109,8 +108,8 @@ describe("数据模块测试", () => {
    * 测试用例 TC-DATA-003: 弹幕池数据完整性
    * 测试danmuPool数据完整
    */
-  test("弹幕池数据完整", async () => {
-    const { danmuPool } = await import("@/features/tiantong/data/hu_mockData");
+  test("甜筒弹幕池数据完整", async () => {
+    const { danmuPool } = await import("@/features/tiantong/data/videos");
 
     expect(danmuPool.length).toBeGreaterThan(0);
     danmuPool.forEach(danmu => {
@@ -125,7 +124,7 @@ describe("数据模块测试", () => {
    * 测试lv_videos中的视频数据完整
    */
   test("驴酱视频数据完整", async () => {
-    const { videos } = await import("@/features/lvjiang/data/lv_videos");
+    const { videos } = await import("@/features/lvjiang/data/videos");
 
     expect(videos.length).toBeGreaterThan(0);
     videos.forEach(video => {
@@ -143,7 +142,8 @@ describe("数据模块测试", () => {
    * 测试lv_danmaku中的弹幕数据完整
    */
   test("驴酱弹幕数据完整", async () => {
-    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } = await import("@/features/lvjiang/data/lv_danmaku");
+    const { dongzhuDanmaku, kaigeDanmaku, commonDanmaku } =
+      await import("@/features/lvjiang/data/danmaku");
 
     expect(dongzhuDanmaku.length).toBeGreaterThan(0);
     expect(kaigeDanmaku.length).toBeGreaterThan(0);
