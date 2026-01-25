@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import ThemeToggle from "@/components/hu/hu_ThemeToggle";
+import ThemeToggle from "@/features/tiantong/components/ThemeToggle";
 import "@testing-library/jest-dom";
 
 describe("核心视觉基底测试", () => {

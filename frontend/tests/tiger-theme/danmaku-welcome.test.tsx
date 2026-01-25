@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
-import DanmakuWelcome from "@/components/hu/hu_DanmakuWelcome";
+import DanmakuWelcome from "@/features/tiantong/components/DanmakuWelcome";
 import "@testing-library/jest-dom";
 
 describe("DanmakuWelcome组件测试（老虎）", () => {

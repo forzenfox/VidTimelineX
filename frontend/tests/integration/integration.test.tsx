@@ -5,8 +5,8 @@
 
 import React from "react";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
-import { HorizontalDanmaku } from "@/features/lvjiang/components/lv_HorizontalDanmaku";
-import { SideDanmaku } from "@/features/lvjiang/components/lv_SideDanmaku";
+import { HorizontalDanmaku } from "@/features/lvjiang/components/HorizontalDanmaku";
+import { SideDanmaku } from "@/features/lvjiang/components/SideDanmaku";
 import "@testing-library/jest-dom";
 
 describe("弹幕组件集成测试", () => {

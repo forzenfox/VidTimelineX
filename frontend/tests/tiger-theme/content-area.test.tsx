@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import VideoCard from "@/components/hu/hu_VideoCard";
+import VideoCard from "@/features/tiantong/components/VideoCard";
 import { Heart } from "lucide-react";
 import "@testing-library/jest-dom";
 

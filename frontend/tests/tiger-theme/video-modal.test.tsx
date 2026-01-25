@@ -6,8 +6,8 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
-import VideoCard from "@/components/hu/hu_VideoCard";
-import VideoModal from "@/components/hu/hu_VideoModal";
+import VideoCard from "@/features/tiantong/components/VideoCard";
+import VideoModal from "@/features/tiantong/components/VideoModal";
 import { Heart } from "lucide-react";
 import type { Video } from "@/features/tiantong/data/types";
 import "@testing-library/jest-dom";

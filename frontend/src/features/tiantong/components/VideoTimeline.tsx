@@ -1,20 +1,20 @@
 import { Play, Calendar, Clock } from "lucide-react";
-import { videos, type Video } from "../data/lv_videos";
+import { videos, type Video } from "../data/videos";
 import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
 
 interface VideoTimelineProps {
-  theme: "dongzhu" | "kaige";
+  theme: "tiger" | "sweet";
   onVideoClick: (video: Video) => void;
 }
 
 // 视频封面URL映射
 const videoCoverUrls: { [key: string]: string } = {
-  "1": "https://images.unsplash.com/photo-1553492206-f609eddc33dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBlc3BvcnRzfGVufDF8fHx8MTc2OTE0NjAwOXww&ixlib=rb-4.1.0&q=80&w=1080",
-  "2": "https://images.unsplash.com/photo-1610993302487-6dbfc0acf4ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsZWFndWUlMjBsZWdlbmRzfGVufDF8fHx8MTc2OTE1NDkwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-  "3": "https://images.unsplash.com/photo-1659540531566-c39488fdf326?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBkdW98ZW58MXx8fHwxNzY5MTU0OTA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-  "4": "https://images.unsplash.com/photo-1553492206-f609eddc33dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBlc3BvcnRzfGVufDF8fHx8MTc2OTE0NjAwOXww&ixlib=rb-4.1.0&q=80&w=1080",
-  "5": "https://images.unsplash.com/photo-1597759493550-6ea6cbcb2cb4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlc3BvcnRzJTIwc3RyZWFtfGVufDF8fHx8MTc2OTE1NDkwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-  "6": "https://images.unsplash.com/photo-1758611969864-2234b879ef3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJlYW1pbmclMjBmdW5ueXxlbnwxfHx8fDE3NjkxNTQ5MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  "1": "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&q=80",
+  "2": "https://images.unsplash.com/photo-1517030335964-65ad7b05397d?w=800&q=80",
+  "3": "https://images.unsplash.com/photo-1597759493550-6ea6cbcb2cb4?w=800&q=80",
+  "4": "https://images.unsplash.com/photo-1758611969864-2234b879ef3c?w=800&q=80",
+  "5": "https://images.unsplash.com/photo-1610993302487-6dbfc0acf4ed?w=800&q=80",
+  "6": "https://images.unsplash.com/photo-1553492206-f609eddc33dd?w=800&q=80",
 };
 
 export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
@@ -22,16 +22,16 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
     <div className="w-full max-w-5xl mx-auto px-6 py-8">
       {/* 时光轴标题 */}
       <div className="text-center mb-12">
-        <h2 className="text-4xl font-black mb-4 gradient-text">
-          {theme === "dongzhu" ? "🐷 时光视频集" : "🐗 时光视频集"}
+        <h2 className="text-4xl font-black mb-4">
+          {theme === "tiger" ? "🐯 甜筒时光集" : "🍦 甜筒时光集"}
         </h2>
         <p
           className="text-lg"
           style={{
-            color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
+            color: theme === "tiger" ? "rgb(255, 95, 0)" : "rgb(255, 140, 180)",
           }}
         >
-          {theme === "dongzhu" ? "怪力的欢乐时光" : "之神的硬核时刻"}
+          {theme === "tiger" ? "威虎大将军的精彩时刻" : "软萌小甜筒的欢乐时光"}
         </p>
       </div>
 
@@ -39,16 +39,16 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
       <div className="relative">
         {/* 中心线 */}
         <div
-          className="absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 theme-transition"
+          className="absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 transition-all duration-300"
           style={{
             background:
-              theme === "dongzhu"
-                ? "linear-gradient(to bottom, #AED6F1, #5DADE2)"
-                : "linear-gradient(to bottom, #E74C3C, #C0392B)",
+              theme === "tiger"
+                ? "linear-gradient(to bottom, #FF9500, #FFBE28)"
+                : "linear-gradient(to bottom, #FF8CA0, #FFC0CB)",
             boxShadow:
-              theme === "dongzhu"
-                ? "0 0 10px rgba(93, 173, 226, 0.5)"
-                : "0 0 10px rgba(231, 76, 60, 0.5)",
+              theme === "tiger"
+                ? "0 0 10px rgba(255, 149, 0, 0.5)"
+                : "0 0 10px rgba(255, 140, 160, 0.5)",
           }}
         />
 
@@ -63,38 +63,38 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
             >
               {/* 节点图标 */}
               <div
-                className="absolute left-1/2 -ml-8 w-16 h-16 rounded-full flex items-center justify-center theme-transition cursor-pointer hover:scale-125 z-10"
+                className="absolute left-1/2 -ml-8 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer hover:scale-125 z-10 transition-all duration-300"
                 style={{
                   background:
-                    theme === "dongzhu"
-                      ? "linear-gradient(135deg, #D4E8F0, #5DADE2)"
-                      : "linear-gradient(135deg, #E74C3C, #C0392B)",
-                  border: theme === "dongzhu" ? "4px solid #E8F4F8" : "4px solid #16213E",
+                    theme === "tiger"
+                      ? "linear-gradient(135deg, #FFBE28, #FF9500)"
+                      : "linear-gradient(135deg, #FFC0CB, #FF8CA0)",
+                  border: theme === "tiger" ? "4px solid #FFFDF9" : "4px solid #FFFDF9",
                   boxShadow:
-                    theme === "dongzhu"
-                      ? "0 0 20px rgba(93, 173, 226, 0.6)"
-                      : "0 0 20px rgba(231, 76, 60, 0.6)",
+                    theme === "tiger"
+                      ? "0 0 20px rgba(255, 149, 0, 0.6)"
+                      : "0 0 20px rgba(255, 140, 160, 0.6)",
                 }}
                 onClick={() => onVideoClick(video)}
               >
-                <div className="text-3xl">{theme === "dongzhu" ? "🐷" : "🐗"}</div>
+                <div className="text-3xl">{theme === "tiger" ? "🐯" : "🍦"}</div>
               </div>
 
               {/* 视频卡片 */}
               <div className={`w-5/12 ${isLeft ? "pr-16" : "pl-16"}`}>
                 <div
-                  className="theme-transition hover:scale-105 cursor-pointer overflow-hidden"
+                  className="hover:scale-105 cursor-pointer overflow-hidden transition-all duration-300"
                   style={{
                     background:
-                      theme === "dongzhu"
-                        ? "linear-gradient(135deg, #FFF9E6, #FFFEF7)"
-                        : "linear-gradient(135deg, #16213E, #1A1A2E)",
-                    borderRadius: theme === "dongzhu" ? "20px" : "8px",
-                    border: theme === "dongzhu" ? "2px solid #AED6F1" : "2px solid #E74C3C",
+                      theme === "tiger"
+                        ? "linear-gradient(135deg, #FFFDF9, #FFF5F0)"
+                        : "linear-gradient(135deg, #FFF5F8, #FFE6F0)",
+                    borderRadius: "20px",
+                    border: theme === "tiger" ? "2px solid #FF9500" : "2px solid #FF8CA0",
                     boxShadow:
-                      theme === "dongzhu"
-                        ? "0 8px 24px rgba(93, 173, 226, 0.3)"
-                        : "0 8px 24px rgba(231, 76, 60, 0.3)",
+                      theme === "tiger"
+                        ? "0 8px 24px rgba(255, 149, 0, 0.3)"
+                        : "0 8px 24px rgba(255, 140, 160, 0.3)",
                   }}
                   onClick={() => onVideoClick(video)}
                 >
@@ -108,19 +108,19 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
 
                     {/* 播放按钮遮罩 */}
                     <div
-                      className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 theme-transition"
+                      className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300"
                       style={{
                         background:
-                          theme === "dongzhu" ? "rgba(93, 173, 226, 0.5)" : "rgba(0, 0, 0, 0.7)",
+                          theme === "tiger" ? "rgba(255, 149, 0, 0.5)" : "rgba(255, 140, 160, 0.5)",
                       }}
                     >
                       <div
                         className="w-16 h-16 rounded-full flex items-center justify-center"
                         style={{
                           background:
-                            theme === "dongzhu"
-                              ? "rgba(93, 173, 226, 0.8)"
-                              : "rgba(231, 76, 60, 0.9)",
+                            theme === "tiger"
+                              ? "rgba(255, 149, 0, 0.8)"
+                              : "rgba(255, 140, 160, 0.8)",
                         }}
                       >
                         <Play size={32} fill="#fff" color="#fff" />
@@ -144,17 +144,17 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
                     <h3
                       className="font-bold text-lg mb-2 line-clamp-2"
                       style={{
-                        color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
+                        color: theme === "tiger" ? "#5D4037" : "#6A1B9A",
                       }}
                     >
                       {video.title}
                     </h3>
 
-                    <div className="flex items-center gap-3 mb-3 text-sm">
+                    <div className="flex flex-wrap items-center gap-3 mb-3 text-sm">
                       <div
                         className="flex items-center gap-1"
                         style={{
-                          color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
+                          color: theme === "tiger" ? "#8D6E63" : "#9C27B0",
                         }}
                       >
                         <Calendar size={14} />
@@ -163,7 +163,7 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
                       <div
                         className="flex items-center gap-1"
                         style={{
-                          color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
+                          color: theme === "tiger" ? "#8D6E63" : "#9C27B0",
                         }}
                       >
                         <Clock size={14} />
@@ -179,12 +179,12 @@ export function VideoTimeline({ theme, onVideoClick }: VideoTimelineProps) {
                           className="px-2 py-1 text-xs font-medium"
                           style={{
                             background:
-                              theme === "dongzhu"
-                                ? "rgba(93, 173, 226, 0.2)"
-                                : "rgba(231, 76, 60, 0.3)",
-                            border: theme === "dongzhu" ? "1px solid #AED6F1" : "1px solid #E74C3C",
-                            borderRadius: theme === "dongzhu" ? "8px" : "4px",
-                            color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
+                              theme === "tiger"
+                                ? "rgba(255, 149, 0, 0.2)"
+                                : "rgba(255, 140, 160, 0.2)",
+                            border: theme === "tiger" ? "1px solid #FF9500" : "1px solid #FF8CA0",
+                            borderRadius: "8px",
+                            color: theme === "tiger" ? "#5D4037" : "#6A1B9A",
                           }}
                         >
                           {tag}

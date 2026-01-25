@@ -1,15 +1,11 @@
-import { Trophy, Music, Smile, Zap, Crown, Coffee, Heart } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
 export interface Video {
   id: string;
   title: string;
-  category: string;
-  tags: string[];
-  cover: string;
   date: string;
-  views: string;
-  icon: LucideIcon;
+  bvid: string;
+  cover: string;
+  tags: string[];
+  duration: string;
 }
 
 export interface Danmu {
@@ -20,74 +16,60 @@ export interface Danmu {
   color?: string;
 }
 
-export const highlightCategories = [
-  { id: "all", name: "全部高光", icon: Crown },
-  { id: "sing", name: "甜筒天籁", icon: Music },
-  { id: "dance", name: "霸总热舞", icon: Zap },
-  { id: "funny", name: "反差萌场面", icon: Smile },
-  { id: "daily", name: "224日常", icon: Coffee },
-];
-
 export const videos: Video[] = [
   {
     id: "1",
     title: "【亿口甜筒】霸总变身小猫咪？这反差谁顶得住！",
-    category: "funny",
-    tags: ["funny"],
-    cover: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&q=80",
     date: "2023-10-15",
-    views: "12.5万",
-    icon: Smile,
+    bvid: "BV1xx411c7mD",
+    cover: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&q=80",
+    tags: ["反差萌", "搞笑"],
+    duration: "10:30",
   },
   {
     id: "2",
     title: "224团播高光：狮子座的胜负欲燃起来了！",
-    category: "daily",
-    tags: ["daily"],
-    cover: "https://images.unsplash.com/photo-1517030335964-65ad7b05397d?w=800&q=80",
     date: "2023-11-02",
-    views: "8.9万",
-    icon: Trophy,
+    bvid: "BV1yy4y1B7Mm",
+    cover: "https://images.unsplash.com/photo-1517030335964-65ad7b05397d?w=800&q=80",
+    tags: ["团播", "高光时刻"],
+    duration: "15:20",
   },
   {
     id: "3",
     title: "冬日恋歌 Cover - 甜度满分预警",
-    category: "sing",
-    tags: ["sing"],
-    cover: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=800&q=80",
     date: "2023-12-24",
-    views: "15.2万",
-    icon: Music,
+    bvid: "BV1zz4y1e7KL",
+    cover: "https://images.unsplash.com/photo-1516280440614-6697288d5d38?w=800&q=80",
+    tags: ["唱歌", "冬日恋歌"],
+    duration: "5:45",
   },
   {
     id: "4",
     title: "极乐净土 舞蹈纯享版",
-    category: "dance",
-    tags: ["dance"],
-    cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&q=80",
     date: "2024-01-10",
-    views: "20.1万",
-    icon: Zap,
+    bvid: "BV1xx411c7mE",
+    cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&q=80",
+    tags: ["舞蹈", "极乐净土"],
+    duration: "4:30",
   },
   {
     id: "5",
     title: "直播间读粉丝来信，感动落泪...",
-    category: "daily",
-    tags: ["daily"],
-    cover: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&q=80",
     date: "2024-02-14",
-    views: "10.3万",
-    icon: Heart,
+    bvid: "BV1yy4y1B7Mn",
+    cover: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=800&q=80",
+    tags: ["日常", "感动"],
+    duration: "12:15",
   },
   {
     id: "6",
     title: "挑战三分钟不笑，结果一秒破功",
-    category: "funny",
-    tags: ["funny"],
-    cover: "https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?w=800&q=80",
     date: "2024-03-01",
-    views: "18.7万",
-    icon: Smile,
+    bvid: "BV1zz4y1e7KM",
+    cover: "https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?w=800&q=80",
+    tags: ["搞笑", "挑战"],
+    duration: "8:45",
   },
 ];
 

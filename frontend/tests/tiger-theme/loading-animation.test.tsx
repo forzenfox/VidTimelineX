@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, cleanup, waitFor, act } from "@testing-library/react";
 import LoadingAnimation from "@/features/tiantong/components/LoadingAnimation";
-import VideoModal from "@/components/hu/hu_VideoModal";
+import VideoModal from "@/features/tiantong/components/VideoModal";
 import { Heart } from "lucide-react";
 import type { Video } from "@/features/tiantong/data/types";
 import "@testing-library/jest-dom";

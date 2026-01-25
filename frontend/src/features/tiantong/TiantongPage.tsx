@@ -1,10 +1,9 @@
-import React, { useState, useMemo, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Github, ExternalLink, Search, Filter, Heart, TrendingUp, Calendar } from "lucide-react";
-import { videos, highlightCategories, Video } from "./data";
-import VideoCard from "./components/VideoCard";
+import { Github, ExternalLink, Search, Heart } from "lucide-react";
+import { videos, Video } from "./data";
 import ThemeToggle from "./components/ThemeToggle";
-import TimelineItem from "./components/TimelineItem";
+import { VideoTimeline } from "./components/VideoTimeline";
 import DanmakuWelcome from "./components/DanmakuWelcome";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
 import "./styles/index.css";
@@ -46,7 +45,7 @@ const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
   ),
 });
 
-const Tiantong = () => {
+const TiantongPage = () => {
   const [theme, setTheme] = useState<"tiger" | "sweet">("tiger");
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
@@ -176,29 +175,8 @@ const Tiantong = () => {
   }, []);
 
   const filteredVideos = videos.filter(video => {
-    return (
-      (activeCategory === "all" || video.category === activeCategory) &&
-      video.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    return video.title.toLowerCase().includes(searchQuery.toLowerCase());
   });
-
-  const groupedVideos = useMemo(() => {
-    const grouped = filteredVideos.reduce(
-      (acc, video) => {
-        const date = video.date;
-        if (!acc[date]) {
-          acc[date] = [];
-        }
-        acc[date].push(video);
-        return acc;
-      },
-      {} as Record<string, Video[]>
-    );
-
-    return Object.entries(grouped)
-      .sort(([dateA], [dateB]) => dateB.localeCompare(dateA))
-      .map(([date, videos]) => ({ date, videos }));
-  }, [filteredVideos]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -411,101 +389,13 @@ const Tiantong = () => {
             role="main"
           >
             <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
-              <div className="mb-8">
-                <h2
-                  id="timeline-title"
-                  className="text-2xl sm:text-3xl font-black mb-2 flex items-center"
-                >
-                  <span
-                    className="bg-primary w-2 h-7 sm:h-8 mr-3 rounded-full"
-                    aria-hidden="true"
-                  ></span>
-                  亿口时光
-                </h2>
-                <p className="text-muted-foreground text-sm sm:text-base">记录亿口甜筒的时光碎片</p>
-              </div>
-
-              <div
-                className="flex flex-wrap gap-3 sm:gap-4 mb-8"
-                role="navigation"
-                aria-label="视频分类"
-              >
-                {highlightCategories.map(cat => {
-                  const Icon = cat.icon;
-                  const isActive = activeCategory === cat.id;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setActiveCategory(cat.id)}
-                      className={`
-                        flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl border-2 font-bold transition-all duration-300 min-h-[2.75rem] sm:min-h-[3rem]
-                        ${
-                          isActive
-                            ? "bg-primary border-primary text-primary-foreground shadow-lg scale-105"
-                            : "bg-card border-border text-muted-foreground hover:border-primary/50 hover:text-foreground hover:bg-primary/5"
-                        }
-                      `}
-                      aria-pressed={isActive}
-                    >
-                      <Icon
-                        className="flex-shrink-0 w-4.5 h-4.5 sm:w-[19px] sm:h-[19px]"
-                        aria-hidden="true"
-                      />
-                      <span className="text-sm sm:text-base">{cat.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex items-center justify-between mb-8" aria-live="polite">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden="true" />
-                  <span>
-                    共 <span className="font-bold">{filteredVideos.length}</span> 个视频
-                  </span>
-                </div>
-              </div>
-
-              {groupedVideos.length > 0 ? (
-                <div
-                  className="relative transition-all duration-300 animate-in fade-in"
-                  role="feed"
-                >
-                  {groupedVideos.map((group, index) => (
-                    <TimelineItem
-                      key={group.date}
-                      date={group.date}
-                      videos={group.videos}
-                      isLast={index === groupedVideos.length - 1}
-                      onVideoClick={video => {
-                        console.log("Video click passed to TiantongPage:", video.title);
-                        setSelectedVideo(video);
-                      }}
-                      theme={theme}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div
-                  className="text-center py-20 bg-card rounded-3xl border border-dashed border-border transition-all duration-300 animate-in fade-in"
-                  role="status"
-                >
-                  <div className="text-6xl mb-4" aria-hidden="true">
-                    😿
-                  </div>
-                  <h3 className="text-xl font-bold text-muted-foreground">没有找到相关的视频喵~</h3>
-                  <button
-                    onClick={() => {
-                      setActiveCategory("all");
-                      setSearchQuery("");
-                    }}
-                    className="mt-4 text-primary font-bold hover:underline"
-                    aria-label="查看全部视频"
-                  >
-                    查看全部
-                  </button>
-                </div>
-              )}
+              <VideoTimeline
+                theme={theme}
+                onVideoClick={video => {
+                  console.log("Video click passed to TiantongPage:", video.title);
+                  setSelectedVideo(video);
+                }}
+              />
             </section>
 
             <aside
@@ -521,10 +411,19 @@ const Tiantong = () => {
             className="border-t border-border mt-12 bg-card py-8 text-center text-sm text-muted-foreground"
             role="contentinfo"
           >
-            <p>© 2024 亿口甜筒 · 亿口时光. All rights reserved.</p>
+            <p>{`© 2024 亿口甜筒 · 亿口时光 | ${theme === "tiger" ? "虎将的高能切片站" : "甜筒的粉丝快乐窝"}`}</p>
             <p className="mt-2 flex items-center justify-center gap-2">
               Designed with{" "}
-              <Heart size={12} className="text-red-500 fill-current" aria-hidden="true" /> for 224
+              {theme === "tiger" ? (
+                <span className="text-2xl" aria-hidden="true">
+                  🐯
+                </span>
+              ) : (
+                <span className="text-2xl" aria-hidden="true">
+                  🍦
+                </span>
+              )}
+              for HXZ | All rights reserved.
             </p>
           </footer>
 
@@ -541,4 +440,4 @@ const Tiantong = () => {
   );
 };
 
-export default Tiantong;
+export default TiantongPage;

@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
-import ThemeToggle from "@/components/hu/hu_ThemeToggle";
+import ThemeToggle from "@/features/tiantong/components/ThemeToggle";
 import LoadingAnimation from "@/features/tiantong/components/LoadingAnimation";
 import "@testing-library/jest-dom";
 

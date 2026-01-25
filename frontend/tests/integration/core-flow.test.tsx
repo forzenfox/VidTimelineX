@@ -5,12 +5,13 @@
 
 import React from "react";
 import { render, screen, fireEvent, cleanup, waitFor, act } from "@testing-library/react";
-import ThemeToggle from "@/components/hu/hu_ThemeToggle";
-import VideoCard from "@/components/hu/hu_VideoCard";
-import VideoModal from "@/components/hu/hu_VideoModal";
+import ThemeToggle from "@/features/tiantong/components/ThemeToggle";
+import VideoCard from "@/features/tiantong/components/VideoCard";
+import VideoModal from "@/features/tiantong/components/VideoModal";
 import { Header } from "@/features/lvjiang/components/Header";
-import { HorizontalDanmaku } from "@/features/lvjiang/components/lv_HorizontalDanmaku";
-import { SideDanmaku } from "@/features/lvjiang/components/lv_SideDanmaku";
+import LoadingAnimation from "@/features/tiantong/components/LoadingAnimation";
+import { HorizontalDanmaku } from "@/features/lvjiang/components/HorizontalDanmaku";
+import { SideDanmaku } from "@/features/lvjiang/components/SideDanmaku";
 import { Heart } from "lucide-react";
 import "@testing-library/jest-dom";
 

@@ -38,12 +38,12 @@
 
 | 模块名称          | 模块路径                                | 测试类型 | 优先级 |
 | ----------------- | --------------------------------------- | -------- | ------ |
-| ThemeToggle       | src/components/hu/hu_ThemeToggle.tsx    | 单元测试 | 高     |
-| VideoCard         | src/components/hu/hu_VideoCard.tsx      | 单元测试 | 高     |
-| VideoModal        | src/components/hu/hu_VideoModal.tsx     | 单元测试 | 高     |
-| Header            | src/components/lv_Header.tsx            | 单元测试 | 高     |
-| HorizontalDanmaku | src/components/lv_HorizontalDanmaku.tsx | 集成测试 | 中     |
-| SideDanmaku       | src/components/lv_SideDanmaku.tsx       | 集成测试 | 中     |
+| ThemeToggle       | src/features/tiantong/components/ThemeToggle.tsx    | 单元测试 | 高     |
+| VideoCard         | src/features/tiantong/components/VideoCard.tsx      | 单元测试 | 高     |
+| VideoModal        | src/features/tiantong/components/VideoModal.tsx     | 单元测试 | 高     |
+| Header            | src/features/lvjiang/components/Header.tsx            | 单元测试 | 高     |
+| HorizontalDanmaku | src/features/lvjiang/components/HorizontalDanmaku.tsx | 集成测试 | 中     |
+| SideDanmaku       | src/features/lvjiang/components/SideDanmaku.tsx       | 集成测试 | 中     |
 | hu_mockData       | src/data/hu_mockData.ts                 | 数据测试 | 中     |
 | lv_videos         | src/data/lv_videos.ts                   | 数据测试 | 中     |
 | lv_danmaku        | src/data/lv_danmaku.ts                  | 数据测试 | 中     |
@@ -221,10 +221,10 @@
 
 | 文件路径                                         | 文件类型     | 用例数 | 说明                 |
 | ------------------------------------------------ | ------------ | ------ | -------------------- |
-| src/components/**tests**/hu_ThemeToggle.test.tsx | 单元测试     | 5      | ThemeToggle 组件测试 |
-| src/components/**tests**/hu_VideoCard.test.tsx   | 单元测试     | 6      | VideoCard 组件测试   |
-| src/components/**tests**/hu_VideoModal.test.tsx  | 单元测试     | 9      | VideoModal 组件测试  |
-| src/components/**tests**/lv_Header.test.tsx      | 单元测试     | 9      | Header 组件测试      |
+| src/features/tiantong/components/ThemeToggle.test.tsx | 单元测试     | 5      | ThemeToggle 组件测试 |
+| src/features/tiantong/components/VideoCard.test.tsx   | 单元测试     | 6      | VideoCard 组件测试   |
+| src/features/tiantong/components/VideoModal.test.tsx  | 单元测试     | 9      | VideoModal 组件测试  |
+| src/features/lvjiang/components/Header.test.tsx      | 单元测试     | 9      | Header 组件测试      |
 | src/components/**tests**/integration.test.tsx    | 集成测试     | 11     | 弹幕、数据、类型测试 |
 | src/components/**tests**/boundary.test.tsx       | 边界条件测试 | 20     | 边界条件测试用例     |
 | src/components/**tests**/error.test.tsx          | 异常场景测试 | 20     | 异常场景测试用例     |
@@ -234,7 +234,7 @@
 
 | 文件路径                                              | 文件类型 | 说明                              |
 | ----------------------------------------------------- | -------- | --------------------------------- |
-| src/components/**tests**/lv_LoadingAnimation.test.tsx | 单元测试 | LoadingAnimation 组件测试（已有） |
+| src/features/lvjiang/components/LoadingAnimation.test.tsx | 单元测试 | LoadingAnimation 组件测试（已有） |
 
 ### 4.3 测试文档
 
@@ -328,13 +328,13 @@
 
 | 组件                     | 语句覆盖率 | 分支覆盖率 | 函数覆盖率 | 行覆盖率 |
 | ------------------------ | ---------- | ---------- | ---------- | -------- |
-| lv_Header.tsx            | 100%       | 100%       | 100%       | 100%     |
-| lv_HorizontalDanmaku.tsx | 100%       | 100%       | 100%       | 100%     |
-| lv_LoadingAnimation.tsx  | 96.42%     | 96.87%     | 100%       | 100%     |
-| lv_SideDanmaku.tsx       | 59.25%     | 91.3%      | 70%        | 54.16%   |
-| hu_ThemeToggle.tsx       | 100%       | 100%       | 100%       | 100%     |
-| hu_VideoCard.tsx         | 100%       | 100%       | 100%       | 100%     |
-| hu_VideoModal.tsx        | 84%        | 70.58%     | 66.66%     | 87.5%    |
+| Header.tsx            | 100%       | 100%       | 100%       | 100%     |
+| HorizontalDanmaku.tsx | 100%       | 100%       | 100%       | 100%     |
+| LoadingAnimation.tsx  | 96.42%     | 96.87%     | 100%       | 100%     |
+| SideDanmaku.tsx       | 59.25%     | 91.3%      | 70%        | 54.16%   |
+| ThemeToggle.tsx       | 100%       | 100%       | 100%       | 100%     |
+| VideoCard.tsx         | 100%       | 100%       | 100%       | 100%     |
+| VideoModal.tsx        | 84%        | 70.58%     | 66.66%     | 87.5%    |
 
 ### 5.3 覆盖率分析
 
@@ -391,7 +391,7 @@ npm test
 
 ```bash
 # 运行单元测试
-npm test -- --testPathPattern="hu_ThemeToggle.test.tsx|hu_VideoCard.test.tsx|hu_VideoModal.test.tsx|lv_Header.test.tsx"
+npm test -- --testPathPattern="ThemeToggle.test.tsx|VideoCard.test.tsx|VideoModal.test.tsx|Header.test.tsx"
 
 # 运行边界条件测试
 npm test -- boundary.test.tsx
