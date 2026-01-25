@@ -219,7 +219,7 @@ const Tiantong = () => {
           <div className="absolute bottom-4 right-4 text-primary opacity-30 text-4xl pointer-events-none">
             🐯
           </div>
-          
+
           <DanmakuWelcome
             messages={danmakuMessages}
             colors={danmakuColors}
@@ -239,7 +239,7 @@ const Tiantong = () => {
                 <div className="py-3 sm:py-4 flex justify-between items-center">
                   <div className="flex items-center gap-3 sm:gap-4 lg:gap-5 flex-shrink-0">
                     <div
-                      className={`relative flex-shrink-0 group w-12 sm:w-14 md:w-16 h-12 sm:h-14 md:h-16 rounded-full border-3 sm:border-3 md:border-4 overflow-hidden shadow-custom transition-all duration-300 hover:scale-105 hover:shadow-lg ${theme === "tiger" ? "border-[rgb(255,110,20)]" : "border-[rgb(255,120,160)]"}`}
+                      className={`relative flex-shrink-0 group w-16 sm:w-18 md:w-20 h-16 sm:h-18 md:h-20 rounded-full border-3 sm:border-3 md:border-4 overflow-hidden shadow-custom transition-all duration-300 hover:scale-105 hover:shadow-lg ${theme === "tiger" ? "border-[rgb(255,110,20)]" : "border-[rgb(255,120,160)]"}`}
                     >
                       <img
                         src="/image.png"
@@ -252,12 +252,12 @@ const Tiantong = () => {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         aria-label="亿口甜筒"
                       />
-                    </div>
-                    <div
-                      className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full font-bold shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg animate-pulse"
-                      aria-label="直播中"
-                    >
-                      LIVE
+                      <div
+                        className="absolute bottom-1 right-1 bg-primary text-primary-foreground text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-full font-bold shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg animate-pulse z-50"
+                        aria-label="直播中"
+                      >
+                        LIVE
+                      </div>
                     </div>
 
                     <div className="flex flex-col gap-1">
@@ -447,7 +447,10 @@ const Tiantong = () => {
                       `}
                       aria-pressed={isActive}
                     >
-                      <Icon className="flex-shrink-0 w-4.5 h-4.5 sm:w-[19px] sm:h-[19px]" aria-hidden="true" />
+                      <Icon
+                        className="flex-shrink-0 w-4.5 h-4.5 sm:w-[19px] sm:h-[19px]"
+                        aria-hidden="true"
+                      />
                       <span className="text-sm sm:text-base">{cat.name}</span>
                     </button>
                   );
@@ -474,8 +477,8 @@ const Tiantong = () => {
                       date={group.date}
                       videos={group.videos}
                       isLast={index === groupedVideos.length - 1}
-                      onVideoClick={(video) => {
-                        console.log('Video click passed to TiantongPage:', video.title);
+                      onVideoClick={video => {
+                        console.log("Video click passed to TiantongPage:", video.title);
                         setSelectedVideo(video);
                       }}
                       theme={theme}
