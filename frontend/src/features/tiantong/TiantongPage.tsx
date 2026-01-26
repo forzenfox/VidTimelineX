@@ -120,6 +120,7 @@ const TiantongPage = () => {
   const toggleTheme = React.useCallback(() => {
     const newTheme = theme === "tiger" ? "sweet" : "tiger";
     setTheme(newTheme);
+    // 添加DOM操作，切换.theme-sweet类
     if (newTheme === "sweet") {
       document.documentElement.classList.add("theme-sweet");
     } else {
@@ -144,21 +145,37 @@ const TiantongPage = () => {
     [searchQuery]
   );
 
-  const handleSearchChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
+  // 使用useCallback和防抖优化搜索性能
+  const debouncedSearch = React.useCallback(
+    React.useMemo(() => {
+      let timeoutId: NodeJS.Timeout;
+      return (query: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          if (query.trim()) {
+            const videoTitles = videos.map(video => video.title);
+            const filteredSuggestions = videoTitles
+              .filter(title => title.toLowerCase().includes(query.toLowerCase()))
+              .slice(0, 5);
+            setSuggestions(filteredSuggestions);
+          } else {
+            setSuggestions([]);
+          }
+        }, 300);
+      };
+    }, []),
+    []
+  );
 
-    if (value.trim()) {
-      const videoTitles = videos.map(video => video.title);
-      const filteredSuggestions = videoTitles
-        .filter(title => title.toLowerCase().includes(value.toLowerCase()))
-        .slice(0, 5);
-      setSuggestions(filteredSuggestions);
+  const handleSearchChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchQuery(value);
+      debouncedSearch(value);
       setShowSuggestions(true);
-    } else {
-      setShowSuggestions(false);
-    }
-  }, []);
+    },
+    [debouncedSearch]
+  );
 
   const selectSuggestion = React.useCallback((suggestion: string) => {
     setSearchQuery(suggestion);

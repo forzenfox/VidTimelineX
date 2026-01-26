@@ -87,7 +87,9 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
           className="absolute whitespace-nowrap font-bold"
           style={{
             top: `${danmaku.top}%`,
+            left: 0,
             transform: "translateX(100vw)",
+            opacity: 1,
             animation: `danmaku-move ${danmaku.duration}s linear ${danmaku.delay}s forwards`,
             fontSize: theme === "sweet" ? "18px" : "18px",
             color: danmaku.color,
@@ -97,6 +99,9 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
                 : "2px 2px 4px rgba(255,140,180,0.8), -1px -1px 2px rgba(255,140,180,0.6)",
             fontWeight: "800",
             letterSpacing: "1px",
+            willChange: "transform, opacity", // 提示浏览器使用硬件加速
+            backfaceVisibility: "hidden", // 防止动画闪烁
+            perspective: 1000, // 提高动画质量
             ...getTextStyle(),
           }}
         >

@@ -96,30 +96,29 @@ def download_binary(url: str, outpath: Path):
 
 def main():
     if len(sys.argv) < 3:
-        print("Usage: python download_thumbs.py <timeline.json> <thumbs_output_dir>")
+        print("Usage: python download_thumbs.py <videos.json> <thumbs_output_dir>")
         sys.exit(2)
 
-    timeline_path = Path(sys.argv[1])
+    videos_path = Path(sys.argv[1])
     thumbs_dir = Path(sys.argv[2])
 
-    if not timeline_path.exists():
-        print(f"timeline.json not found: {timeline_path}")
+    if not videos_path.exists():
+        print(f"videos.json not found: {videos_path}")
         sys.exit(2)
 
-    with timeline_path.open("r", encoding="utf-8") as f:
+    with videos_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
 
-    events = data.get("events", [])
-    print(f"Found {len(events)} events in {timeline_path}")
+    videos = data if isinstance(data, list) else data.get("videos", [])
+    print(f"Found {len(videos)} videos in {videos_path}")
 
-    for idx, ev in enumerate(events):
-        media = ev.get("media", {}) or {}
-        url = media.get("url") or ""
-        if not url:
-            print(f"[{idx}] no media.url, skip")
+    for idx, video in enumerate(videos):
+        url = f"https://www.bilibili.com/video/{video.get('bvid', '')}"
+        if not url or "BV" not in url:
+            print(f"[{idx}] no valid bvid, skip")
             continue
         if "bilibili.com" not in url:
-            print(f"[{idx}] media.url not bilibili ({url}), skip")
+            print(f"[{idx}] url not bilibili ({url}), skip")
             continue
 
         try:
@@ -145,19 +144,28 @@ def main():
             download_binary(img_url, outpath)
 
             """
-            计算相对于项目根目录的相对路径
+            计算相对于前端public目录的相对路径
             """
-            # 确保所有路径都是绝对路径
-            project_root = Path(__file__).parent.parent.absolute()
-            outpath_abs = outpath.absolute()
+            # 确保所有路径都是绝对路径，并且不包含相对路径部分
+            frontend_public = Path(__file__).parent.parent / "frontend" / "public"
+            frontend_public_abs = frontend_public.resolve()
             
-            # 计算相对路径
-            rel = outpath_abs.relative_to(project_root)
-            rel_posix = rel.as_posix()
+            # 解析outpath，确保它是直接的绝对路径，不包含'..'
+            outpath_abs = outpath.resolve()
+            
+            try:
+                # 计算相对路径
+                rel = outpath_abs.relative_to(frontend_public_abs)
+                rel_posix = rel.as_posix()
+                # 直接使用相对路径，不添加额外的thumbs前缀
+                cover_path = f"/{rel_posix}"
+            except ValueError:
+                # 如果路径不在预期的子目录中，直接使用文件名
+                cover_filename = outpath.name
+                cover_path = f"/thumbs/{cover_filename}"
 
-            ev.setdefault("media", {})
-            ev["media"]["thumbnail"] = rel_posix
-            print(f"  -> saved and updated media.thumbnail = {rel_posix}")
+            video["cover"] = cover_path
+            print(f"  -> saved and updated video.cover = {cover_path}")
 
             time.sleep(DELAY_SECONDS)
         except Exception as e:
@@ -165,9 +173,9 @@ def main():
             time.sleep(DELAY_SECONDS)
 
     # 直接写回原始文件
-    with timeline_path.open("w", encoding="utf-8") as f:
+    with videos_path.open("w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Done. Updated JSON in {timeline_path}")
+    print(f"Done. Updated JSON in {videos_path}")
 
 
 if __name__ == "__main__":

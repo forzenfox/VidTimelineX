@@ -6,7 +6,11 @@ interface ThemeToggleProps {
   onToggle: () => void;
 }
 
-const ThemeToggle: React.FC<ThemeToggleProps> = ({ currentTheme, onToggle }) => {
+/**
+ * 主题切换按钮组件
+ * 使用React.memo优化性能，避免不必要的重新渲染
+ */
+const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ currentTheme, onToggle }) => {
   return (
     <button
       onClick={onToggle}
@@ -51,6 +55,6 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ currentTheme, onToggle }) => 
       </div>
     </button>
   );
-};
+});
 
 export default ThemeToggle;

@@ -149,6 +149,8 @@
   --border: var(--sweet-border);
   --shadow-color: var(--sweet-shadow-color);
   --card-rgb: var(--sweet-card-rgb);
+  /* GPU加速优化 */
+  will-change: background-color, color, border-color;
 }
 
 body {
@@ -161,6 +163,10 @@ body {
     border-color 0.3s,
     box-shadow 0.3s;
   overflow-x: hidden;
+  /* GPU加速优化 */
+  will-change: background-color, color, border-color;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* 为所有元素添加主题过渡效果 */

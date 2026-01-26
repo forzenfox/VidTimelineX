@@ -85,22 +85,52 @@ class BiliBiliAutoCrawler:
         return unique_bv_codes
     
     def crawl_video_metadata(self, bv_code):
-        """爬取视频元数据"""
+        """爬取视频元数据，添加超时和重试机制
+        
+        Args:
+            bv_code (str): 视频BV号
+            
+        Returns:
+            dict or None: 视频元数据或None（如果爬取失败）
+        """
         print(f"爬取视频元数据: BV{bv_code}")
         
         video_url = f"https://www.bilibili.com/video/BV{bv_code}"
+        max_retries = 3
+        retry_delay = 2  # 初始重试间隔（秒）
         
-        try:
-            response = self.session.get(video_url, timeout=15)
-            response.raise_for_status()
-            
-            # 解析视频页面
-            metadata = self._parse_video_page(response.text, bv_code)
-            return metadata
-            
-        except Exception as e:
-            print(f"爬取错误: {e}")
-            return None
+        for retry in range(max_retries):
+            try:
+                print(f"  尝试 {retry + 1}/{max_retries}")
+                response = self.session.get(video_url, timeout=15)
+                response.raise_for_status()
+                
+                # 解析视频页面
+                metadata = self._parse_video_page(response.text, bv_code)
+                return metadata
+                
+            except requests.exceptions.Timeout:
+                print(f"  请求超时，{retry_delay}秒后重试")
+                time.sleep(retry_delay)
+                retry_delay *= 2  # 指数退避
+            except requests.exceptions.HTTPError as e:
+                print(f"  HTTP错误: {e}")
+                if retry < max_retries - 1:
+                    print(f"  {retry_delay}秒后重试")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                else:
+                    print(f"  达到最大重试次数，放弃爬取")
+            except Exception as e:
+                print(f"  爬取错误: {e}")
+                if retry < max_retries - 1:
+                    print(f"  {retry_delay}秒后重试")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                else:
+                    print(f"  达到最大重试次数，放弃爬取")
+        
+        return None
     
     def _parse_video_page(self, html, bv_code):
         """解析视频页面，提取元数据"""
@@ -124,6 +154,9 @@ class BiliBiliAutoCrawler:
         # 提取缩略图
         thumbnail = self._extract_thumbnail(soup, html, bv_code)
         
+        # 提取视频时长
+        duration = self._extract_duration(html)
+        
         # 构建元数据
         metadata = {
             "bv": bv_code,
@@ -135,6 +168,7 @@ class BiliBiliAutoCrawler:
             "danmaku": stats.get('danmaku', 0),
             "up主": up_info.get('name', ''),
             "thumbnail": thumbnail,
+            "duration": duration,
             "crawled_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "review_status": "pending",
             "review_note": ""
@@ -249,6 +283,33 @@ class BiliBiliAutoCrawler:
         # 构建默认缩略图URL
         return f"https://i0.hdslb.com/bfs/archive/{bv_code}.jpg"
     
+    def _extract_duration(self, html):
+        """提取视频时长"""
+        # 从页面源码中提取时长
+        duration_match = re.search(r'"duration"\s*:\s*(\d+)', html)
+        if duration_match:
+            # 转换秒数为 HH:MM:SS 格式
+            seconds = int(duration_match.group(1))
+            hours = seconds // 3600
+            minutes = (seconds % 3600) // 60
+            seconds = seconds % 60
+            if hours > 0:
+                return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+            else:
+                return f"{minutes:02d}:{seconds:02d}"
+        
+        # 从视频播放器中提取
+        player_duration_match = re.search(r'"duration"\s*:\s*"([\d:]+)"', html)
+        if player_duration_match:
+            return player_duration_match.group(1)
+        
+        # 从页面元素中提取
+        duration_element_match = re.search(r'<span\s+class="duration">([\d:]+)</span>', html)
+        if duration_element_match:
+            return duration_element_match.group(1)
+        
+        return "00:00"
+    
     def save_to_pending(self, metadata):
         """保存到待审核列表"""
         # 加载现有数据
@@ -305,6 +366,88 @@ class BiliBiliAutoCrawler:
         
         return total_saved
     
+    def run_crawl_from_file(self, file_path):
+        """从文件中读取BV号列表并爬取对应视频的元数据
+        
+        Args:
+            file_path (str): BV号文件路径
+            
+        Returns:
+            int: 新保存的视频数量
+        """
+        print(f"\n=== 从文件爬取视频元数据: {file_path} ===")
+        
+        # 读取BV号列表
+        bv_list = self.load_bv_list(file_path)
+        
+        if not bv_list:
+            print("没有有效的BV号，爬取任务终止")
+            return 0
+        
+        total_crawled = 0
+        total_saved = 0
+        
+        for bv_code in bv_list:
+            print(f"\n--- 处理BV号: {bv_code} ---")
+            
+            # 爬取视频元数据
+            metadata = self.crawl_video_metadata(bv_code)
+            
+            if metadata:
+                total_crawled += 1
+                
+                # 保存到待审核列表
+                if self.save_to_pending(metadata):
+                    total_saved += 1
+                
+                # 遵守请求频率限制
+                time.sleep(2)
+        
+        print(f"\n=== 从文件爬取任务完成 ===")
+        print(f"总共爬取: {total_crawled} 个视频")
+        print(f"新保存: {total_saved} 个视频")
+        
+        return total_saved
+    
+    def load_bv_list(self, file_path):
+        """从文件中读取BV号列表
+        
+        Args:
+            file_path (str): BV号文件路径
+            
+        Returns:
+            list: 处理后的BV号列表，去除了注释和空行，确保格式正确
+        """
+        print(f"从文件中读取BV号列表: {file_path}")
+        
+        bv_list = []
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    # 去除行首尾空格
+                    stripped_line = line.strip()
+                    
+                    # 跳过空行和注释行（以#开头）
+                    if not stripped_line or stripped_line.startswith('#'):
+                        continue
+                    
+                    # 提取BV号
+                    # 匹配完整的BV号格式，支持带或不带BV前缀
+                    bv_match = re.search(r'(BV)?([0-9A-Za-z]+)', stripped_line)
+                    if bv_match:
+                        bv_code = bv_match.group(2)
+                        # 确保BV号格式正确
+                        if len(bv_code) > 0:
+                            bv_list.append(bv_code)
+            
+            print(f"读取到 {len(bv_list)} 个有效的BV号")
+            return bv_list
+            
+        except Exception as e:
+            print(f"读取BV号文件失败: {e}")
+            return []
+    
     def generate_timeline(self):
         """生成时间线数据"""
         print("生成时间线数据...")
@@ -318,27 +461,36 @@ class BiliBiliAutoCrawler:
         # 按照发布日期排序（降序）
         videos.sort(key=lambda x: x.get('publish_date', ''), reverse=True)
         
-        # 生成timeline数据
+        # 生成与前端videos.json相同格式的数据
         timeline_data = []
-        for video in videos:
+        for idx, video in enumerate(videos):
+            # 修复BV前缀重复问题
+            bv_code = video.get('bv', '')
+            if bv_code.startswith('BV'):
+                bvid = bv_code
+            else:
+                bvid = f"BV{bv_code}"
+            
+            # 统一日期格式为YYYY-MM-DD
+            publish_date = video.get('publish_date', '')
+            if len(publish_date) > 10:
+                date = publish_date[:10]
+            else:
+                date = publish_date
+            
             timeline_item = {
-                "id": len(timeline_data) + 1,
-                "date": video.get('publish_date'),
+                "id": str(idx + 1),  # 按时间倒序排列的字符串序号
                 "title": video.get('title'),
-                "content": video.get('description', ''),
-                "video": {
-                    "bv": video.get('bv'),
-                    "url": video.get('url')
-                },
-                "thumbnail": video.get('thumbnail'),
-                "views": video.get('views'),
-                "danmaku": video.get('danmaku'),
-                "up主": video.get('up主')
+                "date": date,
+                "bvid": bvid,
+                "cover": video.get('thumbnail'),  # 缩略图路径
+                "tags": [],  # 初始为空列表，供人工填写
+                "duration": video.get('duration', "00:00")  # 视频时长
             }
             timeline_data.append(timeline_item)
         
         # 保存到前端目录
-        timeline_path = Path('../frontend/public/timeline.json')
+        timeline_path = Path('../frontend/src/features/lvjiang/data/videos.json')
         timeline_path.parent.mkdir(exist_ok=True)
         
         with open(timeline_path, 'w', encoding='utf-8') as f:
@@ -350,14 +502,31 @@ class BiliBiliAutoCrawler:
         return len(timeline_data)
 
 def main():
-    """主函数"""
+    """主函数，支持从文件爬取和关键词爬取
+    
+    支持两种模式：
+    1. 从文件爬取：读取指定路径的BV号文件，爬取对应视频元数据
+    2. 关键词爬取：根据关键词搜索视频并爬取元数据
+    """
+    import sys
+    
     crawler = BiliBiliAutoCrawler()
     
-    # 配置关键词
-    keywords = ["原神", "崩坏星穹铁道", "塞尔达传说"]
+    # 默认从文件爬取，BV号文件路径
+    bv_file_path = "d:/workspace/bilibili-timeline/backend/data/bv.txt"
     
-    # 运行爬取任务
-    crawler.run_crawl(keywords, max_pages=1)
+    # 检查命令行参数
+    if len(sys.argv) > 1 and sys.argv[1] == "--keyword-crawl":
+        # 配置关键词
+        keywords = ["原神", "崩坏星穹铁道", "塞尔达传说"]
+        
+        # 运行关键词爬取任务
+        crawler.run_crawl(keywords, max_pages=1)
+    else:
+        # 从文件爬取
+        print("使用默认模式：从文件爬取")
+        print(f"BV号文件路径: {bv_file_path}")
+        crawler.run_crawl_from_file(bv_file_path)
     
     # 生成时间线数据
     crawler.generate_timeline()
