@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Pause, Play, TrendingUp, Trash2, Zap, MessageCircle, Gift, Crown } from "lucide-react";
 import { danmuPool, Danmu, users } from "../data";
+import { getRandomSuperDanmakuColor } from "../data/danmakuColors";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface SidebarDanmuProps {
@@ -379,7 +380,10 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
             </span>
           )}
           {isSuper && (
-            <span className={`flex items-center gap-1.5 ${danmuColors.superText} font-medium`}>
+            <span
+              className={`flex items-center gap-1.5 font-medium`}
+              style={{ color: getRandomSuperDanmakuColor(theme) }}
+            >
               {theme === "sweet" ? "✨" : <Crown size={14} />}
               <span>{item.text}</span>
             </span>
