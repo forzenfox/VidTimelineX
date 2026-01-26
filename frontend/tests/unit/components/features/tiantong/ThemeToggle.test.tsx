@@ -34,9 +34,6 @@ describe("ThemeToggle组件测试（甜筒）", () => {
 
     // 验证aria-checked属性
     expect(button).toHaveAttribute("aria-checked", "true");
-
-    // 记录测试结果
-    console.log("✅ TC-044: ThemeToggle渲染测试（甜筒）通过");
   });
 
   /**
@@ -52,9 +49,6 @@ describe("ThemeToggle组件测试（甜筒）", () => {
 
     // 验证onToggle回调是否被调用
     expect(mockOnToggle).toHaveBeenCalledTimes(1);
-
-    // 记录测试结果
-    console.log("✅ TC-045: ThemeToggle切换测试（甜筒）通过");
   });
 
   /**
@@ -76,9 +70,6 @@ describe("ThemeToggle组件测试（甜筒）", () => {
     button = screen.getByRole("switch");
     expect(button).toHaveAttribute("aria-checked", "false");
     expect(button).toHaveAttribute("aria-label", "切换到甜筒主题");
-
-    // 记录测试结果
-    console.log("✅ TC-046: ThemeToggle主题状态测试（甜筒）通过");
   });
 
   afterEach(() => {

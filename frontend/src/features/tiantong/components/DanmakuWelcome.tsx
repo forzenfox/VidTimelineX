@@ -51,12 +51,15 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
   }, [messages, colors, show]);
 
   useEffect(() => {
+    // 当主题变化时，重置show状态为true
+    setShow(true);
+
     const timer = setTimeout(() => {
       setShow(false);
     }, 8000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [theme]);
 
   if (!show) return null;
 

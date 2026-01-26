@@ -8,6 +8,9 @@ export interface Video {
   cover: string;
   tags: string[];
   duration: string;
+  category: string;
+  views: string;
+  icon: any;
 }
 
 export interface Danmu {

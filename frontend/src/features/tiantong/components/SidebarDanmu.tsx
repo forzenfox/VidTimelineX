@@ -13,17 +13,6 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
   const [vipCount, setVipCount] = useState(1314);
   const [diamondCount, setDiamondCount] = useState(1000);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [speed, setSpeed] = useState<"slow" | "normal" | "fast">("normal");
-
-  // 移除动态更新，保持数值固定
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setVipCount(prev => Math.floor(Math.random() * 50) + prev);
-  //     setDiamondCount(prev => Math.floor(Math.random() * 100) + prev);
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
   const [localDanmuPool, setLocalDanmuPool] = useState<Danmu[]>(danmuPool);
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<HTMLDivElement>(null);
@@ -74,17 +63,6 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       };
     });
   }, [theme]);
-
-  const getAnimationDuration = () => {
-    switch (speed) {
-      case "slow":
-        return "40s";
-      case "fast":
-        return "15s";
-      default:
-        return "25s";
-    }
-  };
 
   const displayItems = useMemo(() => {
     return localDanmuPool.map(item => ({
@@ -193,12 +171,12 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
             className="absolute top-0 left-0 w-full"
             ref={animationRef}
             style={{
-              animation: isPlaying ? `scroll-up ${getAnimationDuration()} linear infinite` : "none",
+              animation: isPlaying ? `scroll-up 120s linear infinite` : "none",
             }}
           >
             <div className={`space-y-3 ${theme === "sweet" ? "space-y-4" : "space-y-3"} py-4`}>
               {repeatedItems.map((item, idx) => (
-                <DanmuItem key={`${item.id}-${idx}`} item={item} theme={theme} />
+                <DanmuItem key={`${idx}`} item={item} theme={theme} />
               ))}
             </div>
           </div>

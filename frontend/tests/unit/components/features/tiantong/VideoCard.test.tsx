@@ -20,7 +20,9 @@ describe("VideoCard组件测试（甜筒）", () => {
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",
     views: "10万",
-    icon: Heart
+    icon: Heart,
+    bvid: "BV1xx411c7mD",
+    duration: "10:30"
   };
 
   const mockOnClick = jest.fn();
@@ -51,9 +53,6 @@ describe("VideoCard组件测试（甜筒）", () => {
 
     // 验证分类标签
     expect(screen.getByText("甜筒天籁")).toBeInTheDocument();
-
-    // 记录测试结果
-    console.log("✅ TC-038: VideoCard渲染测试（甜筒）通过");
   });
 
   /**
@@ -72,9 +71,6 @@ describe("VideoCard组件测试（甜筒）", () => {
 
     // 验证传递的video对象是否正确
     expect(mockOnClick).toHaveBeenCalledWith(mockVideo);
-
-    // 记录测试结果
-    console.log("✅ TC-039: VideoCard点击事件测试（甜筒）通过");
   });
 
   /**
@@ -100,9 +96,6 @@ describe("VideoCard组件测试（甜筒）", () => {
     // 验证封面图的hover效果
     const cover = container.querySelector(".group-hover\\:scale-110");
     expect(cover).toBeInTheDocument();
-
-    // 记录测试结果
-    console.log("✅ TC-040: VideoCard hover效果测试（甜筒）通过");
   });
 
   afterEach(() => {

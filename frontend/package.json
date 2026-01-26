@@ -98,6 +98,9 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "test:e2e": "jest tests/e2e",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },

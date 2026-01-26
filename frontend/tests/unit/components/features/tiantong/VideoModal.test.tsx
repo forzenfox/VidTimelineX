@@ -20,7 +20,9 @@ describe("VideoModal组件测试（甜筒）", () => {
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",
     views: "10万",
-    icon: Heart
+    icon: Heart,
+    bvid: "BV1xx411c7mD",
+    duration: "10:30"
   };
 
   const mockOnClose = jest.fn();
@@ -30,9 +32,7 @@ describe("VideoModal组件测试（甜筒）", () => {
    * 测试目标：验证VideoModal组件正确渲染
    */
   test("TC-041: VideoModal渲染测试（甜筒）", () => {
-    const { container } = render(
-      <VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />
-    );
+    const { container } = render(<VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />);
 
     // 验证弹窗存在
     const modal = container.querySelector('[role="dialog"]');
@@ -47,9 +47,6 @@ describe("VideoModal组件测试（甜筒）", () => {
 
     // 验证跳转原站按钮
     expect(screen.getByText("跳转原站")).toBeInTheDocument();
-
-    // 记录测试结果
-    console.log("✅ TC-041: VideoModal渲染测试（甜筒）通过");
   });
 
   /**
@@ -57,9 +54,7 @@ describe("VideoModal组件测试（甜筒）", () => {
    * 测试目标：验证弹窗可以正确关闭
    */
   test("TC-042: VideoModal关闭测试（甜筒）", () => {
-    const { container, rerender } = render(
-      <VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />
-    );
+    const { container, rerender } = render(<VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />);
 
     // 验证VideoModal是否被渲染
     const modal = container.querySelector('[role="dialog"]');
@@ -78,9 +73,6 @@ describe("VideoModal组件测试（甜筒）", () => {
     // 验证VideoModal是否被卸载
     const modalAfterClose = container.querySelector('[role="dialog"]');
     expect(modalAfterClose).not.toBeInTheDocument();
-
-    // 记录测试结果
-    console.log("✅ TC-042: VideoModal关闭测试（甜筒）通过");
   });
 
   /**
@@ -88,9 +80,7 @@ describe("VideoModal组件测试（甜筒）", () => {
    * 测试目标：验证弹窗在不同主题下都能正常显示
    */
   test("TC-043: VideoModal主题切换测试（甜筒）", () => {
-    const { container, rerender } = render(
-      <VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />
-    );
+    const { container, rerender } = render(<VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />);
 
     // 验证甜筒主题下的弹窗
     const sweetModal = container.querySelector('[role="dialog"]');
@@ -102,9 +92,6 @@ describe("VideoModal组件测试（甜筒）", () => {
     // 验证老虎主题下的弹窗
     const tigerModal = container.querySelector('[role="dialog"]');
     expect(tigerModal).toBeInTheDocument();
-
-    // 记录测试结果
-    console.log("✅ TC-043: VideoModal主题切换测试（甜筒）通过");
   });
 
   afterEach(() => {

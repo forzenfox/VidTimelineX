@@ -21,7 +21,9 @@ describe("TimelineItem组件测试", () => {
       cover: "https://example.com/cover1.jpg",
       date: "2024-01-01",
       views: "10万",
-      icon: Heart
+      icon: Heart,
+      bvid: "BV1xx411c7mD",
+      duration: "10:30"
     },
     {
       id: "2",
@@ -31,7 +33,9 @@ describe("TimelineItem组件测试", () => {
       cover: "https://example.com/cover2.jpg",
       date: "2024-01-01",
       views: "20万",
-      icon: Heart
+      icon: Heart,
+      bvid: "BV1yy4y1B7Mm",
+      duration: "12:45"
     }
   ];
 
@@ -58,9 +62,6 @@ describe("TimelineItem组件测试", () => {
     // 验证视频卡片数量
     const videoCards = container.querySelectorAll('[role="article"]');
     expect(videoCards).toHaveLength(2);
-
-    // 记录测试结果
-    console.log("✅ TC-035: TimelineItem渲染测试通过");
   });
 
   /**
@@ -86,9 +87,6 @@ describe("TimelineItem组件测试", () => {
 
     // 验证传递的video对象是否正确
     expect(mockOnVideoClick).toHaveBeenCalledWith(mockVideos[0]);
-
-    // 记录测试结果
-    console.log("✅ TC-036: TimelineItem点击事件测试通过");
   });
 
   /**
@@ -123,9 +121,6 @@ describe("TimelineItem组件测试", () => {
     // 验证甜筒主题渲染（使用getAllByText因为日期会渲染多次）
     const sweetDateElements = screen.getAllByText("2024-01-01");
     expect(sweetDateElements.length).toBeGreaterThan(0);
-
-    // 记录测试结果
-    console.log("✅ TC-037: TimelineItem主题适配测试通过");
   });
 
   afterEach(() => {

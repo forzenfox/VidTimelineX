@@ -9,20 +9,35 @@ export interface Video {
 }
 
 export interface Danmu {
-  id: string;
   text: string;
   type: "normal" | "gift" | "super";
   user?: string;
   color?: string;
 }
 
-// 从 JSON 文件导入数据
+// 从文件导入数据
 import videosData from "./videos.json";
-import danmuData from "./danmaku.json";
 import usersData from "./users.json";
+import { getRandomDanmakuType } from "./danmakuColors";
 
+// 直接导入txt文件内容
+import danmuText from "./danmaku.txt?raw";
+
+// 处理弹幕数据，添加随机类型
+const processDanmuData = (text: string): Danmu[] => {
+  // 按行分割文本
+  const lines = text.split('\n').filter(line => line.trim() !== '');
+  
+  // 为每条弹幕添加随机类型
+  return lines.map(text => ({
+    text,
+    type: getRandomDanmakuType()
+  }));
+};
+
+// 导出数据
 export const videos: Video[] = videosData;
-export const danmuPool: Danmu[] = danmuData;
+export const danmuPool: Danmu[] = processDanmuData(danmuText);
 export const users = usersData;
 
 export * from "./types";

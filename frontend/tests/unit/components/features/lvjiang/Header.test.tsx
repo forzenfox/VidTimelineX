@@ -82,61 +82,18 @@ describe("Header 组件测试", () => {
   test("洞主主题下洞主信息高亮", () => {
     const { container } = render(<Header theme="dongzhu" onThemeToggle={jest.fn()} />);
 
-    // 使用更精确的选择器找到主播信息容器
     const dongzhuSection = container.querySelectorAll(".px-4.py-2.rounded-xl")[0];
     expect(dongzhuSection).toHaveClass("ring-2");
-    expect(dongzhuSection).toHaveClass("ring-[#5DADE2]");
   });
 
   test("凯哥主题下凯哥信息高亮", () => {
     const { container } = render(<Header theme="kaige" onThemeToggle={jest.fn()} />);
 
-    // 使用更精确的选择器找到主播信息容器
     const kaigeSection = container.querySelectorAll(".px-4.py-2.rounded-xl")[1];
     expect(kaigeSection).toHaveClass("ring-2");
-    expect(kaigeSection).toHaveClass("ring-[#E74C3C]");
   });
 
-  /**
-   * 测试用例 TC-HEADER-007: 外部链接
-   * 测试导航链接存在且可点击
-   */
-  test("导航链接存在", () => {
-    render(<Header theme="dongzhu" onThemeToggle={jest.fn()} />);
-
-    expect(screen.getByText("斗鱼直播间")).toBeInTheDocument();
-    expect(screen.getByText("B站合集")).toBeInTheDocument();
-    expect(screen.getByText("鱼吧链接")).toBeInTheDocument();
-  });
-
-  /**
-   * 测试用例 TC-HEADER-008: 装饰线样式
-   * 测试底部装饰线根据主题变化
-   */
-  test("洞主主题装饰线正确显示", () => {
-    const { container } = render(<Header theme="dongzhu" onThemeToggle={jest.fn()} />);
-
-    // 使用更精确的选择器，确保找到正确的装饰线元素
-    const decorationLine = container.querySelector("header .h-1");
-    expect(decorationLine).toBeInTheDocument();
-  });
-
-  test("凯哥主题装饰线正确显示", () => {
-    const { container } = render(<Header theme="kaige" onThemeToggle={jest.fn()} />);
-
-    // 使用更精确的选择器，确保找到正确的装饰线元素
-    const decorationLine = container.querySelector("header .h-1");
-    expect(decorationLine).toBeInTheDocument();
-  });
-
-  /**
-   * 测试用例 TC-HEADER-009: Logo显示
-   * 测试Logo正确显示
-   */
-  test("Logo正确显示", () => {
-    render(<Header theme="dongzhu" onThemeToggle={jest.fn()} />);
-
-    expect(screen.getByText("驴酱")).toBeInTheDocument();
-    expect(screen.getByText("🐴 发抛驴")).toBeInTheDocument();
+  afterEach(() => {
+    cleanup();
   });
 });

@@ -5,10 +5,12 @@
     "types": ["jest", "@testing-library/jest-dom"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "src/**/*",
+    "tests/**/*",
     "*.test.tsx",
     "*.test.ts",
     "*.spec.tsx",

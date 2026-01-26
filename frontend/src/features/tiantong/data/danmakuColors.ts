@@ -1,7 +1,17 @@
-// 甜筒模块弹幕颜色配置
-// 集中管理不同主题下的super类型弹幕颜色
+// 甜筒模块弹幕配置
+// 集中管理不同主题下的弹幕颜色和类型配置
 
 import { Theme } from "./types";
+
+// 弹幕类型定义
+export type DanmakuType = "normal" | "gift" | "super";
+
+// 弹幕类型权重配置
+export const danmakuTypeWeights = {
+  normal: 60, // 60% 概率
+  gift: 20,   // 20% 概率
+  super: 20,  // 20% 概率
+};
 
 // super类型弹幕颜色配置
 export const superDanmakuColors = {
@@ -32,4 +42,27 @@ export const getRandomSuperDanmakuColor = (theme: Theme): string => {
   const colors = superDanmakuColors[theme];
   const randomIndex = Math.floor(Math.random() * colors.length);
   return colors[randomIndex];
+};
+
+/**
+ * 随机分配弹幕类型
+ * @returns 随机弹幕类型
+ */
+export const getRandomDanmakuType = (): DanmakuType => {
+  // 计算总权重
+  const totalWeight = Object.values(danmakuTypeWeights).reduce((sum, weight) => sum + weight, 0);
+  
+  // 生成随机数
+  let random = Math.random() * totalWeight;
+  
+  // 根据权重分配类型
+  for (const [type, weight] of Object.entries(danmakuTypeWeights)) {
+    random -= weight;
+    if (random <= 0) {
+      return type as DanmakuType;
+    }
+  }
+  
+  // 默认返回normal类型
+  return "normal";
 };
