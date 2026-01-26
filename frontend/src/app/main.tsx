@@ -21,7 +21,6 @@ if (typeof window !== "undefined") {
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HelmetProvider } from "react-helmet-async";
 import AppRoutes from "./routes";
 import "../index.css";
 import "../styles/globals.css";
@@ -31,12 +30,10 @@ import PerformanceMonitor from "../components/PerformanceMonitor";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <PerformanceMonitor />
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </QueryClientProvider>
-  </HelmetProvider>
+  <QueryClientProvider client={queryClient}>
+    <PerformanceMonitor />
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  </QueryClientProvider>
 );

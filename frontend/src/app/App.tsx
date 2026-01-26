@@ -1,26 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { PlayCircle } from "lucide-react";
-import { Helmet } from "react-helmet-async";
 
 // 首页组件
 export const HomePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col items-center justify-center p-4">
-      <Helmet>
-        <title>哔哩哔哩时间线 - 探索精彩视频内容</title>
-        <meta
-          name="description"
-          content="探索哔哩哔哩视频集，发现精彩内容，包含驴酱视频集和甜筒视频集"
-        />
-        <meta name="keywords" content="哔哩哔哩, 时间线, 视频集, 驴酱, 甜筒, 洞主, 凯哥" />
-        <meta name="author" content="哔哩哔哩时间线" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta property="og:title" content="哔哩哔哩时间线 - 探索精彩视频内容" />
-        <meta property="og:description" content="探索哔哩哔哩视频集，发现精彩内容" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://example.com" />
-      </Helmet>
+      <title>哔哩哔哩时间线 - 探索精彩视频内容</title>
+      <meta
+        name="description"
+        content="探索哔哩哔哩视频集，发现精彩内容，包含驴酱视频集和甜筒视频集"
+      />
+      <meta name="keywords" content="哔哩哔哩, 时间线, 视频集, 驴酱, 甜筒, 洞主, 凯哥" />
+      <meta name="author" content="哔哩哔哩时间线" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta property="og:title" content="哔哩哔哩时间线 - 探索精彩视频内容" />
+      <meta property="og:description" content="探索哔哩哔哩视频集，发现精彩内容" />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="https://example.com" />
 
       <div className="text-center max-w-3xl">
         {/* 标题区域 */}

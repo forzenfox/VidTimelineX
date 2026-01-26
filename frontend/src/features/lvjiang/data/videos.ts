@@ -1,4 +1,3 @@
-// 视频数据配置
 export interface Video {
   id: string;
   title: string;
@@ -9,61 +8,9 @@ export interface Video {
   duration: string;
 }
 
-export const videos: Video[] = [
-  {
-    id: "1",
-    title: "凯哥我点了！洞主经典名场面合集",
-    date: "2024-01-15",
-    bvid: "BV1xx411c7mD",
-    cover: "gaming esports",
-    tags: ["凯哥我点了", "峡谷养爹人"],
-    duration: "15:23",
-  },
-  {
-    id: "2",
-    title: "武汉植物人！凯哥技能全空highlight",
-    date: "2024-02-20",
-    bvid: "BV1yy4y1B7Mm",
-    cover: "league legends",
-    tags: ["技能全空", "之神"],
-    duration: "12:45",
-  },
-  {
-    id: "3",
-    title: "桥头仪仗队！双人爆笑配合时刻",
-    date: "2024-03-10",
-    bvid: "BV1zz4y1e7KL",
-    cover: "gaming duo",
-    tags: ["桥头仪仗队", "飞天大草"],
-    duration: "18:30",
-  },
-  {
-    id: "4",
-    title: "洞主飞天大草名场面",
-    date: "2024-04-05",
-    bvid: "BV1xx411c7mE",
-    cover: "lol gameplay",
-    tags: ["飞天大草", "峡谷养爹人"],
-    duration: "14:20",
-  },
-  {
-    id: "5",
-    title: "凯哥上分之路",
-    date: "2024-05-12",
-    bvid: "BV1yy4y1B7Mn",
-    cover: "esports stream",
-    tags: ["之神", "武汉植物人"],
-    duration: "20:15",
-  },
-  {
-    id: "6",
-    title: "驴酱公会欢乐时光",
-    date: "2024-06-08",
-    bvid: "BV1zz4y1e7KM",
-    cover: "streaming funny",
-    tags: ["驴酱公会", "电竞相声"],
-    duration: "16:40",
-  },
-];
+// 从 JSON 文件导入数据
+import videosData from "./videos.json";
+
+export const videos: Video[] = videosData;
 
 export * from "./types";
