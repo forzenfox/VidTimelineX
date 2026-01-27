@@ -35,12 +35,17 @@ export function useDeviceDetect() {
       setDevice(detectDevice());
     };
 
-    // 添加事件监听 - 只监听平板断点
-    tabletMql.addEventListener("change", mqlHandler);
+    // 添加事件监听 - 只监听平板断点，兼容测试环境
+    if (typeof tabletMql.addEventListener === 'function') {
+      tabletMql.addEventListener("change", mqlHandler);
 
-    // 清理函数
-    return () => {
-      tabletMql.removeEventListener("change", mqlHandler);
+      // 清理函数
+      return () => {
+        tabletMql.removeEventListener("change", mqlHandler);
+      };
+    } else {
+      // 测试环境中返回空清理函数
+      return () => {};
     };
   }, []);
 

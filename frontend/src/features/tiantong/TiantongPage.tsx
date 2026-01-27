@@ -6,7 +6,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
 import DanmakuWelcome from "./components/DanmakuWelcome";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
-import "./styles/index.css";
+
 
 /**
  * 节流工具函数 - 防止频繁调用
@@ -29,7 +29,6 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
-      cacheTime: 30 * 60 * 1000,
       retry: 2,
       retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
       refetchOnWindowFocus: false,
@@ -171,7 +170,7 @@ const TiantongPage = () => {
   // 使用useCallback和防抖优化搜索性能
   const debouncedSearch = React.useCallback(
     React.useMemo(() => {
-      let timeoutId: NodeJS.Timeout;
+      let timeoutId: number;
       return (query: string) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {

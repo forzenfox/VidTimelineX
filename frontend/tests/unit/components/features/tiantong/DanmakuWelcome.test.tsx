@@ -58,7 +58,7 @@ describe("DanmakuWelcome组件测试（老虎）", () => {
     danmakuItems.forEach(item => {
       const style = window.getComputedStyle(item as Element);
       expect(style.animation).toBeDefined();
-      expect(style.animation).toContain("danmaku-move");
+      expect(style.animation).toContain("danmaku");
     });
 
     // 验证弹幕元素有颜色

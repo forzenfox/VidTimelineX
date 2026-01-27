@@ -16,6 +16,8 @@ module.exports = {
       "ts-jest",
       {
         tsconfig: "<rootDir>/tsconfig.test.json",
+        // 启用快速编译
+        fast: true,
       },
     ],
   },
@@ -30,7 +32,79 @@ module.exports = {
     "**/tests/e2e/**/*.test.(ts|tsx|js|jsx)",
   ],
 
-  // 设置测试覆盖率阈值
+  // 启用并行测试
+  maxWorkers: "75%",
+  // 测试超时时间
+  testTimeout: 30000,
+  // 禁用测试顺序随机化
+  testSequencer: "@jest/test-sequencer",
+  // 启用详细输出
+  verbose: true,
+  // 显示测试执行时间
+  displayName: {
+    name: "FRONTEND",
+    color: "blue",
+  },
+  // 启用测试缓存
+  cache: true,
+  // 缓存目录
+  cacheDirectory: "<rootDir>/node_modules/.jest-cache",
+  // 缓存清理阈值（文件数）
+  cacheThreshold: 10000,
+  // 缓存压缩
+  cacheCompression: true,
+  // 测试路径忽略模式
+  testPathIgnorePatterns: [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "test-results",
+    ".next",
+    ".nuxt",
+    ".vite",
+    ".turbo",
+  ],
+  // 测试名称忽略模式
+  testNameIgnorePatterns: [
+    "\\.d\\.ts$",
+    "\\.test\\.d\\.ts$",
+  ],
+  // 模块路径忽略模式
+  modulePathIgnorePatterns: [
+    "node_modules",
+    "dist",
+    "build",
+  ],
+  // 测试排序器
+  testSequencer: "@jest/test-sequencer",
+  // 测试环境变量
+  testEnvironmentOptions: {
+    customExportConditions: [""],
+  },
+  // 测试路径映射
+  testPathPattern: undefined,
+  // 测试名称模式
+  testNamePattern: undefined,
+  // 测试文件扩展名
+  testFileExtensions: ["test.ts", "test.tsx", "test.js", "test.jsx"],
+  // 测试超时配置
+  testTimeout: 30000,
+  // 测试重试配置
+  retryTimes: 3,
+  // 测试失败后是否退出
+  bail: 0,
+  // 测试输出格式
+  reporters: [
+    "default",
+    ["jest-junit", {
+      outputDirectory: "test-results",
+      outputName: "junit.xml",
+    }],
+  ],
+  // 测试覆盖率配置
+  coverageDirectory: "<rootDir>/coverage",
+  coverageReporters: ["text", "lcov", "json-summary", "html"],
   coverageThreshold: {
     global: {
       branches: 50,
@@ -39,11 +113,6 @@ module.exports = {
       statements: 50,
     },
   },
-
-  // 覆盖率报告配置
-  coverageReporters: ["text", "lcov", "json-summary"],
-
-  // 覆盖率收集目录 - 更新以适配新的目录结构
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",
     "!src/**/*.d.ts",
@@ -51,7 +120,14 @@ module.exports = {
     "!src/app/App.tsx",
     "!src/app/routes.tsx",
   ],
-
-  // 测试前的设置文件 - 更新路径
+  // 测试设置文件
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+  setupFiles: ["<rootDir>/tests/setup-global.ts"],
+  // 全局变量
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.test.json",
+      fast: true,
+    },
+  }
 };

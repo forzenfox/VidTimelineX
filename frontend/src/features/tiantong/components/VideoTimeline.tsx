@@ -20,10 +20,21 @@ const videoCoverUrls: { [key: string]: string } = {
 
 // 单个视频项组件
 const VideoItem: React.FC<{
-  video: Video;
+  video: {
+    id: string;
+    title: string;
+    date: string;
+    bvid: string;
+    cover: string;
+    tags: string[];
+    duration: string;
+    category?: string;
+    views?: string;
+    icon?: any;
+  };
   index: number;
   theme: "tiger" | "sweet";
-  onVideoClick: (video: Video) => void;
+  onVideoClick: (video: any) => void;
 }> = React.memo(({ video, index, theme, onVideoClick }) => {
   const isLeft = index % 2 === 0;
 

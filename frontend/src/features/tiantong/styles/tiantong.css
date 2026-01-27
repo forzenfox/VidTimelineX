@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -14,15 +13,10 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-
-  --shadow-custom: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread)
-    var(--shadow-color);
-
+  --shadow-custom: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
   --animate-scroll-left: scroll-left 20s linear infinite;
-  --animate-scroll-up: scroll-up 30s linear infinite;
   --animate-scroll-down: scroll-down 30s linear infinite;
   --animate-danmaku: danmaku 8s linear forwards;
-
   @keyframes scroll-left {
     from {
       transform: translateX(100%);
@@ -31,16 +25,6 @@
       transform: translateX(-100%);
     }
   }
-
-  @keyframes scroll-up {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(-33.33%);
-    }
-  }
-
   @keyframes scroll-down {
     from {
       transform: translateY(-33.33%);
@@ -49,7 +33,6 @@
       transform: translateY(0);
     }
   }
-
   @keyframes danmaku {
     from {
       transform: translateX(100vw);
@@ -58,7 +41,6 @@
       transform: translateX(-100%);
     }
   }
-
   @keyframes danmaku-horizontal {
     from {
       transform: translateX(100vw);
@@ -68,9 +50,7 @@
     }
   }
 }
-
 :root {
-  /* Tiger主题颜色 - 默认主题 */
   --background: rgb(255, 250, 245);
   --foreground: rgb(50, 40, 30);
   --primary: rgb(255, 95, 0);
@@ -85,15 +65,10 @@
   --muted-foreground: rgb(120, 120, 120);
   --border: rgb(255, 210, 150);
   --shadow-color: rgb(255, 180, 100);
-  --card-rgb: 255, 255, 255;
-
-  /* 通用变量 */
   --shadow-x: 4px;
   --shadow-y: 4px;
   --shadow-blur: 10px;
   --shadow-spread: 0px;
-
-  /* 侧边栏变量 */
   --sidebar-width: 280px;
   --sidebar-width-icon: 60px;
   --sidebar-border: var(--border);
@@ -101,8 +76,6 @@
   --sidebar-background: var(--card);
   --sidebar-foreground: var(--card-foreground);
 }
-
-/* 通过data属性切换主题变量值 - 甜筒时刻 (Sweet Mode) */
 [data-theme="sweet"] {
   --background: rgb(255, 248, 220);
   --foreground: rgb(60, 60, 60);
@@ -118,122 +91,68 @@
   --muted-foreground: rgb(150, 130, 130);
   --border: rgb(255, 230, 150);
   --shadow-color: rgb(255, 200, 200);
-  --card-rgb: 255, 255, 255;
-  /* GPU加速优化 */
-  will-change: background-color, color, border-color;
 }
-
-/* 仅对body元素添加transition，移除全局transition以提升性能 */
 body {
   background-color: var(--background);
   color: var(--foreground);
   border-color: var(--border);
-  /* 优化：减少transition属性数量，缩短transition时间 */
   transition: background-color 0.2s ease-out;
   overflow-x: hidden;
-  /* GPU加速优化 */
   will-change: background-color;
   transform: translateZ(0);
   backface-visibility: hidden;
-  /* CSS Containment优化 */
   contain: layout style;
 }
-
-/* 为按钮添加独立的transition */
 button {
-  /* 优化：只保留transform的transition */
   transition: transform 0.1s ease-out;
 }
-
 button:active {
   transform: scale(0.95);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-/* 优化焦点状态，提高键盘用户可访问性 */
 *:focus-visible {
   outline: 3px solid var(--primary);
   outline-offset: 3px;
-  transition:
-    outline 0.2s,
-    outline-offset 0.2s;
   box-shadow: 0 0 0 3px var(--primary-foreground);
 }
-
-/* 移除默认焦点样式，使用自定义样式 */
 *:focus {
   outline: none;
 }
-
-/* 优化可点击元素和交互效果，适用于平板和桌面设备 */
-button,
-a,
-[role="button"],
-[role="link"],
-[tabindex="0"] {
+button,a,[role="button"],[role="link"],[tabindex="0"] {
   min-height: 44px;
   min-width: 44px;
   padding: 0.5rem;
-  transition: all 0.2s ease;
 }
-
-/* 增强链接样式 */
 a:hover {
   color: var(--primary);
   text-decoration: underline;
 }
-
-/* 增强输入框焦点样式 */
-input:focus,
-textarea:focus {
+input:focus,textarea:focus {
   outline: 3px solid var(--primary);
   outline-offset: 2px;
 }
-
-/* 增强视频卡片点击反馈 */
 [role="article"]:active {
   transform: scale(0.95);
 }
-
-/* 优化按钮悬停和点击效果 */
 button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* 平板设备特定优化（768px - 1024px） */
 @media (max-width: 1024px) {
-  /* 调整平板设备上的字体大小 */
   .text-base {
     font-size: 0.95rem;
   }
-
   .text-lg {
     font-size: 1.125rem;
   }
-
-  /* 视频卡片标题优化 */
   .video-title {
     font-size: 0.95rem;
     line-clamp: 2;
   }
 }
-
 .tiger-stripe {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(255, 255, 255, 0.1) 10px,
-    rgba(255, 255, 255, 0.1) 20px
-  );
+  background-image: repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,0.1) 10px,rgba(255,255,255,0.1) 20px);
 }
-
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

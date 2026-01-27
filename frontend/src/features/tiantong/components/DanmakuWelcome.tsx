@@ -90,7 +90,7 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
             left: 0,
             transform: "translateX(100vw)",
             opacity: 1,
-            animation: `danmaku-move ${danmaku.duration}s linear ${danmaku.delay}s forwards`,
+            animation: `danmaku ${danmaku.duration}s linear ${danmaku.delay}s forwards`,
             fontSize: theme === "sweet" ? "18px" : "18px",
             color: danmaku.color,
             textShadow:
@@ -112,4 +112,4 @@ const DanmakuWelcome: React.FC<DanmakuWelcomeProps> = ({
   );
 };
 
-export default DanmakuWelcome;
+export default React.memo(DanmakuWelcome);

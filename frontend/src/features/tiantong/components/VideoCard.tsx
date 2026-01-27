@@ -16,13 +16,11 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('Video card clicked:', video.title);
     onClick(video);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      console.log('Video card Enter pressed:', video.title);
       onClick(video);
     }
   };

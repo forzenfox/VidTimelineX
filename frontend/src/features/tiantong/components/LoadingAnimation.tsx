@@ -2,7 +2,7 @@ import React from 'react';
 
 const LoadingAnimation = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background">
+    <div data-testid="loading-animation" className="flex items-center justify-center min-h-screen bg-background">
       <div className="relative w-24 h-24">
         {/* 金属光泽流动效果 - 深橙→亮橙渐变 */}
         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#E67E22] via-[#F39C12] to-[#E67E22] animate-shimmer opacity-70 mask-image: radial-gradient(circle at center, transparent 20%, black 70%) border-radius: 50% filter: brightness(1.2)"/>

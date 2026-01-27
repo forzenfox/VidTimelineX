@@ -115,7 +115,7 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
         )}
       </div>
 
-      <div className="flex-1 overflow-hidden flex flex-col-reverse p-2 gap-2">
+      <div className="flex-1 flex flex-col p-2 gap-2" style={{ overflowY: "auto" }}>
         {displayMessages.map((msg, index) => (
           <div
             key={msg.id}
@@ -134,9 +134,11 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
                   ? "1px solid rgba(174, 214, 241, 0.5)"
                   : "1px solid rgba(231, 76, 60, 0.3)",
               borderRadius: theme === "dongzhu" ? "12px" : "4px",
-              animation: "danmaku-vertical 0.5s ease-out",
               position: "relative",
-              overflow: "hidden",
+              minHeight: "40px",
+              height: "auto",
+              padding: "8px 12px",
+              boxSizing: "border-box",
             }}
           >
             {theme === "dongzhu" && (
@@ -158,20 +160,13 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
             )}
 
             <div
-              className="text-xs mb-1 opacity-60"
-              style={{
-                color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
-              }}
-            >
-              {msg.timestamp}
-            </div>
-
-            <div
               className="font-medium"
               style={{
                 color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
                 fontSize: "14px",
                 lineHeight: "1.4",
+                wordWrap: "break-word",
+                whiteSpace: "normal",
               }}
             >
               {msg.text}

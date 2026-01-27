@@ -9,6 +9,7 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import VideoCard from "@/features/tiantong/components/VideoCard";
 import { Heart } from "lucide-react";
 import "@testing-library/jest-dom";
+import { safeSync, wrapAsync } from "../../utils/error-handling";
 
 describe("核心内容区测试", () => {
   const mockVideo = {
@@ -31,11 +32,23 @@ describe("核心内容区测试", () => {
    * 测试视频卡片的橙黑金属质感边框、虎纹滤镜、hover效果
    */
   test("TC-005: 视频卡片视觉升级", () => {
-    const { container } = render(<VideoCard video={mockVideo} onClick={onClick} />);
+    const result = safeSync(() => {
+      return render(<VideoCard video={mockVideo} onClick={onClick} />);
+    }, "视频卡片渲染失败");
+
+    // 验证渲染成功
+    expect(result).not.toBeInstanceOf(Error);
+
+    // 安全地获取视频卡片
+    const cardResult = safeSync(() => {
+      return screen.getByRole("article");
+    }, "获取视频卡片失败");
 
     // 验证视频卡片存在
-    const card = screen.getByRole("article");
-    expect(card).toBeInTheDocument();
+    expect(cardResult).not.toBeInstanceOf(Error);
+    if (!(cardResult instanceof Error)) {
+      expect(cardResult).toBeInTheDocument();
+    }
   });
 
   /**
@@ -43,11 +56,23 @@ describe("核心内容区测试", () => {
    * 测试不同用户类型的弹幕样式
    */
   test("TC-006: 互动区弹幕气泡虎纹化适配", () => {
-    const { container } = render(<VideoCard video={mockVideo} onClick={onClick} />);
+    const result = safeSync(() => {
+      return render(<VideoCard video={mockVideo} onClick={onClick} />);
+    }, "视频卡片渲染失败");
+
+    // 验证渲染成功
+    expect(result).not.toBeInstanceOf(Error);
+
+    // 安全地获取视频卡片
+    const cardResult = safeSync(() => {
+      return screen.getByRole("article");
+    }, "获取视频卡片失败");
 
     // 验证视频卡片存在
-    const card = screen.getByRole("article");
-    expect(card).toBeInTheDocument();
+    expect(cardResult).not.toBeInstanceOf(Error);
+    if (!(cardResult instanceof Error)) {
+      expect(cardResult).toBeInTheDocument();
+    }
   });
 
   /**
@@ -55,11 +80,23 @@ describe("核心内容区测试", () => {
    * 测试分类标签的样式和交互
    */
   test("TC-007: 视频分类标签虎纹化升级", () => {
-    const { container } = render(<VideoCard video={mockVideo} onClick={onClick} />);
+    const result = safeSync(() => {
+      return render(<VideoCard video={mockVideo} onClick={onClick} />);
+    }, "视频卡片渲染失败");
+
+    // 验证渲染成功
+    expect(result).not.toBeInstanceOf(Error);
+
+    // 安全地获取视频卡片
+    const cardResult = safeSync(() => {
+      return screen.getByRole("article");
+    }, "获取视频卡片失败");
 
     // 验证视频卡片存在
-    const card = screen.getByRole("article");
-    expect(card).toBeInTheDocument();
+    expect(cardResult).not.toBeInstanceOf(Error);
+    if (!(cardResult instanceof Error)) {
+      expect(cardResult).toBeInTheDocument();
+    }
   });
 
   /**
@@ -67,14 +104,28 @@ describe("核心内容区测试", () => {
    * 测试榜单标签的样式和交互
    */
   test("TC-008: 互动区榜单标签强化", () => {
-    const { container } = render(<VideoCard video={mockVideo} onClick={onClick} />);
+    const result = safeSync(() => {
+      return render(<VideoCard video={mockVideo} onClick={onClick} />);
+    }, "视频卡片渲染失败");
+
+    // 验证渲染成功
+    expect(result).not.toBeInstanceOf(Error);
+
+    // 安全地获取视频卡片
+    const cardResult = safeSync(() => {
+      return screen.getByRole("article");
+    }, "获取视频卡片失败");
 
     // 验证视频卡片存在
-    const card = screen.getByRole("article");
-    expect(card).toBeInTheDocument();
+    expect(cardResult).not.toBeInstanceOf(Error);
+    if (!(cardResult instanceof Error)) {
+      expect(cardResult).toBeInTheDocument();
+    }
   });
 
   afterEach(() => {
-    cleanup();
+    safeSync(() => {
+      cleanup();
+    }, "清理测试环境失败");
   });
 });

@@ -124,7 +124,7 @@
 }
 
 /* 甜筒时刻 (Sweet Mode) */
-.theme-sweet {
+[data-theme="sweet"] {
   --background: var(--sweet-background);
   --foreground: var(--sweet-foreground);
   --primary: var(--sweet-primary);

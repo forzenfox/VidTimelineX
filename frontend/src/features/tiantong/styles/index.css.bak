@@ -2,7 +2,7 @@
 
 /* 老虎主题（默认） */
 :root,
-.theme-tiger {
+[data-theme="tiger"] {
   --primary: var(--tiger-primary, rgb(255, 95, 0));
   --primary-foreground: #ffffff;
   --secondary: var(--tiger-secondary, rgb(255, 190, 40));
@@ -20,7 +20,7 @@
 }
 
 /* 甜筒主题 */
-.theme-sweet {
+[data-theme="sweet"] {
   --primary: var(--sweet-primary, rgb(255, 140, 180));
   --primary-foreground: #ffffff;
   --secondary: var(--sweet-secondary, rgb(255, 192, 203));
