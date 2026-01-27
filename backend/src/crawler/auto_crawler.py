@@ -13,24 +13,25 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from datetime import datetime
 
+# 导入配置文件
+from src.utils.config import (
+    DATA_DIR, PENDING_FILE, APPROVED_FILE, REJECTED_FILE,
+    REQUEST_TIMEOUT, MAX_RETRIES, INITIAL_RETRY_DELAY, REQUEST_INTERVAL,
+    HEADERS, VIDEOS_JSON_PATH
+)
+
 class BiliBiliAutoCrawler:
     def __init__(self):
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': 'https://www.bilibili.com/',
-            'Connection': 'keep-alive'
-        }
+        self.headers = HEADERS
         self.session = requests.Session()
         self.session.headers.update(self.headers)
         
         # 数据存储路径
-        self.data_dir = Path('data')
+        self.data_dir = DATA_DIR
         self.data_dir.mkdir(exist_ok=True)
-        self.pending_file = self.data_dir / 'pending.json'
-        self.approved_file = self.data_dir / 'approved.json'
-        self.rejected_file = self.data_dir / 'rejected.json'
+        self.pending_file = PENDING_FILE
+        self.approved_file = APPROVED_FILE
+        self.rejected_file = REJECTED_FILE
         
         # 初始化存储文件
         self._init_storage_files()
@@ -96,13 +97,11 @@ class BiliBiliAutoCrawler:
         print(f"爬取视频元数据: BV{bv_code}")
         
         video_url = f"https://www.bilibili.com/video/BV{bv_code}"
-        max_retries = 3
-        retry_delay = 2  # 初始重试间隔（秒）
         
-        for retry in range(max_retries):
+        for retry in range(MAX_RETRIES):
             try:
-                print(f"  尝试 {retry + 1}/{max_retries}")
-                response = self.session.get(video_url, timeout=15)
+                print(f"  尝试 {retry + 1}/{MAX_RETRIES}")
+                response = self.session.get(video_url, timeout=REQUEST_TIMEOUT)
                 response.raise_for_status()
                 
                 # 解析视频页面
@@ -110,23 +109,20 @@ class BiliBiliAutoCrawler:
                 return metadata
                 
             except requests.exceptions.Timeout:
-                print(f"  请求超时，{retry_delay}秒后重试")
-                time.sleep(retry_delay)
-                retry_delay *= 2  # 指数退避
+                print(f"  请求超时，{INITIAL_RETRY_DELAY}秒后重试")
+                time.sleep(INITIAL_RETRY_DELAY)
             except requests.exceptions.HTTPError as e:
                 print(f"  HTTP错误: {e}")
-                if retry < max_retries - 1:
-                    print(f"  {retry_delay}秒后重试")
-                    time.sleep(retry_delay)
-                    retry_delay *= 2
+                if retry < MAX_RETRIES - 1:
+                    print(f"  {INITIAL_RETRY_DELAY}秒后重试")
+                    time.sleep(INITIAL_RETRY_DELAY)
                 else:
                     print(f"  达到最大重试次数，放弃爬取")
             except Exception as e:
                 print(f"  爬取错误: {e}")
-                if retry < max_retries - 1:
-                    print(f"  {retry_delay}秒后重试")
-                    time.sleep(retry_delay)
-                    retry_delay *= 2
+                if retry < MAX_RETRIES - 1:
+                    print(f"  {INITIAL_RETRY_DELAY}秒后重试")
+                    time.sleep(INITIAL_RETRY_DELAY)
                 else:
                     print(f"  达到最大重试次数，放弃爬取")
         
@@ -490,13 +486,12 @@ class BiliBiliAutoCrawler:
             timeline_data.append(timeline_item)
         
         # 保存到前端目录
-        timeline_path = Path('../frontend/src/features/lvjiang/data/videos.json')
-        timeline_path.parent.mkdir(exist_ok=True)
+        VIDEOS_JSON_PATH.parent.mkdir(exist_ok=True)
         
-        with open(timeline_path, 'w', encoding='utf-8') as f:
+        with open(VIDEOS_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(timeline_data, f, ensure_ascii=False, indent=2)
         
-        print(f"生成了时间线数据，保存到: {timeline_path}")
+        print(f"生成了时间线数据，保存到: {VIDEOS_JSON_PATH}")
         print(f"时间线包含 {len(timeline_data)} 个视频")
         
         return len(timeline_data)

@@ -8,20 +8,6 @@ import DanmakuWelcome from "./components/DanmakuWelcome";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
 import "./styles/index.css";
 
-/**
- * 节流工具函数 - 防止频繁调用
- */
-function throttle<T extends (...args: any[]) => any>(func: T, limit: number): T {
-  let inThrottle: boolean;
-  return ((...args: any[]) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  }) as T;
-}
-
 const VideoModal = React.lazy(() => import("./components/VideoModal"));
 const DesktopSidebarDanmu = React.lazy(() => import("./components/SidebarDanmu"));
 
@@ -69,11 +55,6 @@ const TiantongPage = () => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [headerBgOpacity, setHeaderBgOpacity] = useState(0.9);
   const headerRef = React.useRef<HTMLElement>(null);
-
-  React.useEffect(() => {
-    // 初始化主题data属性
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -136,20 +117,16 @@ const TiantongPage = () => {
           "rgb(255, 20, 147)",
         ];
 
-  const toggleTheme = React.useCallback(
-    throttle((newTheme: "tiger" | "sweet") => {
-      setTheme(newTheme);
-      // 使用data属性切换主题，优化性能
-      document.documentElement.setAttribute("data-theme", newTheme);
-    }, 300),
-    []
-  );
-
-  // 包装后的主题切换函数，用于UI事件
-  const handleToggleTheme = () => {
-    const nextTheme = theme === "tiger" ? "sweet" : "tiger";
-    toggleTheme(nextTheme);
-  };
+  const toggleTheme = React.useCallback(() => {
+    const newTheme = theme === "tiger" ? "sweet" : "tiger";
+    setTheme(newTheme);
+    // 添加DOM操作，切换.theme-sweet类
+    if (newTheme === "sweet") {
+      document.documentElement.classList.add("theme-sweet");
+    } else {
+      document.documentElement.classList.remove("theme-sweet");
+    }
+  }, [theme]);
 
   const handleSearch = React.useCallback(
     (e: React.FormEvent) => {
@@ -423,7 +400,7 @@ const TiantongPage = () => {
                       </div>
 
                       <div className="flex items-center flex-shrink-0">
-                        <ThemeToggle currentTheme={theme} onToggle={handleToggleTheme} />
+                        <ThemeToggle currentTheme={theme} onToggle={toggleTheme} />
                       </div>
                     </div>
                   </div>

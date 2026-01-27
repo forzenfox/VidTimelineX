@@ -10,7 +10,11 @@ interface TimelineItemProps {
   theme: "tiger" | "sweet";
 }
 
-export const TimelineItem: React.FC<TimelineItemProps> = ({
+/**
+ * 时间线项组件
+ * 使用React.memo优化性能，避免不必要的重新渲染
+ */
+export const TimelineItem: React.FC<TimelineItemProps> = React.memo(({
   date,
   videos,
   isLast = false,
@@ -55,6 +59,6 @@ export const TimelineItem: React.FC<TimelineItemProps> = ({
       </div>
     </div>
   );
-};
+});
 
 export default TimelineItem;

@@ -7,7 +7,11 @@ interface VideoCardProps {
   onClick: (video: Video) => void;
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
+/**
+ * 视频卡片组件
+ * 使用React.memo优化性能，避免不必要的重新渲染
+ */
+const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
   const Icon = video.icon;
 
   const handleClick = (e: React.MouseEvent) => {
@@ -88,6 +92,6 @@ const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
       </div>
     </div>
   );
-};
+});
 
 export default VideoCard;
