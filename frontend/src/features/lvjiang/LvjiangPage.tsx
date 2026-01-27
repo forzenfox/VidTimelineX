@@ -43,19 +43,10 @@ const Lvjiang = () => {
     setTheme(selectedTheme);
     setIsLoading(false);
     setShowDanmaku(true);
-
-    setTimeout(() => {
-      setShowDanmaku(false);
-    }, 10000);
   }, []);
 
   const handleThemeToggle = useCallback(() => {
     setTheme(prev => (prev === "dongzhu" ? "kaige" : "dongzhu"));
-    setShowDanmaku(true);
-
-    setTimeout(() => {
-      setShowDanmaku(false);
-    }, 10000);
   }, []);
 
   const handleVideoClick = useCallback((video: Video) => {

@@ -18,45 +18,26 @@
   --shadow-custom: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread)
     var(--shadow-color);
 
-  --animate-scroll-left: scroll-left 20s linear infinite;
   --animate-scroll-up: scroll-up 30s linear infinite;
-  --animate-scroll-down: scroll-down 30s linear infinite;
   --animate-danmaku: danmaku 8s linear forwards;
+}
 
-  @keyframes scroll-left {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(-100%);
-    }
+/* 全局动画定义 */
+@keyframes scroll-up {
+  from {
+    transform: translateY(0);
   }
-
-  @keyframes scroll-up {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(-33.33%);
-    }
+  to {
+    transform: translateY(-33.33%);
   }
+}
 
-  @keyframes scroll-down {
-    from {
-      transform: translateY(-33.33%);
-    }
-    to {
-      transform: translateY(0);
-    }
+@keyframes danmaku {
+  from {
+    transform: translateX(100vw);
   }
-
-  @keyframes danmaku {
-    from {
-      transform: translateX(100vw);
-    }
-    to {
-      transform: translateX(-100%);
-    }
+  to {
+    transform: translateX(-100%);
   }
 }
 

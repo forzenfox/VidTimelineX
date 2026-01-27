@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { Play, Calendar, Clock } from "lucide-react";
-import { videos, type Video } from "../data/videos";
+import { videos, type Video } from "../data/data";
 import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
 
 interface VideoTimelineProps {

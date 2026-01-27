@@ -4,9 +4,8 @@ import { Github, ExternalLink, Search, Heart } from "lucide-react";
 import { videos, Video } from "./data";
 import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
-import DanmakuWelcome from "./components/DanmakuWelcome";
+import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
-
 
 /**
  * 节流工具函数 - 防止频繁调用
@@ -99,41 +98,6 @@ const TiantongPage = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const danmakuMessages = [
-    "霸总虎来巡山了！🦁️",
-    "甜筒今天有点甜🍦",
-    "224大军前来报到！",
-    "这是什么绝世反差萌啊awsl",
-    "主播房间号 12195609 关注不迷路",
-    "瑞哥哥大气！",
-    "为了甜筒，冲鸭！",
-    "狮子座的光芒无法掩盖✨",
-    "今天也是元气满满的一天",
-    "这个wink我承包了😉",
-    "哈哈哈笑死我了",
-    "亿口甜筒，入股不亏",
-    "好听好听耳朵怀孕了🎵",
-    "这波操作666",
-    "守护最好的甜筒",
-  ];
-
-  const danmakuColors =
-    theme === "tiger"
-      ? [
-          "rgb(255, 95, 0)",
-          "rgb(255, 190, 40)",
-          "rgb(255, 215, 0)",
-          "rgb(255, 165, 0)",
-          "rgb(255, 140, 0)",
-        ]
-      : [
-          "rgb(255, 140, 180)",
-          "rgb(255, 192, 203)",
-          "rgb(255, 105, 180)",
-          "rgb(255, 127, 80)",
-          "rgb(255, 20, 147)",
-        ];
 
   const toggleTheme = React.useCallback(
     throttle((newTheme: "tiger" | "sweet") => {
@@ -241,12 +205,7 @@ const TiantongPage = () => {
               🐯
             </div>
 
-            <DanmakuWelcome
-              messages={danmakuMessages}
-              colors={danmakuColors}
-              style="colorful"
-              theme={theme}
-            />
+            <HorizontalDanmaku theme={theme} />
 
             <header
               className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300 ease-in-out"

@@ -95,8 +95,9 @@
   },
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "prebuild": "node scripts/process-danmaku.js",
+    "build": "npm run prebuild && vite build",
+    "build:dev": "npm run prebuild && vite build --mode development",
     "lint": "eslint .",
     "lint:test": "eslint tests --config .eslintrc.test.js",
     "preview": "vite preview",

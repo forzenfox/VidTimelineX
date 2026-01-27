@@ -14,40 +14,24 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --shadow-custom: var(--shadow-x) var(--shadow-y) var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
-  --animate-scroll-left: scroll-left 20s linear infinite;
-  --animate-scroll-down: scroll-down 30s linear infinite;
   --animate-danmaku: danmaku 8s linear forwards;
-  @keyframes scroll-left {
+  @keyframes scroll-up {
     from {
-      transform: translateX(100%);
+      transform: translateY(100%);
     }
     to {
-      transform: translateX(-100%);
+      transform: translateY(-100%);
     }
   }
-  @keyframes scroll-down {
-    from {
-      transform: translateY(-33.33%);
-    }
-    to {
-      transform: translateY(0);
-    }
+}
+
+/* 弹幕动画 - 移出 @theme inline 块以便全局识别 */
+@keyframes danmaku-horizontal {
+  from {
+    transform: translateX(100vw);
   }
-  @keyframes danmaku {
-    from {
-      transform: translateX(100vw);
-    }
-    to {
-      transform: translateX(-100%);
-    }
-  }
-  @keyframes danmaku-horizontal {
-    from {
-      transform: translateX(100vw);
-    }
-    to {
-      transform: translateX(-100%);
-    }
+  to {
+    transform: translateX(-100%);
   }
 }
 :root {
