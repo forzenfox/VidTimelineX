@@ -1,0 +1,107 @@
+/* ============================================
+   文件名称：components.css
+   描述：全局组件样式文件
+   创建日期：2026-01-28
+   作者：前端团队
+   ============================================ */
+
+/* ========== body 基础样式 ========== */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  border-color: var(--border);
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s,
+    box-shadow 0.3s;
+  overflow-x: hidden;
+}
+
+/* ========== 全局元素过渡效果 ========== */
+* {
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+/* ========== 按钮通用样式 ========== */
+button {
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s,
+    background-color 0.2s,
+    color 0.2s;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== 焦点状态样式 ========== */
+*:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  transition:
+    outline 0.2s,
+    outline-offset 0.2s;
+  box-shadow: 0 0 0 3px var(--primary-foreground);
+}
+
+*:focus {
+  outline: none;
+}
+
+/* ========== 可点击元素样式 ========== */
+button,
+a,
+[role="button"],
+[role="link"],
+[tabindex="0"] {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* ========== 链接样式 ========== */
+a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* ========== 输入框样式 ========== */
+input:focus,
+textarea:focus {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ========== 视频卡片点击反馈 ========== */
+[role="article"]:active {
+  transform: scale(0.95);
+}
+
+/* ========== 平板设备特定优化（768px - 1024px） ========== */
+@media (max-width: 1024px) {
+  .text-base {
+    font-size: 0.95rem;
+  }
+
+  .text-lg {
+    font-size: 1.125rem;
+  }
+
+  .video-title {
+    font-size: 0.95rem;
+    line-clamp: 2;
+  }
+}

@@ -1,0 +1,16 @@
+/* ============================================
+   文件名称：utilities.css
+   描述：全局工具类样式文件
+   创建日期：2026-01-28
+   作者：前端团队
+   ============================================ */
+
+/* ========== 滚动条隐藏工具类 ========== */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

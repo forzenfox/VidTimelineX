@@ -22,7 +22,6 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppRoutes from "./routes";
-import "../index.css";
 import "../styles/globals.css";
 import PerformanceMonitor from "../components/PerformanceMonitor";
 

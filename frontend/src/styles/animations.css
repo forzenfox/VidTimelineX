@@ -1,0 +1,26 @@
+/* ============================================
+   文件名称：animations.css
+   描述：全局动画定义文件
+   创建日期：2026-01-28
+   作者：前端团队
+   ============================================ */
+
+/* ========== 滚动向上动画 ========== */
+@keyframes scroll-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-33.33%);
+  }
+}
+
+/* ========== 弹幕动画 ========== */
+@keyframes danmaku {
+  from {
+    transform: translateX(100vw);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
