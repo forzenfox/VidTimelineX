@@ -245,7 +245,10 @@ button:active {
   background-position: center;
 }
 
-/* 径向渐变虎纹 - 用于按钮和装饰元素 */
+/* [已注释 20260128] .tiger-stripe-radial
+ * 原因：未在任何组件中使用，可随时恢复
+ */
+/*
 .tiger-stripe-radial {
   background-image: radial-gradient(
     ellipse at center,
@@ -255,8 +258,12 @@ button:active {
   background-size: 40px 40px;
   background-repeat: repeat;
 }
+*/
 
-/* 视频封面虎纹滤镜 */
+/* [已注释 20260128] .tiger-stripe-overlay
+ * 原因：未在任何组件中使用，可随时恢复
+ */
+/*
 .tiger-stripe-overlay {
   position: absolute;
   inset: 0;
@@ -270,8 +277,12 @@ button:active {
   pointer-events: none;
   mix-blend-mode: multiply;
 }
+*/
 
-/* 分类标签虎纹背景 */
+/* [已注释 20260128] .tiger-tag-bg
+ * 原因：未在任何组件中使用，可随时恢复
+ */
+/*
 .tiger-tag-bg {
   background-image: repeating-linear-gradient(
     45deg,
@@ -282,8 +293,12 @@ button:active {
   );
   background-size: 32px 32px;
 }
+*/
 
-/* 虎纹脉冲动画 */
+/* [已注释 20260128] @keyframes pulse-slow 和 .animate-pulse-slow
+ * 原因：未在任何组件中使用，可随时恢复
+ */
+/*
 @keyframes pulse-slow {
   0%, 100% {
     opacity: 10%;
@@ -296,6 +311,9 @@ button:active {
 .animate-pulse-slow {
   animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+*/
+
+
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

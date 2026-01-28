@@ -20,6 +20,10 @@
   }
 }
 
+/* [已注释 20260128] @keyframes danmaku-vertical
+ * 原因：未在任何组件中使用，horizontal被使用，可随时恢复
+ */
+/*
 @keyframes danmaku-vertical {
   from {
     opacity: 0;
@@ -30,6 +34,9 @@
     transform: translateY(0);
   }
 }
+*/
+
+
 
 @keyframes pig-footprint {
   0%,
@@ -74,11 +81,10 @@
   }
 }
 
-/* 进度条动画 */
-.progress-bar {
-  animation: progress-fill 5s linear forwards;
-}
-
+/* [已注释 20260128] .progress-bar 及其动画
+ * 原因：未在任何组件中使用，可随时恢复
+ */
+/*
 @keyframes progress-fill {
   from {
     width: 0%;
@@ -87,6 +93,13 @@
     width: 100%;
   }
 }
+
+.progress-bar {
+  animation: progress-fill 5s linear forwards;
+}
+*/
+
+
 
 /* 按钮样式 */
 .enter-button {
@@ -121,7 +134,10 @@
   left: 100%;
 }
 
-/* 弹幕样式优化 */
+/* [已注释 20260128] .danmaku-container, .danmaku-item 及其动画
+ * 原因：未在任何组件中使用，lvjiang使用不同的弹幕实现，可随时恢复
+ */
+/*
 .danmaku-container {
   position: fixed;
   top: 0;
@@ -149,8 +165,14 @@
     transform: translateX(-100%);
   }
 }
+*/
 
-/* 侧边弹幕样式 */
+
+
+/* [已注释 20260128] .sidebar-danmaku, .danmaku-message 及其动画
+ * 原因：未在任何组件中使用，lvjiang使用SideDanmaku组件，可随时恢复
+ */
+/*
 .sidebar-danmaku {
   position: fixed;
   right: 0;
@@ -178,13 +200,19 @@
     transform: translateX(0);
   }
 }
+*/
+
+
 
 /* 主题切换动画 */
 .theme-transition {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 卡片悬浮效果 */
+/* [已注释 20260128] .card-hover, .video-card 及其子样式
+ * 原因：未在任何组件中使用，lvjiang使用不同的卡片实现，可随时恢复
+ */
+/*
 .card-hover {
   transition:
     transform 0.3s ease,
@@ -196,7 +224,6 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* 视频卡片样式 */
 .video-card {
   position: relative;
   overflow: hidden;
@@ -223,8 +250,12 @@
 .video-card:hover .play-overlay {
   opacity: 1;
 }
+*/
 
-/* 标签样式优化 */
+/* [已注释 20260128] .tag
+ * 原因：未在任何组件中使用，可随时恢复
+ */
+/*
 .tag {
   display: inline-flex;
   align-items: center;
@@ -238,3 +269,6 @@
 .tag:hover {
   transform: scale(1.05);
 }
+*/
+
+
