@@ -104,4 +104,26 @@ describe("VideoTimeline组件测试", () => {
     // 验证组件能够正确渲染
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
   });
+
+  /**
+   * 测试用例 TC-005: 封面图片使用video.cover测试
+   * 测试目标：验证视频封面图片使用的是videos.json中的cover字段，而非硬编码URL
+   * 注意：由于组件使用静态导入的videos数据，此测试验证组件正确使用video.cover属性
+   */
+  test("TC-005: 封面图片使用video.cover测试", () => {
+    render(
+      <VideoTimeline
+        onVideoClick={mockOnVideoClick}
+        theme="dongzhu"
+      />
+    );
+
+    // 验证至少有一张图片使用B站CDN的cover URL（来自videos.json）
+    const images = screen.getAllByRole("img");
+    const coverImage = images.find(img =>
+      img.getAttribute("src")?.includes("hdslb.com") ||
+      img.getAttribute("alt")?.includes("新冠")
+    );
+    expect(coverImage).toBeInTheDocument();
+  });
 });

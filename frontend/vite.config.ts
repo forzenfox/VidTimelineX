@@ -58,6 +58,20 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    proxy: {
+      "/bilibili-img": {
+        target: "https://i1.hdslb.com",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/bilibili-img/, ""),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('Referer', 'https://www.bilibili.com/');
+            proxyReq.setHeader('Origin', 'https://www.bilibili.com');
+          });
+        },
+      },
+    },
   },
   // 优化依赖预构建
   optimizeDeps: {

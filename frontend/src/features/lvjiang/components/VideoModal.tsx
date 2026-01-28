@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import type { Video } from "../data/types";
+import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
 
 interface VideoModalProps {
   video: Video | null;
@@ -63,13 +64,18 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
           <X size={24} />
         </button>
 
-        <div className="relative aspect-video bg-black">
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8">
+        <div className="relative aspect-video bg-black overflow-hidden">
+          <ImageWithFallback
+            src={video.cover}
+            alt={video.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8 bg-black/40">
             <div className="text-6xl">{theme === "dongzhu" ? "🐷" : "🐗"}</div>
             <div className="text-white text-xl font-bold text-center">
               点击下方按钮跳转B站观看完整视频
             </div>
-            <div className="text-gray-400 text-sm text-center">{video.title}</div>
+            <div className="text-gray-300 text-sm text-center">{video.title}</div>
           </div>
         </div>
 

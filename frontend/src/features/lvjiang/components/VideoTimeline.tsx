@@ -9,15 +9,6 @@ interface VideoTimelineProps {
   onVideoClick: (video: Video) => void;
 }
 
-const videoCoverUrls: { [key: string]: string } = {
-  "1": "https://images.unsplash.com/photo-1553492206-f609eddc33dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBlc3BvcnRzfGVufDF8fHx8MTc2OTE0NjAwOXww&ixlib=rb-4.1.0&q=80&w=1080",
-  "2": "https://images.unsplash.com/photo-1610993302487-6dbfc0acf4ed?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsZWFndWUlMjBsZWdlbmRzfGVufDF8fHx8MTc2OTE1NDkwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-  "3": "https://images.unsplash.com/photo-1659540531566-c39488fdf326?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBkdW98ZW58MXx8fHwxNzY5MTU0OTA0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-  "4": "https://images.unsplash.com/photo-1553492206-f609eddc33dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBlc3BvcnRzfGVufDF8fHx8MTc2OTE0NjAwOXww&ixlib=rb-4.1.0&q=80&w=1080",
-  "5": "https://images.unsplash.com/photo-1597759493550-6ea6cbcb2cb4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlc3BvcnRzJTIwc3RyZWFtfGVufDF8fHx8MTc2OTE1NDkwNHww&ixlib=rb-4.1.0&q=80&w=1080",
-  "6": "https://images.unsplash.com/photo-1758611969864-2234b879ef3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdHJlYW1pbmclMjBmdW5ueXxlbnwxfHx8fDE3NjkxNTQ5MDV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-};
-
 // 单个视频项组件
 const VideoItem: React.FC<{
   video: Video;
@@ -86,11 +77,10 @@ const VideoItem: React.FC<{
         >
           <div className="relative aspect-video overflow-hidden">
             <ImageWithFallback
-              src={videoCoverUrls[video.id]}
+              src={video.cover}
               alt={video.title}
               className="w-full h-full object-cover"
-              loading="lazy" // 懒加载图片
-            />
+              loading="lazy" />
             <div
               className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 theme-transition"
               style={overlayStyle}

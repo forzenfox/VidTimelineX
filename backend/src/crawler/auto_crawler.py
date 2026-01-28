@@ -265,18 +265,40 @@ class BiliBiliAutoCrawler:
         return up_info
     
     def _extract_thumbnail(self, soup, html, bv_code):
-        """提取缩略图"""
+        """提取视频封面图"""
         # 从<meta>标签提取
         og_image = soup.find('meta', property='og:image')
         if og_image and og_image.get('content'):
-            return og_image.get('content')
+            thumbnail_url = og_image.get('content')
+            # 添加协议前缀（如果缺少）
+            if thumbnail_url.startswith('//'):
+                thumbnail_url = 'https:' + thumbnail_url
+            # 去掉尺寸参数，获取原始封面图
+            if '@' in thumbnail_url:
+                thumbnail_url = thumbnail_url.split('@')[0]
+            return thumbnail_url
         
         # 从Twitter标签提取
         twitter_image = soup.find('meta', name='twitter:image')
         if twitter_image and twitter_image.get('content'):
-            return twitter_image.get('content')
+            thumbnail_url = twitter_image.get('content')
+            # 添加协议前缀（如果缺少）
+            if thumbnail_url.startswith('//'):
+                thumbnail_url = 'https:' + thumbnail_url
+            # 去掉尺寸参数，获取原始封面图
+            if '@' in thumbnail_url:
+                thumbnail_url = thumbnail_url.split('@')[0]
+            return thumbnail_url
         
-        # 构建默认缩略图URL
+        # 从页面源码中提取图片哈希值
+        # B站缩略图格式: //i0.hdslb.com/bfs/archive/{hash}.jpg@100w_100h_1c.png
+        thumbnail_pattern = r'//i\d+\.hdslb\.com/bfs/archive/([a-f0-9]+\.(?:jpg|png))@\d+w_\d+h_\d+c\.(?:jpg|png)'
+        thumbnail_match = re.search(thumbnail_pattern, html)
+        if thumbnail_match:
+            thumbnail_hash = thumbnail_match.group(1)
+            return f"https://i0.hdslb.com/bfs/archive/{thumbnail_hash}"
+        
+        # 构建默认封面图URL（使用哈希值格式，不带尺寸参数）
         return f"https://i0.hdslb.com/bfs/archive/{bv_code}.jpg"
     
     def _extract_duration(self, html):
@@ -503,12 +525,17 @@ class BiliBiliAutoCrawler:
             else:
                 date = publish_date
             
+            # 修复缩略图URL格式
+            thumbnail_url = video.get('thumbnail', '')
+            if thumbnail_url.startswith('//'):
+                thumbnail_url = 'https:' + thumbnail_url
+            
             timeline_item = {
                 "id": str(idx + 1),  # 按时间倒序排列的字符串序号
                 "title": video.get('title'),
                 "date": date,
                 "bvid": bvid,
-                "cover": video.get('thumbnail'),  # 缩略图路径
+                "cover": thumbnail_url,  # 缩略图路径
                 "tags": [],  # 初始为空列表，供人工填写
                 "duration": video.get('duration', "00:00")  # 视频时长
             }
