@@ -24,3 +24,64 @@
     transform: translateX(-100%);
   }
 }
+
+/* ========== 驴酱模块动画 ========== */
+
+/* 驴酱弹幕水平动画 */
+@keyframes lvjiang-danmaku-horizontal {
+  from {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+}
+
+/* 驴酱猪脚印动画 */
+@keyframes lvjiang-pig-footprint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 驴酱野猪图案动画 */
+@keyframes lvjiang-boar-pattern {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* 驴酱Logo淡入动画 */
+@keyframes lvjiang-logo-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 驴酱脉冲发光动画 */
+@keyframes lvjiang-pulse-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 20px rgba(155, 89, 182, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 40px rgba(155, 89, 182, 0.8));
+  }
+}

@@ -1,102 +1,16 @@
-.theme-transition {
-  transition: all 0.3s ease-in-out;
-}
+/* ============================================
+   文件名称：lvjiang 模块样式
+   描述：驴酱模块专用样式文件
+   创建日期：2026-01-28
+   作者：前端团队
+   ============================================ */
 
+/* ========== 驴酱模块特有样式 ========== */
+
+/* 渐变文字样式 */
 .gradient-text {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-@keyframes danmaku-horizontal {
-  from {
-    transform: translateX(100vw);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(-100%);
-    opacity: 1;
-  }
-}
-
-@keyframes pig-footprint {
-  0%,
-  100% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.8);
-  }
-  50% {
-    opacity: 0.6;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes boar-pattern {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
-@keyframes logo-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulse-glow {
-  0%,
-  100% {
-    filter: drop-shadow(0 0 20px rgba(155, 89, 182, 0.5));
-  }
-  50% {
-    filter: drop-shadow(0 0 40px rgba(155, 89, 182, 0.8));
-  }
-}
-
-/* 按钮样式 */
-.enter-button {
-  position: relative;
-  overflow: hidden;
-}
-
-.enter-button:hover {
-  transform: scale(1.05);
-}
-
-.enter-button:active {
-  transform: scale(0.98);
-}
-
-.enter-button.entering {
-  pointer-events: none;
-}
-
-.button-shine {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s ease-in-out;
-}
-
-.enter-button:hover .button-shine {
-  left: 100%;
-}
-
-/* 主题切换动画 */
-.theme-transition {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

@@ -51,7 +51,7 @@ export function HorizontalDanmaku({ theme, isVisible }: HorizontalDanmakuProps) 
             left: 0,
             transform: "translateX(100vw)",
             opacity: 1,
-            animation: `danmaku-horizontal ${item.duration}s linear ${item.delay}s forwards`,
+            animation: `lvjiang-danmaku-horizontal ${item.duration}s linear ${item.delay}s forwards`,
             fontSize: theme === "dongzhu" ? "18px" : "20px",
             color: theme === "dongzhu" ? "#5DADE2" : "#E74C3C",
             textShadow:
@@ -60,9 +60,9 @@ export function HorizontalDanmaku({ theme, isVisible }: HorizontalDanmakuProps) 
                 : "2px 2px 4px rgba(0, 0, 0, 0.8), -1px -1px 2px rgba(231, 76, 60, 0.6)",
             fontWeight: "800",
             letterSpacing: "1px",
-            willChange: "transform, opacity", // 提示浏览器使用硬件加速
-            backfaceVisibility: "hidden", // 防止动画闪烁
-            perspective: 1000, // 提高动画质量
+            willChange: "transform, opacity",
+            backfaceVisibility: "hidden",
+            perspective: 1000,
           }}
         >
           {item.text}

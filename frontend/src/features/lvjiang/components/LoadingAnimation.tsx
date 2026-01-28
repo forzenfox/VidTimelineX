@@ -12,10 +12,10 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
   const [isEntering, setIsEntering] = useState(false);
   const [footprintPositions] = useState([
     { top: "20%", left: "15%", delay: 0 },
-    { top: "40%", left: "30%", delay: 0.3 },
-    { top: "30%", left: "50%", delay: 0.6 },
-    { top: "50%", left: "25%", delay: 0.9 },
-    { top: "60%", left: "40%", delay: 1.2 },
+    { top: "40%", left: "30%", delay: 0.2 },
+    { top: "30%", left: "50%", delay: 0.4 },
+    { top: "50%", left: "25%", delay: 0.6 },
+    { top: "60%", left: "40%", delay: 0.8 },
   ]);
 
   useEffect(() => {
@@ -61,8 +61,9 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
                   top: `${(i + 1) * 6}%`,
                   left: 0,
                   right: 0,
-                  animation: `boar-pattern 3s ease-in-out ${i * 0.1}s infinite`,
+                  animation: `lvjiang-boar-pattern 2s ease-in-out ${i * 0.1}s infinite`,
                   transform: `skewY(${i % 2 === 0 ? 2 : -2}deg)`,
+                  willChange: "transform, opacity",
                 }}
               />
             ))}
@@ -76,8 +77,9 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
                   left: `${(i + 1) * 9}%`,
                   top: 0,
                   bottom: 0,
-                  animation: `boar-pattern 3s ease-in-out ${i * 0.15}s infinite`,
+                  animation: `lvjiang-boar-pattern 2s ease-in-out ${i * 0.15}s infinite`,
                   transform: `skewX(${i % 2 === 0 ? 2 : -2}deg)`,
+                  willChange: "transform, opacity",
                 }}
               />
             ))}
@@ -98,8 +100,9 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
               style={{
                 top: pos.top,
                 left: pos.left,
-                animation: `pig-footprint 2s ease-in-out ${pos.delay}s infinite`,
+                animation: `lvjiang-pig-footprint 2s ease-in-out ${pos.delay}s infinite`,
                 color: "rgba(93, 173, 226, 0.3)",
+                willChange: "transform, opacity",
               }}
             >
               🐾
@@ -113,13 +116,14 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
           className="text-6xl sm:text-7xl md:text-8xl font-black tracking-wider"
           style={{
             animation:
-              "logo-fade-in 1.5s ease-out 0.5s both, pulse-glow 2s ease-in-out 2s infinite",
+              "lvjiang-logo-fade-in 1.5s ease-out 0.5s both, lvjiang-pulse-glow 2s ease-in-out 2s infinite",
             background: "linear-gradient(90deg, #E74C3C 0%, #9B59B6 50%, #5DADE2 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
             textShadow: "0 0 30px rgba(155, 89, 182, 0.5)",
             display: "inline-block",
+            willChange: "transform, opacity",
           }}
         >
           疯狂星期二
@@ -131,15 +135,17 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
             opacity: isCompleted ? 0 : 1,
             transform: isCompleted ? "translateY(-10px)" : "translateY(0)",
             transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
-            animation: "logo-fade-in 1.5s ease-out 1.5s both",
+            animation: "lvjiang-logo-fade-in 1.5s ease-out 1.5s both",
+            willChange: "transform, opacity",
           }}
         >
           <div
             className="text-3xl"
             style={{
               color: "#E74C3C",
-              animation: "logo-fade-in 1.5s ease-out 1.5s both",
+              animation: "lvjiang-logo-fade-in 1.5s ease-out 1.5s both",
               textShadow: "0 0 15px rgba(231, 76, 60, 0.8)",
+              willChange: "transform, opacity",
             }}
           >
             🐗
@@ -169,8 +175,9 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
             className="text-3xl"
             style={{
               color: "#5DADE2",
-              animation: "logo-fade-in 1.5s ease-out 1.5s both",
+              animation: "lvjiang-logo-fade-in 1.5s ease-out 1.5s both",
               textShadow: "0 0 15px rgba(93, 173, 226, 0.8)",
+              willChange: "transform, opacity",
             }}
           >
             🐷
@@ -181,10 +188,11 @@ export const LoadingAnimation = React.memo(function LoadingAnimation({
           className="text-sm sm:text-lg opacity-80"
           style={{
             color: "#9B59B6",
-            animation: "logo-fade-in 1.5s ease-out 2s both",
+            animation: "lvjiang-logo-fade-in 1.5s ease-out 2s both",
             opacity: isCompleted ? 0 : 1,
             transform: isCompleted ? "translateY(-10px)" : "translateY(0)",
             transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+            willChange: "transform, opacity",
           }}
         >
           {isCompleted ? "请选择你邀约对象" : `正在搜索约会对象... ${progress}%`}
