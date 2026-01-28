@@ -52,7 +52,7 @@ export function HorizontalDanmaku({ theme }: HorizontalDanmakuProps) {
 
   // 即使没有弹幕数据，也渲染组件结构
   return (
-    <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-31 overflow-hidden">
       {danmakuList.map(item => (
         <div
           key={item.id}
