@@ -20,24 +20,6 @@
   }
 }
 
-/* [已注释 20260128] @keyframes danmaku-vertical
- * 原因：未在任何组件中使用，horizontal被使用，可随时恢复
- */
-/*
-@keyframes danmaku-vertical {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-*/
-
-
-
 @keyframes pig-footprint {
   0%,
   100% {
@@ -81,26 +63,6 @@
   }
 }
 
-/* [已注释 20260128] .progress-bar 及其动画
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-@keyframes progress-fill {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.progress-bar {
-  animation: progress-fill 5s linear forwards;
-}
-*/
-
-
-
 /* 按钮样式 */
 .enter-button {
   position: relative;
@@ -134,141 +96,7 @@
   left: 100%;
 }
 
-/* [已注释 20260128] .danmaku-container, .danmaku-item 及其动画
- * 原因：未在任何组件中使用，lvjiang使用不同的弹幕实现，可随时恢复
- */
-/*
-.danmaku-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 80vh;
-  pointer-events: none;
-  z-index: 30;
-  overflow: hidden;
-}
-
-.danmaku-item {
-  position: absolute;
-  white-space: nowrap;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  animation: danmaku-move 15s linear forwards;
-}
-
-@keyframes danmaku-move {
-  from {
-    transform: translateX(100vw);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
-*/
-
-
-
-/* [已注释 20260128] .sidebar-danmaku, .danmaku-message 及其动画
- * 原因：未在任何组件中使用，lvjiang使用SideDanmaku组件，可随时恢复
- */
-/*
-.sidebar-danmaku {
-  position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 320px;
-  z-index: 20;
-  overflow: hidden;
-}
-
-.danmaku-message {
-  padding: 8px 12px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  animation: message-slide 0.3s ease-out;
-}
-
-@keyframes message-slide {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-*/
-
-
-
 /* 主题切换动画 */
 .theme-transition {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* [已注释 20260128] .card-hover, .video-card 及其子样式
- * 原因：未在任何组件中使用，lvjiang使用不同的卡片实现，可随时恢复
- */
-/*
-.card-hover {
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-}
-
-.video-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  transition: all 0.3s ease;
-}
-
-.video-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.video-card .play-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.video-card:hover .play-overlay {
-  opacity: 1;
-}
-*/
-
-/* [已注释 20260128] .tag
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.tag:hover {
-  transform: scale(1.05);
-}
-*/
-
-

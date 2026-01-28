@@ -43,15 +43,15 @@
 
 :root {
   /* Tiger主题 */
-  --tiger-background: #2C3E50; /* 哑光黑 - 需求文档定义 */
-  --tiger-foreground: #BDC3C7; /* 金属银 - 需求文档定义 */
-  --tiger-primary: #E67E22;     /* 深橙 - 需求文档定义 */
-  --tiger-secondary: #F39C12;   /* 亮橙 - 需求文档定义 */
-  --tiger-accent: #D35400;      /* 暗橙色 - 需求文档定义 */
-  --tiger-card: #34495E;        /* 深灰色 - 需求文档定义 */
+  --tiger-background: #2C3E50;
+  --tiger-foreground: #BDC3C7;
+  --tiger-primary: #E67E22;
+  --tiger-secondary: #F39C12;
+  --tiger-accent: #D35400;
+  --tiger-card: #34495E;
   --tiger-card-foreground: #BDC3C7;
   --tiger-muted: #2C3E50;
-  --tiger-muted-foreground: #7F8C8D; /* 中灰色 */
+  --tiger-muted-foreground: #7F8C8D;
   --tiger-border: #E67E22;
   --tiger-shadow-color: rgba(230, 126, 34, 0.3);
   --tiger-card-rgb: 52, 73, 94;
@@ -61,7 +61,7 @@
   --sweet-foreground: rgb(60, 60, 60);
   --sweet-primary: rgb(255, 140, 180);
   --sweet-secondary: rgb(255, 215, 0);
-  --sweet-accent: rgb(218, 112, 214); /* 浅紫色 */
+  --sweet-accent: rgb(218, 112, 214);
   --sweet-card: rgb(255, 255, 255);
   --sweet-card-foreground: rgb(60, 60, 60);
   --sweet-muted: rgb(255, 250, 240);
@@ -216,7 +216,6 @@ button:active {
 
 /* 平板设备特定优化（768px - 1024px） */
 @media (max-width: 1024px) {
-  /* 调整平板设备上的字体大小 */
   .text-base {
     font-size: 0.95rem;
   }
@@ -225,7 +224,6 @@ button:active {
     font-size: 1.125rem;
   }
 
-  /* 视频卡片标题优化 */
   .video-title {
     font-size: 0.95rem;
     line-clamp: 2;
@@ -244,76 +242,6 @@ button:active {
   background-size: cover;
   background-position: center;
 }
-
-/* [已注释 20260128] .tiger-stripe-radial
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.tiger-stripe-radial {
-  background-image: radial-gradient(
-    ellipse at center,
-    rgba(230, 126, 34, 0.15) 0%,
-    transparent 70%
-  );
-  background-size: 40px 40px;
-  background-repeat: repeat;
-}
-*/
-
-/* [已注释 20260128] .tiger-stripe-overlay
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.tiger-stripe-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(230, 126, 34, 0.1) 10px,
-    rgba(230, 126, 34, 0.1) 20px
-  );
-  pointer-events: none;
-  mix-blend-mode: multiply;
-}
-*/
-
-/* [已注释 20260128] .tiger-tag-bg
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.tiger-tag-bg {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 8px,
-    rgba(230, 126, 34, 0.1) 8px,
-    rgba(230, 126, 34, 0.1) 16px
-  );
-  background-size: 32px 32px;
-}
-*/
-
-/* [已注释 20260128] @keyframes pulse-slow 和 .animate-pulse-slow
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-@keyframes pulse-slow {
-  0%, 100% {
-    opacity: 10%;
-  }
-  50% {
-    opacity: 15%;
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-*/
-
-
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;

@@ -121,44 +121,13 @@
 }
 
 /* ============================================
-   页面退出动画
+   主题切换过渡动画
    ============================================ */
 
-/* [已注释 20260128] .page-exit
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.page-exit {
-  animation: page-exit-animation 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes page-exit-animation {
-  0% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-    filter: blur(0);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.95) rotate(1deg);
-    filter: blur(2px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.1) rotate(2deg);
-    filter: blur(10px);
-  }
-}
-*/
-
-
-
-/* 主题切换过渡动画 */
 .theme-transition {
   transition: all 0.3s ease;
 }
 
-/* 渐变扫过动画 - 匹配需求文档PHASE3-001 */
 @keyframes theme-sweep {
   0% {
     transform: translateX(-100%);
@@ -167,59 +136,6 @@
     transform: translateX(100%);
   }
 }
-
-/* [已注释 20260128] .theme-sweep-overlay
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.theme-sweep-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.8), transparent);
-  pointer-events: none;
-  z-index: 9999;
-  animation: theme-sweep 0.5s ease-in-out;
-}
-*/
-
-
-
-/* [已注释 20260128] @keyframes tiger-roar
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-@keyframes tiger-roar {
-  0% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-  25% {
-    transform: scale(1.2) rotate(10deg);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.1) rotate(-5deg);
-    opacity: 0.9;
-  }
-  75% {
-    transform: scale(1.2) rotate(5deg);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-.tiger-roar-animation {
-  animation: tiger-roar 0.5s ease-in-out;
-}
-*/
-
-
 
 /* 旋转动画 - 1秒/圈 */
 @keyframes spin {
@@ -232,196 +148,13 @@
 }
 
 .animate-spin {
-  animation: spin 1s linear infinite; /* 匹配需求文档中的1秒/圈 */
+  animation: spin 1s linear infinite;
 }
 
-/* 金属光泽流动动画 - 深橙→亮橙渐变 */
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* [已注释 20260128] .animate-shimmer
- * 原因：Tiantong模块使用内联样式实现，无需此定义，可随时恢复
- */
-/*
-.animate-shimmer {
-  animation: shimmer 1.5s infinite linear;
-}
-*/
-
-
-
-
-/* [已注释 20260128] .pig-footprint-pattern, .boar-pattern
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.pig-footprint-pattern {
-  position: relative;
-}
-
-.pig-footprint-pattern::before {
-  content: "🐾";
-  position: absolute;
-  font-size: 12px;
-  opacity: 0.15;
-  color: var(--accent);
-}
-
-.boar-pattern {
-  position: relative;
-  background-image:
-    linear-gradient(45deg, transparent 48%, var(--border) 48%, var(--border) 52%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, var(--border) 48%, var(--border) 52%, transparent 52%);
-  background-size: 20px 20px;
-  background-position:
-    0 0,
-    10px 10px;
-  opacity: 0.05;
-}
-*/
-
-/* ============================================ 
+/* ============================================
    统一Hover反馈动效
    ============================================ */
 
-/* [已注释 20260128] .hover-effect 系列
- * 原因：未在任何组件中使用，可随时恢复
- */
-/*
-.hover-effect {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.hover-effect::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.5s ease;
-  pointer-events: none;
-}
-
-.hover-effect:hover::before {
-  transform: translateX(100%);
-}
-
-.hover-effect::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(230, 126, 34, 0.1) 10px,
-    rgba(230, 126, 34, 0.1) 20px
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-  transform: scale(0.8);
-  border-radius: inherit;
-}
-
-.hover-effect:hover::after {
-  opacity: 1;
-  transform: scale(1);
-}
-*/
-
-
-
-/* [已注释 20260128] 虎纹元素系统
- * 原因：未在任何组件中使用，可随时恢复
- * 注意：tiantong模块使用 .tiger-stripe 类，而非这些变体
- */
-/*
-.tiger-stripe-primary {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 10px,
-    rgba(230, 126, 34, 0.1) 10px,
-    rgba(230, 126, 34, 0.1) 20px
-  );
-  background-size: cover;
-  background-position: center;
-}
-
-.tiger-stripe-secondary {
-  background-image: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 8px,
-    rgba(230, 126, 34, 0.08) 8px,
-    rgba(230, 126, 34, 0.08) 16px
-  );
-  background-size: 32px 32px;
-  background-repeat: repeat;
-}
-
-.tiger-stripe-micro {
-  background-image: radial-gradient(
-    ellipse at center,
-    rgba(230, 126, 34, 0.05) 0%,
-    transparent 70%
-  );
-  background-size: 40px 40px;
-  background-repeat: repeat;
-}
-
-.shadow-tiger {
-  box-shadow: 2px 2px 8px rgba(230, 126, 34, 0.2);
-}
-
-.shadow-tiger-hover {
-  transition: box-shadow 0.3s ease;
-}
-
-.shadow-tiger-hover:hover {
-  box-shadow: 4px 4px 12px rgba(230, 126, 34, 0.3);
-}
-
-.shadow-tiger-highlight {
-  box-shadow: 6px 6px 16px rgba(230, 126, 34, 0.4);
-}
-
-.tiger-spread-effect {
-  position: relative;
-  overflow: hidden;
-}
-
-.tiger-spread-effect::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(230, 126, 34, 0.2) 0%, transparent 70%);
-  transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease;
-}
-
-.tiger-spread-effect:hover::before {
-  width: 300px;
-  height: 300px;
-}
-*/
-
-
-
-/* 将hover效果应用到所有可交互元素 */
 button,
 a,
 [role="button"],
@@ -437,7 +170,7 @@ a:hover,
 [role="button"]:hover,
 [role="link"]:hover,
 [tabindex="0"]:hover {
-  color: var(--secondary); /* 文字变为亮橙 */
+  color: var(--secondary);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(230, 126, 34, 0.2);
 }
