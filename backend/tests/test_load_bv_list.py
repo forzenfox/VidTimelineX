@@ -9,7 +9,8 @@ import os
 # 添加当前目录到Python路径
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from auto_crawler import BiliBiliAutoCrawler
+from src.crawler.auto_crawler import BiliBiliAutoCrawler
+from src.utils.config import BV_FILE_PATH
 
 
 def test_load_bv_list():
@@ -20,7 +21,7 @@ def test_load_bv_list():
     crawler = BiliBiliAutoCrawler()
     
     # 测试文件路径
-    bv_file_path = "d:/workspace/bilibili-timeline/backend/data/bv.txt"
+    bv_file_path = str(BV_FILE_PATH)
     
     print(f"测试文件: {bv_file_path}")
     

@@ -17,7 +17,7 @@ from datetime import datetime
 from src.utils.config import (
     DATA_DIR, PENDING_FILE, APPROVED_FILE, REJECTED_FILE,
     REQUEST_TIMEOUT, MAX_RETRIES, INITIAL_RETRY_DELAY, REQUEST_INTERVAL,
-    HEADERS, VIDEOS_JSON_PATH
+    HEADERS, TIMELINE_OUTPUT_FILE, BV_FILE_PATH
 )
 
 class BiliBiliAutoCrawler:
@@ -328,6 +328,35 @@ class BiliBiliAutoCrawler:
         print(f"视频 BV{metadata['bv']} 已保存到待审核列表")
         return True
     
+    def save_to_approved(self, metadata):
+        """直接保存到已通过列表
+        
+        Args:
+            metadata (dict): 视频元数据
+            
+        Returns:
+            bool: 保存成功返回True，否则返回False
+        """
+        # 加载现有数据
+        with open(self.approved_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        # 检查是否已存在
+        existing_bvs = [video['bv'] for video in data['videos']]
+        if metadata['bv'] in existing_bvs:
+            print(f"视频 BV{metadata['bv']} 已存在，跳过")
+            return False
+        
+        # 添加新视频
+        data['videos'].append(metadata)
+        
+        # 保存数据
+        with open(self.approved_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        print(f"视频 BV{metadata['bv']} 已保存到已通过列表")
+        return True
+    
     def run_crawl(self, keywords, max_pages=1):
         """运行爬取任务"""
         print(f"开始爬取任务，关键词: {keywords}")
@@ -392,8 +421,8 @@ class BiliBiliAutoCrawler:
             if metadata:
                 total_crawled += 1
                 
-                # 保存到待审核列表
-                if self.save_to_pending(metadata):
+                # 直接保存到已通过列表
+                if self.save_to_approved(metadata):
                     total_saved += 1
                 
                 # 遵守请求频率限制
@@ -485,13 +514,13 @@ class BiliBiliAutoCrawler:
             }
             timeline_data.append(timeline_item)
         
-        # 保存到前端目录
-        VIDEOS_JSON_PATH.parent.mkdir(exist_ok=True)
+        # 保存到时间线数据目录
+        TIMELINE_OUTPUT_FILE.parent.mkdir(exist_ok=True)
         
-        with open(VIDEOS_JSON_PATH, 'w', encoding='utf-8') as f:
+        with open(TIMELINE_OUTPUT_FILE, 'w', encoding='utf-8') as f:
             json.dump(timeline_data, f, ensure_ascii=False, indent=2)
         
-        print(f"生成了时间线数据，保存到: {VIDEOS_JSON_PATH}")
+        print(f"生成了时间线数据，保存到: {TIMELINE_OUTPUT_FILE}")
         print(f"时间线包含 {len(timeline_data)} 个视频")
         
         return len(timeline_data)
@@ -508,7 +537,7 @@ def main():
     crawler = BiliBiliAutoCrawler()
     
     # 默认从文件爬取，BV号文件路径
-    bv_file_path = "d:/workspace/bilibili-timeline/backend/data/bv.txt"
+    bv_file_path = str(BV_FILE_PATH)
     
     # 检查命令行参数
     if len(sys.argv) > 1 and sys.argv[1] == "--keyword-crawl":

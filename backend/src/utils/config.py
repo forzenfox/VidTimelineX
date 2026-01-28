@@ -21,9 +21,9 @@ PENDING_FILE = DATA_DIR / "pending.json"
 APPROVED_FILE = DATA_DIR / "approved.json"
 REJECTED_FILE = DATA_DIR / "rejected.json"
 
-# 前端数据目录
-FRONTEND_DATA_DIR = PROJECT_ROOT.parent / "frontend" / "src" / "features" / "lvjiang" / "data"
-VIDEOS_JSON_PATH = FRONTEND_DATA_DIR / "videos.json"
+# 时间线数据目录
+TIMELINE_DATA_DIR = DATA_DIR
+TIMELINE_OUTPUT_FILE = TIMELINE_DATA_DIR / "videos.json"
 
 # 请求配置
 REQUEST_TIMEOUT = 15  # 请求超时时间（秒）

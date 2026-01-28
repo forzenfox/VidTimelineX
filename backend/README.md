@@ -76,7 +76,7 @@ playwright install
 
 ### 1. 从文件爬取BV号（默认模式）
 ```bash
-python main.py --mode file --bv-file d:/workspace/bilibili-timeline/backend/data/bv.txt
+python main.py --mode file --bv-file ./data/bv.txt
 ```
 
 ### 2. 关键词搜索爬取
