@@ -82,7 +82,7 @@ function processDanmakuData() {
     // 处理每条弹幕
     const processedDanmaku = lines.map((text, index) => {
       // 生成唯一id
-      const id = `danmu-${index}-${Date.now()}`;
+      const id = `danmu-${index}`;
       
       // 生成随机类型
       const type = getRandomDanmakuType();
