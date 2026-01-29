@@ -35,12 +35,11 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
       onKeyDown={handleKeyDown}
     >
       <div className="relative aspect-video overflow-hidden">
-        <img
+        <ImageWithFallback
           src={video.cover}
           alt={video.title}
-          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          aria-hidden="true"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div

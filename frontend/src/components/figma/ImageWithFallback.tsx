@@ -12,15 +12,8 @@ export function ImageWithFallback({ src, alt, style, className, ...rest }: Image
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // 处理图片URL，为哔哩哔哩图片添加代理
-  const getProxiedImageUrl = (originalUrl: string) => {
-    // 检测是否是哔哩哔哩图片URL
-    const bilibiliRegex = /^https:\/\/(i\d+\.hdslb\.com|i\.hdslb\.com)\/bfs\//;
-    if (bilibiliRegex.test(originalUrl)) {
-      // 使用images.weserv.nl作为代理
-      return `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}`;
-    }
-    return originalUrl;
+  const getLocalImageUrl = (filename: string) => {
+    return `/thumbs/${filename}`;
   };
 
   const handleError = () => {
@@ -33,13 +26,7 @@ export function ImageWithFallback({ src, alt, style, className, ...rest }: Image
     setHasError(false);
   };
 
-  if (isLoading) {
-    return (
-      <div className={`inline-block bg-gray-100 animate-pulse ${className ?? ""}`} style={style}>
-        <div className="flex items-center justify-center w-full h-full" />
-      </div>
-    );
-  }
+  const imageSrc = getLocalImageUrl(src);
 
   if (hasError) {
     return (
@@ -54,17 +41,25 @@ export function ImageWithFallback({ src, alt, style, className, ...rest }: Image
     );
   }
 
-  const proxiedSrc = getProxiedImageUrl(src);
-
   return (
-    <img
-      src={proxiedSrc}
-      alt={alt}
-      className={className}
-      style={style}
-      onError={handleError}
-      onLoad={handleLoad}
-      {...rest}
-    />
+    <>
+      {isLoading && (
+        <div
+          className={`absolute inset-0 bg-gray-100 animate-pulse ${className ?? ""}`}
+          style={style}
+        >
+          <div className="flex items-center justify-center w-full h-full" />
+        </div>
+      )}
+      <img
+        src={imageSrc}
+        alt={alt}
+        className={className}
+        style={style}
+        onError={handleError}
+        onLoad={handleLoad}
+        {...rest}
+      />
+    </>
   );
 }
