@@ -1,12 +1,5 @@
-export interface Video {
-  id: string;
-  title: string;
-  date: string;
-  bvid: string;
-  cover: string;
-  tags: string[];
-  duration: string;
-}
+// 从 types.ts 导入类型定义
+import type { Video } from "./types";
 
 // 从 JSON 文件导入数据
 import videosData from "./videos.json";

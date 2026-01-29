@@ -11,7 +11,8 @@ interface VideoModalProps {
 export function VideoModal({ video, theme, onClose }: VideoModalProps) {
   if (!video) return null;
 
-  const bilibiliUrl = `https://www.bilibili.com/video/${video.bvid}`;
+  const bilibiliUrl = video.videoUrl;
+  const bvid = video.videoUrl.split('/').pop();
 
   return (
     <div
@@ -65,18 +66,12 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
         </button>
 
         <div className="relative aspect-video bg-black overflow-hidden">
-          <ImageWithFallback
-            src={video.cover}
-            alt={video.title}
-            className="w-full h-full object-cover"
+          <iframe
+            src={`https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=1`}
+            className="w-full h-full border-0"
+            allowFullScreen
+            title={video.title}
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8 bg-black/40">
-            <div className="text-6xl">{theme === "dongzhu" ? "🐷" : "🐗"}</div>
-            <div className="text-white text-xl font-bold text-center">
-              点击下方按钮跳转B站观看完整视频
-            </div>
-            <div className="text-gray-300 text-sm text-center">{video.title}</div>
-          </div>
         </div>
 
         <div className="p-6">
@@ -112,7 +107,7 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
                 color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
               }}
             >
-              🎬 {video.bvid}
+              🎬 {bvid}
             </div>
           </div>
 

@@ -3,7 +3,7 @@ export interface Video {
   id: string;
   title: string;
   date: string;
-  bvid: string;
+  videoUrl: string;
   cover: string;
   tags: string[];
   duration: string;
