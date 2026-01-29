@@ -108,4 +108,74 @@ describe("VideoModal组件测试", () => {
 
     expect(container.firstChild).toBeNull();
   });
+
+  /**
+   * 测试用例 TC-006: ESC键关闭弹窗测试
+   * 测试目标：验证按ESC键能够正确触发onClose回调
+   */
+  test("TC-006: ESC键关闭弹窗测试", () => {
+    render(
+      <VideoModal
+        video={mockVideo}
+        onClose={mockOnClose}
+        theme="dongzhu"
+      />
+    );
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  /**
+   * 测试用例 TC-007: 弹窗打开时锁定body滚动测试
+   * 测试目标：验证弹窗打开时body的overflow被锁定
+   */
+  test("TC-007: 弹窗打开时锁定body滚动测试", () => {
+    render(
+      <VideoModal
+        video={mockVideo}
+        onClose={mockOnClose}
+        theme="dongzhu"
+      />
+    );
+
+    expect(document.body.style.overflow).toBe("hidden");
+  });
+
+  /**
+   * 测试用例 TC-008: 弹窗关闭时恢复body滚动测试
+   * 测试目标：验证弹窗关闭后body的overflow被恢复
+   */
+  test("TC-008: 弹窗关闭时恢复body滚动测试", () => {
+    const { unmount } = render(
+      <VideoModal
+        video={mockVideo}
+        onClose={mockOnClose}
+        theme="dongzhu"
+      />
+    );
+
+    const closeButton = screen.getByRole("button");
+    fireEvent.click(closeButton);
+    unmount();
+
+    expect(document.body.style.overflow).toBe("unset");
+  });
+
+  /**
+   * 测试用例 TC-009: kaige主题测试
+   * 测试目标：验证kaige主题能够正确渲染
+   */
+  test("TC-009: kaige主题测试", () => {
+    const { container } = render(
+      <VideoModal
+        video={mockVideo}
+        onClose={mockOnClose}
+        theme="kaige"
+      />
+    );
+
+    const modal = container.querySelector(".max-w-5xl");
+    expect(modal).toBeInTheDocument();
+  });
 });
