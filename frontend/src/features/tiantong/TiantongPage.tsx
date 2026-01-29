@@ -7,6 +7,9 @@ import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
 
+// 导入甜筒模块样式
+import "./styles/tiantong.css";
+
 /**
  * 节流工具函数 - 防止频繁调用
  */
