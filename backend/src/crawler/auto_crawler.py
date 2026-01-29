@@ -534,7 +534,7 @@ class BiliBiliAutoCrawler:
                 "id": str(idx + 1),  # 按时间倒序排列的字符串序号
                 "title": video.get('title'),
                 "date": date,
-                "bvid": bvid,
+                "videoUrl": f"https://www.bilibili.com/video/{bvid}",
                 "cover": thumbnail_url,  # 缩略图路径
                 "tags": [],  # 初始为空列表，供人工填写
                 "duration": video.get('duration', "00:00")  # 视频时长
