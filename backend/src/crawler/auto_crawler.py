@@ -20,6 +20,9 @@ from src.utils.config import (
     HEADERS, TIMELINE_OUTPUT_FILE, BV_FILE_PATH
 )
 
+# 导入封面下载模块
+from src.downloader.download_thumbs import download_all_covers
+
 class BiliBiliAutoCrawler:
     def __init__(self):
         self.headers = HEADERS
@@ -495,8 +498,15 @@ class BiliBiliAutoCrawler:
             print(f"读取BV号文件失败: {e}")
             return []
     
-    def generate_timeline(self):
-        """生成时间线数据"""
+    def generate_timeline(self, download_covers: bool = True):
+        """生成时间线数据
+        
+        Args:
+            download_covers: 是否下载视频封面到前端目录，默认True
+            
+        Returns:
+            int: 时间线包含的视频数量
+        """
         print("生成时间线数据...")
         
         # 加载已通过的视频数据
@@ -525,30 +535,39 @@ class BiliBiliAutoCrawler:
             else:
                 date = publish_date
             
-            # 修复缩略图URL格式
-            thumbnail_url = video.get('thumbnail', '')
-            if thumbnail_url.startswith('//'):
-                thumbnail_url = 'https:' + thumbnail_url
-            
             timeline_item = {
                 "id": str(idx + 1),  # 按时间倒序排列的字符串序号
                 "title": video.get('title'),
                 "date": date,
                 "videoUrl": f"https://www.bilibili.com/video/{bvid}",
-                "cover": thumbnail_url,  # 缩略图路径
+                "cover": f"{bvid}.jpg",  # 封面文件名
                 "tags": [],  # 初始为空列表，供人工填写
                 "duration": video.get('duration', "00:00")  # 视频时长
             }
             timeline_data.append(timeline_item)
         
         # 保存到时间线数据目录
-        TIMELINE_OUTPUT_FILE.parent.mkdir(exist_ok=True)
+        TIMELINE_OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
         
         with open(TIMELINE_OUTPUT_FILE, 'w', encoding='utf-8') as f:
             json.dump(timeline_data, f, ensure_ascii=False, indent=2)
         
         print(f"生成了时间线数据，保存到: {TIMELINE_OUTPUT_FILE}")
         print(f"时间线包含 {len(timeline_data)} 个视频")
+        
+        # 下载视频封面到前端目录
+        if download_covers:
+            print("\n开始下载视频封面...")
+            
+            # 计算前端thumbs目录路径
+            backend_dir = Path(__file__).parent.parent.parent.parent
+            frontend_public = backend_dir / "frontend" / "public"
+            thumbs_dir = frontend_public / "thumbs"
+            
+            # 调用封面下载函数
+            results = download_all_covers(TIMELINE_OUTPUT_FILE, thumbs_dir, quiet=False)
+            
+            print(f"封面下载完成: 成功 {results['success']}, 失败 {results['failed']}, 跳过 {results['skipped']}")
         
         return len(timeline_data)
 
@@ -559,30 +578,46 @@ def main():
     1. 从文件爬取：读取指定路径的BV号文件，爬取对应视频元数据
     2. 关键词爬取：根据关键词搜索视频并爬取元数据
     """
-    import sys
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='B站视频爬虫工具')
+    parser.add_argument('--mode', type=str, default='file', choices=['file', 'keyword'],
+                        help='爬取模式：file（从文件读取BV号）或keyword（关键词搜索）')
+    parser.add_argument('--bv-file', type=str, 
+                        default=str(BV_FILE_PATH),
+                        help='BV号文件路径')
+    parser.add_argument('--keywords', type=str, nargs='+',
+                        default=['原神', '崩坏星穹铁道', '塞尔达传说'],
+                        help='搜索关键词列表')
+    parser.add_argument('--max-pages', type=int, default=1,
+                        help='关键词搜索的最大页码')
+    parser.add_argument('--no-download-covers', action='store_true',
+                        help='不下载视频封面图片')
+    
+    args = parser.parse_args()
+    
+    # 控制是否下载封面
+    download_covers = not args.no_download_covers
     
     crawler = BiliBiliAutoCrawler()
     
-    # 默认从文件爬取，BV号文件路径
-    bv_file_path = str(BV_FILE_PATH)
+    print("=== B站视频爬虫工具 ===")
+    print(f"爬取模式: {args.mode}")
+    print(f"下载封面: {'是' if download_covers else '否'}")
     
-    # 检查命令行参数
-    if len(sys.argv) > 1 and sys.argv[1] == "--keyword-crawl":
-        # 配置关键词
-        keywords = ["原神", "崩坏星穹铁道", "塞尔达传说"]
-        
-        # 运行关键词爬取任务
-        crawler.run_crawl(keywords, max_pages=1)
+    if args.mode == 'file':
+        print(f"BV号文件: {args.bv_file}")
+        crawler.run_crawl_from_file(args.bv_file)
     else:
-        # 从文件爬取
-        print("使用默认模式：从文件爬取")
-        print(f"BV号文件路径: {bv_file_path}")
-        crawler.run_crawl_from_file(bv_file_path)
+        print(f"关键词: {args.keywords}")
+        print(f"最大页码: {args.max_pages}")
+        crawler.run_crawl(args.keywords, max_pages=args.max_pages)
     
     # 生成时间线数据
-    crawler.generate_timeline()
+    print("\n=== 生成时间线数据 ===")
+    crawler.generate_timeline(download_covers=download_covers)
     
-    print("\n自动化爬取任务完成!")
+    print("\n=== 任务完成 ===")
 
 if __name__ == "__main__":
     main()

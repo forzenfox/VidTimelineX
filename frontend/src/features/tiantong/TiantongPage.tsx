@@ -180,9 +180,39 @@ const TiantongPage = () => {
     setShowSuggestions(false);
   }, []);
 
-  const filteredVideos = videos.filter(video => {
-    return video.title.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  // 优化搜索算法，考虑标题和标签，实现搜索结果排序
+  const filteredVideos = React.useMemo(() => {
+    if (!searchQuery.trim()) {
+      return videos;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+
+    return videos
+      .map(video => {
+        // 计算匹配分数
+        let score = 0;
+
+        // 标题匹配
+        if (video.title.toLowerCase().includes(query)) {
+          score += 10;
+          // 完全匹配得分更高
+          if (video.title.toLowerCase() === query) {
+            score += 10;
+          }
+        }
+
+        // 标签匹配
+        if (video.tags && video.tags.some(tag => tag.toLowerCase().includes(query))) {
+          score += 5;
+        }
+
+        return { video, score };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ video }) => video);
+  }, [searchQuery, videos]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -211,7 +241,7 @@ const TiantongPage = () => {
             <HorizontalDanmaku theme={theme} />
 
             <header
-              className="sticky top-0 z-40 bg-card/90 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300 ease-in-out"
+              className="fixed top-0 left-0 right-0 z-40 w-full bg-card/90 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300 ease-in-out"
               role="banner"
               id="main-header"
               ref={headerRef}
@@ -393,12 +423,13 @@ const TiantongPage = () => {
             </header>
 
             <main
-              className="max-w-[1440px] lg:max-w-[1600px] mx-auto px-6 py-8 flex flex-col md:flex-row gap-8"
+              className="max-w-[1440px] lg:max-w-[1600px] mx-auto px-6 py-8 flex flex-col md:flex-row gap-8 pt-40"
               role="main"
             >
               <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
                 <VideoTimeline
                   theme={theme}
+                  videos={filteredVideos}
                   onVideoClick={video => {
                     console.log("Video click passed to TiantongPage:", video.title);
                     setSelectedVideo(video);

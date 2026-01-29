@@ -30,14 +30,20 @@ def main():
                         help='搜索关键词列表')
     parser.add_argument('--max-pages', type=int, default=1,
                         help='关键词搜索的最大页码')
+    parser.add_argument('--no-download-covers', action='store_true',
+                        help='不下载视频封面图片')
     
     args = parser.parse_args()
+    
+    # 控制是否下载封面
+    download_covers = not args.no_download_covers
     
     # 创建爬虫实例
     crawler = BiliBiliAutoCrawler()
     
     print("=== B站视频爬虫工具 ===")
     print(f"爬取模式: {args.mode}")
+    print(f"下载封面: {'是' if download_covers else '否'}")
     
     if args.mode == 'file':
         print(f"BV号文件: {args.bv_file}")
@@ -51,7 +57,7 @@ def main():
     
     # 生成时间线数据
     print("\n=== 生成时间线数据 ===")
-    crawler.generate_timeline()
+    crawler.generate_timeline(download_covers=download_covers)
     
     print("\n=== 任务完成 ===")
 

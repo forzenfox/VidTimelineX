@@ -8,70 +8,40 @@ interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElemen
   alt: string;
 }
 
-function useProxyUrl(originalUrl: string): string {
-  const [proxyUrl, setProxyUrl] = React.useState<string>(originalUrl);
-
-  useEffect(() => {
-    if (originalUrl.includes("hdslb.com")) {
-      const url = new URL(originalUrl);
-      const path = url.pathname + url.search;
-      setProxyUrl(`/bilibili-img${path}`);
-    } else if (originalUrl.includes("unsplash.com")) {
-      const url = new URL(originalUrl);
-      const path = url.pathname + url.search;
-      setProxyUrl(`/unsplash${path}`);
-    } else {
-      setProxyUrl(originalUrl);
-    }
-  }, [originalUrl]);
-
-  return proxyUrl;
-}
-
 export function ImageWithFallback({ src, alt, style, className, ...rest }: ImageWithFallbackProps) {
-  const [didError, setDidError] = useState(false);
-  const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
-  const proxySrc = useProxyUrl(src);
+  // 处理图片URL，为哔哩哔哩图片添加代理
+  const getProxiedImageUrl = (originalUrl: string) => {
+    // 检测是否是哔哩哔哩图片URL
+    const bilibiliRegex = /^https:\/\/(i\d+\.hdslb\.com|i\.hdslb\.com)\/bfs\//;
+    if (bilibiliRegex.test(originalUrl)) {
+      // 使用images.weserv.nl作为代理
+      return `https://images.weserv.nl/?url=${encodeURIComponent(originalUrl)}`;
+    }
+    return originalUrl;
+  };
 
-  useEffect(() => {
-    let isMounted = true;
+  const handleError = () => {
+    setHasError(true);
+    setIsLoading(false);
+  };
 
-    const fetchImage = async () => {
-      try {
-        const response = await fetch(proxySrc);
+  const handleLoad = () => {
+    setIsLoading(false);
+    setHasError(false);
+  };
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+  if (isLoading) {
+    return (
+      <div className={`inline-block bg-gray-100 animate-pulse ${className ?? ""}`} style={style}>
+        <div className="flex items-center justify-center w-full h-full" />
+      </div>
+    );
+  }
 
-        const blob = await response.blob();
-
-        if (isMounted) {
-          const url = URL.createObjectURL(blob);
-          setBlobUrl(url);
-          setIsLoading(false);
-        }
-      } catch {
-        if (isMounted) {
-          setDidError(true);
-          setIsLoading(false);
-        }
-      }
-    };
-
-    fetchImage();
-
-    return () => {
-      isMounted = false;
-      if (blobUrl) {
-        URL.revokeObjectURL(blobUrl);
-      }
-    };
-  }, [proxySrc]);
-
-  if (didError) {
+  if (hasError) {
     return (
       <div
         className={`inline-block bg-gray-100 text-center align-middle ${className ?? ""}`}
@@ -84,16 +54,17 @@ export function ImageWithFallback({ src, alt, style, className, ...rest }: Image
     );
   }
 
-  if (isLoading || !blobUrl) {
-    return (
-      <div
-        className={`inline-block bg-gray-100 animate-pulse ${className ?? ""}`}
-        style={style}
-      >
-        <div className="flex items-center justify-center w-full h-full" />
-      </div>
-    );
-  }
+  const proxiedSrc = getProxiedImageUrl(src);
 
-  return <img src={blobUrl} alt={alt} className={className} style={style} {...rest} />;
+  return (
+    <img
+      src={proxiedSrc}
+      alt={alt}
+      className={className}
+      style={style}
+      onError={handleError}
+      onLoad={handleLoad}
+      {...rest}
+    />
+  );
 }

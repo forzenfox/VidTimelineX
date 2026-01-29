@@ -45,7 +45,7 @@ backend/
 - **auto_crawler.py**: 实现B站视频元数据爬取功能，支持从文件读取BV号列表和关键词搜索两种模式，包含视频元数据解析、重试机制、请求频率控制等功能。
 
 ### 2. 下载模块 (src/downloader/)
-- **download_thumbs.py**: 实现视频缩略图下载功能，支持批量下载视频缩略图。
+- **download_thumbs.py**: 实现视频封面下载功能，支持从videos.json读取视频列表并下载封面图片到前端目录。可作为独立脚本运行或被其他模块调用。
 
 ### 3. 命令行工具 (src/commands/)
 - **approve_videos.py**: 视频审核工具，用于将待审核视频移动到已通过或已拒绝列表。
@@ -87,6 +87,47 @@ python main.py --mode keyword --keywords 原神 崩坏星穹铁道 --max-pages 2
 ### 3. 查看帮助信息
 ```bash
 python main.py --help
+```
+
+### 4. 控制封面下载
+```bash
+# 默认自动下载封面到前端目录
+python main.py
+
+# 跳过封面下载
+python main.py --no-download-covers
+```
+
+### 5. 独立运行封面下载
+```bash
+python src/downloader/download_thumbs.py data/videos.json frontend/public/thumbs/
+```
+
+## 封面图片功能
+
+### 封面存储位置
+下载的封面图片保存到前端项目目录：
+```
+frontend/public/thumbs/
+```
+
+### 封面命名规则
+封面图片以视频BV号命名，格式为 `{BV号}.jpg`：
+- 例如：`BV195zoB2EFY.jpg`、`BV1ybzXBDEJa.jpg`
+
+### 使用说明
+- 封面下载在生成 `videos.json` 时间线数据后自动执行
+- 原始 `videos.json` 中的 `cover` 字段继续使用外部Bilibili URL
+- 本地封面主要用于备份或前端项目需要时使用
+- 使用 `--no-download-covers` 参数可跳过封面下载
+
+### 独立脚本用法
+```bash
+# 基本用法
+python src/downloader/download_thumbs.py <videos.json路径> <封面保存目录>
+
+# 静默模式（减少输出）
+python src/downloader/download_thumbs.py data/videos.json frontend/public/thumbs/ --quiet
 ```
 
 ## 数据格式

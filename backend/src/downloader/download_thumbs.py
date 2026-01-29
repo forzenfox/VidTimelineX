@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """
-download_thumbs.py
+视频封面下载模块
 
-Python 3 script to fetch video thumbnails (og:image) from Bilibili pages and save them as static files,
-then write out a new timeline JSON where each event.media.thumbnail points to the saved file.
+从B站视频页面获取封面图片并保存到本地目录。
 
-Usage:
-  python download_thumbs.py data/timeline.json media/thumbs
+功能：
+- 从videos.json读取视频列表
+- 下载每个视频的封面图片到指定目录
+- 可作为独立脚本运行，也可被其他模块导入调用
+
+Usage (as script):
+  python download_thumbs.py <videos.json> <thumbs_output_dir> [--quiet]
+
+Usage (as module):
+  from download_thumbs import download_all_covers
+  download_all_covers(videos_path, thumbs_dir, quiet=False)
 
 Requirements:
   - Python 3.8+
@@ -16,8 +24,10 @@ import sys
 import re
 import json
 import time
+import argparse
 from pathlib import Path
 from urllib.parse import urlparse
+from typing import Optional, List, Dict, Any
 
 try:
     import requests
@@ -26,10 +36,18 @@ except Exception:
     sys.exit(1)
 
 
-DELAY_SECONDS = 0.8  # wait between requests
+DELAY_SECONDS = 0.8
 
 
-def get_og_image(html: str) -> str | None:
+def get_og_image(html: str) -> Optional[str]:
+    """从HTML中提取og:image URL
+    
+    Args:
+        html: 页面HTML内容
+        
+    Returns:
+        封面图片URL，如果未找到返回None
+    """
     m = re.search(r'<meta\s+property=["\']og:image["\']\s+content=["\']([^"\']+)["\']', html, re.I)
     if m:
         return m.group(1)
@@ -43,6 +61,14 @@ def get_og_image(html: str) -> str | None:
 
 
 def sanitize_ext(pathname: str) -> str:
+    """从URL中提取文件扩展名
+    
+    Args:
+        pathname: 文件路径或URL
+        
+    Returns:
+        文件扩展名（含点号），如'.jpg'
+    """
     ext = Path(urlparse(pathname).path).suffix
     if ext:
         return ext
@@ -50,19 +76,16 @@ def sanitize_ext(pathname: str) -> str:
 
 
 def ensure_protocol(url: str) -> str:
-    """
-    确保 URL 有正确的协议头，并处理 Unicode 转义序列
+    """确保URL具有正确的协议头
     
     Args:
-        url: 输入的 URL 字符串
+        url: 输入的URL字符串
         
     Returns:
-        处理后的 URL 字符串
+        处理后的URL字符串
     """
-    # 处理 Unicode 转义序列
     url = url.encode('utf-8').decode('unicode_escape')
     
-    # 确保协议头
     if url.startswith("//"):
         return "https:" + url
     elif not url.startswith("http://") and not url.startswith("https://"):
@@ -70,112 +93,187 @@ def ensure_protocol(url: str) -> str:
     return url
 
 
-def choose_filename(url: str, idx: int, ext: str) -> str:
-    m = re.search(r'(BV[0-9A-Za-z]+)', url)
+def extract_bvid(video_url: str) -> Optional[str]:
+    """从视频URL中提取BV号
+    
+    Args:
+        video_url: B站视频URL
+        
+    Returns:
+        BV号字符串，如'BV195zoB2EFY'，未找到返回None
+    """
+    m = re.search(r'(BV[0-9A-Za-z]+)', video_url)
     if m:
-        base = m.group(1)
-    else:
-        m2 = re.search(r'av(\d+)', url, re.I)
-        if m2:
-            base = "av" + m2.group(1)
+        return m.group(1)
+    return None
+
+
+def choose_filename(bvid: str, ext: str) -> str:
+    """生成封面文件名
+    
+    Args:
+        bvid: 视频BV号
+        ext: 文件扩展名
+        
+    Returns:
+        文件名，如'BV195zoB2EFY.jpg'
+    """
+    return f"{bvid}{ext}"
+
+
+def download_binary(url: str, outpath: Path) -> bool:
+    """下载二进制文件
+    
+    Args:
+        url: 下载URL
+        outpath: 保存路径
+        
+    Returns:
+        下载成功返回True，失败返回False
+    """
+    try:
+        headers = {"User-Agent": "Mozilla/5.0 (thumb-fetcher)"}
+        with requests.get(url, headers=headers, stream=True, timeout=20) as r:
+            r.raise_for_status()
+            outpath.parent.mkdir(parents=True, exist_ok=True)
+            with outpath.open("wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+        return True
+    except Exception:
+        return False
+
+
+def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False) -> Optional[Path]:
+    """下载单个视频的封面
+    
+    Args:
+        video: 视频数据字典
+        thumbs_dir: 封面保存目录
+        quiet: 静默模式，减少日志输出
+        
+    Returns:
+        成功返回文件路径，失败返回None
+    """
+    video_url = video.get('videoUrl', '')
+    bvid = extract_bvid(video_url)
+    
+    if not bvid:
+        if not quiet:
+            print(f"  [跳过] 无法提取BV号: {video_url}")
+        return None
+    
+    try:
+        if not quiet:
+            print(f"  请求页面: {video_url}")
+        
+        headers = {"User-Agent": "Mozilla/5.0 (thumb-fetcher)"}
+        resp = requests.get(video_url, headers=headers, timeout=15)
+        
+        if resp.status_code != 200:
+            if not quiet:
+                print(f"  [失败] HTTP {resp.status_code}")
+            return None
+        
+        html = resp.text
+        img_url = get_og_image(html)
+        
+        if not img_url:
+            if not quiet:
+                print(f"  [失败] 未找到封面图片")
+            return None
+        
+        img_url = ensure_protocol(img_url)
+        ext = sanitize_ext(img_url)
+        filename = choose_filename(bvid, ext)
+        outpath = thumbs_dir / filename
+        
+        if not quiet:
+            print(f"  下载封面: {img_url}")
+        
+        if download_binary(img_url, outpath):
+            if not quiet:
+                print(f"  [成功] {outpath}")
+            return outpath
         else:
-            base = f"event{idx}"
-    return f"{base}-{idx}{ext}"
+            if not quiet:
+                print(f"  [失败] 下载失败")
+            return None
+            
+    except Exception as e:
+        if not quiet:
+            print(f"  [错误] {str(e)}")
+        return None
 
 
-def download_binary(url: str, outpath: Path):
-    headers = {"User-Agent": "Mozilla/5.0 (thumb-fetcher)"}
-    with requests.get(url, headers=headers, stream=True, timeout=20) as r:
-        r.raise_for_status()
-        outpath.parent.mkdir(parents=True, exist_ok=True)
-        with outpath.open("wb") as f:
-            for chunk in r.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
+def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False) -> Dict[str, int]:
+    """下载所有视频封面
+    
+    Args:
+        videos_path: videos.json文件路径
+        thumbs_dir: 封面保存目录
+        quiet: 静默模式
+        
+    Returns:
+        包含成功和失败数量的字典 {'success': int, 'failed': int, 'skipped': int}
+    """
+    if not videos_path.exists():
+        if not quiet:
+            print(f"[错误] videos.json不存在: {videos_path}")
+        return {'success': 0, 'failed': 0, 'skipped': 0}
+    
+    with videos_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    
+    videos = data if isinstance(data, list) else data.get("videos", [])
+    
+    if not quiet:
+        print(f"找到 {len(videos)} 个视频")
+        print(f"封面保存目录: {thumbs_dir}")
+    
+    thumbs_dir.mkdir(parents=True, exist_ok=True)
+    
+    results = {'success': 0, 'failed': 0, 'skipped': 0}
+    
+    for idx, video in enumerate(videos):
+        video_url = video.get('videoUrl', '')
+        
+        if not video_url or "BV" not in video_url:
+            results['skipped'] += 1
+            continue
+        
+        if "bilibili.com" not in video_url:
+            results['skipped'] += 1
+            continue
+        
+        outpath = download_cover(video, thumbs_dir, quiet)
+        
+        if outpath:
+            results['success'] += 1
+        else:
+            results['failed'] += 1
+        
+        time.sleep(DELAY_SECONDS)
+    
+    if not quiet:
+        print(f"\n下载完成: 成功 {results['success']}, 失败 {results['failed']}, 跳过 {results['skipped']}")
+    
+    return results
 
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: python download_thumbs.py <videos.json> <thumbs_output_dir>")
-        sys.exit(2)
-
-    videos_path = Path(sys.argv[1])
-    thumbs_dir = Path(sys.argv[2])
-
-    if not videos_path.exists():
-        print(f"videos.json not found: {videos_path}")
-        sys.exit(2)
-
-    with videos_path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    videos = data if isinstance(data, list) else data.get("videos", [])
-    print(f"Found {len(videos)} videos in {videos_path}")
-
-    for idx, video in enumerate(videos):
-        url = f"https://www.bilibili.com/video/{video.get('bvid', '')}"
-        if not url or "BV" not in url:
-            print(f"[{idx}] no valid bvid, skip")
-            continue
-        if "bilibili.com" not in url:
-            print(f"[{idx}] url not bilibili ({url}), skip")
-            continue
-
-        try:
-            print(f"[{idx}] Requesting page: {url}")
-            headers = {"User-Agent": "Mozilla/5.0 (thumb-fetcher)"}
-            resp = requests.get(url, headers=headers, timeout=15)
-            if resp.status_code != 200:
-                print(f"  -> failed to fetch page: {resp.status_code}")
-                continue
-            html = resp.text
-
-            img_url = get_og_image(html)
-            if not img_url:
-                print("  -> og image not found, skip")
-                continue
-
-            img_url = ensure_protocol(img_url)
-            ext = sanitize_ext(img_url)
-            filename = choose_filename(url, idx, ext)
-            outpath = thumbs_dir / filename
-
-            print(f"  -> downloading thumbnail {img_url}  -> {outpath}")
-            download_binary(img_url, outpath)
-
-            """
-            计算相对于前端public目录的相对路径
-            """
-            # 确保所有路径都是绝对路径，并且不包含相对路径部分
-            frontend_public = Path(__file__).parent.parent / "frontend" / "public"
-            frontend_public_abs = frontend_public.resolve()
-            
-            # 解析outpath，确保它是直接的绝对路径，不包含'..'
-            outpath_abs = outpath.resolve()
-            
-            try:
-                # 计算相对路径
-                rel = outpath_abs.relative_to(frontend_public_abs)
-                rel_posix = rel.as_posix()
-                # 直接使用相对路径，不添加额外的thumbs前缀
-                cover_path = f"/{rel_posix}"
-            except ValueError:
-                # 如果路径不在预期的子目录中，直接使用文件名
-                cover_filename = outpath.name
-                cover_path = f"/thumbs/{cover_filename}"
-
-            video["cover"] = cover_path
-            print(f"  -> saved and updated video.cover = {cover_path}")
-
-            time.sleep(DELAY_SECONDS)
-        except Exception as e:
-            print(f"  -> error processing {url}: {e}")
-            time.sleep(DELAY_SECONDS)
-
-    # 直接写回原始文件
-    with videos_path.open("w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"Done. Updated JSON in {videos_path}")
+    """主函数，命令行入口"""
+    parser = argparse.ArgumentParser(description='下载B站视频封面图片')
+    parser.add_argument('videos_json', type=Path, help='videos.json文件路径')
+    parser.add_argument('thumbs_dir', type=Path, help='封面保存目录')
+    parser.add_argument('--quiet', '-q', action='store_true', help='静默模式，减少输出')
+    
+    args = parser.parse_args()
+    
+    results = download_all_covers(args.videos_json, args.thumbs_dir, args.quiet)
+    
+    sys.exit(0 if results['success'] > 0 else 1)
 
 
 if __name__ == "__main__":

@@ -232,7 +232,9 @@ interface User {
 }
 
 interface DanmuItemProps {
-  item: Danmu | { id: string; text: string; type: "normal" | "gift" | "super"; user: User; color?: string };
+  item:
+    | Danmu
+    | { id: string; text: string; type: "normal" | "gift" | "super"; user: User; color?: string };
   theme?: "tiger" | "sweet";
 }
 
