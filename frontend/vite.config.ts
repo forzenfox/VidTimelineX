@@ -5,6 +5,7 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import path from "path";
 
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/i-bo/' : '/',
   plugins: [
     react(),
     tailwindcss(),
