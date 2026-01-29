@@ -11,12 +11,6 @@ interface VideoModalProps {
 const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger" }) => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const mockBvid = useMemo(
-    // eslint-disable-next-line react-hooks/purity
-    () => `BV${Math.random().toString(36).substring(2, 13).toUpperCase()}`,
-    []
-  );
-
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -89,7 +83,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
 
         <div className="relative" style={{ paddingBottom: "56.25%" }}>
           <iframe
-            src={`https://player.bilibili.com/player.html?bvid=${mockBvid}&page=1&high_quality=1&danmaku=1`}
+            src={`https://player.bilibili.com/player.html?bvid=${video.videoUrl.split('/').pop()}&page=1&high_quality=1&danmaku=1`}
             className="absolute inset-0 w-full h-full"
             allowFullScreen
             allow="autoplay; fullscreen"
@@ -102,7 +96,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
         <div className="p-4 flex items-center justify-between bg-gray-50">
           <div>
             <a
-              href={`https://www.bilibili.com/video/${mockBvid}`}
+              href={video.videoUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center px-4 py-2 bg-blue-500 text-white font-medium rounded-full transition-colors hover:bg-blue-600"

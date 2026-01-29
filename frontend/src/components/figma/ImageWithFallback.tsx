@@ -16,6 +16,10 @@ function useProxyUrl(originalUrl: string): string {
       const url = new URL(originalUrl);
       const path = url.pathname + url.search;
       setProxyUrl(`/bilibili-img${path}`);
+    } else if (originalUrl.includes("unsplash.com")) {
+      const url = new URL(originalUrl);
+      const path = url.pathname + url.search;
+      setProxyUrl(`/unsplash${path}`);
     } else {
       setProxyUrl(originalUrl);
     }

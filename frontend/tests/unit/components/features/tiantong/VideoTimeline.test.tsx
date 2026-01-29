@@ -9,7 +9,7 @@ describe("VideoTimeline组件测试", () => {
     id: "1",
     title: "测试视频",
     date: "2024-01-01",
-    bvid: "BV1xx411c7mD",
+    videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
     cover: "https://example.com/cover.jpg",
     tags: ["测试", "视频"],
     duration: "10:30",

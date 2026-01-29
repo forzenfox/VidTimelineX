@@ -71,6 +71,18 @@ export default defineConfig({
           });
         },
       },
+      "/unsplash": {
+        target: "https://images.unsplash.com",
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/unsplash/, ""),
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            proxyReq.setHeader('Referer', 'https://images.unsplash.com/');
+            proxyReq.setHeader('Origin', 'https://images.unsplash.com');
+          });
+        },
+      },
     },
   },
   // 优化依赖预构建

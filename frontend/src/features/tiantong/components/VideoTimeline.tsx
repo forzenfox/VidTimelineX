@@ -8,15 +8,7 @@ interface VideoTimelineProps {
   onVideoClick: (video: Video) => void;
 }
 
-// 视频封面URL映射
-const videoCoverUrls: { [key: string]: string } = {
-  "1": "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=800&q=80",
-  "2": "https://images.unsplash.com/photo-1517030335964-65ad7b05397d?w=800&q=80",
-  "3": "https://images.unsplash.com/photo-1597759493550-6ea6cbcb2cb4?w=800&q=80",
-  "4": "https://images.unsplash.com/photo-1758611969864-2234b879ef3c?w=800&q=80",
-  "5": "https://images.unsplash.com/photo-1610993302487-6dbfc0acf4ed?w=800&q=80",
-  "6": "https://images.unsplash.com/photo-1553492206-f609eddc33dd?w=800&q=80",
-};
+
 
 // 单个视频项组件
 const VideoItem: React.FC<{
@@ -24,7 +16,7 @@ const VideoItem: React.FC<{
     id: string;
     title: string;
     date: string;
-    bvid: string;
+    videoUrl: string;
     cover: string;
     tags: string[];
     duration: string;
@@ -100,7 +92,7 @@ const VideoItem: React.FC<{
           {/* 封面图 */}
           <div className="relative aspect-video overflow-hidden">
             <ImageWithFallback
-              src={videoCoverUrls[video.id]}
+              src={video.cover}
               alt={video.title}
               className="w-full h-full object-cover"
               loading="lazy" // 懒加载图片

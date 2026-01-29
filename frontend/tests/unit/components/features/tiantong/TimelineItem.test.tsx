@@ -22,7 +22,7 @@ describe("TimelineItem组件测试", () => {
       date: "2024-01-01",
       views: "10万",
       icon: Heart,
-      bvid: "BV1xx411c7mD",
+      videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
       duration: "10:30"
     },
     {
@@ -34,7 +34,7 @@ describe("TimelineItem组件测试", () => {
       date: "2024-01-01",
       views: "20万",
       icon: Heart,
-      bvid: "BV1yy4y1B7Mm",
+      videoUrl: "https://www.bilibili.com/video/BV1yy4y1B7Mm",
       duration: "12:45"
     }
   ];
