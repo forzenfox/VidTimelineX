@@ -19,6 +19,10 @@ export interface Danmu {
   type: "normal" | "gift" | "super";
   user?: string;
   color?: string;
+  colors?: {
+    tiger: string;
+    sweet: string;
+  };
 }
 
 export type Theme = "tiger" | "sweet";

@@ -13,7 +13,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
   const [vipCount, setVipCount] = useState(1314);
   const [diamondCount, setDiamondCount] = useState(1000);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [localDanmuPool, setLocalDanmuPool] = useState<Danmu[]>(danmuPool);
+  const [localDanmuPool, setLocalDanmuPool] = useState<Danmu[]>(danmuPool as Danmu[]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<HTMLDivElement>(null);
 
