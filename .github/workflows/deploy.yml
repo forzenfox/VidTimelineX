@@ -29,22 +29,26 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
+        working-directory: frontend
         
       - name: Lint code
         run: npm run lint
+        working-directory: frontend
         
       - name: Run tests
         run: npm run test:ci
+        working-directory: frontend
         
       - name: Build project
         run: npm run build
+        working-directory: frontend
         env:
           VITE_BASE_URL: /i-bo/
           
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: build/
+          path: frontend/build/
           
   deploy:
     environment:
