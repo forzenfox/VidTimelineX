@@ -45,8 +45,8 @@ describe("VideoModal组件测试（甜筒）", () => {
     const iframe = container.querySelector('iframe');
     expect(iframe).toBeInTheDocument();
 
-    // 验证跳转原站按钮
-    expect(screen.getByText("跳转原站")).toBeInTheDocument();
+    // 验证跳转B站观看按钮
+    expect(screen.getByText(/跳转B站观看/)).toBeInTheDocument();
   });
 
   /**
