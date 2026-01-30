@@ -71,14 +71,14 @@ const VideoItem: React.FC<{
 
   return (
     <div
-      key={video.id}
+      key={safeVideo.id}
       className={`relative flex items-center mb-16 ${isLeft ? "justify-start" : "justify-end"}`}
     >
       {/* 节点图标 */}
       <div
         className="absolute left-1/2 -ml-8 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer hover:scale-125 z-10 transition-all duration-300"
         style={nodeStyle}
-        onClick={() => onVideoClick(video)}
+        onClick={() => onVideoClick(safeVideo)}
       >
         <div className="text-3xl">{theme === "tiger" ? "🐯" : "🍦"}</div>
       </div>
@@ -86,15 +86,16 @@ const VideoItem: React.FC<{
       {/* 视频卡片 */}
       <div className={`w-5/12 ${isLeft ? "pr-16" : "pl-16"}`}>
         <div
+          data-testid="video-card"
           className="hover:scale-105 cursor-pointer overflow-hidden transition-all duration-300"
           style={cardStyle}
-          onClick={() => onVideoClick(video)}
+          onClick={() => onVideoClick(safeVideo)}
         >
           {/* 封面图 */}
           <div className="relative aspect-video overflow-hidden">
             <ImageWithFallback
-              src={video.cover}
-              alt={video.title}
+              src={safeVideo.cover}
+              alt={safeVideo.title}
               className="w-full h-full object-cover"
               loading="lazy" // 懒加载图片
             />
@@ -120,7 +121,7 @@ const VideoItem: React.FC<{
                 color: "#fff",
               }}
             >
-              {video.duration}
+              {safeVideo.duration}
             </div>
           </div>
 
@@ -132,7 +133,7 @@ const VideoItem: React.FC<{
                 color: theme === "tiger" ? "#5D4037" : "#6A1B9A",
               }}
             >
-              {video.title}
+              {safeVideo.title}
             </h3>
 
             <div className="flex flex-wrap items-center gap-3 mb-3 text-sm">
@@ -143,7 +144,7 @@ const VideoItem: React.FC<{
                 }}
               >
                 <Calendar size={14} />
-                <span>{video.date}</span>
+                <span>{safeVideo.date}</span>
               </div>
               <div
                 className="flex items-center gap-1"
@@ -152,13 +153,13 @@ const VideoItem: React.FC<{
                 }}
               >
                 <Clock size={14} />
-                <span>{video.duration}</span>
+                <span>{safeVideo.duration}</span>
               </div>
             </div>
 
             {/* 标签 */}
             <div className="flex flex-wrap gap-2">
-              {video.tags.slice(0, 2).map(tag => (
+              {(safeVideo.tags || []).slice(0, 2).map(tag => (
                 <span
                   key={tag}
                   className="px-2 py-1 text-xs font-medium"

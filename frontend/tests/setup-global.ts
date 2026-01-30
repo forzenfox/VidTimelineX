@@ -605,7 +605,7 @@ console.error = jest.fn((...args) => {
 
 // 模拟TextEncoder
 if (!globalThis.TextEncoder) {
-  // @ts-ignore - 忽略类型错误，这只是测试环境的模拟实现
+  // @ts-expect-error - 忽略类型错误，这只是测试环境的模拟实现
   globalThis.TextEncoder = class TextEncoder {
     readonly encoding: string = "utf-8";
 
@@ -638,7 +638,6 @@ if (!globalThis.TextEncoder) {
 
 // 模拟TextDecoder
 if (!globalThis.TextDecoder) {
-  // @ts-ignore - 忽略类型错误，这只是测试环境的模拟实现
   globalThis.TextDecoder = class TextDecoder {
     readonly encoding: string = "utf-8";
     readonly fatal: boolean = false;

@@ -59,3 +59,7 @@ ehthumbs.db
 yarn.lock
 pnpm-lock.yaml
 node_modules
+
+# Visual regression test snapshots
+tests/e2e/visual/visual-regression.test.tsx-snapshots/
+test-results/

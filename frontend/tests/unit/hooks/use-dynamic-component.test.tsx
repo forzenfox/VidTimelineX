@@ -24,11 +24,11 @@ describe("use-dynamic-component Hook测试", () => {
    */
   test("TC-002: 类型验证测试", () => {
     const ResponsiveComponent = withDeviceSpecificComponent<React.ComponentType<{ text: string }>>({
-      tablet: (props: any) => <TestComponent {...props} />,
-      desktop: (props: any) => <TestComponent {...props} />,
+      tablet: (props: { text: string }) => <TestComponent {...props} />,
+      desktop: (props: { text: string }) => <TestComponent {...props} />,
     });
 
-    // @ts-ignore - 忽略类型错误，这只是测试
+    // @ts-expect-error - 忽略类型错误，这只是测试
     expect(React.isValidElement(<ResponsiveComponent text="测试" />)).toBe(true);
   });
 });

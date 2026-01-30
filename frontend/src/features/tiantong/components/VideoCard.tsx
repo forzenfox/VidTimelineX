@@ -39,6 +39,7 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
 
   return (
     <div
+      data-testid="video-card"
       onClick={handleClick}
       className="group relative bg-card rounded-2xl overflow-hidden border border-border cursor-pointer shadow-md transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] active:shadow-md sm:hover:-translate-y-2 sm:hover:shadow-2xl sm:active:scale-[0.99]"
       role="article"
