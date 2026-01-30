@@ -13,7 +13,8 @@ export function ImageWithFallback({ src, alt, style, className, ...rest }: Image
   const [hasError, setHasError] = useState(false);
 
   const getLocalImageUrl = (filename: string) => {
-    return `/thumbs/${filename}`;
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    return `${baseUrl}thumbs/${filename}`;
   };
 
   const handleError = () => {
