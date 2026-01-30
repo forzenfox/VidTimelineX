@@ -43,7 +43,9 @@ const MainApp: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <PerformanceMonitor />
-      <BrowserRouter>
+
+      
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AppRoutes />
       </BrowserRouter>
     </QueryClientProvider>
