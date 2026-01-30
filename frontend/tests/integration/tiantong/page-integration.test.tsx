@@ -11,7 +11,7 @@ describe("甜筒模块页面集成测试", () => {
    */
   test(
     "TC-001: 页面渲染测试",
-    wrapAsync(async () => {
+    async () => {
       await withTimeout(
         async () => {
           await safeAsync(async () => {
@@ -26,7 +26,8 @@ describe("甜筒模块页面集成测试", () => {
         15000,
         "页面渲染超时"
       );
-    })
+    },
+    60000
   );
 
   /**
