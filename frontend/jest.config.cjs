@@ -62,31 +62,15 @@ module.exports = {
   cache: true,
   // 缓存目录
   cacheDirectory: "<rootDir>/node_modules/.jest-cache",
-  // 缓存清理阈值（文件数）
-  cacheThreshold: 10000,
-  // 缓存压缩
-  cacheCompression: true,
 
-  // 测试名称忽略模式
-  testNameIgnorePatterns: ["\\.d\\.ts$", "\\.test\\.d\\.ts$"],
   // 模块路径忽略模式
   modulePathIgnorePatterns: ["node_modules", "dist", "build"],
-  // 测试排序器
-  testSequencer: "@jest/test-sequencer",
   // 测试环境变量
   testEnvironmentOptions: {
     customExportConditions: [""],
   },
-  // 测试路径映射
-  testPathPattern: undefined,
   // 测试名称模式
   testNamePattern: undefined,
-  // 测试文件扩展名
-  testFileExtensions: ["test.ts", "test.tsx", "test.js", "test.jsx"],
-  // 测试超时配置
-  testTimeout: 30000,
-  // 测试重试配置
-  retryTimes: 3,
   // 测试失败后是否退出
   bail: 0,
   // 测试输出格式
@@ -121,11 +105,5 @@ module.exports = {
   // 测试设置文件
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   setupFiles: ["<rootDir>/tests/setup-global.ts"],
-  // 全局变量
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.test.json",
-      fast: true,
-    },
-  },
+
 };

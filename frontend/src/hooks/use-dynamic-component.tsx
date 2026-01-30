@@ -15,10 +15,10 @@ export interface DeviceComponentConfig<T extends React.ComponentType<unknown>> {
  * @param options 不同设备的组件配置
  * @returns 根据设备类型渲染对应组件的组件
  */
-export function withDeviceSpecificComponent<T extends React.ComponentType<unknown>>(
+export function withDeviceSpecificComponent<T extends React.ComponentType<any>>(
   options: DeviceComponentConfig<T>
 ) {
-  const DeviceSpecificComponent = (props: unknown) => {
+  const DeviceSpecificComponent = (props: any) => {
     const device = useDeviceDetect();
 
     // 根据设备类型选择组件 - 只支持平板和桌面设备
@@ -45,7 +45,7 @@ export function withDeviceSpecificComponent<T extends React.ComponentType<unknow
     return <Component {...props} />;
   };
 
-  return DeviceSpecificComponent;
+  return DeviceSpecificComponent as T;
 }
 
 /**
@@ -54,7 +54,7 @@ export function withDeviceSpecificComponent<T extends React.ComponentType<unknow
  * @param fallback 加载中的 fallback 组件
  * @returns 动态加载的组件
  */
-export function useDynamicComponent<T extends React.ComponentType<unknown>>(
+export function useDynamicComponent<T extends React.ComponentType<any>>(
   loaders: Record<DeviceType, () => Promise<{ default: T }>>,
   fallback?: React.ReactNode
 ) {
@@ -67,13 +67,13 @@ export function useDynamicComponent<T extends React.ComponentType<unknown>>(
   const DynamicComponent = lazy(loader);
 
   // 返回Suspense包装的组件
-  const Component = (props: unknown) => (
+  const Component = (props: any) => (
     <Suspense fallback={fallback || <div className="animate-pulse">加载中...</div>}>
       <DynamicComponent {...props} />
     </Suspense>
   );
 
-  return Component;
+  return Component as T;
 }
 
 /**

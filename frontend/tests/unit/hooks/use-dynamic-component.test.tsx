@@ -28,7 +28,6 @@ describe("use-dynamic-component Hook测试", () => {
       desktop: (props: { text: string }) => <TestComponent {...props} />,
     });
 
-    // @ts-expect-error - 忽略类型错误，这只是测试
     expect(React.isValidElement(<ResponsiveComponent text="测试" />)).toBe(true);
   });
 });
