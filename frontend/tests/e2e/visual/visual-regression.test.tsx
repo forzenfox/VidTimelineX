@@ -110,7 +110,7 @@ test.describe("视觉回归测试", () => {
     // 切换到凯哥主题
     await page.click("[data-testid=theme-toggle]");
     await page.waitForLoadState("load");
-    
+
     // 等待页面稳定
     await page.waitForTimeout(2000);
 
@@ -145,7 +145,7 @@ test.describe("视觉回归测试", () => {
     // 点击视频卡片打开模态框
     await page.click("[data-testid=video-card]");
     await page.waitForLoadState("load");
-    
+
     // 等待模态框稳定
     await page.waitForTimeout(1500);
 

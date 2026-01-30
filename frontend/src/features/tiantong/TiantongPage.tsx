@@ -461,7 +461,7 @@ const TiantongPage = () => {
               className="border-t border-border mt-12 bg-card py-8 text-center text-sm text-muted-foreground"
               role="contentinfo"
             >
-              <p>{`© 2024 亿口甜筒 · 亿口时光 | ${theme === "tiger" ? "虎将的高能切片站" : "甜筒的粉丝快乐窝"}`}</p>
+              <p>{`© 2026 亿口甜筒 · 亿口时光 | ${theme === "tiger" ? "虎将的高能切片站" : "甜筒的粉丝快乐窝"}`}</p>
               <p className="mt-2 flex items-center justify-center gap-2">
                 Designed with{" "}
                 {theme === "tiger" ? (

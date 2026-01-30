@@ -65,7 +65,7 @@ export const HomePage = () => {
 
         {/* 页脚 */}
         <footer className="mt-16 text-gray-500 text-sm">
-          <p>© 2024 哔哩哔哩时间线 - 探索精彩视频内容</p>
+          <p>© 2026 哔哩哔哩时间线 - 探索精彩视频内容</p>
         </footer>
       </div>
     </div>
