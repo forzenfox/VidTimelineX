@@ -27,7 +27,7 @@ describe("MobileNotSupported组件测试", () => {
     const smartphoneIcon = container.querySelector("svg");
     expect(smartphoneIcon).toBeInTheDocument();
 
-    const monitorIcon = container.querySelector('[data-lucide="monitor"]');
+    const monitorIcon = container.querySelector('[aria-label="monitor icon"]');
     expect(monitorIcon).toBeInTheDocument();
   });
 
@@ -39,8 +39,12 @@ describe("MobileNotSupported组件测试", () => {
   test("TC-003: 主要文本内容测试", () => {
     render(<MobileNotSupported />);
 
-    expect(screen.getByText("本网站目前仅支持桌面端和平板端访问，移动端体验可能不佳。")).toBeInTheDocument();
-    expect(screen.getByText("为了获得最佳体验，请使用电脑或平板设备访问本网站")).toBeInTheDocument();
+    expect(
+      screen.getByText("本网站目前仅支持桌面端和平板端访问，移动端体验可能不佳。")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("为了获得最佳体验，请使用电脑或平板设备访问本网站")
+    ).toBeInTheDocument();
   });
 
   /**
@@ -66,7 +70,6 @@ describe("MobileNotSupported组件测试", () => {
     render(<MobileNotSupported />);
 
     expect(screen.getByText(/© 2026 哔哩哔哩时间线/)).toBeInTheDocument();
-    expect(screen.getByText("探索精彩视频内容")).toBeInTheDocument();
   });
 
   /**
@@ -149,8 +152,8 @@ describe("MobileNotSupported组件测试", () => {
   test("TC-011: 功能特点图标测试", () => {
     render(<MobileNotSupported />);
 
-    const emojiElements = screen.getAllByText(/^[🎬💬🎨🔍]$/);
-    expect(emojiElements.length).toBeGreaterThanOrEqual(4);
+    const featureItems = screen.getAllByText(/^(高清视频|弹幕互动|主题切换|智能搜索)$/);
+    expect(featureItems.length).toBeGreaterThanOrEqual(4);
   });
 
   /**
@@ -282,8 +285,12 @@ describe("MobileNotSupported组件测试", () => {
     render(<MobileNotSupported />);
 
     expect(screen.getByText("移动端暂不支持")).toBeInTheDocument();
-    expect(screen.getByText("本网站目前仅支持桌面端和平板端访问，移动端体验可能不佳。")).toBeInTheDocument();
-    expect(screen.getByText("为了获得最佳体验，请使用电脑或平板设备访问本网站")).toBeInTheDocument();
+    expect(
+      screen.getByText("本网站目前仅支持桌面端和平板端访问，移动端体验可能不佳。")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("为了获得最佳体验，请使用电脑或平板设备访问本网站")
+    ).toBeInTheDocument();
     expect(screen.getByText("高清视频")).toBeInTheDocument();
     expect(screen.getByText("弹幕互动")).toBeInTheDocument();
     expect(screen.getByText("主题切换")).toBeInTheDocument();

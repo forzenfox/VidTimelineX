@@ -33,7 +33,7 @@ const MobileNotSupported: React.FC = () => {
           {/* 建议区域 */}
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-center gap-3 mb-3">
-              <Monitor size={24} className="text-blue-600" />
+              <Monitor size={24} className="text-blue-600" aria-label="monitor icon" />
               <h2 className="text-lg font-semibold text-gray-800">建议使用PC端访问</h2>
             </div>
             <p className="text-sm text-gray-600">
