@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>页面未找到 - 哔哩哔哩时间线</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      }
+      .container { text-align: center; color: white; padding: 20px; }
+      h1 { font-size: 72px; margin-bottom: 16px; }
+      p { font-size: 24px; margin-bottom: 32px; opacity: 0.9; }
+      .spinner {
+        width: 48px; height: 48px;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 24px;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="spinner"></div>
+      <h1>404</h1>
+      <p>页面未找到，正在跳转...</p>
+    </div>
+    <script>
+      (function() {
+        var basePath = '/VidTimelineX/';
+        var urlParams = new URLSearchParams(window.location.search);
+        var path = urlParams.get('path') || '';
+
+        // 清理路径，移除基础路径前缀，获取相对路径
+        var relativePath = path;
+        if (relativePath.startsWith(basePath)) {
+          relativePath = relativePath.slice(basePath.length - 1);  // 保留 leading slash
+        }
+
+        // 移除前导斜杠
+        if (relativePath.startsWith('/')) {
+          relativePath = relativePath.slice(1);
+        }
+
+        // 移除尾部的斜杠
+        if (relativePath.endsWith('/')) {
+          relativePath = relativePath.slice(0, -1);
+        }
+
+        // 重定向到 index.html，传递原始路径
+        var redirectUrl = basePath + 'index.html';
+        if (relativePath && relativePath !== 'index.html') {
+          redirectUrl += '?from=' + encodeURIComponent(relativePath);
+        }
+
+        window.location.replace(redirectUrl);
+      })();
+    </script>
+  </body>
+</html>
