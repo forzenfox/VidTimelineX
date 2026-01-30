@@ -2,7 +2,7 @@
 
 /**
  * MobileNotSupported 组件自动化测试脚本
- * 
+ *
  * 功能：
  * - 自动执行测试用例
  * - 生成详细的测试报告
@@ -72,7 +72,7 @@ function runTest(testPattern = null) {
 
   try {
     let command = "npm test -- tests/unit/components/MobileNotSupported.test.tsx";
-    
+
     if (testPattern) {
       command += ` -- --testNamePattern="${testPattern}"`;
     }
@@ -86,7 +86,7 @@ function runTest(testPattern = null) {
     const duration = ((endTime - startTime) / 1000).toFixed(2);
 
     Logger.success(`测试执行完成，耗时: ${duration}秒`);
-    
+
     return {
       success: result.status === 0,
       duration: parseFloat(duration),
@@ -117,7 +117,7 @@ function parseTestResults(output) {
   const lines = output.split("\n");
   let currentTest = null;
 
-  lines.forEach((line) => {
+  lines.forEach(line => {
     // 解析测试用例
     const testMatch = line.match(/✓ (TC-\d+): (.+)/);
     if (testMatch) {
@@ -306,7 +306,7 @@ function generateHtmlReport(results, duration) {
     <div class="container">
         <div class="header">
             <h1>📱 MobileNotSupported 组件测试报告</h1>
-            <p style="color: #666; margin: 0;">生成时间: ${new Date().toLocaleString('zh-CN')}</p>
+            <p style="color: #666; margin: 0;">生成时间: ${new Date().toLocaleString("zh-CN")}</p>
             <p style="color: #666;">测试执行时长: ${duration}秒</p>
         </div>
 
@@ -340,7 +340,7 @@ function generateHtmlReport(results, duration) {
         <div class="test-list">
             ${results.tests
               .map(
-                (test) => `
+                test => `
                 <div class="test-item">
                     <div class="status ${test.status}">${test.status}</div>
                     <div class="info">
@@ -439,12 +439,24 @@ function main() {
   console.log("╔════════════════════════════════════════════════════════════════╗");
   console.log("║                        测试摘要                                 ║");
   console.log("╠════════════════════════════════════════════════════════════╣");
-  console.log(`║  总测试数: ${results.total.toString().padStart(4, " ")}                                    ║`);
-  console.log(`║  通过: ${results.passed.toString().padStart(4, " ")}                                        ║`);
-  console.log(`║  失败: ${results.failed.toString().padStart(4, " ")}                                        ║`);
-  console.log(`║  跳过: ${results.skipped.toString().padStart(4, " ")}                                        ║`);
-  console.log(`║  通过率: ${((results.passed / results.total) * 100).toFixed(1)}%${" ".repeat(8)}                          ║`);
-  console.log(`║  执行时长: ${testResult.duration}秒${" ".repeat(8)}                                  ║`);
+  console.log(
+    `║  总测试数: ${results.total.toString().padStart(4, " ")}                                    ║`
+  );
+  console.log(
+    `║  通过: ${results.passed.toString().padStart(4, " ")}                                        ║`
+  );
+  console.log(
+    `║  失败: ${results.failed.toString().padStart(4, " ")}                                        ║`
+  );
+  console.log(
+    `║  跳过: ${results.skipped.toString().padStart(4, " ")}                                        ║`
+  );
+  console.log(
+    `║  通过率: ${((results.passed / results.total) * 100).toFixed(1)}%${" ".repeat(8)}                          ║`
+  );
+  console.log(
+    `║  执行时长: ${testResult.duration}秒${" ".repeat(8)}                                  ║`
+  );
   console.log("╚══════════════════════════════════════════════════════════════════╝");
   console.log("\n");
 
