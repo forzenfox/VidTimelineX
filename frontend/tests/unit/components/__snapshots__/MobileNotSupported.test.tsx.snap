@@ -1,0 +1,219 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`MobileNotSupported组件测试 TC-028: 组件快照测试 1`] = `
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4"
+>
+  <div
+    class="max-w-md w-full"
+  >
+    <div
+      class="bg-white rounded-3xl shadow-2xl p-8 text-center border border-gray-100"
+    >
+      <div
+        class="mb-6 flex justify-center"
+      >
+        <div
+          class="relative"
+        >
+          <div
+            class="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-smartphone text-blue-600"
+              fill="none"
+              height="48"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="48"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect
+                height="20"
+                rx="2"
+                ry="2"
+                width="14"
+                x="5"
+                y="2"
+              />
+              <path
+                d="M12 18h.01"
+              />
+            </svg>
+          </div>
+          <div
+            class="absolute -top-2 -right-2 w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-lg"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-circle-alert text-white"
+              fill="none"
+              height="20"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+              />
+              <line
+                x1="12"
+                x2="12"
+                y1="8"
+                y2="12"
+              />
+              <line
+                x1="12"
+                x2="12.01"
+                y1="16"
+                y2="16"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <h1
+        class="text-2xl font-bold text-gray-800 mb-3"
+      >
+        移动端暂不支持
+      </h1>
+      <p
+        class="text-gray-600 mb-6 leading-relaxed"
+      >
+        本网站目前仅支持桌面端和平板端访问，移动端体验可能不佳。
+      </p>
+      <div
+        class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6"
+      >
+        <div
+          class="flex items-center justify-center gap-3 mb-3"
+        >
+          <svg
+            aria-label="monitor icon"
+            class="lucide lucide-monitor text-blue-600"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              height="14"
+              rx="2"
+              width="20"
+              x="2"
+              y="3"
+            />
+            <line
+              x1="8"
+              x2="16"
+              y1="21"
+              y2="21"
+            />
+            <line
+              x1="12"
+              x2="12"
+              y1="17"
+              y2="21"
+            />
+          </svg>
+          <h2
+            class="text-lg font-semibold text-gray-800"
+          >
+            建议使用PC端访问
+          </h2>
+        </div>
+        <p
+          class="text-sm text-gray-600"
+        >
+          为了获得最佳体验，请使用电脑或平板设备访问本网站
+        </p>
+      </div>
+      <div
+        class="grid grid-cols-2 gap-4 mb-6"
+      >
+        <div
+          class="bg-gray-50 rounded-xl p-4"
+        >
+          <div
+            class="text-2xl mb-2"
+          >
+            🎬
+          </div>
+          <div
+            class="text-sm font-medium text-gray-700"
+          >
+            高清视频
+          </div>
+        </div>
+        <div
+          class="bg-gray-50 rounded-xl p-4"
+        >
+          <div
+            class="text-2xl mb-2"
+          >
+            💬
+          </div>
+          <div
+            class="text-sm font-medium text-gray-700"
+          >
+            弹幕互动
+          </div>
+        </div>
+        <div
+          class="bg-gray-50 rounded-xl p-4"
+        >
+          <div
+            class="text-2xl mb-2"
+          >
+            🎨
+          </div>
+          <div
+            class="text-sm font-medium text-gray-700"
+          >
+            主题切换
+          </div>
+        </div>
+        <div
+          class="bg-gray-50 rounded-xl p-4"
+        >
+          <div
+            class="text-2xl mb-2"
+          >
+            🔍
+          </div>
+          <div
+            class="text-sm font-medium text-gray-700"
+          >
+            智能搜索
+          </div>
+        </div>
+      </div>
+      <div
+        class="text-xs text-gray-400"
+      >
+        如有疑问，请联系网站管理员
+      </div>
+    </div>
+    <div
+      class="text-center mt-6 text-sm text-gray-500"
+    >
+      © 2026 哔哩哔哩时间线 - 探索精彩视频内容
+    </div>
+  </div>
+</div>
+`;

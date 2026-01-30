@@ -24,15 +24,30 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppRoutes from "./routes";
 import "../styles/globals.css";
 import PerformanceMonitor from "../components/PerformanceMonitor";
+import MobileNotSupported from "../components/MobileNotSupported";
+import { useIsMobile } from "../hooks/use-mobile";
 
 // 创建QueryClient实例
 const queryClient = new QueryClient();
 
-createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <PerformanceMonitor />
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+// 主应用组件，包含移动端检测逻辑
+const MainApp: React.FC = () => {
+  const isMobile = useIsMobile();
+
+  // 如果是移动端，显示不支持提示页面
+  if (isMobile) {
+    return <MobileNotSupported />;
+  }
+
+  // 否则，正常渲染应用
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PerformanceMonitor />
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <AppRoutes />
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+};
+
+createRoot(document.getElementById("root")!).render(<MainApp />);

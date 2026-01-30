@@ -121,7 +121,8 @@
     "test:only": "jest --testNamePattern=only",
     "test:smoke": "jest --testPathPattern=smoke",
     "test:regression": "jest --testPathPattern=regression",
-    "test:performance": "jest --testPathPattern=performance"
+    "test:performance": "jest --testPathPattern=performance",
+    "test:mobile-not-supported": "node scripts/test-mobile-not-supported.cjs"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [
