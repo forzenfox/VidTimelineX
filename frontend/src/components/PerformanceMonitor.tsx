@@ -19,7 +19,7 @@ const PerformanceMonitor: React.FC = () => {
 
         // 注册性能指标监听
         webVitals.onCLS?.(reportWebVitals);
-        webVitals.onFID?.(reportWebVitals);
+        webVitals.onINP?.(reportWebVitals);
         webVitals.onFCP?.(reportWebVitals);
         webVitals.onLCP?.(reportWebVitals);
         webVitals.onTTFB?.(reportWebVitals);
