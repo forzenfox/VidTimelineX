@@ -53,12 +53,44 @@ export function useDeviceDetect() {
 }
 
 /**
- * 简化的移动端检测钩子，保持向后兼容
- * @returns 是否为移动端设备 - 始终返回false，因为已移除移动端支持
+ * 简化的移动端检测钩子，检测屏幕宽度小于768px的设备
+ * @returns 是否为移动端设备
  */
 export function useIsMobile() {
-  // 已移除移动端支持，始终返回false
-  return false;
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    // 移动端检测逻辑 - 屏幕宽度小于768px视为移动端
+    const detectMobile = (): boolean => {
+      const width = window.innerWidth;
+      return width < 768;
+    };
+
+    // 初始化移动端检测
+    setIsMobile(detectMobile());
+
+    // 使用媒体查询API监听断点变化，性能更优
+    const mobileMql = window.matchMedia("(max-width: 767px)");
+
+    const mqlHandler = () => {
+      setIsMobile(detectMobile());
+    };
+
+    // 添加事件监听
+    if (typeof mobileMql.addEventListener === "function") {
+      mobileMql.addEventListener("change", mqlHandler);
+
+      // 清理函数
+      return () => {
+        mobileMql.removeEventListener("change", mqlHandler);
+      };
+    } else {
+      // 测试环境中返回空清理函数
+      return () => {};
+    }
+  }, []);
+
+  return isMobile;
 }
 
 /**
