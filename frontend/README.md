@@ -261,14 +261,26 @@ npm run test:watch
 监听模式会进入交互式界面，支持筛选测试、查看详细输出等操作，便于快速验证代码修改的正确性。
 
 ### 代码覆盖率
-
 生成代码覆盖率报告可以帮助评估测试的完整性：
-
 ```bash
 npm run test:coverage
 ```
-
 覆盖率报告展示了语句、分支、函数和行四个维度的覆盖情况。项目配置的阈值要求每个维度都达到 50% 以上，未达标的测试运行会导致构建失败。报告生成在 coverage 目录，支持多种格式输出（text、lcov、json-summary）。
+
+### MobileNotSupported 组件测试
+MobileNotSupported 组件是移动端访问提示组件，提供了全面的测试用例和自动化测试脚本：
+
+```bash
+# 运行 MobileNotSupported 组件测试
+npm run test:mobile-not-supported
+```
+
+测试脚本会自动执行所有测试用例并生成详细的 HTML 和 JSON 格式报告。测试报告包含：
+- 测试执行时间和时长
+- 测试摘要（总测试数、通过、失败、跳过、通过率）
+- 详细的测试用例列表（状态、ID、名称）
+
+详细的测试文档请参考：[tests/docs/mobile-not-supported-test-doc.md](tests/docs/mobile-not-supported-test-doc.md)
 
 ## 代码规范
 
