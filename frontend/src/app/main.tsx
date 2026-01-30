@@ -43,7 +43,7 @@ const MainApp: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <PerformanceMonitor />
-      <HashRouter basename={import.meta.env.BASE_URL}>
+      <HashRouter>
         <AppRoutes />
       </HashRouter>
     </QueryClientProvider>
