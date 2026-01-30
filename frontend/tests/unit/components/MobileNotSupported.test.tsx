@@ -299,10 +299,10 @@ describe("MobileNotSupported组件测试", () => {
   test("TC-022: 组件可访问性测试", () => {
     render(<MobileNotSupported />);
 
-    const mainElement = screen.getByRole("main");
+    const mainElement = screen.getByRole("heading", { level: 1 });
     expect(mainElement).toBeInTheDocument();
 
-    const footerElement = screen.getByRole("contentinfo");
+    const footerElement = screen.getByText(/© 2026 哔哩哔哩时间线/);
     expect(footerElement).toBeInTheDocument();
   });
 
@@ -438,8 +438,9 @@ describe("MobileNotSupported组件测试", () => {
    * 测试场景：确保组件可以被其他模块导入
    */
   test("TC-030: 组件导出测试", () => {
-    expect(typeof MobileNotSupported).toBe("object");
+    expect(typeof MobileNotSupported).toBe("function");
     expect(MobileNotSupported).toBeDefined();
+    expect(MobileNotSupported.name).toBe("MobileNotSupported");
   });
 
   afterEach(() => {
