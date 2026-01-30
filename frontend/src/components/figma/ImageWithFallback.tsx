@@ -18,6 +18,15 @@ function getBaseUrl(): string {
   if (typeof window !== "undefined" && window.__BASE_URL__) {
     return window.__BASE_URL__;
   }
+
+  if (typeof window !== "undefined" && window.location.pathname) {
+    const pathname = window.location.pathname;
+    const match = pathname.match(/^\/([^/]+)/);
+    if (match && match[1]) {
+      return `/${match[1]}/`;
+    }
+  }
+
   return "/";
 }
 
