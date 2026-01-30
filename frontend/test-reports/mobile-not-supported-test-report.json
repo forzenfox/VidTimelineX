@@ -1,0 +1,164 @@
+{
+  "timestamp": "2026-01-30T15:18:31.594Z",
+  "component": "MobileNotSupported",
+  "duration": 3.54,
+  "summary": {
+    "total": 30,
+    "passed": 30,
+    "failed": 0,
+    "skipped": 0,
+    "passRate": "100.00"
+  },
+  "tests": [
+    {
+      "id": "TC-001",
+      "name": "TC-001: 组件正常渲染测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-002",
+      "name": "TC-002: 图标元素渲染测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-003",
+      "name": "TC-003: 主要文本内容测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-004",
+      "name": "TC-004: 功能特点展示测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-005",
+      "name": "TC-005: 页脚信息测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-006",
+      "name": "TC-006: 响应式布局测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-007",
+      "name": "TC-007: 卡片容器测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-008",
+      "name": "TC-008: 渐变背景测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-009",
+      "name": "TC-009: 图标容器测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-010",
+      "name": "TC-010: 功能特点网格测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-011",
+      "name": "TC-011: 功能特点图标测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-012",
+      "name": "TC-012: 边框样式测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-013",
+      "name": "TC-013: 文本颜色测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-014",
+      "name": "TC-014: 内边距测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-015",
+      "name": "TC-015: 外边距测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-016",
+      "name": "TC-016: 最大宽度测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-017",
+      "name": "TC-017: 无障碍属性测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-018",
+      "name": "TC-018: 建议区域测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-019",
+      "name": "TC-019: 联系信息测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-020",
+      "name": "TC-020: 组件结构完整性测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-021",
+      "name": "TC-021: 文本内容准确性测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-022",
+      "name": "TC-022: 组件可访问性测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-023",
+      "name": "TC-023: 样式一致性测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-024",
+      "name": "TC-024: 组件性能测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-025",
+      "name": "TC-025: 边界条件测试 - 极小屏幕",
+      "status": "passed"
+    },
+    {
+      "id": "TC-026",
+      "name": "TC-026: 边界条件测试 - 标准移动屏幕",
+      "status": "passed"
+    },
+    {
+      "id": "TC-027",
+      "name": "TC-027: 边界条件测试 - 大屏移动设备",
+      "status": "passed"
+    },
+    {
+      "id": "TC-028",
+      "name": "TC-028: 组件快照测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-029",
+      "name": "TC-029: 组件无props测试",
+      "status": "passed"
+    },
+    {
+      "id": "TC-030",
+      "name": "TC-030: 组件导出测试",
+      "status": "passed"
+    }
+  ]
+}

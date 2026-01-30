@@ -8,12 +8,25 @@ interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElemen
   alt: string;
 }
 
+declare global {
+  interface Window {
+    __BASE_URL__?: string;
+  }
+}
+
+function getBaseUrl(): string {
+  if (typeof window !== "undefined" && window.__BASE_URL__) {
+    return window.__BASE_URL__;
+  }
+  return "/";
+}
+
 export function ImageWithFallback({ src, alt, style, className, ...rest }: ImageWithFallbackProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
   const getLocalImageUrl = (filename: string) => {
-    const baseUrl = import.meta.env.BASE_URL || "/";
+    const baseUrl = getBaseUrl();
     return `${baseUrl}thumbs/${filename}`;
   };
 

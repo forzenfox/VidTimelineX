@@ -9,3 +9,16 @@ declare module "*.json" {
   const content: unknown;
   export default content;
 }
+
+// 声明 import.meta 环境变量类型
+interface ImportMetaEnv {
+  readonly BASE_URL: string;
+  readonly MODE: string;
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly SSR: boolean;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

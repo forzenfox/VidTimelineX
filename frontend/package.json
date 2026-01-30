@@ -122,7 +122,7 @@
     "test:smoke": "jest --testPathPattern=smoke",
     "test:regression": "jest --testPathPattern=regression",
     "test:performance": "jest --testPathPattern=performance",
-    "test:mobile-not-supported": "node scripts/test-mobile-not-supported.js"
+    "test:mobile-not-supported": "node scripts/test-mobile-not-supported.cjs"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [

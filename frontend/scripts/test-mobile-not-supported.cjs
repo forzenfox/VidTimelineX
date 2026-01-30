@@ -71,7 +71,7 @@ function runTest(testPattern = null) {
   Logger.info("开始执行 MobileNotSupported 组件测试...");
 
   try {
-    let command = "npm test -- tests/unit/components/MobileNotSupported.test.tsx";
+    let command = "npm test -- tests/unit/components/MobileNotSupported.test.tsx --json";
 
     if (testPattern) {
       command += ` -- --testNamePattern="${testPattern}"`;
@@ -79,8 +79,9 @@ function runTest(testPattern = null) {
 
     const startTime = Date.now();
     const result = execSync(command, {
-      stdio: "inherit",
+      stdio: "pipe",
       encoding: "utf-8",
+      maxBuffer: 10 * 1024 * 1024,
     });
     const endTime = Date.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
@@ -88,16 +89,17 @@ function runTest(testPattern = null) {
     Logger.success(`测试执行完成，耗时: ${duration}秒`);
 
     return {
-      success: result.status === 0,
+      success: true,
       duration: parseFloat(duration),
-      output: result.stdout,
-      error: result.stderr,
+      output: result,
+      error: null,
     };
   } catch (error) {
     Logger.error(`测试执行失败: ${error.message}`);
     return {
       success: false,
       error: error.message,
+      output: error.stdout || "",
     };
   }
 }
@@ -114,64 +116,57 @@ function parseTestResults(output) {
     tests: [],
   };
 
-  const lines = output.split("\n");
-  let currentTest = null;
-
-  lines.forEach(line => {
-    // 解析测试用例
-    const testMatch = line.match(/✓ (TC-\d+): (.+)/);
-    if (testMatch) {
-      if (currentTest) {
-        results.tests.push(currentTest);
+  try {
+    // Jest JSON 输出前面可能有进度信息，需要找到 JSON 开始的位置
+    // Jest 的 JSON 输出通常以 {"numFailedTestSuites": 或 {"success": 开头
+    const jsonPatterns = ['{"numFailedTestSuites":', '{"success":'];
+    let jsonStartIndex = -1;
+    
+    for (const pattern of jsonPatterns) {
+      const index = output.indexOf(pattern);
+      if (index !== -1) {
+        jsonStartIndex = index;
+        break;
       }
-      currentTest = {
-        id: testMatch[1],
-        name: testMatch[2],
-        status: "passed",
-      };
-      results.passed++;
-      results.total++;
+    }
+    
+    if (jsonStartIndex === -1) {
+      Logger.warning("无法找到 Jest JSON 输出");
+      return results;
     }
 
-    // 解析失败的测试
-    const failMatch = line.match(/✗ (TC-\d+): (.+)/);
-    if (failMatch) {
-      if (currentTest) {
-        results.tests.push(currentTest);
-      }
-      currentTest = {
-        id: failMatch[1],
-        name: failMatch[2],
-        status: "failed",
-      };
-      results.tests.push(currentTest);
-      results.failed++;
-      results.total++;
+    const jsonOutput = JSON.parse(output.substring(jsonStartIndex));
+
+    if (jsonOutput.testResults && Array.isArray(jsonOutput.testResults)) {
+      jsonOutput.testResults.forEach(suite => {
+        if (suite.assertionResults && Array.isArray(suite.assertionResults)) {
+          suite.assertionResults.forEach(test => {
+            const testName = test.title;
+            const tcMatch = testName.match(/^(TC-\d+):/);
+            results.tests.push({
+              id: tcMatch ? tcMatch[1] : "",
+              name: testName,
+              status: test.status === "passed" ? "passed" : test.status === "failed" ? "failed" : "skipped",
+            });
+            if (test.status === "passed") results.passed++;
+            else if (test.status === "failed") results.failed++;
+            else results.skipped++;
+            results.total++;
+          });
+        }
+      });
+    } else if (jsonOutput.numTotalTests) {
+      results.total = jsonOutput.numTotalTests || 0;
+      results.passed = jsonOutput.numPassedTests || 0;
+      results.failed = jsonOutput.numFailedTests || 0;
+      results.skipped = jsonOutput.numPendingTests || 0;
     }
 
-    // 解析跳过的测试
-    const skipMatch = line.match(/○ (TC-\d+): (.+)/);
-    if (skipMatch) {
-      if (currentTest) {
-        results.tests.push(currentTest);
-      }
-      currentTest = {
-        id: skipMatch[1],
-        name: skipMatch[2],
-        status: "skipped",
-      };
-      results.tests.push(currentTest);
-      results.skipped++;
-      results.total++;
-    }
-  });
-
-  // 添加最后一个测试
-  if (currentTest) {
-    results.tests.push(currentTest);
+    return results;
+  } catch (e) {
+    Logger.warning(`测试结果解析失败: ${e.message}`);
+    return results;
   }
-
-  return results;
 }
 
 /**

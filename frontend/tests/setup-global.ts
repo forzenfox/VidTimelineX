@@ -313,7 +313,12 @@ if (!globalThis.URL) {
   }));
 }
 
+if (typeof window !== "undefined") {
+  window.__BASE_URL__ = "/";
+}
+
 if (!globalThis.URLSearchParams) {
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.URLSearchParams = jest.fn(() => ({
     append: jest.fn(),
     delete: jest.fn(),
@@ -327,7 +332,10 @@ if (!globalThis.URLSearchParams) {
     sort: jest.fn(),
     toString: jest.fn(() => ""),
     values: jest.fn(() => []),
-    size: 0, // 添加缺失的size属性
+    size: 0,
+    [Symbol.iterator]: jest.fn(function* () {
+      yield* [];
+    }),
   }));
 }
 
