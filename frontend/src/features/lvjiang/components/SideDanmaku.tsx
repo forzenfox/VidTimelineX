@@ -29,7 +29,6 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
     }));
   }, [pool]);
 
-  const [messages, setMessages] = useState<DanmakuMessage[]>(initialMessages);
   const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>(
     initialMessages.slice(-15)
   );
@@ -46,14 +45,6 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
             second: "2-digit",
           }),
         };
-
-        setMessages(prev => {
-          const updated = [...prev, newMessage];
-          if (updated.length > 100) {
-            return updated.slice(-100);
-          }
-          return updated;
-        });
 
         setDisplayMessages(prev => {
           const updated = [...prev, newMessage];

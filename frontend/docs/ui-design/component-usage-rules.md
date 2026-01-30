@@ -51,14 +51,16 @@
 | theme | `"tiger" \| "sweet"` | 是 | 无 | 当前主题 |
 
 **使用示例**：
+
 ```tsx
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 
 // 在页面中使用
-<HorizontalDanmaku theme={theme} />
+<HorizontalDanmaku theme={theme} />;
 ```
 
 **最佳实践**：
+
 - 放置在页面最顶层，确保能覆盖整个页面
 - 与侧边弹幕组件配合使用时，注意 z-index 层级
 
@@ -73,11 +75,12 @@ import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 | isVisible | `boolean` | 是 | 无 | 是否可见 |
 
 **使用示例**：
+
 ```tsx
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 
 // 在页面中使用
-<HorizontalDanmaku theme={theme} isVisible={showDanmaku} />
+<HorizontalDanmaku theme={theme} isVisible={showDanmaku} />;
 ```
 
 ### 3.2 侧边弹幕组件（SidebarDanmu/SideDanmaku）
@@ -92,14 +95,16 @@ import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 | theme | `"tiger" \| "sweet"` | 否 | `"tiger"` | 当前主题 |
 
 **使用示例**：
+
 ```tsx
 import SidebarDanmu from "./components/SidebarDanmu";
 
 // 在页面中使用
-<SidebarDanmu theme={theme} />
+<SidebarDanmu theme={theme} />;
 ```
 
 **最佳实践**：
+
 - 放置在页面右侧，作为辅助信息区域
 - 与水平弹幕组件配合使用时，注意 z-index 层级
 
@@ -113,11 +118,12 @@ import SidebarDanmu from "./components/SidebarDanmu";
 | theme | `"dongzhu" \| "kaige"` | 是 | 无 | 当前主题 |
 
 **使用示例**：
+
 ```tsx
 import { SideDanmaku } from "./components/SideDanmaku";
 
 // 在页面中使用
-<SideDanmaku theme={theme} />
+<SideDanmaku theme={theme} />;
 ```
 
 ### 3.3 视频时间线组件（VideoTimeline）
@@ -133,6 +139,7 @@ import { SideDanmaku } from "./components/SideDanmaku";
 | onVideoClick | `(video: Video) => void` | 是 | 无 | 视频点击回调函数 |
 
 **使用示例**：
+
 ```tsx
 import { VideoTimeline } from "./components/VideoTimeline";
 
@@ -143,7 +150,7 @@ import { VideoTimeline } from "./components/VideoTimeline";
     console.log("Video click passed to TiantongPage:", video.title);
     setSelectedVideo(video);
   }}
-/>
+/>;
 ```
 
 #### 3.3.2 驴酱页面版本
@@ -157,11 +164,12 @@ import { VideoTimeline } from "./components/VideoTimeline";
 | onVideoClick | `(video: Video) => void` | 是 | 无 | 视频点击回调函数 |
 
 **使用示例**：
+
 ```tsx
 import { VideoTimeline } from "./components/VideoTimeline";
 
 // 在页面中使用
-<VideoTimeline theme={theme} onVideoClick={handleVideoClick} />
+<VideoTimeline theme={theme} onVideoClick={handleVideoClick} />;
 ```
 
 ### 3.4 视频模态框组件（VideoModal）
@@ -178,17 +186,16 @@ import { VideoTimeline } from "./components/VideoTimeline";
 | theme | `"tiger" \| "sweet"` | 是 | 无 | 当前主题 |
 
 **使用示例**：
+
 ```tsx
 import VideoModal from "./components/VideoModal";
 
 // 在页面中使用
-{selectedVideo && (
-  <VideoModal
-    video={selectedVideo}
-    onClose={() => setSelectedVideo(null)}
-    theme={theme}
-  />
-)}
+{
+  selectedVideo && (
+    <VideoModal video={selectedVideo} onClose={() => setSelectedVideo(null)} theme={theme} />
+  );
+}
 ```
 
 #### 3.4.2 驴酱页面版本
@@ -203,11 +210,12 @@ import VideoModal from "./components/VideoModal";
 | onClose | `() => void` | 是 | 无 | 关闭模态框回调 |
 
 **使用示例**：
+
 ```tsx
 import { VideoModal } from "./components/VideoModal";
 
 // 在页面中使用
-<VideoModal video={selectedVideo} theme={theme} onClose={handleCloseModal} />
+<VideoModal video={selectedVideo} theme={theme} onClose={handleCloseModal} />;
 ```
 
 ### 3.5 主题切换组件（ThemeToggle）
@@ -221,11 +229,12 @@ import { VideoModal } from "./components/VideoModal";
 | onToggle | `() => void` | 是 | 无 | 主题切换回调 |
 
 **使用示例**：
+
 ```tsx
 import ThemeToggle from "./components/ThemeToggle";
 
 // 在页面中使用
-<ThemeToggle currentTheme={theme} onToggle={handleToggleTheme} />
+<ThemeToggle currentTheme={theme} onToggle={handleToggleTheme} />;
 ```
 
 ### 3.6 加载动画组件（LoadingAnimation）
@@ -235,11 +244,12 @@ import ThemeToggle from "./components/ThemeToggle";
 **组件路径**：`src/features/tiantong/components/LoadingAnimation.tsx`
 
 **使用示例**：
+
 ```tsx
 import { LoadingAnimation } from "./components/LoadingAnimation";
 
 // 在页面中使用
-<LoadingAnimation />
+<LoadingAnimation />;
 ```
 
 #### 3.6.2 驴酱页面版本
@@ -252,11 +262,12 @@ import { LoadingAnimation } from "./components/LoadingAnimation";
 | onComplete | `(theme: "dongzhu" \| "kaige") => void` | 是 | 无 | 加载完成回调 |
 
 **使用示例**：
+
 ```tsx
 import { LoadingAnimation } from "./components/LoadingAnimation";
 
 // 在页面中使用
-<LoadingAnimation onComplete={handleLoadingComplete} />
+<LoadingAnimation onComplete={handleLoadingComplete} />;
 ```
 
 ## 4. 组件最佳实践

@@ -51,8 +51,7 @@ if (!globalThis.localStorage) {
     length: 0,
     key: jest.fn(),
   };
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟localStorage API
-  globalThis.localStorage = localStorageMock;
+  globalThis.localStorage = localStorageMock as unknown as Storage;
 }
 
 // 模拟sessionStorage
@@ -65,8 +64,7 @@ if (!globalThis.sessionStorage) {
     length: 0,
     key: jest.fn(),
   };
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟sessionStorage API
-  globalThis.sessionStorage = sessionStorageMock;
+  globalThis.sessionStorage = sessionStorageMock as unknown as Storage;
 }
 
 // 模拟matchMedia
@@ -97,7 +95,45 @@ if (!globalThis.performance) {
     clearResourceTimings: jest.fn(),
     setResourceTimingBufferSize: jest.fn(),
     onresourcetimingbufferfull: null as unknown as ((event: Event) => void) | null,
-  };
+    timeOrigin: Date.now(),
+    toJSON: jest.fn(),
+    eventCounts: {
+      get: jest.fn(() => 0),
+      entries: jest.fn(() => []),
+    },
+    navigation: {
+      type: 0,
+      redirectCount: 0,
+      toJSON: jest.fn(),
+    },
+    timing: {
+      navigationStart: 0,
+      unloadEventStart: 0,
+      unloadEventEnd: 0,
+      redirectStart: 0,
+      redirectEnd: 0,
+      fetchStart: 0,
+      domainLookupStart: 0,
+      domainLookupEnd: 0,
+      connectStart: 0,
+      connectEnd: 0,
+      secureConnectionStart: 0,
+      requestStart: 0,
+      responseStart: 0,
+      responseEnd: 0,
+      domLoading: 0,
+      domInteractive: 0,
+      domContentLoadedEventStart: 0,
+      domContentLoadedEventEnd: 0,
+      domComplete: 0,
+      loadEventStart: 0,
+      loadEventEnd: 0,
+      toJSON: jest.fn(),
+    },
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  } as unknown as Performance;
 }
 
 // 模拟Navigator API
@@ -111,7 +147,20 @@ if (!globalThis.navigator) {
     onLine: true,
     geolocation: {
       getCurrentPosition: jest.fn(success => {
-        success({ coords: { latitude: 39.9042, longitude: 116.4074 } });
+        success({
+          coords: {
+            latitude: 39.9042,
+            longitude: 116.4074,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+            toJSON: jest.fn(() => ({})),
+          },
+          timestamp: Date.now(),
+          toJSON: jest.fn(() => ({})),
+        });
       }),
       watchPosition: jest.fn(),
       clearWatch: jest.fn(),
@@ -119,9 +168,30 @@ if (!globalThis.navigator) {
     clipboard: {
       writeText: jest.fn(() => Promise.resolve()),
       readText: jest.fn(() => Promise.resolve("")),
+      read: jest.fn(() => Promise.resolve([])),
+      write: jest.fn(() => Promise.resolve()),
+      addEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+      removeEventListener: jest.fn(),
     },
     share: jest.fn(() => Promise.resolve()),
-  };
+    credentials: {},
+    doNotTrack: null,
+    login: jest.fn(),
+    logout: jest.fn(),
+    maxTouchPoints: 0,
+    mediaCapabilities: {},
+    mediaDevices: {},
+    permissions: {},
+    presentation: {},
+    serviceWorker: {},
+    storage: {},
+    usb: {},
+    xr: {},
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  } as unknown as Navigator;
 }
 
 // 模拟Window API
@@ -156,7 +226,6 @@ if (!globalThis.prompt) {
 }
 
 if (!globalThis.fetch) {
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.fetch = jest.fn(() =>
     Promise.resolve({
       ok: true,
@@ -172,7 +241,14 @@ if (!globalThis.fetch) {
       clone: jest.fn(),
       formData: jest.fn(),
       arrayBuffer: jest.fn(),
-    })
+      body: null,
+      bodyUsed: false,
+      bytes: jest.fn(() => Promise.resolve(new Uint8Array(0))),
+      getReader: jest.fn(),
+      readable: false,
+      stream: jest.fn(),
+      [Symbol.asyncIterator]: jest.fn(),
+    } as Response)
   );
 }
 
@@ -238,7 +314,6 @@ if (!globalThis.URL) {
 }
 
 if (!globalThis.URLSearchParams) {
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.URLSearchParams = jest.fn(() => ({
     append: jest.fn(),
     delete: jest.fn(),
@@ -332,15 +407,63 @@ if (!globalThis.FileReader) {
       readAsDataURL: jest.fn(() => {
         setTimeout(() => {
           reader.result = "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==";
-          if (reader.onload)
-            reader.onload({ type: "load", target: reader } as ProgressEvent<FileReader>);
+          if (reader.onload) {
+            const event = {
+              type: "load",
+              target: reader,
+              lengthComputable: false,
+              loaded: 0,
+              total: 0,
+              bubbles: false,
+              cancelable: false,
+              composed: false,
+              currentTarget: reader,
+              defaultPrevented: false,
+              eventPhase: 0,
+              isTrusted: false,
+              path: [],
+              returnValue: true,
+              srcElement: reader,
+              timeStamp: 0,
+              cancelBubble: false,
+              composedPath: jest.fn(() => []),
+              preventDefault: jest.fn(),
+              stopImmediatePropagation: jest.fn(),
+              stopPropagation: jest.fn(),
+            } as unknown as ProgressEvent<FileReader>;
+            reader.onload(event);
+          }
         }, 0);
       }),
       readAsText: jest.fn(() => {
         setTimeout(() => {
           reader.result = "Hello, World!";
-          if (reader.onload)
-            reader.onload({ type: "load", target: reader } as ProgressEvent<FileReader>);
+          if (reader.onload) {
+            const event = {
+              type: "load",
+              target: reader,
+              lengthComputable: false,
+              loaded: 0,
+              total: 0,
+              bubbles: false,
+              cancelable: false,
+              composed: false,
+              currentTarget: reader,
+              defaultPrevented: false,
+              eventPhase: 0,
+              isTrusted: false,
+              path: [],
+              returnValue: true,
+              srcElement: reader,
+              timeStamp: 0,
+              cancelBubble: false,
+              composedPath: jest.fn(() => []),
+              preventDefault: jest.fn(),
+              stopImmediatePropagation: jest.fn(),
+              stopPropagation: jest.fn(),
+            } as unknown as ProgressEvent<FileReader>;
+            reader.onload(event);
+          }
         }, 0);
       }),
       abort: jest.fn(),
@@ -420,12 +543,10 @@ if (!globalThis.HTMLAudioElement) {
 }
 
 if (!HTMLAudioElement.prototype.play) {
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLAudioElement.prototype.play = jest.fn(() => Promise.resolve());
 }
 
 if (!HTMLAudioElement.prototype.pause) {
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLAudioElement.prototype.pause = jest.fn();
 }
 
@@ -440,12 +561,10 @@ if (!globalThis.HTMLVideoElement) {
 }
 
 if (!HTMLVideoElement.prototype.play) {
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLVideoElement.prototype.play = jest.fn(() => Promise.resolve());
 }
 
 if (!HTMLVideoElement.prototype.pause) {
-  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLVideoElement.prototype.pause = jest.fn();
 }
 
@@ -483,6 +602,63 @@ console.error = jest.fn((...args) => {
     originalError(...args);
   }
 });
+
+// 模拟TextEncoder
+if (!globalThis.TextEncoder) {
+  // @ts-ignore - 忽略类型错误，这只是测试环境的模拟实现
+  globalThis.TextEncoder = class TextEncoder {
+    readonly encoding: string = "utf-8";
+
+    encode(input: string): Uint8Array {
+      const bytes = new Uint8Array(input.length);
+      for (let i = 0; i < input.length; i++) {
+        bytes[i] = input.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    encodeInto(
+      input: string,
+      destination: Uint8Array
+    ): {
+      read: number;
+      written: number;
+    } {
+      const length = Math.min(input.length, destination.length);
+      for (let i = 0; i < length; i++) {
+        destination[i] = input.charCodeAt(i);
+      }
+      return {
+        read: input.length,
+        written: length,
+      };
+    }
+  };
+}
+
+// 模拟TextDecoder
+if (!globalThis.TextDecoder) {
+  // @ts-ignore - 忽略类型错误，这只是测试环境的模拟实现
+  globalThis.TextDecoder = class TextDecoder {
+    readonly encoding: string = "utf-8";
+    readonly fatal: boolean = false;
+    readonly ignoreBOM: boolean = false;
+
+    decode(input?: BufferSource): string {
+      if (!input) return "";
+      try {
+        const bytes = input instanceof Uint8Array ? input : new Uint8Array(input as ArrayBuffer);
+        let result = "";
+        for (let i = 0; i < bytes.length; i++) {
+          result += String.fromCharCode(bytes[i]);
+        }
+        return result;
+      } catch {
+        return "";
+      }
+    }
+  };
+}
 
 // 模拟事件监听器
 if (!EventTarget.prototype.addEventListener) {

@@ -42,86 +42,86 @@
 
 #### 3.1.1 Logo
 
-| 资产名称 | 路径 | 尺寸 | 格式 | 用途 |
-|---------|------|------|------|------|
-| 甜筒 Logo | `src/assets/logo/tiantong-logo.svg` | 120x40 | SVG | 甜筒页面头部 |
-| 驴酱 Logo | `src/assets/logo/lvjiang-logo.svg` | 120x40 | SVG | 驴酱页面头部 |
+| 资产名称  | 路径                                | 尺寸   | 格式 | 用途         |
+| --------- | ----------------------------------- | ------ | ---- | ------------ |
+| 甜筒 Logo | `src/assets/logo/tiantong-logo.svg` | 120x40 | SVG  | 甜筒页面头部 |
+| 驴酱 Logo | `src/assets/logo/lvjiang-logo.svg`  | 120x40 | SVG  | 驴酱页面头部 |
 
 #### 3.1.2 图标
 
-| 资产名称 | 路径 | 尺寸 | 格式 | 用途 |
-|---------|------|------|------|------|
-| 主题切换图标 | `src/assets/icons/theme-toggle.svg` | 24x24 | SVG | 主题切换按钮 |
-| 搜索图标 | `src/assets/icons/search.svg` | 20x20 | SVG | 搜索框 |
-| 关闭图标 | `src/assets/icons/close.svg` | 24x24 | SVG | 模态框关闭按钮 |
-| 播放图标 | `src/assets/icons/play.svg` | 24x24 | SVG | 视频播放按钮 |
-| 暂停图标 | `src/assets/icons/pause.svg` | 24x24 | SVG | 视频暂停按钮 |
-| 全屏图标 | `src/assets/icons/fullscreen.svg` | 24x24 | SVG | 全屏切换按钮 |
-| 音量图标 | `src/assets/icons/volume.svg` | 24x24 | SVG | 音量控制按钮 |
-| 发送图标 | `src/assets/icons/send.svg` | 20x20 | SVG | 弹幕发送按钮 |
-| 标签图标 | `src/assets/icons/tab.svg` | 16x16 | SVG | 侧边栏标签 |
+| 资产名称     | 路径                                | 尺寸  | 格式 | 用途           |
+| ------------ | ----------------------------------- | ----- | ---- | -------------- |
+| 主题切换图标 | `src/assets/icons/theme-toggle.svg` | 24x24 | SVG  | 主题切换按钮   |
+| 搜索图标     | `src/assets/icons/search.svg`       | 20x20 | SVG  | 搜索框         |
+| 关闭图标     | `src/assets/icons/close.svg`        | 24x24 | SVG  | 模态框关闭按钮 |
+| 播放图标     | `src/assets/icons/play.svg`         | 24x24 | SVG  | 视频播放按钮   |
+| 暂停图标     | `src/assets/icons/pause.svg`        | 24x24 | SVG  | 视频暂停按钮   |
+| 全屏图标     | `src/assets/icons/fullscreen.svg`   | 24x24 | SVG  | 全屏切换按钮   |
+| 音量图标     | `src/assets/icons/volume.svg`       | 24x24 | SVG  | 音量控制按钮   |
+| 发送图标     | `src/assets/icons/send.svg`         | 20x20 | SVG  | 弹幕发送按钮   |
+| 标签图标     | `src/assets/icons/tab.svg`          | 16x16 | SVG  | 侧边栏标签     |
 
 #### 3.1.3 装饰图标
 
-| 资产名称 | 路径 | 尺寸 | 格式 | 用途 |
-|---------|------|------|------|------|
-| 左上角装饰图标 | `src/assets/decorations/top-left.svg` | 60x60 | SVG | 页面左上角装饰 |
-| 右上角装饰图标 | `src/assets/decorations/top-right.svg` | 60x60 | SVG | 页面右上角装饰 |
-| 左下角装饰图标 | `src/assets/decorations/bottom-left.svg` | 60x60 | SVG | 页面左下角装饰 |
-| 右下角装饰图标 | `src/assets/decorations/bottom-right.svg` | 60x60 | SVG | 页面右下角装饰 |
+| 资产名称       | 路径                                      | 尺寸  | 格式 | 用途           |
+| -------------- | ----------------------------------------- | ----- | ---- | -------------- |
+| 左上角装饰图标 | `src/assets/decorations/top-left.svg`     | 60x60 | SVG  | 页面左上角装饰 |
+| 右上角装饰图标 | `src/assets/decorations/top-right.svg`    | 60x60 | SVG  | 页面右上角装饰 |
+| 左下角装饰图标 | `src/assets/decorations/bottom-left.svg`  | 60x60 | SVG  | 页面左下角装饰 |
+| 右下角装饰图标 | `src/assets/decorations/bottom-right.svg` | 60x60 | SVG  | 页面右下角装饰 |
 
 #### 3.1.4 视频缩略图
 
-| 资产名称 | 路径 | 尺寸 | 格式 | 用途 |
-|---------|------|------|------|------|
-| 视频缩略图 | `src/assets/thumbnails/{videoId}.jpg` | 320x180 | JPG | 视频时间线卡片 |
+| 资产名称   | 路径                                  | 尺寸    | 格式 | 用途           |
+| ---------- | ------------------------------------- | ------- | ---- | -------------- |
+| 视频缩略图 | `src/assets/thumbnails/{videoId}.jpg` | 320x180 | JPG  | 视频时间线卡片 |
 
 ### 3.2 字体资产引用
 
 #### 3.2.1 主要字体
 
-| 字体名称 | 引用方式 | 字重 | 用途 |
-|---------|----------|------|------|
-| Inter | Google Fonts | 400, 500, 600, 700 | 主要文本、标题 |
-| Noto Sans SC | Google Fonts | 400, 500, 600, 700 | 中文文本 |
+| 字体名称     | 引用方式     | 字重               | 用途           |
+| ------------ | ------------ | ------------------ | -------------- |
+| Inter        | Google Fonts | 400, 500, 600, 700 | 主要文本、标题 |
+| Noto Sans SC | Google Fonts | 400, 500, 600, 700 | 中文文本       |
 
 #### 3.2.2 图标字体
 
-| 字体名称 | 引用方式 | 版本 | 用途 |
-|---------|----------|------|------|
-| Lucide React | NPM 包 | 0.360.0 | 功能图标 |
+| 字体名称     | 引用方式 | 版本    | 用途     |
+| ------------ | -------- | ------- | -------- |
+| Lucide React | NPM 包   | 0.360.0 | 功能图标 |
 
 ### 3.3 动画资产引用
 
 #### 3.3.1 CSS 动画
 
-| 动画名称 | 定义位置 | 持续时间 | 用途 |
-|---------|----------|----------|------|
-| `danmaku` | `src/styles/globals.css` | 8s | 水平弹幕滚动 |
-| `fadeIn` | `src/styles/globals.css` | 0.5s | 元素淡入 |
-| `slideIn` | `src/styles/globals.css` | 0.3s | 元素滑入 |
-| `pulse` | `src/styles/globals.css` | 2s | 脉冲效果 |
-| `spin` | `src/styles/globals.css` | 1s | 旋转效果 |
+| 动画名称  | 定义位置                 | 持续时间 | 用途         |
+| --------- | ------------------------ | -------- | ------------ |
+| `danmaku` | `src/styles/globals.css` | 8s       | 水平弹幕滚动 |
+| `fadeIn`  | `src/styles/globals.css` | 0.5s     | 元素淡入     |
+| `slideIn` | `src/styles/globals.css` | 0.3s     | 元素滑入     |
+| `pulse`   | `src/styles/globals.css` | 2s       | 脉冲效果     |
+| `spin`    | `src/styles/globals.css` | 1s       | 旋转效果     |
 
 ### 3.4 样式资产引用
 
 #### 3.4.1 CSS 变量
 
-| 变量名称 | 定义位置 | 用途 |
-|---------|----------|------|
-| `--primary-color` | `src/styles/globals.css` | 主题主色 |
-| `--secondary-color` | `src/styles/globals.css` | 主题辅色 |
-| `--background-color` | `src/styles/globals.css` | 背景色 |
-| `--text-color` | `src/styles/globals.css` | 文本颜色 |
-| `--card-background` | `src/styles/globals.css` | 卡片背景色 |
+| 变量名称             | 定义位置                 | 用途       |
+| -------------------- | ------------------------ | ---------- |
+| `--primary-color`    | `src/styles/globals.css` | 主题主色   |
+| `--secondary-color`  | `src/styles/globals.css` | 主题辅色   |
+| `--background-color` | `src/styles/globals.css` | 背景色     |
+| `--text-color`       | `src/styles/globals.css` | 文本颜色   |
+| `--card-background`  | `src/styles/globals.css` | 卡片背景色 |
 
 #### 3.4.2 Tailwind 配置
 
-| 配置项 | 定义位置 | 用途 |
-|---------|----------|------|
-| 颜色配置 | `tailwind.config.js` | 主题颜色 |
-| 字体配置 | `tailwind.config.js` | 字体家族 |
-| 间距配置 | `tailwind.config.js` | 间距系统 |
+| 配置项   | 定义位置             | 用途       |
+| -------- | -------------------- | ---------- |
+| 颜色配置 | `tailwind.config.js` | 主题颜色   |
+| 字体配置 | `tailwind.config.js` | 字体家族   |
+| 间距配置 | `tailwind.config.js` | 间距系统   |
 | 动画配置 | `tailwind.config.js` | 自定义动画 |
 
 ## 4. 资产管理最佳实践
@@ -198,9 +198,9 @@
 
 ## 6. 版本控制与变更记录
 
-| 版本 | 日期 | 变更内容 | 作者 |
-|------|------|----------|------|
-| 1.0 | 2026-01-28 | 初始文档创建 | UI 设计团队 |
+| 版本 | 日期       | 变更内容     | 作者        |
+| ---- | ---------- | ------------ | ----------- |
+| 1.0  | 2026-01-28 | 初始文档创建 | UI 设计团队 |
 
 ## 7. 参考资料
 

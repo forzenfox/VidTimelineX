@@ -7,7 +7,7 @@
 import React from "react";
 import { render, screen, cleanup } from "@testing-library/react";
 import VideoCard from "@/features/tiantong/components/VideoCard";
-import { Heart } from "lucide-react";
+
 import "@testing-library/jest-dom";
 import { safeSync } from "../../utils/error-handling";
 
@@ -20,7 +20,7 @@ describe("核心内容区测试", () => {
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",
     views: "10万",
-    icon: Heart,
+    icon: "Heart",
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
     duration: "10:30",
   };

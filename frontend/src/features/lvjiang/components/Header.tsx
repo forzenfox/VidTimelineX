@@ -8,6 +8,7 @@ interface HeaderProps {
 export function Header({ theme, onThemeToggle }: HeaderProps) {
   return (
     <header
+      data-testid="lvjiang-header"
       className="sticky top-0 z-40 theme-transition"
       style={{
         background:

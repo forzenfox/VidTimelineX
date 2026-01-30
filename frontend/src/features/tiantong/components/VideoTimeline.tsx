@@ -16,6 +16,13 @@ const VideoItem: React.FC<{
   theme: "tiger" | "sweet";
   onVideoClick: (video: Video) => void;
 }> = React.memo(({ video, index, theme, onVideoClick }) => {
+  // 为缺少的属性提供默认值
+  const safeVideo = {
+    ...video,
+    category: video.category || "other",
+    views: video.views || "0",
+    icon: video.icon || "Heart",
+  };
   const isLeft = index % 2 === 0;
 
   // 缓存主题相关样式，避免重复计算

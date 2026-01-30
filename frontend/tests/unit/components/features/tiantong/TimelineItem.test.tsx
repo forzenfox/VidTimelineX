@@ -8,7 +8,7 @@ import React from "react";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import TimelineItem from "@/features/tiantong/components/TimelineItem";
 import type { Video } from "@/features/tiantong/data/types";
-import { Heart } from "lucide-react";
+
 import "@testing-library/jest-dom";
 
 describe("TimelineItem组件测试", () => {
@@ -21,7 +21,7 @@ describe("TimelineItem组件测试", () => {
       cover: "https://example.com/cover1.jpg",
       date: "2024-01-01",
       views: "10万",
-      icon: Heart,
+      icon: "Heart",
       videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
       duration: "10:30",
     },
@@ -33,7 +33,7 @@ describe("TimelineItem组件测试", () => {
       cover: "https://example.com/cover2.jpg",
       date: "2024-01-01",
       views: "20万",
-      icon: Heart,
+      icon: "Heart",
       videoUrl: "https://www.bilibili.com/video/BV1yy4y1B7Mm",
       duration: "12:45",
     },

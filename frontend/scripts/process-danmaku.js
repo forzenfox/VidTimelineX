@@ -1,6 +1,13 @@
 import fs from "fs";
 import path from "path";
 
+// 获取当前模块的目录路径（ESM 兼容方式）
+const __filename = new URL(import.meta.url).pathname;
+const __dirname = path.dirname(__filename);
+
+// 修复 Windows 路径问题
+const normalizedDirname = __dirname.replace(/^\//, "").replace(/\//g, "\\");
+
 // 弹幕类型权重配置
 const danmakuTypeWeights = {
   normal: 60, // 60% 概率
@@ -68,8 +75,11 @@ function getRandomSuperDanmakuColor(theme) {
 function processDanmakuData() {
   try {
     // 定义文件路径
-    const txtFilePath = path.join(__dirname, "../src/features/tiantong/data/danmaku.txt");
-    const outputPath = path.join(__dirname, "../src/features/tiantong/data/danmaku-processed.json");
+    const txtFilePath = path.join(normalizedDirname, "../src/features/tiantong/data/danmaku.txt");
+    const outputPath = path.join(
+      normalizedDirname,
+      "../src/features/tiantong/data/danmaku-processed.json"
+    );
 
     // 读取txt文件内容
     console.log("Reading danmaku.txt file...");

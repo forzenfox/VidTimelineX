@@ -184,7 +184,12 @@ const TiantongPage = () => {
   // 优化搜索算法，考虑标题和标签，实现搜索结果排序
   const filteredVideos = React.useMemo(() => {
     if (!searchQuery.trim()) {
-      return videos;
+      return videos.map(video => ({
+        ...video,
+        category: video.tags?.[0] || "other",
+        views: "10万",
+        icon: "Heart",
+      }));
     }
 
     const query = searchQuery.toLowerCase().trim();
@@ -212,8 +217,13 @@ const TiantongPage = () => {
       })
       .filter(({ score }) => score > 0)
       .sort((a, b) => b.score - a.score)
-      .map(({ video }) => video);
-  }, [searchQuery, videos]);
+      .map(({ video }) => ({
+        ...video,
+        category: video.tags?.[0] || "other",
+        views: "10万",
+        icon: "Heart",
+      }));
+  }, [searchQuery]);
 
   return (
     <QueryClientProvider client={queryClient}>

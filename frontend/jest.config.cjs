@@ -8,6 +8,7 @@ module.exports = {
   // 模块名称映射，使用正确的配置语法
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    "\\.(css|less|scss|sass)$": "<rootDir>/tests/__mocks__/style-mock.js",
   },
 
   // 转换规则
@@ -29,7 +30,19 @@ module.exports = {
   testMatch: [
     "**/tests/unit/**/*.test.(ts|tsx|js|jsx)",
     "**/tests/integration/**/*.test.(ts|tsx|js|jsx)",
-    "**/tests/e2e/**/*.test.(ts|tsx|js|jsx)",
+  ],
+  // 排除Playwright测试文件
+  testPathIgnorePatterns: [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "test-results",
+    ".next",
+    ".nuxt",
+    ".vite",
+    ".turbo",
+    "tests/e2e",
   ],
 
   // 启用并行测试
@@ -53,18 +66,7 @@ module.exports = {
   cacheThreshold: 10000,
   // 缓存压缩
   cacheCompression: true,
-  // 测试路径忽略模式
-  testPathIgnorePatterns: [
-    "node_modules",
-    "dist",
-    "build",
-    "coverage",
-    "test-results",
-    ".next",
-    ".nuxt",
-    ".vite",
-    ".turbo",
-  ],
+
   // 测试名称忽略模式
   testNameIgnorePatterns: ["\\.d\\.ts$", "\\.test\\.d\\.ts$"],
   // 模块路径忽略模式

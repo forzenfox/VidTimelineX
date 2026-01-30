@@ -1,41 +1,10 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { VideoTimeline } from "@/features/tiantong/components/VideoTimeline";
-import { Video } from "@/features/tiantong/data";
+
 import "@testing-library/jest-dom";
 
 describe("VideoTimeline组件测试", () => {
-  const mockVideo: Video = {
-    id: "1",
-    title: "测试视频",
-    date: "2024-01-01",
-    videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
-    cover: "https://example.com/cover.jpg",
-    tags: ["测试", "视频"],
-    duration: "10:30",
-    category: "sing",
-    views: "10万",
-    icon: "Heart",
-  };
-
-  const mockVideos: Video[] = [
-    {
-      ...mockVideo,
-      id: "1",
-      title: "测试视频1",
-    },
-    {
-      ...mockVideo,
-      id: "2",
-      title: "测试视频2",
-    },
-    {
-      ...mockVideo,
-      id: "3",
-      title: "测试视频3",
-    },
-  ];
-
   const mockOnVideoClick = jest.fn();
 
   afterEach(() => {

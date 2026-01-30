@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { SideDanmaku } from "@/features/lvjiang/components/SideDanmaku";
 import "@testing-library/jest-dom";
 

@@ -15,7 +15,7 @@ interface TimelineItemProps {
  * 使用React.memo优化性能，避免不必要的重新渲染
  */
 export const TimelineItem: React.FC<TimelineItemProps> = React.memo(
-  ({ date, videos, isLast = false, onVideoClick, theme }) => {
+  ({ date, videos, onVideoClick, theme }) => {
     const primaryColor = theme === "tiger" ? "rgb(255, 95, 0)" : "rgb(255, 140, 180)";
     const secondaryColor = theme === "tiger" ? "rgb(255, 190, 40)" : "rgb(255, 192, 203)";
 

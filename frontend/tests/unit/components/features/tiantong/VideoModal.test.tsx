@@ -8,7 +8,7 @@ import React from "react";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import VideoModal from "@/features/tiantong/components/VideoModal";
 import type { Video } from "@/features/tiantong/data/types";
-import { Heart } from "lucide-react";
+
 import "@testing-library/jest-dom";
 
 describe("VideoModal组件测试（甜筒）", () => {
@@ -20,7 +20,7 @@ describe("VideoModal组件测试（甜筒）", () => {
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",
     views: "10万",
-    icon: Heart,
+    icon: "Heart",
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
     duration: "10:30",
   };

@@ -204,15 +204,15 @@ test("TC-XXX: 输入框状态测试", () => {
 test("TC-XXX: 异步数据加载测试", async () => {
   const mockData = { id: 1, name: "测试数据" };
   const mockFetch = jest.fn().mockResolvedValue(mockData);
-  
+
   render(<DataComponent fetchData={mockFetch} />);
-  
+
   expect(screen.getByText("加载中...")).toBeInTheDocument();
-  
+
   await waitFor(() => {
     expect(screen.getByText(mockData.name)).toBeInTheDocument();
   });
-  
+
   expect(mockFetch).toHaveBeenCalledTimes(1);
 });
 ```
@@ -222,10 +222,10 @@ test("TC-XXX: 异步数据加载测试", async () => {
 ```typescript
 test("TC-XXX: 错误处理测试", async () => {
   const mockFetch = jest.fn().mockRejectedValue(new Error("网络错误"));
-  
+
   render(<DataComponent fetchData={mockFetch} />);
   fireEvent.click(screen.getByText("加载数据"));
-  
+
   await waitFor(() => {
     expect(screen.getByText("网络错误")).toBeInTheDocument();
   });
@@ -389,12 +389,12 @@ test("TC-XXX: 调试测试", () => {
 
 ### 10.4 常见问题调试
 
-| 问题 | 可能原因 | 解决方案 |
-|------|----------|----------|
-| 测试超时 | 异步操作没有正确处理 | 使用 `waitFor` 或 `findBy*` 函数 |
-| 元素未找到 | 元素还未渲染或选择器错误 | 使用 `waitFor` 等待元素出现，检查选择器 |
-| Mock函数未被调用 | 组件没有正确调用函数 | 检查组件代码，确保函数被正确调用 |
-| 状态未更新 | 状态更新是异步的 | 使用 `waitFor` 等待状态更新 |
+| 问题             | 可能原因                 | 解决方案                                |
+| ---------------- | ------------------------ | --------------------------------------- |
+| 测试超时         | 异步操作没有正确处理     | 使用 `waitFor` 或 `findBy*` 函数        |
+| 元素未找到       | 元素还未渲染或选择器错误 | 使用 `waitFor` 等待元素出现，检查选择器 |
+| Mock函数未被调用 | 组件没有正确调用函数     | 检查组件代码，确保函数被正确调用        |
+| 状态未更新       | 状态更新是异步的         | 使用 `waitFor` 等待状态更新             |
 
 ## 11. CI/CD集成
 
@@ -410,7 +410,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
       - run: npm ci
       - name: Run Unit Tests
         run: npm run test:unit

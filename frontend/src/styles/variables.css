@@ -6,16 +6,16 @@
 
 :root {
   /* ========== Tiger主题 ========== */
-  --tiger-background: #2C3E50;
-  --tiger-foreground: #BDC3C7;
-  --tiger-primary: #E67E22;
-  --tiger-secondary: #F39C12;
-  --tiger-accent: #D35400;
-  --tiger-card: #34495E;
-  --tiger-card-foreground: #BDC3C7;
-  --tiger-muted: #2C3E50;
-  --tiger-muted-foreground: #7F8C8D;
-  --tiger-border: #E67E22;
+  --tiger-background: #2c3e50;
+  --tiger-foreground: #bdc3c7;
+  --tiger-primary: #e67e22;
+  --tiger-secondary: #f39c12;
+  --tiger-accent: #d35400;
+  --tiger-card: #34495e;
+  --tiger-card-foreground: #bdc3c7;
+  --tiger-muted: #2c3e50;
+  --tiger-muted-foreground: #7f8c8d;
+  --tiger-border: #e67e22;
   --tiger-shadow-color: rgba(230, 126, 34, 0.3);
   --tiger-card-rgb: 52, 73, 94;
 

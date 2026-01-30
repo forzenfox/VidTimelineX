@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
-import { Pause, Play, TrendingUp, Trash2, Zap, MessageCircle, Gift, Crown } from "lucide-react";
+import React, { useState, useRef, useMemo } from "react";
+import { Zap, Gift, Crown } from "lucide-react";
 import { danmuPool, Danmu, users } from "../data";
 import { getRandomSuperDanmakuColor } from "../data/danmakuColors";
 import { useIsMobile } from "@/hooks/use-mobile";

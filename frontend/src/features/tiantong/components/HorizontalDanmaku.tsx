@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import danmakuData from "../data/danmaku-processed.json";
 
 interface HorizontalDanmakuProps {

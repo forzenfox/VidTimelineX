@@ -8,7 +8,7 @@ import React from "react";
 import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import VideoCard from "@/features/tiantong/components/VideoCard";
 import type { Video } from "@/features/tiantong/data/types";
-import { Heart } from "lucide-react";
+
 import "@testing-library/jest-dom";
 
 describe("VideoCard组件测试（甜筒）", () => {
@@ -20,7 +20,7 @@ describe("VideoCard组件测试（甜筒）", () => {
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",
     views: "10万",
-    icon: Heart,
+    icon: "Heart",
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
     duration: "10:30",
   };
@@ -60,7 +60,7 @@ describe("VideoCard组件测试（甜筒）", () => {
    * 测试目标：验证点击视频卡片时正确触发onClick事件
    */
   test("TC-039: VideoCard点击事件测试（甜筒）", () => {
-    const { container } = render(<VideoCard video={mockVideo} onClick={mockOnClick} />);
+    render(<VideoCard video={mockVideo} onClick={mockOnClick} />);
 
     // 点击视频卡片
     const card = screen.getByRole("article");

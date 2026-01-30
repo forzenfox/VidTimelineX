@@ -33,56 +33,56 @@
 
 ### 3.2 字体大小层级
 
-| 尺寸名称 | 字体大小 | 适用场景 | 代码示例 |
-|---------|---------|----------|----------|
-| 极小 | `text-[10px]` | 小标签、徽章 | `text-[10px]` |
-| 特小 | `text-xs` | 辅助文本、说明文字 | `text-xs` |
-| 小 | `text-sm` | 次要文本、输入框占位符 | `text-sm` |
-| 基础 | `text-base` | 正文、普通文本 | `text-base` |
-| 中 | `text-lg` | 副标题、强调文本 | `text-lg` |
-| 大 | `text-xl` | 标题、重要信息 | `text-xl` |
-| 特大 | `text-2xl` | 主标题、页面标题 | `text-2xl` |
-| 超大 | `text-3xl` | 页面主标题、品牌名称 | `text-3xl` |
+| 尺寸名称 | 字体大小      | 适用场景               | 代码示例      |
+| -------- | ------------- | ---------------------- | ------------- |
+| 极小     | `text-[10px]` | 小标签、徽章           | `text-[10px]` |
+| 特小     | `text-xs`     | 辅助文本、说明文字     | `text-xs`     |
+| 小       | `text-sm`     | 次要文本、输入框占位符 | `text-sm`     |
+| 基础     | `text-base`   | 正文、普通文本         | `text-base`   |
+| 中       | `text-lg`     | 副标题、强调文本       | `text-lg`     |
+| 大       | `text-xl`     | 标题、重要信息         | `text-xl`     |
+| 特大     | `text-2xl`    | 主标题、页面标题       | `text-2xl`    |
+| 超大     | `text-3xl`    | 页面主标题、品牌名称   | `text-3xl`    |
 
 ### 3.3 响应式字体大小
 
-| 断点 | 字体大小调整 | 适用类名 |
-|------|-------------|----------|
-| 移动端 (< 768px) | 默认字体大小 | 无特殊类名 |
+| 断点                  | 字体大小调整 | 适用类名                           |
+| --------------------- | ------------ | ---------------------------------- |
+| 移动端 (< 768px)      | 默认字体大小 | 无特殊类名                         |
 | 平板 (768px - 1024px) | 字体大小略小 | `text-base` → `font-size: 0.95rem` |
-| 桌面 (> 1024px) | 标准字体大小 | 无特殊类名 |
+| 桌面 (> 1024px)       | 标准字体大小 | 无特殊类名                         |
 
 ## 4. 行高与字间距
 
 ### 4.1 行高系统
 
-| 行高名称 | 行高值 | 适用场景 | 代码示例 |
-|---------|--------|----------|----------|
-| 紧凑 | `leading-tight` | 标题、短文本 | `leading-tight` |
-| 正常 | `leading-normal` | 正文、普通文本 | `leading-normal` |
-| 宽松 | `leading-relaxed` | 长文本、段落 | `leading-relaxed` |
-| 极宽松 | `leading-loose` | 特殊排版、引用 | `leading-loose` |
+| 行高名称 | 行高值            | 适用场景       | 代码示例          |
+| -------- | ----------------- | -------------- | ----------------- |
+| 紧凑     | `leading-tight`   | 标题、短文本   | `leading-tight`   |
+| 正常     | `leading-normal`  | 正文、普通文本 | `leading-normal`  |
+| 宽松     | `leading-relaxed` | 长文本、段落   | `leading-relaxed` |
+| 极宽松   | `leading-loose`   | 特殊排版、引用 | `leading-loose`   |
 
 ### 4.2 字间距
 
-| 字间距名称 | 字间距值 | 适用场景 | 代码示例 |
-|-----------|----------|----------|----------|
-| 正常 | 正常字间距 | 正文、普通文本 | 无特殊类名 |
-| 紧凑 | `tracking-tight` | 小号文本、按钮文本 | `tracking-tight` |
-| 宽松 | `tracking-wide` | 标题、强调文本 | `tracking-wide` |
-| 极宽松 | `tracking-widest` | 特殊排版、品牌名称 | `tracking-widest` |
+| 字间距名称 | 字间距值          | 适用场景           | 代码示例          |
+| ---------- | ----------------- | ------------------ | ----------------- |
+| 正常       | 正常字间距        | 正文、普通文本     | 无特殊类名        |
+| 紧凑       | `tracking-tight`  | 小号文本、按钮文本 | `tracking-tight`  |
+| 宽松       | `tracking-wide`   | 标题、强调文本     | `tracking-wide`   |
+| 极宽松     | `tracking-widest` | 特殊排版、品牌名称 | `tracking-widest` |
 
 ## 5. 标题层级
 
 ### 5.1 标题样式
 
-| 层级 | 字体大小 | 字重 | 行高 | 字间距 | 适用场景 |
-|------|---------|------|------|--------|----------|
-| H1 | `text-3xl` | `font-black` | `leading-tight` | `tracking-tight` | 页面主标题 |
-| H2 | `text-2xl` | `font-bold` | `leading-tight` | `tracking-tight` | section 标题 |
-| H3 | `text-xl` | `font-bold` | `leading-tight` | `tracking-normal` | subsection 标题 |
-| H4 | `text-lg` | `font-bold` | `leading-normal` | `tracking-normal` | 小 section 标题 |
-| H5 | `text-base` | `font-bold` | `leading-normal` | `tracking-normal` | 最小 section 标题 |
+| 层级 | 字体大小    | 字重         | 行高             | 字间距            | 适用场景          |
+| ---- | ----------- | ------------ | ---------------- | ----------------- | ----------------- |
+| H1   | `text-3xl`  | `font-black` | `leading-tight`  | `tracking-tight`  | 页面主标题        |
+| H2   | `text-2xl`  | `font-bold`  | `leading-tight`  | `tracking-tight`  | section 标题      |
+| H3   | `text-xl`   | `font-bold`  | `leading-tight`  | `tracking-normal` | subsection 标题   |
+| H4   | `text-lg`   | `font-bold`  | `leading-normal` | `tracking-normal` | 小 section 标题   |
+| H5   | `text-base` | `font-bold`  | `leading-normal` | `tracking-normal` | 最小 section 标题 |
 
 ### 5.2 标题示例
 
@@ -95,47 +95,47 @@
 
 ### 6.1 字重系统
 
-| 字重名称 | 字重值 | 适用场景 | 代码示例 |
-|---------|--------|----------|----------|
-| 细线 | `font-thin` | 特殊排版 | `font-thin` |
-| 轻量 | `font-light` | 次要文本 | `font-light` |
-| 常规 | `font-normal` | 正文、普通文本 | `font-normal` |
-| 中等 | `font-medium` | 强调文本、按钮文本 | `font-medium` |
-| 半粗 | `font-semibold` | 标题、重要信息 | `font-semibold` |
-| 粗体 | `font-bold` | 标题、强烈强调 | `font-bold` |
-| 特粗 | `font-extrabold` | 品牌名称、主标题 | `font-extrabold` |
-| 黑体 | `font-black` | 页面主标题、品牌名称 | `font-black` |
+| 字重名称 | 字重值           | 适用场景             | 代码示例         |
+| -------- | ---------------- | -------------------- | ---------------- |
+| 细线     | `font-thin`      | 特殊排版             | `font-thin`      |
+| 轻量     | `font-light`     | 次要文本             | `font-light`     |
+| 常规     | `font-normal`    | 正文、普通文本       | `font-normal`    |
+| 中等     | `font-medium`    | 强调文本、按钮文本   | `font-medium`    |
+| 半粗     | `font-semibold`  | 标题、重要信息       | `font-semibold`  |
+| 粗体     | `font-bold`      | 标题、强烈强调       | `font-bold`      |
+| 特粗     | `font-extrabold` | 品牌名称、主标题     | `font-extrabold` |
+| 黑体     | `font-black`     | 页面主标题、品牌名称 | `font-black`     |
 
 ### 6.2 文本装饰
 
-| 装饰名称 | 适用场景 | 代码示例 |
-|---------|----------|----------|
-| 无装饰 | 普通文本 | 无特殊类名 |
-| 下划线 | 链接、悬停效果 | `underline` |
-| 删除线 | 已删除内容 | `line-through` |
-| 上划线 | 特殊标识 | `overline` |
+| 装饰名称 | 适用场景       | 代码示例       |
+| -------- | -------------- | -------------- |
+| 无装饰   | 普通文本       | 无特殊类名     |
+| 下划线   | 链接、悬停效果 | `underline`    |
+| 删除线   | 已删除内容     | `line-through` |
+| 上划线   | 特殊标识       | `overline`     |
 
 ### 6.3 文本变换
 
-| 变换名称 | 适用场景 | 代码示例 |
-|---------|----------|----------|
-| 无变换 | 普通文本 | 无特殊类名 |
-| 大写 | 缩写、标识 | `uppercase` |
-| 小写 | 特殊排版 | `lowercase` |
+| 变换名称   | 适用场景       | 代码示例     |
+| ---------- | -------------- | ------------ |
+| 无变换     | 普通文本       | 无特殊类名   |
+| 大写       | 缩写、标识     | `uppercase`  |
+| 小写       | 特殊排版       | `lowercase`  |
 | 首字母大写 | 标题、段落开头 | `capitalize` |
 
 ## 7. 文本颜色
 
 ### 7.1 主题文本颜色
 
-| 颜色名称 | 适用场景 | 代码示例 |
-|---------|----------|----------|
-| 主要文本 | 正文、标题 | `text-foreground` |
+| 颜色名称 | 适用场景           | 代码示例                |
+| -------- | ------------------ | ----------------------- |
+| 主要文本 | 正文、标题         | `text-foreground`       |
 | 次要文本 | 辅助信息、说明文字 | `text-muted-foreground` |
-| 强调文本 | 链接、按钮文本 | `text-primary` |
-| 成功文本 | 成功信息、提示 | `text-green-500` |
-| 警告文本 | 警告信息、提示 | `text-yellow-500` |
-| 错误文本 | 错误信息、提示 | `text-red-500` |
+| 强调文本 | 链接、按钮文本     | `text-primary`          |
+| 成功文本 | 成功信息、提示     | `text-green-500`        |
+| 警告文本 | 警告信息、提示     | `text-yellow-500`       |
+| 错误文本 | 错误信息、提示     | `text-red-500`          |
 
 ### 7.2 主题特定文本颜色
 
@@ -192,9 +192,9 @@
 
 ## 9. 版本控制与变更记录
 
-| 版本 | 日期 | 变更内容 | 作者 |
-|------|------|----------|------|
-| 1.0 | 2026-01-28 | 初始文档创建 | UI 设计团队 |
+| 版本 | 日期       | 变更内容     | 作者        |
+| ---- | ---------- | ------------ | ----------- |
+| 1.0  | 2026-01-28 | 初始文档创建 | UI 设计团队 |
 
 ## 10. 参考资料
 

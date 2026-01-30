@@ -1,5 +1,6 @@
 import React from "react";
-import { Play, Eye, Calendar } from "lucide-react";
+import { Play, Eye, Calendar, Heart, Music, Smile } from "lucide-react";
+import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
 import type { Video } from "../data/types";
 
 interface VideoCardProps {
@@ -12,7 +13,18 @@ interface VideoCardProps {
  * 使用React.memo优化性能，避免不必要的重新渲染
  */
 const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
-  const Icon = video.icon;
+  const getIconComponent = () => {
+    switch (video.icon) {
+      case "Heart":
+        return <Heart size={12} className="mr-1" aria-hidden="true" />;
+      case "Music":
+        return <Music size={12} className="mr-1" aria-hidden="true" />;
+      case "Smile":
+        return <Smile size={12} className="mr-1" aria-hidden="true" />;
+      default:
+        return <Heart size={12} className="mr-1" aria-hidden="true" />;
+    }
+  };
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -54,7 +66,7 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
           className="absolute top-2.5 left-2.5 px-2.5 py-1 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-bold rounded-lg flex items-center shadow-md"
           role="badge"
         >
-          <Icon size={12} className="mr-1" aria-hidden="true" />
+          {getIconComponent()}
           {video.category === "sing"
             ? "甜筒天籁"
             : video.category === "dance"

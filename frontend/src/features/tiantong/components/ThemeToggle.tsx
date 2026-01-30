@@ -13,6 +13,7 @@ interface ThemeToggleProps {
 const ThemeToggle: React.FC<ThemeToggleProps> = React.memo(({ currentTheme, onToggle }) => {
   return (
     <button
+      data-testid="theme-toggle"
       onClick={onToggle}
       className={`
         relative min-h-[3rem] h-12 w-24 rounded-full p-1 transition-all duration-400 shadow-custom hover:shadow-lg active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2
