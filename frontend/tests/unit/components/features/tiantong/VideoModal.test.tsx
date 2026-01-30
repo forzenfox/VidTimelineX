@@ -22,7 +22,7 @@ describe("VideoModal组件测试（甜筒）", () => {
     views: "10万",
     icon: Heart,
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
-    duration: "10:30"
+    duration: "10:30",
   };
 
   const mockOnClose = jest.fn();
@@ -32,7 +32,9 @@ describe("VideoModal组件测试（甜筒）", () => {
    * 测试目标：验证VideoModal组件正确渲染
    */
   test("TC-041: VideoModal渲染测试（甜筒）", () => {
-    const { container } = render(<VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />);
+    const { container } = render(
+      <VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />
+    );
 
     // 验证弹窗存在
     const modal = container.querySelector('[role="dialog"]');
@@ -42,7 +44,7 @@ describe("VideoModal组件测试（甜筒）", () => {
     expect(screen.getByText("测试视频")).toBeInTheDocument();
 
     // 验证iframe存在
-    const iframe = container.querySelector('iframe');
+    const iframe = container.querySelector("iframe");
     expect(iframe).toBeInTheDocument();
 
     // 验证跳转B站观看按钮
@@ -54,7 +56,9 @@ describe("VideoModal组件测试（甜筒）", () => {
    * 测试目标：验证弹窗可以正确关闭
    */
   test("TC-042: VideoModal关闭测试（甜筒）", () => {
-    const { container, rerender } = render(<VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />);
+    const { container, rerender } = render(
+      <VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />
+    );
 
     // 验证VideoModal是否被渲染
     const modal = container.querySelector('[role="dialog"]');
@@ -80,7 +84,9 @@ describe("VideoModal组件测试（甜筒）", () => {
    * 测试目标：验证弹窗在不同主题下都能正常显示
    */
   test("TC-043: VideoModal主题切换测试（甜筒）", () => {
-    const { container, rerender } = render(<VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />);
+    const { container, rerender } = render(
+      <VideoModal video={mockVideo} onClose={mockOnClose} theme="sweet" />
+    );
 
     // 验证甜筒主题下的弹窗
     const sweetModal = container.querySelector('[role="dialog"]');

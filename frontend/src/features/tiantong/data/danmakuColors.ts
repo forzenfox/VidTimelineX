@@ -9,8 +9,8 @@ export type DanmakuType = "normal" | "gift" | "super";
 // 弹幕类型权重配置
 export const danmakuTypeWeights = {
   normal: 60, // 60% 概率
-  gift: 20,   // 20% 概率
-  super: 20,  // 20% 概率
+  gift: 20, // 20% 概率
+  super: 20, // 20% 概率
 };
 
 // super类型弹幕颜色配置
@@ -51,10 +51,10 @@ export const getRandomSuperDanmakuColor = (theme: Theme): string => {
 export const getRandomDanmakuType = (): DanmakuType => {
   // 计算总权重
   const totalWeight = Object.values(danmakuTypeWeights).reduce((sum, weight) => sum + weight, 0);
-  
+
   // 生成随机数
   let random = Math.random() * totalWeight;
-  
+
   // 根据权重分配类型
   for (const [type, weight] of Object.entries(danmakuTypeWeights)) {
     random -= weight;
@@ -62,7 +62,7 @@ export const getRandomDanmakuType = (): DanmakuType => {
       return type as DanmakuType;
     }
   }
-  
+
   // 默认返回normal类型
   return "normal";
 };

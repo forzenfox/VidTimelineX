@@ -12,7 +12,7 @@ describe("use-dynamic-component Hook测试", () => {
   test("TC-001: withDeviceSpecificComponent 功能测试", () => {
     const ResponsiveComponent = withDeviceSpecificComponent({
       tablet: (props: { text: string }) => <TestComponent {...props} />,
-      desktop: (props: { text: string }) => <TestComponent {...props} />
+      desktop: (props: { text: string }) => <TestComponent {...props} />,
     });
 
     expect(typeof ResponsiveComponent).toBe("function");
@@ -25,7 +25,7 @@ describe("use-dynamic-component Hook测试", () => {
   test("TC-002: 类型验证测试", () => {
     const ResponsiveComponent = withDeviceSpecificComponent({
       tablet: (props: { text: string }) => <TestComponent {...props} />,
-      desktop: (props: { text: string }) => <TestComponent {...props} />
+      desktop: (props: { text: string }) => <TestComponent {...props} />,
     });
 
     expect(React.isValidElement(<ResponsiveComponent text="测试" />)).toBe(true);

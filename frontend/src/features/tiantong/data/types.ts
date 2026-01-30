@@ -10,7 +10,7 @@ export interface Video {
   duration: string;
   category: string;
   views: string;
-  icon: any;
+  icon: string;
 }
 
 export interface Danmu {

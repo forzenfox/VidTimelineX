@@ -17,7 +17,7 @@ export const mockVideos: Video[] = [
     views: "10万",
     icon: Heart,
     bvid: "BV1xx411c7mD",
-    duration: "10:30"
+    duration: "10:30",
   },
   {
     id: "2",
@@ -29,7 +29,7 @@ export const mockVideos: Video[] = [
     views: "20万",
     icon: Music,
     bvid: "BV1yy4y1B7Mm",
-    duration: "12:45"
+    duration: "12:45",
   },
   {
     id: "3",
@@ -41,7 +41,7 @@ export const mockVideos: Video[] = [
     views: "30万",
     icon: Smile,
     bvid: "BV1zz4y1B7Mm",
-    duration: "08:15"
+    duration: "08:15",
   },
   {
     id: "4",
@@ -53,8 +53,8 @@ export const mockVideos: Video[] = [
     views: "50万",
     icon: Zap,
     bvid: "BV1aa4y1B7Mm",
-    duration: "15:20"
-  }
+    duration: "15:20",
+  },
 ];
 
 export const mockVideo: Video = mockVideos[0];

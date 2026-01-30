@@ -23,7 +23,7 @@ describe("TimelineItem组件测试", () => {
       views: "10万",
       icon: Heart,
       videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
-      duration: "10:30"
+      duration: "10:30",
     },
     {
       id: "2",
@@ -35,8 +35,8 @@ describe("TimelineItem组件测试", () => {
       views: "20万",
       icon: Heart,
       videoUrl: "https://www.bilibili.com/video/BV1yy4y1B7Mm",
-      duration: "12:45"
-    }
+      duration: "12:45",
+    },
   ];
 
   const mockOnVideoClick = jest.fn();

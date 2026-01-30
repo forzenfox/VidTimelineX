@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+import fs from "fs";
+import path from "path";
 
 // 弹幕类型权重配置
 const danmakuTypeWeights = {
   normal: 60, // 60% 概率
-  gift: 20,   // 20% 概率
-  super: 20,  // 20% 概率
+  gift: 20, // 20% 概率
+  super: 20, // 20% 概率
 };
 
 // super类型弹幕颜色配置
@@ -35,10 +35,10 @@ const superDanmakuColors = {
 function getRandomDanmakuType() {
   // 计算总权重
   const totalWeight = Object.values(danmakuTypeWeights).reduce((sum, weight) => sum + weight, 0);
-  
+
   // 生成随机数
   let random = Math.random() * totalWeight;
-  
+
   // 根据权重分配类型
   for (const [type, weight] of Object.entries(danmakuTypeWeights)) {
     random -= weight;
@@ -46,7 +46,7 @@ function getRandomDanmakuType() {
       return type;
     }
   }
-  
+
   // 默认返回normal类型
   return "normal";
 }
@@ -68,54 +68,53 @@ function getRandomSuperDanmakuColor(theme) {
 function processDanmakuData() {
   try {
     // 定义文件路径
-    const txtFilePath = path.join(__dirname, '../src/features/tiantong/data/danmaku.txt');
-    const outputPath = path.join(__dirname, '../src/features/tiantong/data/danmaku-processed.json');
-    
+    const txtFilePath = path.join(__dirname, "../src/features/tiantong/data/danmaku.txt");
+    const outputPath = path.join(__dirname, "../src/features/tiantong/data/danmaku-processed.json");
+
     // 读取txt文件内容
-    console.log('Reading danmaku.txt file...');
-    const txtContent = fs.readFileSync(txtFilePath, 'utf-8');
-    
+    console.log("Reading danmaku.txt file...");
+    const txtContent = fs.readFileSync(txtFilePath, "utf-8");
+
     // 按行分割，过滤空行
-    const lines = txtContent.split('\n').filter(line => line.trim() !== '');
+    const lines = txtContent.split("\n").filter(line => line.trim() !== "");
     console.log(`Found ${lines.length} lines in danmaku.txt`);
-    
+
     // 处理每条弹幕
     const processedDanmaku = lines.map((text, index) => {
       // 生成唯一id
       const id = `danmu-${index}`;
-      
+
       // 生成随机类型
       const type = getRandomDanmakuType();
-      
+
       // 生成颜色配置
       const colors = {
         tiger: "",
-        sweet: ""
+        sweet: "",
       };
-      
+
       // 对super类型弹幕，为每个主题生成随机颜色
-      if (type === 'super') {
-        colors.tiger = getRandomSuperDanmakuColor('tiger');
-        colors.sweet = getRandomSuperDanmakuColor('sweet');
+      if (type === "super") {
+        colors.tiger = getRandomSuperDanmakuColor("tiger");
+        colors.sweet = getRandomSuperDanmakuColor("sweet");
       }
-      
+
       return {
         id,
         text,
         type,
-        colors
+        colors,
       };
     });
-    
+
     // 写入处理后的数据
-    console.log('Writing processed data to danmaku-processed.json...');
+    console.log("Writing processed data to danmaku-processed.json...");
     fs.writeFileSync(outputPath, JSON.stringify(processedDanmaku, null, 2));
-    
+
     console.log(`✅ Processed ${processedDanmaku.length} danmaku items successfully!`);
     console.log(`Output saved to: ${outputPath}`);
-    
   } catch (error) {
-    console.error('❌ Error processing danmaku data:', error);
+    console.error("❌ Error processing danmaku data:", error);
     process.exit(1);
   }
 }

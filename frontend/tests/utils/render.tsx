@@ -21,7 +21,7 @@ export interface ComponentState<T> {
 /**
  * 渲染选项接口
  */
-export interface EnhancedRenderOptions<T = any> extends Omit<RenderOptions, 'wrapper'> {
+export interface EnhancedRenderOptions<T = unknown> extends Omit<RenderOptions, "wrapper"> {
   initialState?: T;
   stateManager?: boolean;
 }
@@ -29,7 +29,7 @@ export interface EnhancedRenderOptions<T = any> extends Omit<RenderOptions, 'wra
 /**
  * 增强的渲染结果接口
  */
-export interface EnhancedRenderResult<T = any> {
+export interface EnhancedRenderResult<T = unknown> {
   container: HTMLElement;
   getByText: typeof screen.getByText;
   getByRole: typeof screen.getByRole;
@@ -68,19 +68,19 @@ export function createStateManager<T>(initialState: T): ComponentState<T> {
 /**
  * 自定义渲染函数，添加全局样式和状态管理
  */
-export function renderWithProviders<T = any>(
+export function renderWithProviders<T = unknown>(
   ui: React.ReactElement,
   options?: EnhancedRenderOptions<T>
 ): EnhancedRenderResult<T> {
   const { initialState, stateManager = false, ...renderOptions } = options || {};
-  
+
   const result = render(ui, renderOptions);
   let state: ComponentState<T> | undefined;
-  
+
   if (stateManager && initialState) {
     state = createStateManager(initialState);
   }
-  
+
   return {
     container: result.container,
     getByText: screen.getByText,
@@ -100,7 +100,7 @@ export function renderWithProviders<T = any>(
  */
 export function renderComponent(
   component: React.ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'>
+  options?: Omit<RenderOptions, "wrapper">
 ) {
   return render(component, options);
 }
@@ -155,7 +155,7 @@ export function simulateClick(element: HTMLElement) {
  * 模拟用户双击事件
  */
 export function simulateDoubleClick(element: HTMLElement) {
-  element.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+  element.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
 }
 
 /**
@@ -163,87 +163,107 @@ export function simulateDoubleClick(element: HTMLElement) {
  */
 export function simulateInput(element: HTMLInputElement, value: string) {
   element.value = value;
-  element.dispatchEvent(new Event('input', { bubbles: true }));
-  element.dispatchEvent(new Event('change', { bubbles: true }));
+  element.dispatchEvent(new Event("input", { bubbles: true }));
+  element.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
 /**
  * 模拟用户键盘事件
  */
-export function simulateKeyPress(element: HTMLElement, key: string, options?: {
-  ctrlKey?: boolean;
-  shiftKey?: boolean;
-  altKey?: boolean;
-}) {
-  element.dispatchEvent(new KeyboardEvent('keydown', {
-    key,
-    bubbles: true,
-    ...options,
-  }));
-  element.dispatchEvent(new KeyboardEvent('keyup', {
-    key,
-    bubbles: true,
-    ...options,
-  }));
+export function simulateKeyPress(
+  element: HTMLElement,
+  key: string,
+  options?: {
+    ctrlKey?: boolean;
+    shiftKey?: boolean;
+    altKey?: boolean;
+  }
+) {
+  element.dispatchEvent(
+    new KeyboardEvent("keydown", {
+      key,
+      bubbles: true,
+      ...options,
+    })
+  );
+  element.dispatchEvent(
+    new KeyboardEvent("keyup", {
+      key,
+      bubbles: true,
+      ...options,
+    })
+  );
 }
 
 /**
  * 模拟用户鼠标悬停事件
  */
 export function simulateHover(element: HTMLElement) {
-  element.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+  element.dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
 }
 
 /**
  * 模拟用户鼠标离开事件
  */
 export function simulateMouseLeave(element: HTMLElement) {
-  element.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+  element.dispatchEvent(new MouseEvent("mouseleave", { bubbles: true }));
 }
 
 /**
  * 模拟用户滚动事件
  */
-export function simulateScroll(element: HTMLElement, options?: {
-  scrollTop?: number;
-  scrollLeft?: number;
-}) {
+export function simulateScroll(
+  element: HTMLElement,
+  options?: {
+    scrollTop?: number;
+    scrollLeft?: number;
+  }
+) {
   element.scrollTop = options?.scrollTop || 0;
   element.scrollLeft = options?.scrollLeft || 0;
-  element.dispatchEvent(new Event('scroll', { bubbles: true }));
+  element.dispatchEvent(new Event("scroll", { bubbles: true }));
 }
 
 /**
  * 模拟表单提交事件
  */
 export function simulateFormSubmit(form: HTMLFormElement) {
-  form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
 }
 
 /**
  * 查找元素并等待其出现
  */
-export async function findByTestId(testId: string, options?: {
-  timeout?: number;
-}): Promise<HTMLElement> {
+export async function findByTestId(
+  testId: string,
+  options?: {
+    timeout?: number;
+  }
+): Promise<HTMLElement> {
   return screen.findByTestId(testId, options);
 }
 
 /**
  * 查找元素并等待其出现
  */
-export async function findByRole(role: string, options?: {
-  timeout?: number;
-}): Promise<HTMLElement> {
+export async function findByRole(
+  role: string,
+  options?: {
+    timeout?: number;
+  }
+): Promise<HTMLElement> {
   return screen.findByRole(role, options);
 }
 
 /**
  * 查找元素并等待其出现
  */
-export async function findByText(text: string, options?: {
-  timeout?: number;
-}): Promise<HTMLElement> {
+export async function findByText(
+  text: string,
+  options?: {
+    timeout?: number;
+  }
+): Promise<HTMLElement> {
   return screen.findByText(text, options);
 }
 
@@ -256,7 +276,7 @@ export async function findByText(text: string, options?: {
 export function generateTestData<T>(template: T, count: number): T[] {
   return Array.from({ length: count }, (_, index) => ({
     ...template,
-    id: `${(template as any).id || 'test'}-${index + 1}`,
+    id: `${(template as unknown as { id?: string }).id || "test"}-${index + 1}`,
   }));
 }
 
@@ -275,7 +295,7 @@ export function cleanupAll() {
  */
 export function safeGetElement<T extends Element>(
   selector: () => T,
-  errorMessage: string = '获取元素失败'
+  errorMessage: string = "获取元素失败"
 ): T | null {
   try {
     return selector();
@@ -315,7 +335,7 @@ export async function measureRenderPerformance(
   iterations: number = 10
 ): Promise<number> {
   const times: number[] = [];
-  
+
   for (let i = 0; i < iterations; i++) {
     const start = performance.now();
     const { cleanup } = render(component);
@@ -324,7 +344,6 @@ export async function measureRenderPerformance(
     cleanup();
     await wait(10); // 短暂等待，避免测试之间的干扰
   }
-  
+
   return times.reduce((sum, time) => sum + time, 0) / times.length;
 }
-

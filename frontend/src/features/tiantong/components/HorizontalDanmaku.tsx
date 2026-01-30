@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import danmakuData from "../data/danmaku-processed.json";
 
 interface HorizontalDanmakuProps {
@@ -19,6 +19,17 @@ interface DanmakuItem {
  * 参照驴酱页面实现，改为受控组件模式
  */
 export function HorizontalDanmaku({ theme }: HorizontalDanmakuProps) {
+  // 生成随机持续时间映射，只在组件挂载时执行一次
+  const [durationMap] = useState(() => {
+    const map = new Map<number, number>();
+    if (danmakuData && danmakuData.length > 0) {
+      for (let i = 0; i < danmakuData.length; i++) {
+        map.set(i, 6 + Math.random() * 4);
+      }
+    }
+    return map;
+  });
+
   const danmakuList = useMemo(() => {
     // 确保 danmakuData 存在且不是空数组
     if (!danmakuData || danmakuData.length === 0) {
@@ -42,13 +53,13 @@ export function HorizontalDanmaku({ theme }: HorizontalDanmakuProps) {
         text: danmaku.text,
         top: 10 + trackIndex * 10,
         delay: i * 0.2, // 减少延迟，使弹幕更密集
-        duration: 6 + Math.random() * 4, // 减少持续时间，使弹幕移动更快
+        duration: durationMap.get(i) || 8, // 使用预生成的随机持续时间
         color: color,
       });
     }
 
     return items;
-  }, [theme]);
+  }, [theme, durationMap]);
 
   // 即使没有弹幕数据，也渲染组件结构
   return (

@@ -7,12 +7,12 @@
  * 错误类型枚举
  */
 export enum ErrorType {
-  ASSERTION = 'assertion',
-  NETWORK = 'network',
-  TIMEOUT = 'timeout',
-  RENDERING = 'rendering',
-  STATE = 'state',
-  UNKNOWN = 'unknown',
+  ASSERTION = "assertion",
+  NETWORK = "network",
+  TIMEOUT = "timeout",
+  RENDERING = "rendering",
+  STATE = "state",
+  UNKNOWN = "unknown",
 }
 
 /**
@@ -22,7 +22,7 @@ export interface ErrorInfo {
   type: ErrorType;
   message: string;
   stack?: string;
-  details?: any;
+  details?: unknown;
 }
 
 /**
@@ -44,7 +44,7 @@ export interface TestStats {
  */
 export async function safeAsync<T>(
   fn: () => Promise<T>,
-  errorMessage: string = '异步操作失败'
+  errorMessage: string = "异步操作失败"
 ): Promise<T | Error> {
   try {
     return await fn();
@@ -60,10 +60,7 @@ export async function safeAsync<T>(
  * @param errorMessage 错误消息
  * @returns 执行结果或错误对象
  */
-export function safeSync<T>(
-  fn: () => T,
-  errorMessage: string = '同步操作失败'
-): T | Error {
+export function safeSync<T>(fn: () => T, errorMessage: string = "同步操作失败"): T | Error {
   try {
     return fn();
   } catch (error) {
@@ -87,14 +84,14 @@ export async function retryAsync<T>(
   backoffFactor: number = 1.5
 ): Promise<T> {
   let lastError: Error;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       console.warn(`尝试 ${i + 1} 失败:`, lastError.message);
-      
+
       if (i < maxRetries - 1) {
         const backoffDelay = delay * Math.pow(backoffFactor, i);
         console.warn(`等待 ${Math.round(backoffDelay)}ms 后重试...`);
@@ -102,7 +99,7 @@ export async function retryAsync<T>(
       }
     }
   }
-  
+
   throw lastError;
 }
 
@@ -113,20 +110,16 @@ export async function retryAsync<T>(
  * @param delay 重试延迟（毫秒）
  * @returns 执行结果
  */
-export function retrySync<T>(
-  fn: () => T,
-  maxRetries: number = 3,
-  delay: number = 1000
-): T {
+export function retrySync<T>(fn: () => T, maxRetries: number = 3, delay: number = 1000): T {
   let lastError: Error;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return fn();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       console.warn(`尝试 ${i + 1} 失败:`, lastError.message);
-      
+
       if (i < maxRetries - 1) {
         console.warn(`等待 ${delay}ms 后重试...`);
         // 同步延迟
@@ -137,7 +130,7 @@ export function retrySync<T>(
       }
     }
   }
-  
+
   throw lastError;
 }
 
@@ -151,12 +144,12 @@ export function retrySync<T>(
 export async function withTimeout<T>(
   fn: () => Promise<T>,
   timeout: number = 10000,
-  timeoutMessage: string = '操作超时'
+  timeoutMessage: string = "操作超时"
 ): Promise<T> {
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => reject(new Error(timeoutMessage)), timeout);
   });
-  
+
   return Promise.race([fn(), timeoutPromise]);
 }
 
@@ -179,7 +172,7 @@ export function wrapAsync(fn: () => Promise<void>): () => Promise<void> {
     try {
       await fn();
     } catch (error) {
-      console.error('测试执行失败:', error);
+      console.error("测试执行失败:", error);
       throw error;
     }
   };
@@ -195,7 +188,7 @@ export function wrapSync(fn: () => void): () => void {
     try {
       fn();
     } catch (error) {
-      console.error('测试执行失败:', error);
+      console.error("测试执行失败:", error);
       throw error;
     }
   };
@@ -206,11 +199,11 @@ export function wrapSync(fn: () => void): () => void {
  * @param error 错误对象
  * @returns 错误信息
  */
-export function classifyError(error: any): ErrorInfo {
+export function classifyError(error: unknown): ErrorInfo {
   const message = error instanceof Error ? error.message : String(error);
   const stack = error instanceof Error ? error.stack : undefined;
-  
-  if (message.includes('expect') || message.includes('AssertionError')) {
+
+  if (message.includes("expect") || message.includes("AssertionError")) {
     return {
       type: ErrorType.ASSERTION,
       message,
@@ -218,8 +211,8 @@ export function classifyError(error: any): ErrorInfo {
       details: error,
     };
   }
-  
-  if (message.includes('network') || message.includes('fetch') || message.includes('axios')) {
+
+  if (message.includes("network") || message.includes("fetch") || message.includes("axios")) {
     return {
       type: ErrorType.NETWORK,
       message,
@@ -227,8 +220,8 @@ export function classifyError(error: any): ErrorInfo {
       details: error,
     };
   }
-  
-  if (message.includes('timeout') || message.includes('timed out')) {
+
+  if (message.includes("timeout") || message.includes("timed out")) {
     return {
       type: ErrorType.TIMEOUT,
       message,
@@ -236,8 +229,8 @@ export function classifyError(error: any): ErrorInfo {
       details: error,
     };
   }
-  
-  if (message.includes('render') || message.includes('React') || message.includes('DOM')) {
+
+  if (message.includes("render") || message.includes("React") || message.includes("DOM")) {
     return {
       type: ErrorType.RENDERING,
       message,
@@ -245,8 +238,8 @@ export function classifyError(error: any): ErrorInfo {
       details: error,
     };
   }
-  
-  if (message.includes('state') || message.includes('context') || message.includes('reducer')) {
+
+  if (message.includes("state") || message.includes("context") || message.includes("reducer")) {
     return {
       type: ErrorType.STATE,
       message,
@@ -254,7 +247,7 @@ export function classifyError(error: any): ErrorInfo {
       details: error,
     };
   }
-  
+
   return {
     type: ErrorType.UNKNOWN,
     message,
@@ -269,7 +262,10 @@ export function classifyError(error: any): ErrorInfo {
  * @param errorMessage 错误消息
  * @returns 处理后的错误信息
  */
-export function handleError(error: any, errorMessage: string = '处理错误时发生异常'): ErrorInfo {
+export function handleError(
+  error: unknown,
+  errorMessage: string = "处理错误时发生异常"
+): ErrorInfo {
   console.error(`${errorMessage}:`, error);
   return classifyError(error);
 }
@@ -286,9 +282,9 @@ export function createTestStats() {
     errors: [],
     duration: 0,
   };
-  
+
   let startTime = Date.now();
-  
+
   return {
     /**
      * 开始测试
@@ -296,7 +292,7 @@ export function createTestStats() {
     start: () => {
       startTime = Date.now();
     },
-    
+
     /**
      * 记录测试通过
      */
@@ -304,17 +300,17 @@ export function createTestStats() {
       stats.total++;
       stats.passed++;
     },
-    
+
     /**
      * 记录测试失败
      * @param error 错误对象
      */
-    fail: (error: any) => {
+    fail: (error: unknown) => {
       stats.total++;
       stats.failed++;
       stats.errors.push(classifyError(error));
     },
-    
+
     /**
      * 结束测试
      * @returns 测试结果统计
@@ -323,7 +319,7 @@ export function createTestStats() {
       stats.duration = Date.now() - startTime;
       return stats;
     },
-    
+
     /**
      * 获取当前统计
      * @returns 测试结果统计
@@ -334,30 +330,30 @@ export function createTestStats() {
         duration: Date.now() - startTime,
       };
     },
-    
+
     /**
      * 打印统计结果
      */
-    printStats: function() {
+    printStats: function () {
       const finalStats = this.end();
-      console.log('\n=== 测试结果统计 ===');
+      console.log("\n=== 测试结果统计 ===");
       console.log(`总测试数: ${finalStats.total}`);
       console.log(`通过数: ${finalStats.passed}`);
       console.log(`失败数: ${finalStats.failed}`);
       console.log(`成功率: ${((finalStats.passed / finalStats.total) * 100).toFixed(2)}%`);
       console.log(`总执行时间: ${finalStats.duration}ms`);
-      
+
       if (finalStats.errors.length > 0) {
-        console.log('\n=== 错误详情 ===');
+        console.log("\n=== 错误详情 ===");
         finalStats.errors.forEach((error, index) => {
           console.log(`\n错误 ${index + 1}: ${error.type}`);
           console.log(`消息: ${error.message}`);
           if (error.stack) {
-            console.log(`堆栈: ${error.stack.split('\n')[1]}`);
+            console.log(`堆栈: ${error.stack.split("\n")[1]}`);
           }
         });
       }
-      
+
       return finalStats;
     },
   };
@@ -369,9 +365,12 @@ export function createTestStats() {
  * @param testName 测试名称
  * @returns 测试结果
  */
-export async function safeTest(testFn: () => Promise<void> | void, testName: string = '测试'): Promise<boolean> {
+export async function safeTest(
+  testFn: () => Promise<void> | void,
+  testName: string = "测试"
+): Promise<boolean> {
   try {
-    if (testFn.constructor.name === 'AsyncFunction') {
+    if (testFn.constructor.name === "AsyncFunction") {
       await testFn();
     } else {
       testFn();
@@ -389,10 +388,12 @@ export async function safeTest(testFn: () => Promise<void> | void, testName: str
  * @param tests 测试用例数组
  * @returns 测试结果统计
  */
-export async function runTests(tests: Array<{ name: string; fn: () => Promise<void> | void }>): Promise<TestStats> {
+export async function runTests(
+  tests: Array<{ name: string; fn: () => Promise<void> | void }>
+): Promise<TestStats> {
   const stats = createTestStats();
   stats.start();
-  
+
   for (const test of tests) {
     const passed = await safeTest(test.fn, test.name);
     if (passed) {
@@ -401,7 +402,6 @@ export async function runTests(tests: Array<{ name: string; fn: () => Promise<vo
       stats.fail(new Error(`测试 ${test.name} 失败`));
     }
   }
-  
+
   return stats.end();
 }
-

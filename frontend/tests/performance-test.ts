@@ -1,12 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { chromium } from 'playwright';
+import { chromium } from "playwright";
+import fs from "fs";
 
 // 性能测试配置
 const PERFORMANCE_TEST_OPTIONS = {
   headless: false,
   slowMo: 0,
-  args: ['--enable-features=NetworkService,NetworkServiceInProcess'],
-  ignoreDefaultArgs: ['--enable-automation'],
+  args: ["--enable-features=NetworkService,NetworkServiceInProcess"],
+  ignoreDefaultArgs: ["--enable-automation"],
   defaultViewport: { width: 1920, height: 1080 },
 };
 
@@ -35,16 +35,16 @@ async function measurePageLoadPerformance(pageUrl: string, pageName: string) {
 
   // 测量页面加载时间
   const startTime = Date.now();
-  await page.goto(pageUrl, { waitUntil: 'networkidle' });
+  await page.goto(pageUrl, { waitUntil: "networkidle" });
   const endTime = Date.now();
   const loadTime = endTime - startTime;
 
   // 记录结果
   performanceResults.push({
     page: pageName,
-    metric: 'loadTime',
+    metric: "loadTime",
     value: loadTime,
-    unit: 'ms',
+    unit: "ms",
   });
 
   console.log(`${pageName} 页面加载时间: ${loadTime}ms`);
@@ -52,23 +52,23 @@ async function measurePageLoadPerformance(pageUrl: string, pageName: string) {
   // 测量First Contentful Paint (FCP)
   const fcp = await page.evaluate(() => {
     return new Promise<number>(resolve => {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
-          if (entry.name === 'first-contentful-paint') {
+          if (entry.name === "first-contentful-paint") {
             observer.disconnect();
             resolve(entry.startTime);
           }
         }
       });
-      observer.observe({ entryTypes: ['paint'] });
+      observer.observe({ entryTypes: ["paint"] });
     });
   });
 
   performanceResults.push({
     page: pageName,
-    metric: 'firstContentfulPaint',
+    metric: "firstContentfulPaint",
     value: fcp,
-    unit: 'ms',
+    unit: "ms",
   });
 
   console.log(`${pageName} First Contentful Paint: ${fcp}ms`);
@@ -76,23 +76,23 @@ async function measurePageLoadPerformance(pageUrl: string, pageName: string) {
   // 测量Largest Contentful Paint (LCP)
   const lcp = await page.evaluate(() => {
     return new Promise<number>(resolve => {
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
-          if (entry.name === 'largest-contentful-paint') {
+          if (entry.name === "largest-contentful-paint") {
             observer.disconnect();
             resolve(entry.startTime);
           }
         }
       });
-      observer.observe({ entryTypes: ['largest-contentful-paint'] });
+      observer.observe({ entryTypes: ["largest-contentful-paint"] });
     });
   });
 
   performanceResults.push({
     page: pageName,
-    metric: 'largestContentfulPaint',
+    metric: "largestContentfulPaint",
     value: lcp,
-    unit: 'ms',
+    unit: "ms",
   });
 
   console.log(`${pageName} Largest Contentful Paint: ${lcp}ms`);
@@ -106,12 +106,16 @@ async function measurePageLoadPerformance(pageUrl: string, pageName: string) {
 }
 
 // 测量主题切换性能
-async function measureThemeTogglePerformance(pageUrl: string, pageName: string, toggleSelector: string) {
+async function measureThemeTogglePerformance(
+  pageUrl: string,
+  pageName: string,
+  toggleSelector: string
+) {
   const browser = await chromium.launch(PERFORMANCE_TEST_OPTIONS);
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  await page.goto(pageUrl, { waitUntil: 'networkidle' });
+  await page.goto(pageUrl, { waitUntil: "networkidle" });
 
   // 测量主题切换时间
   const themeToggleTimes: number[] = [];
@@ -127,13 +131,14 @@ async function measureThemeTogglePerformance(pageUrl: string, pageName: string, 
   }
 
   // 计算平均主题切换时间
-  const averageToggleTime = themeToggleTimes.reduce((sum, time) => sum + time, 0) / themeToggleTimes.length;
+  const averageToggleTime =
+    themeToggleTimes.reduce((sum, time) => sum + time, 0) / themeToggleTimes.length;
 
   performanceResults.push({
     page: pageName,
-    metric: 'averageThemeToggleTime',
+    metric: "averageThemeToggleTime",
     value: averageToggleTime,
-    unit: 'ms',
+    unit: "ms",
   });
 
   console.log(`${pageName} 平均主题切换时间: ${averageToggleTime}ms`);
@@ -143,30 +148,37 @@ async function measureThemeTogglePerformance(pageUrl: string, pageName: string, 
 
 // 运行性能测试
 async function runPerformanceTests() {
-  console.log('开始性能基准测试...');
+  console.log("开始性能基准测试...");
 
   // 1. 测试甜筒页面性能
-  console.log('\n=== 测试甜筒页面性能 ===');
-  await measurePageLoadPerformance('http://localhost:3001/tiantong', 'tiantong');
-  await measureThemeTogglePerformance('http://localhost:3001/tiantong', 'tiantong', '.flex-1 > .flex-shrink-0 > .flex-shrink-0 > button');
+  console.log("\n=== 测试甜筒页面性能 ===");
+  await measurePageLoadPerformance("http://localhost:3001/tiantong", "tiantong");
+  await measureThemeTogglePerformance(
+    "http://localhost:3001/tiantong",
+    "tiantong",
+    ".flex-1 > .flex-shrink-0 > .flex-shrink-0 > button"
+  );
 
   // 2. 测试驴酱页面性能
-  console.log('\n=== 测试驴酱页面性能 ===');
-  await measurePageLoadPerformance('http://localhost:3001/lvjiang', 'lvjiang');
-  await measureThemeTogglePerformance('http://localhost:3001/lvjiang', 'lvjiang', '.flex.items-center.justify-center > button');
+  console.log("\n=== 测试驴酱页面性能 ===");
+  await measurePageLoadPerformance("http://localhost:3001/lvjiang", "lvjiang");
+  await measureThemeTogglePerformance(
+    "http://localhost:3001/lvjiang",
+    "lvjiang",
+    ".flex.items-center.justify-center > button"
+  );
 
   // 3. 生成性能报告
-  console.log('\n=== 性能测试结果 ===');
+  console.log("\n=== 性能测试结果 ===");
   console.table(performanceResults);
 
   // 保存结果到文件
-  const fs = require('fs');
   fs.writeFileSync(
     `./test-results/performance-report-${Date.now()}.json`,
     JSON.stringify(performanceResults, null, 2)
   );
 
-  console.log('\n性能测试完成！报告已保存到 test-results 目录。');
+  console.log("\n性能测试完成！报告已保存到 test-results 目录。");
 }
 
 // 执行测试

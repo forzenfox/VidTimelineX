@@ -126,12 +126,9 @@ describe("Button组件测试", () => {
   test("TC-008: 按钮焦点测试", () => {
     const onFocus = jest.fn();
     const onBlur = jest.fn();
-    
+
     render(
-      <Button 
-        onFocus={onFocus} 
-        onBlur={onBlur}
-      >
+      <Button onFocus={onFocus} onBlur={onBlur}>
         焦点测试按钮
       </Button>
     );
@@ -139,7 +136,7 @@ describe("Button组件测试", () => {
     const button = screen.getByText("焦点测试按钮");
     fireEvent.focus(button);
     expect(onFocus).toHaveBeenCalled();
-    
+
     fireEvent.blur(button);
     expect(onBlur).toHaveBeenCalled();
   });
@@ -151,12 +148,9 @@ describe("Button组件测试", () => {
   test("TC-009: 按钮键盘事件测试", () => {
     const onKeyDown = jest.fn();
     const onKeyUp = jest.fn();
-    
+
     render(
-      <Button 
-        onKeyDown={onKeyDown} 
-        onKeyUp={onKeyUp}
-      >
+      <Button onKeyDown={onKeyDown} onKeyUp={onKeyUp}>
         键盘测试按钮
       </Button>
     );
@@ -164,7 +158,7 @@ describe("Button组件测试", () => {
     const button = screen.getByText("键盘测试按钮");
     fireEvent.keyDown(button, { key: "Enter" });
     expect(onKeyDown).toHaveBeenCalled();
-    
+
     fireEvent.keyUp(button, { key: "Enter" });
     expect(onKeyUp).toHaveBeenCalled();
   });

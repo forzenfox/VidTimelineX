@@ -19,42 +19,50 @@ const VideoItem: React.FC<{
   const isLeft = index % 2 === 0;
 
   // 缓存主题相关样式，避免重复计算
-  const nodeStyle = useMemo(() => ({
-    background:
-      theme === "dongzhu"
-        ? "linear-gradient(135deg, #D4E8F0, #5DADE2)"
-        : "linear-gradient(135deg, #E74C3C, #C0392B)",
-    border: theme === "dongzhu" ? "4px solid #E8F4F8" : "4px solid #16213E",
-    boxShadow:
-      theme === "dongzhu"
-        ? "0 0 20px rgba(93, 173, 226, 0.6)"
-        : "0 0 20px rgba(231, 76, 60, 0.6)",
-  }), [theme]);
+  const nodeStyle = useMemo(
+    () => ({
+      background:
+        theme === "dongzhu"
+          ? "linear-gradient(135deg, #D4E8F0, #5DADE2)"
+          : "linear-gradient(135deg, #E74C3C, #C0392B)",
+      border: theme === "dongzhu" ? "4px solid #E8F4F8" : "4px solid #16213E",
+      boxShadow:
+        theme === "dongzhu"
+          ? "0 0 20px rgba(93, 173, 226, 0.6)"
+          : "0 0 20px rgba(231, 76, 60, 0.6)",
+    }),
+    [theme]
+  );
 
-  const cardStyle = useMemo(() => ({
-    background:
-      theme === "dongzhu"
-        ? "linear-gradient(135deg, #FFF9E6, #FFFEF7)"
-        : "linear-gradient(135deg, #16213E, #1A1A2E)",
-    borderRadius: theme === "dongzhu" ? "20px" : "8px",
-    border: theme === "dongzhu" ? "2px solid #AED6F1" : "2px solid #E74C3C",
-    boxShadow:
-      theme === "dongzhu"
-        ? "0 8px 24px rgba(93, 173, 226, 0.3)"
-        : "0 8px 24px rgba(231, 76, 60, 0.3)",
-  }), [theme]);
+  const cardStyle = useMemo(
+    () => ({
+      background:
+        theme === "dongzhu"
+          ? "linear-gradient(135deg, #FFF9E6, #FFFEF7)"
+          : "linear-gradient(135deg, #16213E, #1A1A2E)",
+      borderRadius: theme === "dongzhu" ? "20px" : "8px",
+      border: theme === "dongzhu" ? "2px solid #AED6F1" : "2px solid #E74C3C",
+      boxShadow:
+        theme === "dongzhu"
+          ? "0 8px 24px rgba(93, 173, 226, 0.3)"
+          : "0 8px 24px rgba(231, 76, 60, 0.3)",
+    }),
+    [theme]
+  );
 
-  const overlayStyle = useMemo(() => ({
-    background:
-      theme === "dongzhu" ? "rgba(93, 173, 226, 0.5)" : "rgba(0, 0, 0, 0.7)",
-  }), [theme]);
+  const overlayStyle = useMemo(
+    () => ({
+      background: theme === "dongzhu" ? "rgba(93, 173, 226, 0.5)" : "rgba(0, 0, 0, 0.7)",
+    }),
+    [theme]
+  );
 
-  const playButtonStyle = useMemo(() => ({
-    background:
-      theme === "dongzhu"
-        ? "rgba(93, 173, 226, 0.8)"
-        : "rgba(231, 76, 60, 0.9)",
-  }), [theme]);
+  const playButtonStyle = useMemo(
+    () => ({
+      background: theme === "dongzhu" ? "rgba(93, 173, 226, 0.8)" : "rgba(231, 76, 60, 0.9)",
+    }),
+    [theme]
+  );
 
   return (
     <div
@@ -80,7 +88,8 @@ const VideoItem: React.FC<{
               src={video.cover}
               alt={video.title}
               className="w-full h-full object-cover"
-              loading="lazy" />
+              loading="lazy"
+            />
             <div
               className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 theme-transition"
               style={overlayStyle}
@@ -141,9 +150,7 @@ const VideoItem: React.FC<{
                   className="px-2 py-1 text-xs font-medium"
                   style={{
                     background:
-                      theme === "dongzhu"
-                        ? "rgba(93, 173, 226, 0.2)"
-                        : "rgba(231, 76, 60, 0.3)",
+                      theme === "dongzhu" ? "rgba(93, 173, 226, 0.2)" : "rgba(231, 76, 60, 0.3)",
                     border: theme === "dongzhu" ? "1px solid #AED6F1" : "1px solid #E74C3C",
                     borderRadius: theme === "dongzhu" ? "8px" : "4px",
                     color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
@@ -163,16 +170,19 @@ const VideoItem: React.FC<{
 // 使用React.memo优化组件，避免不必要的重新渲染
 export const VideoTimeline = React.memo(({ theme, onVideoClick }: VideoTimelineProps) => {
   // 使用useMemo缓存主题相关样式
-  const centerLineStyle = useMemo(() => ({
-    background:
-      theme === "dongzhu"
-        ? "linear-gradient(to bottom, #AED6F1, #5DADE2)"
-        : "linear-gradient(to bottom, #E74C3C, #C0392B)",
-    boxShadow:
-      theme === "dongzhu"
-        ? "0 0 10px rgba(93, 173, 226, 0.5)"
-        : "0 0 10px rgba(231, 76, 60, 0.5)",
-  }), [theme]);
+  const centerLineStyle = useMemo(
+    () => ({
+      background:
+        theme === "dongzhu"
+          ? "linear-gradient(to bottom, #AED6F1, #5DADE2)"
+          : "linear-gradient(to bottom, #E74C3C, #C0392B)",
+      boxShadow:
+        theme === "dongzhu"
+          ? "0 0 10px rgba(93, 173, 226, 0.5)"
+          : "0 0 10px rgba(231, 76, 60, 0.5)",
+    }),
+    [theme]
+  );
 
   // 使用useMemo缓存视频列表，避免每次渲染都重新处理
   const videoItems = useMemo(() => {

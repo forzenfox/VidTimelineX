@@ -10,10 +10,10 @@ interface SidebarDanmuProps {
 
 const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
   const isMobile = useIsMobile();
-  const [vipCount, setVipCount] = useState(1314);
-  const [diamondCount, setDiamondCount] = useState(1000);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [localDanmuPool, setLocalDanmuPool] = useState<Danmu[]>(danmuPool as Danmu[]);
+  const [vipCount] = useState(1314);
+  const [diamondCount] = useState(1000);
+  const [isPlaying] = useState(true);
+  const [localDanmuPool] = useState<Danmu[]>(danmuPool as Danmu[]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<HTMLDivElement>(null);
 
@@ -49,28 +49,46 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
 
   const colors = themeColors[theme];
 
+  // 生成随机替换映射
+  const [randomReplaceMap] = useState(() => {
+    const map = new Map<string, string>();
+    users.forEach(user => {
+      if (user.badge === "火箭筒") {
+        map.set(user.id, Math.random() > 0.5 ? "甜筒" : "爱心");
+      }
+    });
+    return map;
+  });
+
   // 根据主题动态生成用户数据
   const mockUsers = useMemo(() => {
     return users.map(user => {
       let badge = user.badge;
       if (theme === "sweet" && badge === "火箭筒") {
-        // 随机替换为甜筒或爱心
-        badge = Math.random() > 0.5 ? "甜筒" : "爱心";
+        badge = randomReplaceMap.get(user.id) || badge;
       }
       return {
         ...user,
         badge,
       };
     });
-  }, [theme]);
+  }, [theme, randomReplaceMap]);
+
+  // 为每个弹幕项生成随机用户索引
+  const [danmuUserMap] = useState(() => {
+    const map = new Map<string, number>();
+    localDanmuPool.forEach(item => {
+      map.set(item.id, Math.floor(Math.random() * users.length));
+    });
+    return map;
+  });
 
   const displayItems = useMemo(() => {
     return localDanmuPool.map(item => ({
       ...item,
-      // eslint-disable-next-line react-hooks/purity
-      user: mockUsers[Math.floor(Math.random() * mockUsers.length)],
+      user: mockUsers[danmuUserMap.get(item.id) || 0],
     }));
-  }, [localDanmuPool, mockUsers]);
+  }, [localDanmuPool, mockUsers, danmuUserMap]);
 
   const repeatedItems = [...displayItems, ...displayItems, ...displayItems];
 

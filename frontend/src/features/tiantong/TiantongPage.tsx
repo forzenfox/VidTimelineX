@@ -1,6 +1,6 @@
 import React, { useState, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Github, ExternalLink, Search, Heart } from "lucide-react";
+import { Search } from "lucide-react";
 import { videos, Video } from "./data";
 import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
@@ -13,16 +13,22 @@ import "./styles/tiantong.css";
 /**
  * 节流工具函数 - 防止频繁调用
  */
-function throttle<T extends (...args: any[]) => any>(func: T, limit: number): T {
+// 暂时注释掉未使用的throttle函数
+/*
+function throttle<T extends (...args: unknown[]) => unknown>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
   let inThrottle: boolean;
-  return ((...args: any[]) => {
+  return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
       setTimeout(() => (inThrottle = false), limit);
     }
-  }) as T;
+  };
 }
+*/
 
 const VideoModal = React.lazy(() => import("./components/VideoModal"));
 const DesktopSidebarDanmu = React.lazy(() => import("./components/SidebarDanmu"));
@@ -62,7 +68,6 @@ const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
 
 const TiantongPage = () => {
   const [theme, setTheme] = useState<"tiger" | "sweet">("tiger");
-  const [activeCategory, setActiveCategory] = useState("all");
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -102,14 +107,11 @@ const TiantongPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleTheme = React.useCallback(
-    throttle((newTheme: "tiger" | "sweet") => {
-      setTheme(newTheme);
-      // 使用data属性切换主题，优化性能
-      document.documentElement.setAttribute("data-theme", newTheme);
-    }, 300),
-    []
-  );
+  const toggleTheme = React.useCallback((newTheme: "tiger" | "sweet") => {
+    setTheme(newTheme);
+    // 使用data属性切换主题，优化性能
+    document.documentElement.setAttribute("data-theme", newTheme);
+  }, []);
 
   // 包装后的主题切换函数，用于UI事件
   const handleToggleTheme = () => {
@@ -134,27 +136,26 @@ const TiantongPage = () => {
     [searchQuery]
   );
 
-  // 使用useCallback和防抖优化搜索性能
-  const debouncedSearch = React.useCallback(
-    React.useMemo(() => {
-      let timeoutId: number;
-      return (query: string) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(() => {
-          if (query.trim()) {
-            const videoTitles = videos.map(video => video.title);
-            const filteredSuggestions = videoTitles
-              .filter(title => title.toLowerCase().includes(query.toLowerCase()))
-              .slice(0, 5);
-            setSuggestions(filteredSuggestions);
-          } else {
-            setSuggestions([]);
-          }
-        }, 300);
-      };
-    }, []),
-    []
-  );
+  // 使用useRef存储timeoutId，避免违反不可变性规则
+  const timeoutIdRef = React.useRef<number | null>(null);
+
+  // 使用useCallback创建防抖搜索函数
+  const debouncedSearch = React.useCallback((query: string) => {
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+    timeoutIdRef.current = setTimeout(() => {
+      if (query.trim()) {
+        const videoTitles = videos.map(video => video.title);
+        const filteredSuggestions = videoTitles
+          .filter(title => title.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 5);
+        setSuggestions(filteredSuggestions);
+      } else {
+        setSuggestions([]);
+      }
+    }, 300);
+  }, []);
 
   const handleSearchChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

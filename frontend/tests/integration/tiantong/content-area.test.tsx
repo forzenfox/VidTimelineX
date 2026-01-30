@@ -5,11 +5,11 @@
  */
 
 import React from "react";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { render, screen, cleanup } from "@testing-library/react";
 import VideoCard from "@/features/tiantong/components/VideoCard";
 import { Heart } from "lucide-react";
 import "@testing-library/jest-dom";
-import { safeSync, wrapAsync } from "../../utils/error-handling";
+import { safeSync } from "../../utils/error-handling";
 
 describe("核心内容区测试", () => {
   const mockVideo = {
@@ -22,7 +22,7 @@ describe("核心内容区测试", () => {
     views: "10万",
     icon: Heart,
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
-    duration: "10:30"
+    duration: "10:30",
   };
 
   const onClick = jest.fn();

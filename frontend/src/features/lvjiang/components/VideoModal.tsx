@@ -1,7 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import type { Video } from "../data/types";
-import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
 
 interface VideoModalProps {
   video: Video | null;

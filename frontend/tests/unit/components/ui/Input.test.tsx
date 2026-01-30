@@ -86,19 +86,13 @@ describe("Input组件测试", () => {
   test("TC-007: 输入框焦点测试", () => {
     const onFocus = jest.fn();
     const onBlur = jest.fn();
-    
-    render(
-      <Input 
-        placeholder="请输入内容" 
-        onFocus={onFocus} 
-        onBlur={onBlur} 
-      />
-    );
+
+    render(<Input placeholder="请输入内容" onFocus={onFocus} onBlur={onBlur} />);
 
     const input = screen.getByPlaceholderText("请输入内容");
     fireEvent.focus(input);
     expect(onFocus).toHaveBeenCalled();
-    
+
     fireEvent.blur(input);
     expect(onBlur).toHaveBeenCalled();
   });
@@ -110,19 +104,13 @@ describe("Input组件测试", () => {
   test("TC-008: 输入框键盘事件测试", () => {
     const onKeyDown = jest.fn();
     const onKeyUp = jest.fn();
-    
-    render(
-      <Input 
-        placeholder="请输入内容" 
-        onKeyDown={onKeyDown} 
-        onKeyUp={onKeyUp} 
-      />
-    );
+
+    render(<Input placeholder="请输入内容" onKeyDown={onKeyDown} onKeyUp={onKeyUp} />);
 
     const input = screen.getByPlaceholderText("请输入内容");
     fireEvent.keyDown(input, { key: "Enter" });
     expect(onKeyDown).toHaveBeenCalled();
-    
+
     fireEvent.keyUp(input, { key: "Enter" });
     expect(onKeyUp).toHaveBeenCalled();
   });

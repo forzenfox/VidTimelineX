@@ -4,7 +4,7 @@
  */
 
 // 测试环境类型
-const TEST_ENV_TYPE = process.env.TEST_ENV || 'development';
+const TEST_ENV_TYPE = process.env.TEST_ENV || "development";
 
 // 测试超时配置
 export const TEST_TIMEOUTS = {
@@ -35,111 +35,111 @@ export const TEST_SELECTORS = {
   // 通用选择器
   COMMON: {
     // 页面容器
-    PAGE_CONTAINER: 'data-testid=page-container',
+    PAGE_CONTAINER: "data-testid=page-container",
     // 加载动画
-    LOADING_ANIMATION: 'data-testid=loading-animation',
+    LOADING_ANIMATION: "data-testid=loading-animation",
     // 错误提示
-    ERROR_MESSAGE: 'data-testid=error-message',
+    ERROR_MESSAGE: "data-testid=error-message",
     // 成功提示
-    SUCCESS_MESSAGE: 'data-testid=success-message',
+    SUCCESS_MESSAGE: "data-testid=success-message",
     // 导航栏
-    NAVBAR: 'data-testid=navbar',
+    NAVBAR: "data-testid=navbar",
     // 页脚
-    FOOTER: 'data-testid=footer',
+    FOOTER: "data-testid=footer",
     // 标题
-    TITLE: 'data-testid=title',
+    TITLE: "data-testid=title",
     // 描述
-    DESCRIPTION: 'data-testid=description',
+    DESCRIPTION: "data-testid=description",
   },
-  
+
   // 甜筒模块选择器
   TIANTONG: {
     // 视频卡片
-    VIDEO_CARD: 'data-testid=video-card',
+    VIDEO_CARD: "data-testid=video-card",
     // 视频模态框
-    VIDEO_MODAL: 'data-testid=video-modal',
+    VIDEO_MODAL: "data-testid=video-modal",
     // 主题切换按钮
-    THEME_TOGGLE: 'data-testid=theme-toggle',
+    THEME_TOGGLE: "data-testid=theme-toggle",
     // 侧边栏弹幕
-    SIDEBAR_DANMU: 'data-testid=sidebar-danmu',
+    SIDEBAR_DANMU: "data-testid=sidebar-danmu",
     // 视频时间线
-    VIDEO_TIMELINE: 'data-testid=video-timeline',
+    VIDEO_TIMELINE: "data-testid=video-timeline",
     // 加载动画
-    LOADING_ANIMATION: 'data-testid=loading-animation',
+    LOADING_ANIMATION: "data-testid=loading-animation",
     // 弹幕欢迎
-    DANMAKU_WELCOME: 'data-testid=danmaku-welcome',
+    DANMAKU_WELCOME: "data-testid=danmaku-welcome",
     // 时间线项目
-    TIMELINE_ITEM: 'data-testid=timeline-item',
+    TIMELINE_ITEM: "data-testid=timeline-item",
     // 搜索框
-    SEARCH_INPUT: 'data-testid=search-input',
+    SEARCH_INPUT: "data-testid=search-input",
     // 搜索按钮
-    SEARCH_BUTTON: 'data-testid=search-button',
+    SEARCH_BUTTON: "data-testid=search-button",
     // 分类标签
-    CATEGORY_TAG: 'data-testid=category-tag',
+    CATEGORY_TAG: "data-testid=category-tag",
     // 视频播放按钮
-    PLAY_BUTTON: 'data-testid=play-button',
+    PLAY_BUTTON: "data-testid=play-button",
   },
-  
+
   // 绿江模块选择器
   LVJIANG: {
     // 水平弹幕
-    HORIZONTAL_DANMAKU: 'data-testid=horizontal-danmaku',
+    HORIZONTAL_DANMAKU: "data-testid=horizontal-danmaku",
     // 侧边弹幕
-    SIDE_DANMAKU: 'data-testid=side-danmaku',
+    SIDE_DANMAKU: "data-testid=side-danmaku",
     // 视频模态框
-    VIDEO_MODAL: 'data-testid=video-modal',
+    VIDEO_MODAL: "data-testid=video-modal",
     // 视频时间线
-    VIDEO_TIMELINE: 'data-testid=video-timeline',
+    VIDEO_TIMELINE: "data-testid=video-timeline",
     // 头部
-    HEADER: 'data-testid=header',
+    HEADER: "data-testid=header",
     // 导航菜单
-    NAV_MENU: 'data-testid=nav-menu',
+    NAV_MENU: "data-testid=nav-menu",
     // 内容区域
-    CONTENT_AREA: 'data-testid=content-area',
+    CONTENT_AREA: "data-testid=content-area",
   },
-  
+
   // UI组件选择器
   UI: {
     // 按钮
-    BUTTON: 'data-testid=button',
+    BUTTON: "data-testid=button",
     // 输入框
-    INPUT: 'data-testid=input',
+    INPUT: "data-testid=input",
     // 卡片
-    CARD: 'data-testid=card',
+    CARD: "data-testid=card",
     // 下拉菜单
-    DROPDOWN: 'data-testid=dropdown',
+    DROPDOWN: "data-testid=dropdown",
     // 复选框
-    CHECKBOX: 'data-testid=checkbox',
+    CHECKBOX: "data-testid=checkbox",
     // 单选按钮
-    RADIO: 'data-testid=radio',
+    RADIO: "data-testid=radio",
     // 开关
-    SWITCH: 'data-testid=switch',
+    SWITCH: "data-testid=switch",
     // 滑块
-    SLIDER: 'data-testid=slider',
+    SLIDER: "data-testid=slider",
     // 标签
-    TAG: 'data-testid=tag',
+    TAG: "data-testid=tag",
     // 徽章
-    BADGE: 'data-testid=badge',
+    BADGE: "data-testid=badge",
     // 进度条
-    PROGRESS: 'data-testid=progress',
+    PROGRESS: "data-testid=progress",
     // 分隔线
-    DIVIDER: 'data-testid=divider',
+    DIVIDER: "data-testid=divider",
     // 工具提示
-    TOOLTIP: 'data-testid=tooltip',
+    TOOLTIP: "data-testid=tooltip",
     // 弹出框
-    POPOVER: 'data-testid=popover',
+    POPOVER: "data-testid=popover",
     // 对话框
-    DIALOG: 'data-testid=dialog',
+    DIALOG: "data-testid=dialog",
     // 抽屉
-    DRAWER: 'data-testid=drawer',
+    DRAWER: "data-testid=drawer",
     // 表格
-    TABLE: 'data-testid=table',
+    TABLE: "data-testid=table",
     // 分页
-    PAGINATION: 'data-testid=pagination',
+    PAGINATION: "data-testid=pagination",
     // 表单
-    FORM: 'data-testid=form',
+    FORM: "data-testid=form",
     // 表单字段
-    FORM_FIELD: 'data-testid=form-field',
+    FORM_FIELD: "data-testid=form-field",
   },
 };
 
@@ -147,39 +147,39 @@ export const TEST_SELECTORS = {
 export const TEST_MOCKS = {
   // 视频数据
   VIDEO: {
-    id: '1',
-    title: '测试视频',
-    category: 'sing',
-    tags: ['测试', '视频'],
-    cover: 'https://example.com/cover.jpg',
-    date: '2024-01-01',
-    views: '10万',
-    bvid: 'BV1xx411c7mD',
-    duration: '10:30',
+    id: "1",
+    title: "测试视频",
+    category: "sing",
+    tags: ["测试", "视频"],
+    cover: "https://example.com/cover.jpg",
+    date: "2024-01-01",
+    views: "10万",
+    bvid: "BV1xx411c7mD",
+    duration: "10:30",
   },
-  
+
   // 主题配置
   THEME: {
     // 主题类型
-    TYPES: ['dongzhu', 'kaige'] as const,
+    TYPES: ["dongzhu", "kaige"] as const,
     // 默认主题
-    DEFAULT: 'dongzhu',
+    DEFAULT: "dongzhu",
   },
-  
+
   // 用户数据
   USER: {
-    id: '1',
-    name: '测试用户',
-    email: 'test@example.com',
-    avatar: 'https://example.com/avatar.jpg',
+    id: "1",
+    name: "测试用户",
+    email: "test@example.com",
+    avatar: "https://example.com/avatar.jpg",
   },
-  
+
   // 评论数据
   COMMENT: {
-    id: '1',
-    content: '测试评论',
-    author: '测试用户',
-    date: '2024-01-01',
+    id: "1",
+    content: "测试评论",
+    author: "测试用户",
+    date: "2024-01-01",
     likes: 10,
   },
 };
@@ -189,19 +189,19 @@ export const TEST_ENV = {
   // 环境类型
   TYPE: TEST_ENV_TYPE,
   // 是否为开发环境
-  IS_DEV: TEST_ENV_TYPE === 'development',
+  IS_DEV: TEST_ENV_TYPE === "development",
   // 是否为测试环境
-  IS_TEST: TEST_ENV_TYPE === 'test',
+  IS_TEST: TEST_ENV_TYPE === "test",
   // 是否为CI环境
-  IS_CI: process.env.CI === 'true',
+  IS_CI: process.env.CI === "true",
   // 是否为生产环境
-  IS_PROD: TEST_ENV_TYPE === 'production',
+  IS_PROD: TEST_ENV_TYPE === "production",
   // 是否启用详细日志
-  VERBOSE: process.env.VERBOSE === 'true',
+  VERBOSE: process.env.VERBOSE === "true",
   // 是否启用调试模式
-  DEBUG: process.env.DEBUG === 'true',
+  DEBUG: process.env.DEBUG === "true",
   // 是否启用覆盖率
-  COVERAGE: process.env.COVERAGE === 'true',
+  COVERAGE: process.env.COVERAGE === "true",
 };
 
 // 测试报告配置
@@ -214,11 +214,11 @@ export const TEST_REPORT = {
     statements: 50,
   },
   // 覆盖率报告目录
-  COVERAGE_DIR: 'coverage',
+  COVERAGE_DIR: "coverage",
   // 测试报告目录
-  REPORT_DIR: 'test-results',
+  REPORT_DIR: "test-results",
   // 报告格式
-  REPORT_FORMATS: ['text', 'lcov', 'json-summary', 'html'],
+  REPORT_FORMATS: ["text", "lcov", "json-summary", "html"],
   // 是否生成详细报告
   DETAILED: TEST_ENV.IS_DEV,
 };
@@ -226,14 +226,14 @@ export const TEST_REPORT = {
 // 测试并行度配置
 export const TEST_PARALLELISM = {
   // 最大并行工作线程数
-  MAX_WORKERS: process.env.MAX_WORKERS || '75%',
+  MAX_WORKERS: process.env.MAX_WORKERS || "75%",
   // 是否启用并行测试
   ENABLED: true,
   // 测试分组
   GROUPS: {
-    unit: 'unit',
-    integration: 'integration',
-    e2e: 'e2e',
+    unit: "unit",
+    integration: "integration",
+    e2e: "e2e",
   },
 };
 
@@ -242,7 +242,7 @@ export const TEST_CACHE = {
   // 是否启用缓存
   ENABLED: true,
   // 缓存目录
-  DIR: 'node_modules/.jest-cache',
+  DIR: "node_modules/.jest-cache",
   // 缓存清理间隔（天）
   CLEANUP_INTERVAL: 7,
 };
@@ -250,11 +250,11 @@ export const TEST_CACHE = {
 // 测试过滤配置
 export const TEST_FILTER = {
   // 包含的测试模式
-  INCLUDE: process.env.TEST_INCLUDE ? process.env.TEST_INCLUDE.split(',') : [],
+  INCLUDE: process.env.TEST_INCLUDE ? process.env.TEST_INCLUDE.split(",") : [],
   // 排除的测试模式
-  EXCLUDE: process.env.TEST_EXCLUDE ? process.env.TEST_EXCLUDE.split(',') : [],
+  EXCLUDE: process.env.TEST_EXCLUDE ? process.env.TEST_EXCLUDE.split(",") : [],
   // 测试标签
-  TAGS: process.env.TEST_TAGS ? process.env.TEST_TAGS.split(',') : [],
+  TAGS: process.env.TEST_TAGS ? process.env.TEST_TAGS.split(",") : [],
 };
 
 // 测试数据生成配置
@@ -272,13 +272,13 @@ export const TEST_DATA = {
 // 测试日志配置
 export const TEST_LOGGING = {
   // 日志级别
-  LEVEL: process.env.TEST_LOG_LEVEL || 'info',
+  LEVEL: process.env.TEST_LOG_LEVEL || "info",
   // 是否启用控制台日志
   CONSOLE: true,
   // 是否启用文件日志
   FILE: TEST_ENV.IS_CI,
   // 日志文件
-  FILE_PATH: 'test-results/test.log',
+  FILE_PATH: "test-results/test.log",
 };
 
 // 测试工具配置
@@ -292,11 +292,11 @@ export const TEST_TOOLS = {
     // 是否启用截图
     SCREENSHOT: TEST_ENV.IS_CI,
     // 浏览器类型
-    BROWSER: process.env.PLAYWRIGHT_BROWSER || 'chromium',
+    BROWSER: process.env.PLAYWRIGHT_BROWSER || "chromium",
     // 是否启用无头模式
     HEADLESS: TEST_ENV.IS_CI,
   },
-  
+
   // Jest配置
   JEST: {
     // 是否启用详细模式
@@ -313,7 +313,7 @@ export const TEST_TOOLS = {
 // 测试API配置
 export const TEST_API = {
   // API基础URL
-  BASE_URL: process.env.TEST_API_URL || 'http://localhost:3001',
+  BASE_URL: process.env.TEST_API_URL || "http://localhost:3001",
   // API超时时间（毫秒）
   TIMEOUT: 10000,
   // 是否启用API模拟
@@ -333,9 +333,9 @@ export function getConfig(env: string = TEST_ENV_TYPE) {
     TEST_ENV: {
       ...TEST_ENV,
       TYPE: env,
-      IS_DEV: env === 'development',
-      IS_TEST: env === 'test',
-      IS_PROD: env === 'production',
+      IS_DEV: env === "development",
+      IS_TEST: env === "test",
+      IS_PROD: env === "production",
     },
     TEST_REPORT,
     TEST_PARALLELISM,
@@ -366,4 +366,3 @@ export default {
   TEST_API,
   getConfig,
 };
-

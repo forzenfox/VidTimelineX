@@ -66,16 +66,9 @@ module.exports = {
     ".turbo",
   ],
   // 测试名称忽略模式
-  testNameIgnorePatterns: [
-    "\\.d\\.ts$",
-    "\\.test\\.d\\.ts$",
-  ],
+  testNameIgnorePatterns: ["\\.d\\.ts$", "\\.test\\.d\\.ts$"],
   // 模块路径忽略模式
-  modulePathIgnorePatterns: [
-    "node_modules",
-    "dist",
-    "build",
-  ],
+  modulePathIgnorePatterns: ["node_modules", "dist", "build"],
   // 测试排序器
   testSequencer: "@jest/test-sequencer",
   // 测试环境变量
@@ -97,10 +90,13 @@ module.exports = {
   // 测试输出格式
   reporters: [
     "default",
-    ["jest-junit", {
-      outputDirectory: "test-results",
-      outputName: "junit.xml",
-    }],
+    [
+      "jest-junit",
+      {
+        outputDirectory: "test-results",
+        outputName: "junit.xml",
+      },
+    ],
   ],
   // 测试覆盖率配置
   coverageDirectory: "<rootDir>/coverage",
@@ -129,5 +125,5 @@ module.exports = {
       tsconfig: "<rootDir>/tsconfig.test.json",
       fast: true,
     },
-  }
+  },
 };

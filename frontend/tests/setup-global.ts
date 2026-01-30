@@ -51,7 +51,7 @@ if (!globalThis.localStorage) {
     length: 0,
     key: jest.fn(),
   };
-  // @ts-ignore
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟localStorage API
   globalThis.localStorage = localStorageMock;
 }
 
@@ -65,7 +65,7 @@ if (!globalThis.sessionStorage) {
     length: 0,
     key: jest.fn(),
   };
-  // @ts-ignore
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟sessionStorage API
   globalThis.sessionStorage = sessionStorageMock;
 }
 
@@ -96,20 +96,21 @@ if (!globalThis.performance) {
     clearMeasures: jest.fn(),
     clearResourceTimings: jest.fn(),
     setResourceTimingBufferSize: jest.fn(),
-    onresourcetimingbufferfull: null,
-  } as any;
+    onresourcetimingbufferfull: null as unknown as ((event: Event) => void) | null,
+  };
 }
 
 // 模拟Navigator API
 if (!globalThis.navigator) {
   globalThis.navigator = {
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    language: 'zh-CN',
-    languages: ['zh-CN', 'zh', 'en-US', 'en'],
-    platform: 'Win32',
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    language: "zh-CN",
+    languages: ["zh-CN", "zh", "en-US", "en"],
+    platform: "Win32",
     onLine: true,
     geolocation: {
-      getCurrentPosition: jest.fn((success) => {
+      getCurrentPosition: jest.fn(success => {
         success({ coords: { latitude: 39.9042, longitude: 116.4074 } });
       }),
       watchPosition: jest.fn(),
@@ -117,10 +118,10 @@ if (!globalThis.navigator) {
     },
     clipboard: {
       writeText: jest.fn(() => Promise.resolve()),
-      readText: jest.fn(() => Promise.resolve('')),
+      readText: jest.fn(() => Promise.resolve("")),
     },
     share: jest.fn(() => Promise.resolve()),
-  } as any;
+  };
 }
 
 // 模拟Window API
@@ -133,7 +134,7 @@ if (!globalThis.scrollBy) {
 }
 
 if (!globalThis.open) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.open = jest.fn(() => ({
     close: jest.fn(),
     focus: jest.fn(),
@@ -151,36 +152,38 @@ if (!globalThis.confirm) {
 }
 
 if (!globalThis.prompt) {
-  globalThis.prompt = jest.fn(() => '');
+  globalThis.prompt = jest.fn(() => "");
 }
 
 if (!globalThis.fetch) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
-  globalThis.fetch = jest.fn(() => Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({}),
-    text: () => Promise.resolve(''),
-    blob: () => Promise.resolve(new Blob()),
-    headers: new Headers(),
-    status: 200,
-    statusText: 'OK',
-    redirected: false,
-    type: 'basic',
-    url: '',
-    clone: jest.fn(),
-    formData: jest.fn(),
-    arrayBuffer: jest.fn(),
-  }));
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
+  globalThis.fetch = jest.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({}),
+      text: () => Promise.resolve(""),
+      blob: () => Promise.resolve(new Blob()),
+      headers: new Headers(),
+      status: 200,
+      statusText: "OK",
+      redirected: false,
+      type: "basic",
+      url: "",
+      clone: jest.fn(),
+      formData: jest.fn(),
+      arrayBuffer: jest.fn(),
+    })
+  );
 }
 
 // 模拟Document API
 if (!document.createRange) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   document.createRange = jest.fn(() => ({
     setStart: jest.fn(),
     setEnd: jest.fn(),
     commonAncestorContainer: {
-      nodeName: 'BODY',
+      nodeName: "BODY",
       ownerDocument: document,
     },
     getBoundingClientRect: jest.fn(() => ({
@@ -191,7 +194,7 @@ if (!document.createRange) {
       width: 0,
       height: 0,
     })),
-    cloneContents: jest.fn(() => document.createElement('div')),
+    cloneContents: jest.fn(() => document.createElement("div")),
     cloneRange: jest.fn(),
     collapse: jest.fn(),
     compareBoundaryPoints: jest.fn(),
@@ -204,38 +207,38 @@ if (!document.execCommand) {
 }
 
 if (!document.createEvent) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   document.createEvent = jest.fn(() => ({
     initEvent: jest.fn(),
     preventDefault: jest.fn(),
     stopPropagation: jest.fn(),
     bubbles: false,
     cancelable: false,
-    animationName: '',
+    animationName: "",
     elapsedTime: 0,
-    pseudoElement: '',
+    pseudoElement: "",
   }));
 }
 
 // 模拟URL API
 if (!globalThis.URL) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
-  globalThis.URL = jest.fn((url) => ({
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
+  globalThis.URL = jest.fn(url => ({
     href: url,
-    protocol: 'http:',
-    host: 'localhost',
-    hostname: 'localhost',
-    port: '3000',
-    pathname: '/',
-    search: '',
-    hash: '',
-    origin: 'http://localhost:3000',
+    protocol: "http:",
+    host: "localhost",
+    hostname: "localhost",
+    port: "3000",
+    pathname: "/",
+    search: "",
+    hash: "",
+    origin: "http://localhost:3000",
     toString: jest.fn(() => url),
   }));
 }
 
 if (!globalThis.URLSearchParams) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.URLSearchParams = jest.fn(() => ({
     append: jest.fn(),
     delete: jest.fn(),
@@ -247,7 +250,7 @@ if (!globalThis.URLSearchParams) {
     keys: jest.fn(() => []),
     set: jest.fn(),
     sort: jest.fn(),
-    toString: jest.fn(() => ''),
+    toString: jest.fn(() => ""),
     values: jest.fn(() => []),
     size: 0, // 添加缺失的size属性
   }));
@@ -255,61 +258,65 @@ if (!globalThis.URLSearchParams) {
 
 // 模拟WebSocket API
 if (!globalThis.WebSocket) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.WebSocket = jest.fn(() => ({
     readyState: 1,
-    url: 'ws://localhost:8080',
+    url: "ws://localhost:8080",
     send: jest.fn(),
     close: jest.fn(),
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
   }));
-  
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.WebSocket.CONNECTING = 0;
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.WebSocket.OPEN = 1;
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.WebSocket.CLOSING = 2;
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.WebSocket.CLOSED = 3;
 }
 
 // 模拟File API
 if (!globalThis.File) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.File = jest.fn(() => ({
-    name: 'test.txt',
+    name: "test.txt",
     size: 1024,
-    type: 'text/plain',
+    type: "text/plain",
     lastModified: Date.now(),
     lastModifiedDate: new Date(),
-    webkitRelativePath: '',
+    webkitRelativePath: "",
     arrayBuffer: jest.fn(() => Promise.resolve(new ArrayBuffer(0))),
     bytes: jest.fn(() => Promise.resolve(new Uint8Array(0))),
     slice: jest.fn(() => new Blob()),
-    stream: jest.fn(() => ({ getReader: () => ({ read: jest.fn(() => Promise.resolve({ done: true, value: null })) }) })),
-    text: jest.fn(() => Promise.resolve('')),
+    stream: jest.fn(() => ({
+      getReader: () => ({ read: jest.fn(() => Promise.resolve({ done: true, value: null })) }),
+    })),
+    text: jest.fn(() => Promise.resolve("")),
   }));
 }
 
 if (!globalThis.Blob) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.Blob = jest.fn(() => ({
     size: 1024,
-    type: 'text/plain',
+    type: "text/plain",
     slice: jest.fn(() => new Blob()),
     arrayBuffer: jest.fn(() => Promise.resolve(new ArrayBuffer(0))),
     bytes: jest.fn(() => Promise.resolve(new Uint8Array(0))),
-    stream: jest.fn(() => ({ getReader: () => ({ read: jest.fn(() => Promise.resolve({ done: true, value: null })) }) })),
-    text: jest.fn(() => Promise.resolve('')),
+    stream: jest.fn(() => ({
+      getReader: () => ({ read: jest.fn(() => Promise.resolve({ done: true, value: null })) }),
+    })),
+    text: jest.fn(() => Promise.resolve("")),
   }));
 }
 
 if (!globalThis.FileReader) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
-  globalThis.FileReader = jest.fn(function() {
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
+  globalThis.FileReader = jest.fn(function () {
     const reader = {
       readyState: 0,
       result: null,
@@ -324,32 +331,34 @@ if (!globalThis.FileReader) {
       readAsBinaryString: jest.fn(),
       readAsDataURL: jest.fn(() => {
         setTimeout(() => {
-          reader.result = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==';
-          if (reader.onload) reader.onload({} as any);
+          reader.result = "data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==";
+          if (reader.onload)
+            reader.onload({ type: "load", target: reader } as ProgressEvent<FileReader>);
         }, 0);
       }),
       readAsText: jest.fn(() => {
         setTimeout(() => {
-          reader.result = 'Hello, World!';
-          if (reader.onload) reader.onload({} as any);
+          reader.result = "Hello, World!";
+          if (reader.onload)
+            reader.onload({ type: "load", target: reader } as ProgressEvent<FileReader>);
         }, 0);
       }),
       abort: jest.fn(),
     };
     return reader;
   });
-  
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.FileReader.EMPTY = 0;
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.FileReader.LOADING = 1;
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.FileReader.DONE = 2;
 }
 
 // 模拟Canvas API
 if (!globalThis.HTMLCanvasElement) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.HTMLCanvasElement = class {
     height = 0;
     width = 0;
@@ -359,11 +368,11 @@ if (!globalThis.HTMLCanvasElement) {
 }
 
 if (!HTMLCanvasElement.prototype.getContext) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLCanvasElement.prototype.getContext = jest.fn(() => ({
     canvas: {},
     globalAlpha: 1,
-    globalCompositeOperation: 'source-over',
+    globalCompositeOperation: "source-over",
     drawImage: jest.fn(),
     fillRect: jest.fn(),
     clearRect: jest.fn(),
@@ -401,27 +410,27 @@ if (!HTMLCanvasElement.prototype.getContext) {
 
 // 模拟Audio/Video API
 if (!globalThis.HTMLAudioElement) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.HTMLAudioElement = class {
     addEventListener = jest.fn();
     removeEventListener = jest.fn();
-    accessKey = '';
-    accessKeyLabel = '';
+    accessKey = "";
+    accessKeyLabel = "";
   };
 }
 
 if (!HTMLAudioElement.prototype.play) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLAudioElement.prototype.play = jest.fn(() => Promise.resolve());
 }
 
 if (!HTMLAudioElement.prototype.pause) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLAudioElement.prototype.pause = jest.fn();
 }
 
 if (!globalThis.HTMLVideoElement) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   globalThis.HTMLVideoElement = class {
     disablePictureInPicture = false;
     height = 0;
@@ -431,12 +440,12 @@ if (!globalThis.HTMLVideoElement) {
 }
 
 if (!HTMLVideoElement.prototype.play) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLVideoElement.prototype.play = jest.fn(() => Promise.resolve());
 }
 
 if (!HTMLVideoElement.prototype.pause) {
-  // @ts-ignore - 忽略类型错误，因为我们在模拟API
+  // @ts-expect-error - 忽略类型错误，因为我们在模拟API
   HTMLVideoElement.prototype.pause = jest.fn();
 }
 
@@ -450,13 +459,13 @@ const originalError = console.error;
 
 console.warn = jest.fn((...args) => {
   // 过滤掉一些常见的警告
-  const message = args.join(' ');
+  const message = args.join(" ");
   if (
-    message.includes('ReactDOM.render is no longer supported') ||
-    message.includes('Deprecation warning') ||
-    message.includes('Warning:') ||
-    message.includes('Experimental feature') ||
-    message.includes('Non-standard feature')
+    message.includes("ReactDOM.render is no longer supported") ||
+    message.includes("Deprecation warning") ||
+    message.includes("Warning:") ||
+    message.includes("Experimental feature") ||
+    message.includes("Non-standard feature")
   ) {
     return;
   }
@@ -465,11 +474,11 @@ console.warn = jest.fn((...args) => {
 
 console.error = jest.fn((...args) => {
   // 过滤掉一些常见的错误
-  const message = args.join(' ');
+  const message = args.join(" ");
   if (
-    message.includes('Error:') ||
-    message.includes('TypeError:') ||
-    message.includes('ReferenceError:')
+    message.includes("Error:") ||
+    message.includes("TypeError:") ||
+    message.includes("ReferenceError:")
   ) {
     originalError(...args);
   }
@@ -490,4 +499,3 @@ if (!EventTarget.prototype.dispatchEvent) {
 
 // 注意：移除了可能导致类型错误的全局模拟
 // 这些模拟可能不是必要的，因为Jest和测试环境通常会提供这些API
-

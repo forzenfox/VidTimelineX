@@ -11,21 +11,10 @@ interface VideoTimelineProps {
 
 // 单个视频项组件
 const VideoItem: React.FC<{
-  video: {
-    id: string;
-    title: string;
-    date: string;
-    videoUrl: string;
-    cover: string;
-    tags: string[];
-    duration: string;
-    category?: string;
-    views?: string;
-    icon?: any;
-  };
+  video: Video;
   index: number;
   theme: "tiger" | "sweet";
-  onVideoClick: (video: any) => void;
+  onVideoClick: (video: Video) => void;
 }> = React.memo(({ video, index, theme, onVideoClick }) => {
   const isLeft = index % 2 === 0;
 

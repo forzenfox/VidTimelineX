@@ -44,11 +44,15 @@ describe("组件间交互集成测试", () => {
           <h3 className="text-lg font-semibold mb-2">用户信息</h3>
           <div className="space-y-2">
             <div>
-              <label htmlFor="name" className="block mb-1">姓名</label>
+              <label htmlFor="name" className="block mb-1">
+                姓名
+              </label>
               <Input id="name" placeholder="请输入姓名" />
             </div>
             <div>
-              <label htmlFor="email" className="block mb-1">邮箱</label>
+              <label htmlFor="email" className="block mb-1">
+                邮箱
+              </label>
               <Input id="email" placeholder="请输入邮箱" />
             </div>
             <Button className="mt-2">提交</Button>
@@ -85,7 +89,9 @@ describe("组件间交互集成测试", () => {
       <BrowserRouter>
         <div>
           <nav>
-            <a href="/" className="mr-4">首页</a>
+            <a href="/" className="mr-4">
+              首页
+            </a>
             <a href="/tiantong">甜筒</a>
             <a href="/lvjiang">驴酱</a>
           </nav>
@@ -108,17 +114,21 @@ describe("组件间交互集成测试", () => {
    * 测试目标：验证表单提交能够正确处理
    */
   test("TC-004: 表单提交测试", () => {
-    const onSubmit = jest.fn((e) => e.preventDefault());
+    const onSubmit = jest.fn(e => e.preventDefault());
 
     render(
       <form onSubmit={onSubmit}>
         <div className="space-y-2">
           <div>
-            <label htmlFor="username" className="block mb-1">用户名</label>
+            <label htmlFor="username" className="block mb-1">
+              用户名
+            </label>
             <Input id="username" required />
           </div>
           <div>
-            <label htmlFor="password" className="block mb-1">密码</label>
+            <label htmlFor="password" className="block mb-1">
+              密码
+            </label>
             <Input id="password" type="password" required />
           </div>
           <Button type="submit">登录</Button>
@@ -143,6 +153,15 @@ describe("组件间交互集成测试", () => {
     expect(onSubmit).toHaveBeenCalled();
   });
 
+  // 定义测试组件
+  const CounterDisplay = ({ count }: { count: number }) => (
+    <div data-testid="counter-display">{count}</div>
+  );
+
+  const CounterButton = ({ onClick }: { onClick: () => void }) => (
+    <Button onClick={onClick}>增加计数</Button>
+  );
+
   /**
    * 测试用例 TC-005: 状态管理集成测试
    * 测试目标：验证状态管理能够在不同组件间共享
@@ -152,15 +171,10 @@ describe("组件间交互集成测试", () => {
     const TestComponent = () => {
       const [count, setCount] = React.useState(0);
 
-      const CounterDisplay = () => <div data-testid="counter-display">{count}</div>;
-      const CounterButton = () => (
-        <Button onClick={() => setCount(count + 1)}>增加计数</Button>
-      );
-
       return (
         <div>
-          <CounterDisplay />
-          <CounterButton />
+          <CounterDisplay count={count} />
+          <CounterButton onClick={() => setCount(count + 1)} />
         </div>
       );
     };

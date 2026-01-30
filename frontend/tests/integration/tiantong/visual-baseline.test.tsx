@@ -49,7 +49,7 @@ describe("核心视觉基底测试", () => {
    */
   test("TC-003: 顶部导航栏视觉升级", () => {
     const onToggle = jest.fn();
-    const { container } = render(<ThemeToggle currentTheme="tiger" onToggle={onToggle} />);
+    render(<ThemeToggle currentTheme="tiger" onToggle={onToggle} />);
 
     // 验证主题切换按钮存在
     expect(screen.getByRole("switch")).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe("核心视觉基底测试", () => {
    */
   test("TC-004: 主题切换按钮强化", () => {
     const onToggle = jest.fn();
-    const { container } = render(<ThemeToggle currentTheme="tiger" onToggle={onToggle} />);
+    render(<ThemeToggle currentTheme="tiger" onToggle={onToggle} />);
 
     // 验证主题切换按钮存在
     const button = screen.getByRole("switch");

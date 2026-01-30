@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { LoadingAnimation } from "./components/LoadingAnimation";
 import { Header } from "./components/Header";
 import { VideoTimeline } from "./components/VideoTimeline";

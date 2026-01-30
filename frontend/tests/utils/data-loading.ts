@@ -3,6 +3,10 @@
  * 提供高效的测试数据加载、缓存和管理机制
  */
 
+// 静态导入测试数据
+import { mockVideos, mockVideo } from "../fixtures/videos";
+import { mockDanmaku, mockDanmu } from "../fixtures/danmaku";
+
 /**
  * 测试数据缓存接口
  */
@@ -16,7 +20,7 @@ interface TestDataCache<T> {
  * 测试数据管理器类
  */
 export class TestDataManager {
-  private static cache: Map<string, TestDataCache<any>> = new Map();
+  private static cache: Map<string, TestDataCache<unknown>> = new Map();
   private static defaultCacheExpiry = 3600000; // 默认缓存过期时间：1小时
 
   /**
@@ -149,8 +153,8 @@ export const testDataLoader = {
    * 加载视频数据
    */
   async loadVideos() {
-    return TestDataManager.getData('videos', async () => {
-      const { mockVideos } = await import('../fixtures/videos');
+    return TestDataManager.getData("videos", async () => {
+      const { mockVideos } = await import("../fixtures/videos");
       return mockVideos;
     });
   },
@@ -159,8 +163,8 @@ export const testDataLoader = {
    * 加载单个视频数据
    */
   async loadVideo() {
-    return TestDataManager.getData('video', async () => {
-      const { mockVideo } = await import('../fixtures/videos');
+    return TestDataManager.getData("video", async () => {
+      const { mockVideo } = await import("../fixtures/videos");
       return mockVideo;
     });
   },
@@ -169,8 +173,8 @@ export const testDataLoader = {
    * 加载弹幕数据
    */
   async loadDanmaku() {
-    return TestDataManager.getData('danmaku', async () => {
-      const { mockDanmaku } = await import('../fixtures/danmaku');
+    return TestDataManager.getData("danmaku", async () => {
+      const { mockDanmaku } = await import("../fixtures/danmaku");
       return mockDanmaku;
     });
   },
@@ -179,8 +183,8 @@ export const testDataLoader = {
    * 加载单个弹幕数据
    */
   async loadDanmu() {
-    return TestDataManager.getData('danmu', async () => {
-      const { mockDanmu } = await import('../fixtures/danmaku');
+    return TestDataManager.getData("danmu", async () => {
+      const { mockDanmu } = await import("../fixtures/danmaku");
       return mockDanmu;
     });
   },
@@ -189,8 +193,7 @@ export const testDataLoader = {
    * 同步加载视频数据
    */
   loadVideosSync() {
-    return TestDataManager.getDataSync('videos_sync', () => {
-      const { mockVideos } = require('../fixtures/videos');
+    return TestDataManager.getDataSync("videos_sync", () => {
       return mockVideos;
     });
   },
@@ -199,8 +202,7 @@ export const testDataLoader = {
    * 同步加载单个视频数据
    */
   loadVideoSync() {
-    return TestDataManager.getDataSync('video_sync', () => {
-      const { mockVideo } = require('../fixtures/videos');
+    return TestDataManager.getDataSync("video_sync", () => {
       return mockVideo;
     });
   },
@@ -209,8 +211,7 @@ export const testDataLoader = {
    * 同步加载弹幕数据
    */
   loadDanmakuSync() {
-    return TestDataManager.getDataSync('danmaku_sync', () => {
-      const { mockDanmaku } = require('../fixtures/danmaku');
+    return TestDataManager.getDataSync("danmaku_sync", () => {
       return mockDanmaku;
     });
   },
@@ -219,8 +220,7 @@ export const testDataLoader = {
    * 同步加载单个弹幕数据
    */
   loadDanmuSync() {
-    return TestDataManager.getDataSync('danmu_sync', () => {
-      const { mockDanmu } = require('../fixtures/danmaku');
+    return TestDataManager.getDataSync("danmu_sync", () => {
       return mockDanmu;
     });
   },
@@ -275,13 +275,16 @@ export function useTestData() {
  * 测试数据加载性能监控
  */
 export class TestDataPerformanceMonitor {
-  private static metrics: Map<string, {
-    calls: number;
-    totalTime: number;
-    avgTime: number;
-    cacheHits: number;
-    cacheMisses: number;
-  }> = new Map();
+  private static metrics: Map<
+    string,
+    {
+      calls: number;
+      totalTime: number;
+      avgTime: number;
+      cacheHits: number;
+      cacheMisses: number;
+    }
+  > = new Map();
 
   /**
    * 记录数据加载性能
@@ -301,7 +304,7 @@ export class TestDataPerformanceMonitor {
     existing.calls++;
     existing.totalTime += time;
     existing.avgTime = existing.totalTime / existing.calls;
-    
+
     if (fromCache) {
       existing.cacheHits++;
     } else {
@@ -329,7 +332,7 @@ export class TestDataPerformanceMonitor {
    * 输出性能报告
    */
   static printReport() {
-    console.log('=== Test Data Loading Performance Report ===');
+    console.log("=== Test Data Loading Performance Report ===");
     TestDataPerformanceMonitor.metrics.forEach((metrics, key) => {
       console.log(`\nData: ${key}`);
       console.log(`Calls: ${metrics.calls}`);
@@ -339,7 +342,7 @@ export class TestDataPerformanceMonitor {
       console.log(`Cache Misses: ${metrics.cacheMisses}`);
       console.log(`Cache Hit Rate: ${((metrics.cacheHits / metrics.calls) * 100).toFixed(2)}%`);
     });
-    console.log('==========================================');
+    console.log("==========================================");
   }
 }
 
@@ -352,10 +355,10 @@ export const monitoredTestDataLoader = {
    */
   async loadVideos() {
     const startTime = Date.now();
-    const fromCache = TestDataManager.hasCache('videos');
+    const fromCache = TestDataManager.hasCache("videos");
     const data = await testDataLoader.loadVideos();
     const endTime = Date.now();
-    TestDataPerformanceMonitor.record('videos', endTime - startTime, fromCache);
+    TestDataPerformanceMonitor.record("videos", endTime - startTime, fromCache);
     return data;
   },
 
@@ -364,10 +367,10 @@ export const monitoredTestDataLoader = {
    */
   async loadVideo() {
     const startTime = Date.now();
-    const fromCache = TestDataManager.hasCache('video');
+    const fromCache = TestDataManager.hasCache("video");
     const data = await testDataLoader.loadVideo();
     const endTime = Date.now();
-    TestDataPerformanceMonitor.record('video', endTime - startTime, fromCache);
+    TestDataPerformanceMonitor.record("video", endTime - startTime, fromCache);
     return data;
   },
 
@@ -376,10 +379,10 @@ export const monitoredTestDataLoader = {
    */
   async loadDanmaku() {
     const startTime = Date.now();
-    const fromCache = TestDataManager.hasCache('danmaku');
+    const fromCache = TestDataManager.hasCache("danmaku");
     const data = await testDataLoader.loadDanmaku();
     const endTime = Date.now();
-    TestDataPerformanceMonitor.record('danmaku', endTime - startTime, fromCache);
+    TestDataPerformanceMonitor.record("danmaku", endTime - startTime, fromCache);
     return data;
   },
 
@@ -388,10 +391,10 @@ export const monitoredTestDataLoader = {
    */
   async loadDanmu() {
     const startTime = Date.now();
-    const fromCache = TestDataManager.hasCache('danmu');
+    const fromCache = TestDataManager.hasCache("danmu");
     const data = await testDataLoader.loadDanmu();
     const endTime = Date.now();
-    TestDataPerformanceMonitor.record('danmu', endTime - startTime, fromCache);
+    TestDataPerformanceMonitor.record("danmu", endTime - startTime, fromCache);
     return data;
   },
 

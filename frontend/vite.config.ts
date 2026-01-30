@@ -5,7 +5,7 @@ import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import path from "path";
 
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? '/i-bo/' : '/',
+  base: process.env.NODE_ENV === "production" ? "/i-bo/" : "/",
   plugins: [
     react(),
     tailwindcss(),
@@ -64,11 +64,11 @@ export default defineConfig({
         target: "https://i1.hdslb.com",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/bilibili-img/, ""),
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('Referer', 'https://www.bilibili.com/');
-            proxyReq.setHeader('Origin', 'https://www.bilibili.com');
+        rewrite: path => path.replace(/^\/bilibili-img/, ""),
+        configure: proxy => {
+          proxy.on("proxyReq", proxyReq => {
+            proxyReq.setHeader("Referer", "https://www.bilibili.com/");
+            proxyReq.setHeader("Origin", "https://www.bilibili.com");
           });
         },
       },
@@ -76,11 +76,11 @@ export default defineConfig({
         target: "https://images.unsplash.com",
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/unsplash/, ""),
-        configure: (proxy, options) => {
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            proxyReq.setHeader('Referer', 'https://images.unsplash.com/');
-            proxyReq.setHeader('Origin', 'https://images.unsplash.com');
+        rewrite: path => path.replace(/^\/unsplash/, ""),
+        configure: proxy => {
+          proxy.on("proxyReq", proxyReq => {
+            proxyReq.setHeader("Referer", "https://images.unsplash.com/");
+            proxyReq.setHeader("Origin", "https://images.unsplash.com");
           });
         },
       },

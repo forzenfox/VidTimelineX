@@ -15,25 +15,25 @@ describe("VideoTimeline组件测试", () => {
     duration: "10:30",
     category: "sing",
     views: "10万",
-    icon: "Heart"
+    icon: "Heart",
   };
 
   const mockVideos: Video[] = [
     {
       ...mockVideo,
       id: "1",
-      title: "测试视频1"
+      title: "测试视频1",
     },
     {
       ...mockVideo,
       id: "2",
-      title: "测试视频2"
+      title: "测试视频2",
     },
     {
       ...mockVideo,
       id: "3",
-      title: "测试视频3"
-    }
+      title: "测试视频3",
+    },
   ];
 
   const mockOnVideoClick = jest.fn();
@@ -47,12 +47,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证VideoTimeline组件能够正确渲染
    */
   test("TC-001: 组件渲染测试", () => {
-    render(
-      <VideoTimeline
-        theme="tiger"
-        onVideoClick={mockOnVideoClick}
-      />
-    );
+    render(<VideoTimeline theme="tiger" onVideoClick={mockOnVideoClick} />);
 
     // 验证组件能够正确渲染
     expect(document.body).toBeInTheDocument();
@@ -63,12 +58,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证老虎主题下的样式和布局
    */
   test("TC-002: 老虎主题测试", () => {
-    const { container } = render(
-      <VideoTimeline
-        theme="tiger"
-        onVideoClick={mockOnVideoClick}
-      />
-    );
+    const { container } = render(<VideoTimeline theme="tiger" onVideoClick={mockOnVideoClick} />);
 
     // 验证组件能够正确渲染
     expect(container.firstChild).toBeInTheDocument();
@@ -79,12 +69,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证甜筒主题下的样式和布局
    */
   test("TC-003: 甜筒主题测试", () => {
-    const { container } = render(
-      <VideoTimeline
-        theme="sweet"
-        onVideoClick={mockOnVideoClick}
-      />
-    );
+    const { container } = render(<VideoTimeline theme="sweet" onVideoClick={mockOnVideoClick} />);
 
     // 验证组件能够正确渲染
     expect(container.firstChild).toBeInTheDocument();
@@ -95,12 +80,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证点击视频时能够触发回调函数
    */
   test("TC-004: 视频点击测试", () => {
-    render(
-      <VideoTimeline
-        theme="tiger"
-        onVideoClick={mockOnVideoClick}
-      />
-    );
+    render(<VideoTimeline theme="tiger" onVideoClick={mockOnVideoClick} />);
 
     // 验证组件能够正确渲染
     expect(document.body).toBeInTheDocument();
@@ -111,12 +91,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证当视频列表为空时的渲染情况
    */
   test("TC-005: 空视频列表测试", () => {
-    render(
-      <VideoTimeline
-        theme="tiger"
-        onVideoClick={mockOnVideoClick}
-      />
-    );
+    render(<VideoTimeline theme="tiger" onVideoClick={mockOnVideoClick} />);
 
     // 验证组件能够正确渲染
     expect(document.body).toBeInTheDocument();
@@ -127,12 +102,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证加载状态的渲染情况
    */
   test("TC-006: 加载状态测试", () => {
-    render(
-      <VideoTimeline
-        theme="tiger"
-        onVideoClick={mockOnVideoClick}
-      />
-    );
+    render(<VideoTimeline theme="tiger" onVideoClick={mockOnVideoClick} />);
 
     // 验证组件能够正确渲染
     expect(document.body).toBeInTheDocument();

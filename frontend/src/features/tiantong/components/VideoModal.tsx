@@ -38,7 +38,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
     setIsLoading(false);
   };
 
-  const bvid = video.videoUrl.split('/').pop();
+  const bvid = video.videoUrl.split("/").pop();
 
   return (
     <div
@@ -53,10 +53,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
         className="relative w-full max-w-5xl mx-4 transition-all duration-300 ease-in-out"
         onClick={e => e.stopPropagation()}
         style={{
-          background:
-            theme === "tiger"
-              ? "#1A1A1A"
-              : "#FFF5F8",
+          background: theme === "tiger" ? "#1A1A1A" : "#FFF5F8",
           borderRadius: theme === "tiger" ? "8px" : "24px",
           border: theme === "tiger" ? `3px solid ${primaryColor}` : `3px solid ${primaryColor}`,
           boxShadow:
@@ -152,7 +149,8 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
                 style={{
                   background:
                     theme === "tiger" ? `rgba(255, 95, 0, 0.2)` : `rgba(255, 140, 120, 0.2)`,
-                  border: theme === "tiger" ? `1px solid ${primaryColor}` : `1px solid ${primaryColor}`,
+                  border:
+                    theme === "tiger" ? `1px solid ${primaryColor}` : `1px solid ${primaryColor}`,
                   borderRadius: theme === "tiger" ? "4px" : "12px",
                   color: theme === "tiger" ? "#FFFFFF" : "#333333",
                 }}

@@ -14,25 +14,25 @@ describe("VideoTimeline组件测试", () => {
     views: "10万",
     icon: "Heart",
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
-    duration: "10:30"
+    duration: "10:30",
   };
 
   const mockVideos = [
     {
       ...mockVideo,
       id: "1",
-      title: "测试视频1"
+      title: "测试视频1",
     },
     {
       ...mockVideo,
       id: "2",
-      title: "测试视频2"
+      title: "测试视频2",
     },
     {
       ...mockVideo,
       id: "3",
-      title: "测试视频3"
-    }
+      title: "测试视频3",
+    },
   ];
 
   const mockOnVideoClick = jest.fn();
@@ -46,12 +46,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证VideoTimeline组件能够正确渲染
    */
   test("TC-001: 组件渲染测试", () => {
-    render(
-      <VideoTimeline
-        onVideoClick={mockOnVideoClick}
-        theme="dongzhu"
-      />
-    );
+    render(<VideoTimeline onVideoClick={mockOnVideoClick} theme="dongzhu" />);
 
     // 验证组件能够正确渲染
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
@@ -62,12 +57,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证点击视频时能够触发回调函数
    */
   test("TC-002: 视频点击测试", () => {
-    render(
-      <VideoTimeline
-        onVideoClick={mockOnVideoClick}
-        theme="dongzhu"
-      />
-    );
+    render(<VideoTimeline onVideoClick={mockOnVideoClick} theme="dongzhu" />);
 
     // 验证组件能够正确渲染
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
@@ -78,12 +68,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证视频卡片样式能够正确应用
    */
   test("TC-003: 视频样式测试", () => {
-    const { container } = render(
-      <VideoTimeline
-        onVideoClick={mockOnVideoClick}
-        theme="dongzhu"
-      />
-    );
+    const { container } = render(<VideoTimeline onVideoClick={mockOnVideoClick} theme="dongzhu" />);
 
     // 验证组件能够正确渲染
     expect(container.firstChild).toBeInTheDocument();
@@ -94,12 +79,7 @@ describe("VideoTimeline组件测试", () => {
    * 测试目标：验证当视频列表为空时的渲染情况
    */
   test("TC-004: 空视频列表测试", () => {
-    render(
-      <VideoTimeline
-        onVideoClick={mockOnVideoClick}
-        theme="dongzhu"
-      />
-    );
+    render(<VideoTimeline onVideoClick={mockOnVideoClick} theme="dongzhu" />);
 
     // 验证组件能够正确渲染
     expect(screen.getByRole("heading", { level: 2 })).toBeInTheDocument();
@@ -111,17 +91,12 @@ describe("VideoTimeline组件测试", () => {
    * 注意：由于组件使用静态导入的videos数据，此测试验证组件正确使用video.cover属性
    */
   test("TC-005: 封面图片使用video.cover测试", async () => {
-    render(
-      <VideoTimeline
-        onVideoClick={mockOnVideoClick}
-        theme="dongzhu"
-      />
-    );
+    render(<VideoTimeline onVideoClick={mockOnVideoClick} theme="dongzhu" />);
 
     // 验证至少有一个图片容器存在（考虑到ImageWithFallback的加载状态）
     const imageContainers = document.querySelectorAll(".aspect-video");
     expect(imageContainers.length).toBeGreaterThan(0);
-    
+
     // 验证组件能够正确渲染视频项
     const videoItems = document.querySelectorAll(".theme-transition");
     expect(videoItems.length).toBeGreaterThan(0);

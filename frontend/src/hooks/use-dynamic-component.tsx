@@ -4,7 +4,7 @@ import { useDeviceDetect, DeviceType } from "./use-mobile";
 /**
  * 设备特定组件加载器配置 - 移除移动端支持
  */
-export interface DeviceComponentConfig<T extends React.ComponentType<any>> {
+export interface DeviceComponentConfig<T extends React.ComponentType<unknown>> {
   tablet?: T;
   desktop?: T;
   fallback?: React.ReactNode;
@@ -15,10 +15,10 @@ export interface DeviceComponentConfig<T extends React.ComponentType<any>> {
  * @param options 不同设备的组件配置
  * @returns 根据设备类型渲染对应组件的组件
  */
-export function withDeviceSpecificComponent<T extends React.ComponentType<any>>(
+export function withDeviceSpecificComponent<T extends React.ComponentType<unknown>>(
   options: DeviceComponentConfig<T>
 ) {
-  const DeviceSpecificComponent = (props: any) => {
+  const DeviceSpecificComponent = (props: React.ComponentProps<T>) => {
     const device = useDeviceDetect();
 
     // 根据设备类型选择组件 - 只支持平板和桌面设备
@@ -54,7 +54,7 @@ export function withDeviceSpecificComponent<T extends React.ComponentType<any>>(
  * @param fallback 加载中的 fallback 组件
  * @returns 动态加载的组件
  */
-export function useDynamicComponent<T extends React.ComponentType<any>>(
+export function useDynamicComponent<T extends React.ComponentType<unknown>>(
   loaders: Record<DeviceType, () => Promise<{ default: T }>>,
   fallback?: React.ReactNode
 ) {
@@ -67,7 +67,7 @@ export function useDynamicComponent<T extends React.ComponentType<any>>(
   const DynamicComponent = lazy(loader);
 
   // 返回Suspense包装的组件
-  const Component = (props: any) => (
+  const Component = (props: React.ComponentProps<T>) => (
     <Suspense fallback={fallback || <div className="animate-pulse">加载中...</div>}>
       <DynamicComponent {...props} />
     </Suspense>
