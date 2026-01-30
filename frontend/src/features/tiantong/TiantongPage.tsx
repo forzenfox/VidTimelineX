@@ -266,7 +266,7 @@ const TiantongPage = () => {
                         className={`relative flex-shrink-0 group w-16 sm:w-18 md:w-20 h-16 sm:h-18 md:h-20 rounded-full border-3 sm:border-3 md:border-4 overflow-hidden shadow-custom transition-all duration-300 hover:scale-105 hover:shadow-lg ${theme === "tiger" ? "border-[rgb(255,110,20)]" : "border-[rgb(255,120,160)]"}`}
                       >
                         <img
-                          src="/image.png"
+                          src="https://apic.douyucdn.cn/upload/avatar_v3/202601/97d28343b9b742cb82ddaea5b3a22c4c_middle.jpg"
                           onError={e => {
                             (e.target as HTMLImageElement).src =
                               "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&q=80";
