@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "next-themes";
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -86,7 +86,7 @@ describe("组件间交互集成测试", () => {
    */
   test("TC-003: 路由导航测试", () => {
     render(
-      <BrowserRouter>
+      <HashRouter>
         <div>
           <nav>
             <a href="/" className="mr-4">
@@ -99,7 +99,7 @@ describe("组件间交互集成测试", () => {
             <h1>测试页面</h1>
           </div>
         </div>
-      </BrowserRouter>
+      </HashRouter>
     );
 
     // 验证路由链接渲染
