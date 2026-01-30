@@ -43,6 +43,8 @@ jobs:
       - name: Build project
         run: npm run build
         working-directory: frontend
+        env:
+          VITE_BASE_URL: /VidTimelineX/
           
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3
