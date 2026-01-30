@@ -23,9 +23,7 @@ const MobileNotSupported: React.FC = () => {
           </div>
 
           {/* 标题 */}
-          <h1 className="text-2xl font-bold text-gray-800 mb-3">
-            移动端暂不支持
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">移动端暂不支持</h1>
 
           {/* 说明文字 */}
           <p className="text-gray-600 mb-6 leading-relaxed">
@@ -36,9 +34,7 @@ const MobileNotSupported: React.FC = () => {
           <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-center gap-3 mb-3">
               <Monitor size={24} className="text-blue-600" />
-              <h2 className="text-lg font-semibold text-gray-800">
-                建议使用PC端访问
-              </h2>
+              <h2 className="text-lg font-semibold text-gray-800">建议使用PC端访问</h2>
             </div>
             <p className="text-sm text-gray-600">
               为了获得最佳体验，请使用电脑或平板设备访问本网站
@@ -66,9 +62,7 @@ const MobileNotSupported: React.FC = () => {
           </div>
 
           {/* 底部提示 */}
-          <div className="text-xs text-gray-400">
-            如有疑问，请联系网站管理员
-          </div>
+          <div className="text-xs text-gray-400">如有疑问，请联系网站管理员</div>
         </div>
 
         {/* 页脚 */}
