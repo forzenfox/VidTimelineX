@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>驴酱移动端UI原型</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'lvjiang-primary': '#3B82F6',
+          },
+        },
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+    
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    
+    .theme-transition {
+      transition: all 0.3s ease;
+    }
+    
+    .drawer {
+      transition: transform 0.3s ease;
+    }
+    
+    .drawer-hidden {
+      transform: translateY(100%);
+    }
+    
+    .drawer-visible {
+      transform: translateY(0);
+    }
+    
+    .active-theme {
+      background-color: #3B82F6 !important;
+      color: white !important;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- 驴酱页面 -->
+  <div id="lvjiang-page" class="min-h-screen">
+    <!-- 导航栏 -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xl font-bold text-lvjiang-primary">驴酱</span>
+          <div class="flex items-center space-x-2 flex-1 justify-center">
+            <button class="px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium flex items-center space-x-2 active-theme" id="theme-dongzhu">
+              <div class="w-6 h-6 rounded-full bg-pink-300 flex items-center justify-center">
+                <span class="text-xs">🐷</span>
+              </div>
+              <span>歌神洞庭湖</span>
+            </button>
+            <button class="px-4 py-2 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium flex items-center space-x-2 hidden" id="theme-kaige">
+              <div class="w-6 h-6 rounded-full bg-red-300 flex items-center justify-center">
+                <span class="text-xs">🐗</span>
+              </div>
+              <span>狼牙山凯哥</span>
+            </button>
+          </div>
+          <div class="flex flex-col space-y-1">
+            <a href="#" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium flex items-center space-x-1">
+              <i data-lucide="monitor"></i>
+              <span>斗鱼直播间</span>
+            </a>
+            <a href="#" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium flex items-center space-x-1">
+              <i data-lucide="link"></i>
+              <span>B站合集</span>
+            </a>
+            <a href="#" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-lg text-sm font-medium flex items-center space-x-1">
+              <i data-lucide="message-circle"></i>
+              <span>鱼吧链接</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 pt-32 pb-24">
+      <h1 class="text-2xl font-bold text-center mb-8">洞主凯哥·时光视频集</h1>
+      
+      <!-- 视频时间线 -->
+      <div class="relative">
+        <!-- 左侧时间线 -->
+        <div class="absolute left-8 top-0 bottom-0 w-1 bg-blue-200"></div>
+        
+        <!-- 视频项 1 -->
+        <div class="mb-16 flex">
+          <!-- 时间线节点 -->
+          <div class="w-16 flex-shrink-0 flex items-center justify-center">
+            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center z-10">
+              <span class="text-white text-sm">🐷</span>
+            </div>
+          </div>
+          <!-- 视频内容 -->
+          <div class="flex-1">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="aspect-video bg-gray-200">
+                <!-- 视频封面 -->
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="text-gray-400">视频封面</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-lg mb-2">《早就活够啦》</h3>
+                <p class="text-sm text-gray-500 mb-3">2022-12-27 · 02:02</p>
+                <div class="flex space-x-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">精彩时刻</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">洞主</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 视频项 2 -->
+        <div class="mb-16 flex">
+          <!-- 时间线节点 -->
+          <div class="w-16 flex-shrink-0 flex items-center justify-center">
+            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center z-10">
+              <span class="text-white text-sm">🐗</span>
+            </div>
+          </div>
+          <!-- 视频内容 -->
+          <div class="flex-1">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="aspect-video bg-gray-200">
+                <!-- 视频封面 -->
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="text-gray-400">视频封面</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-lg mb-2">《凯哥我点了》</h3>
+                <p class="text-sm text-gray-500 mb-3">2022-12-28 · 01:45</p>
+                <div class="flex space-x-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">精彩时刻</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">凯哥</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 视频项 3 -->
+        <div class="mb-16 flex">
+          <!-- 时间线节点 -->
+          <div class="w-16 flex-shrink-0 flex items-center justify-center">
+            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center z-10">
+              <span class="text-white text-sm">🐷</span>
+            </div>
+          </div>
+          <!-- 视频内容 -->
+          <div class="flex-1">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+              <div class="aspect-video bg-gray-200">
+                <!-- 视频封面 -->
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="text-gray-400">视频封面</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <h3 class="font-bold text-lg mb-2">《峡谷养爹人》</h3>
+                <p class="text-sm text-gray-500 mb-3">2022-12-29 · 02:15</p>
+                <div class="flex space-x-2">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">精彩时刻</span>
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">洞主</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 弹幕抽屉 -->
+    <div class="fixed bottom-0 left-0 right-0 h-64 bg-white border-t border-gray-200 z-40 drawer drawer-hidden" id="lvjiang-danmaku-drawer">
+      <div class="flex justify-between items-center p-4 border-b border-gray-200">
+        <h3 class="font-bold">弹幕区域</h3>
+        <button class="p-2" id="lvjiang-drawer-toggle">
+          <i data-lucide="chevron-up"></i>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto h-[calc(100%-64px)]">
+        <div class="space-y-2">
+          <div class="bg-gray-100 rounded-lg p-3">
+            <p class="text-sm">早就活够啦！</p>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-3">
+            <p class="text-sm">凯哥我点了</p>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-3">
+            <p class="text-sm">峡谷养爹人</p>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-3">
+            <p class="text-sm">飞天大草</p>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-3">
+            <p class="text-sm">洞主凯哥yyds</p>
+          </div>
+          <div class="bg-gray-100 rounded-lg p-3">
+            <p class="text-sm">驴酱公会最强</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 抽屉切换按钮 -->
+    <button class="fixed bottom-8 right-8 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white shadow-lg z-30" id="lvjiang-danmaku-button">
+      <i data-lucide="message-circle"></i>
+    </button>
+  </div>
+
+  <script>
+    // 初始化Lucide图标
+    lucide.createIcons();
+
+    // 主题切换功能
+    document.getElementById('theme-dongzhu').addEventListener('click', function() {
+      this.classList.add('active-theme');
+      this.classList.remove('hidden');
+      document.getElementById('theme-kaige').classList.remove('active-theme');
+      document.getElementById('theme-kaige').classList.add('hidden');
+    });
+
+    document.getElementById('theme-kaige').addEventListener('click', function() {
+      this.classList.add('active-theme');
+      this.classList.remove('hidden');
+      document.getElementById('theme-dongzhu').classList.remove('active-theme');
+      document.getElementById('theme-dongzhu').classList.add('hidden');
+    });
+
+    // 驴酱页面弹幕抽屉
+    const lvjiangDrawer = document.getElementById('lvjiang-danmaku-drawer');
+    const lvjiangDrawerButton = document.getElementById('lvjiang-danmaku-button');
+    const lvjiangDrawerToggle = document.getElementById('lvjiang-drawer-toggle');
+
+    lvjiangDrawerButton.addEventListener('click', function() {
+      lvjiangDrawer.classList.toggle('drawer-hidden');
+      lvjiangDrawer.classList.toggle('drawer-visible');
+    });
+
+    lvjiangDrawerToggle.addEventListener('click', function() {
+      lvjiangDrawer.classList.add('drawer-hidden');
+      lvjiangDrawer.classList.remove('drawer-visible');
+    });
+  </script>
+</body>
+</html>
