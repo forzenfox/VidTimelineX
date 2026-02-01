@@ -145,7 +145,55 @@ def download_binary(url: str, outpath: Path) -> bool:
         return False
 
 
-def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False) -> Optional[Path]:
+def get_cover_filename(bvid: str, html: str) -> str:
+    """根据视频信息生成封面文件名
+    
+    Args:
+        bvid: 视频BV号
+        html: 页面HTML内容（用于提取扩展名）
+        
+    Returns:
+        文件名，如 'BV195zoB2EFY.jpg'
+    """
+    # 尝试从页面提取扩展名
+    og_image = get_og_image(html)
+    if og_image:
+        ext = sanitize_ext(og_image)
+        return f"{bvid}{ext}"
+    return f"{bvid}.jpg"
+
+
+def is_cover_exists(thumbs_dir: Path, bvid: str, html: str = None) -> bool:
+    """检查封面图片是否已存在
+    
+    Args:
+        thumbs_dir: 封面保存目录
+        bvid: 视频BV号
+        html: 页面HTML内容（可选，用于确定扩展名）
+        
+    Returns:
+        存在返回True，否则返回False
+    """
+    # 可能的扩展名列表
+    possible_exts = ['.jpg', '.jpeg', '.png', '.webp']
+    
+    if html:
+        # 尝试从HTML获取准确的扩展名
+        filename = get_cover_filename(bvid, html)
+        filepath = thumbs_dir / filename
+        if filepath.exists() and filepath.stat().st_size > 0:
+            return True
+    
+    # 尝试所有可能的扩展名
+    for ext in possible_exts:
+        filepath = thumbs_dir / f"{bvid}{ext}"
+        if filepath.exists() and filepath.stat().st_size > 0:
+            return True
+    
+    return False
+
+
+def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False) -> Dict[str, Any]:
     """下载单个视频的封面
     
     Args:
@@ -154,7 +202,12 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
         quiet: 静默模式，减少日志输出
         
     Returns:
-        成功返回文件路径，失败返回None
+        包含结果信息的字典: {
+            'status': 'success' | 'skipped' | 'failed',
+            'bvid': str,
+            'filename': str (实际下载的文件名),
+            'path': Path (文件路径)
+        }
     """
     video_url = video.get('videoUrl', '')
     bvid = extract_bvid(video_url)
@@ -162,7 +215,7 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
     if not bvid:
         if not quiet:
             print(f"  [跳过] 无法提取BV号: {video_url}")
-        return None
+        return {'status': 'failed', 'bvid': None, 'filename': None, 'path': None}
     
     try:
         if not quiet:
@@ -174,40 +227,53 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
         if resp.status_code != 200:
             if not quiet:
                 print(f"  [失败] HTTP {resp.status_code}")
-            return None
+            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
         
         html = resp.text
+        
+        # 获取扩展名和文件名
         img_url = get_og_image(html)
-        
-        if not img_url:
-            if not quiet:
-                print(f"  [失败] 未找到封面图片")
-            return None
-        
-        img_url = ensure_protocol(img_url)
-        ext = sanitize_ext(img_url)
+        if img_url:
+            img_url = ensure_protocol(img_url)
+            ext = sanitize_ext(img_url)
+        else:
+            ext = '.jpg'
         filename = choose_filename(bvid, ext)
+        
+        # 检查封面是否已存在
+        if is_cover_exists(thumbs_dir, bvid, html):
+            # 返回已存在的文件名
+            existing_file = None
+            for check_ext in ['.jpg', '.jpeg', '.png', '.webp']:
+                check_file = thumbs_dir / f"{bvid}{check_ext}"
+                if check_file.exists() and check_file.stat().st_size > 0:
+                    existing_file = f"{bvid}{check_ext}"
+                    break
+            if not quiet:
+                print(f"  [跳过] 封面已存在: {bvid}")
+            return {'status': 'skipped', 'bvid': bvid, 'filename': existing_file or filename, 'path': None}
+        
         outpath = thumbs_dir / filename
         
         if not quiet:
-            print(f"  下载封面: {img_url}")
+            print(f"  下载封面: {img_url or 'unknown'}")
         
-        if download_binary(img_url, outpath):
+        if img_url and download_binary(img_url, outpath):
             if not quiet:
                 print(f"  [成功] {outpath}")
-            return outpath
+            return {'status': 'success', 'bvid': bvid, 'filename': filename, 'path': outpath}
         else:
             if not quiet:
                 print(f"  [失败] 下载失败")
-            return None
+            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
             
     except Exception as e:
         if not quiet:
             print(f"  [错误] {str(e)}")
-        return None
+        return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
 
 
-def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False) -> Dict[str, int]:
+def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False) -> Dict[str, Any]:
     """下载所有视频封面
     
     Args:
@@ -216,12 +282,17 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
         quiet: 静默模式
         
     Returns:
-        包含成功和失败数量的字典 {'success': int, 'failed': int, 'skipped': int}
+        包含结果信息的字典: {
+            'success': int,
+            'failed': int,
+            'skipped': int,
+            'downloaded_files': Dict[str, str]  # bvid -> filename
+        }
     """
     if not videos_path.exists():
         if not quiet:
             print(f"[错误] videos.json不存在: {videos_path}")
-        return {'success': 0, 'failed': 0, 'skipped': 0}
+        return {'success': 0, 'failed': 0, 'skipped': 0, 'downloaded_files': {}}
     
     with videos_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
@@ -234,7 +305,7 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
     
     thumbs_dir.mkdir(parents=True, exist_ok=True)
     
-    results = {'success': 0, 'failed': 0, 'skipped': 0}
+    results = {'success': 0, 'failed': 0, 'skipped': 0, 'downloaded_files': {}}
     
     for idx, video in enumerate(videos):
         video_url = video.get('videoUrl', '')
@@ -247,10 +318,18 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
             results['skipped'] += 1
             continue
         
-        outpath = download_cover(video, thumbs_dir, quiet)
+        bvid = extract_bvid(video_url)
         
-        if outpath:
+        result = download_cover(video, thumbs_dir, quiet)
+        
+        if result['status'] == 'success':
             results['success'] += 1
+            if bvid and result['filename']:
+                results['downloaded_files'][bvid] = result['filename']
+        elif result['status'] == 'skipped':
+            results['skipped'] += 1
+            if bvid and result['filename']:
+                results['downloaded_files'][bvid] = result['filename']
         else:
             results['failed'] += 1
         

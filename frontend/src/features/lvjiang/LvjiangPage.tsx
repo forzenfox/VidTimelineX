@@ -6,6 +6,7 @@ import { VideoModal } from "./components/VideoModal";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { SideDanmaku } from "./components/SideDanmaku";
 import type { Video } from "./data";
+import { videos } from "./data";
 import "./styles/index.css";
 
 // 生成随机装饰位置（仅执行一次）
@@ -17,7 +18,20 @@ const generateFootprintDecorations = (() => {
     rotation: number;
     opacity: number;
   }> = [];
-  for (let i = 0; i < 30; i++) {
+
+  // 基于视频数量动态计算图标数量
+  const baseCount = 30; // 基础图标数量
+  const perVideoCount = 3; // 每增加一个视频增加的图标数量
+  const minCount = 30; // 最小图标数量
+  const maxCount = 300; // 最大图标数量
+
+  // 计算总图标数量
+  const totalCount = Math.max(
+    minCount,
+    Math.min(maxCount, baseCount + videos.length * perVideoCount)
+  );
+
+  for (let i = 0; i < totalCount; i++) {
     decorations.push({
       id: i,
       top: Math.random() * 100,
@@ -80,19 +94,19 @@ const Lvjiang = () => {
         <Header theme={theme} onThemeToggle={handleThemeToggle} />
 
         <main className="relative">
-          <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-5">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
             {theme === "dongzhu" ? (
               <div className="relative w-full h-full">
                 {generateFootprintDecorations.map(decoration => (
                   <div
                     key={decoration.id}
-                    className="absolute text-4xl"
+                    className="absolute text-6xl"
                     style={{
                       top: `${decoration.top}%`,
                       left: `${decoration.left}%`,
                       transform: `rotate(${decoration.rotation}deg)`,
-                      opacity: decoration.opacity,
-                      color: "#AED6F1",
+                      opacity: Math.min(0.8, decoration.opacity * 1.5),
+                      color: "#3498DB",
                     }}
                   >
                     🐾

@@ -46,6 +46,58 @@ class BiliBiliAutoCrawler:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump({"videos": []}, f, ensure_ascii=False, indent=2)
     
+    def get_crawled_bv_set(self) -> set:
+        """获取所有已爬取的BV号集合
+        
+        Returns:
+            set: 已爬取的BV号集合
+        """
+        crawled_bvs = set()
+        
+        # 从 approved.json 读取已通过的
+        if self.approved_file.exists():
+            with open(self.approved_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for video in data.get('videos', []):
+                    bv = video.get('bv', '')
+                    if bv:
+                        crawled_bvs.add(bv)
+                        # 同时添加带 BV 前缀的版本
+                        if not bv.startswith('BV'):
+                            crawled_bvs.add(f'BV{bv}')
+        
+        # 从 pending.json 读取待审核的
+        if self.pending_file.exists():
+            with open(self.pending_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for video in data.get('videos', []):
+                    bv = video.get('bv', '')
+                    if bv:
+                        crawled_bvs.add(bv)
+                        if not bv.startswith('BV'):
+                            crawled_bvs.add(f'BV{bv}')
+        
+        return crawled_bvs
+    
+    def is_already_crawled(self, bv_code: str) -> bool:
+        """检查BV号是否已爬取
+        
+        Args:
+            bv_code: BV号（可能带或不带BV前缀）
+            
+        Returns:
+            bool: 已爬取返回True，否则返回False
+        """
+        crawled_bvs = self.get_crawled_bv_set()
+        
+        # 标准化 BV 号
+        if bv_code.startswith('BV'):
+            normalized = bv_code
+        else:
+            normalized = f'BV{bv_code}'
+        
+        return normalized in crawled_bvs or bv_code in crawled_bvs
+    
     def search_videos(self, keyword, page=1, order='totalrank'):
         """搜索视频"""
         print(f"搜索视频: {keyword}, 页码: {page}, 排序: {order}")
@@ -166,7 +218,8 @@ class BiliBiliAutoCrawler:
             "views": stats.get('views', 0),
             "danmaku": stats.get('danmaku', 0),
             "up主": up_info.get('name', ''),
-            "thumbnail": thumbnail,
+            "cover_url": thumbnail,  # B站CDN封面图URL（前端优先加载）
+            "thumbnail": thumbnail,   # 封面图URL（本地下载路径或CDN URL）
             "duration": duration,
             "crawled_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "review_status": "pending",
@@ -434,11 +487,23 @@ class BiliBiliAutoCrawler:
             print("没有有效的BV号，爬取任务终止")
             return 0
         
+        # 获取已爬取的BV号集合
+        crawled_bvs = self.get_crawled_bv_set()
+        print(f"已爬取 {len(crawled_bvs)} 个视频，将跳过重复爬取")
+        
         total_crawled = 0
         total_saved = 0
+        total_skipped = 0
         
         for bv_code in bv_list:
             print(f"\n--- 处理BV号: {bv_code} ---")
+            
+            # 检查是否已爬取
+            normalized_bv = f'BV{bv_code}' if not bv_code.startswith('BV') else bv_code
+            if normalized_bv in crawled_bvs:
+                print(f"  [跳过] BV{normalized_bv} 已爬取过，仅标记用于下载检查")
+                total_skipped += 1
+                continue
             
             # 爬取视频元数据
             metadata = self.crawl_video_metadata(bv_code)
@@ -449,6 +514,8 @@ class BiliBiliAutoCrawler:
                 # 直接保存到已通过列表
                 if self.save_to_approved(metadata):
                     total_saved += 1
+                    # 添加到已爬取集合，避免重复检查
+                    crawled_bvs.add(normalized_bv)
                 
                 # 遵守请求频率限制
                 time.sleep(2)
@@ -456,6 +523,7 @@ class BiliBiliAutoCrawler:
         print(f"\n=== 从文件爬取任务完成 ===")
         print(f"总共爬取: {total_crawled} 个视频")
         print(f"新保存: {total_saved} 个视频")
+        print(f"跳过(已爬取): {total_skipped} 个视频")
         
         return total_saved
     
@@ -518,31 +586,46 @@ class BiliBiliAutoCrawler:
         # 按照发布日期排序（降序）
         videos.sort(key=lambda x: x.get('publish_date', ''), reverse=True)
         
+        # 计算前端thumbs目录路径
+        backend_dir = Path(__file__).parent.parent.parent.parent
+        frontend_public = backend_dir / "frontend" / "public"
+        thumbs_dir = frontend_public / "thumbs"
+        
+        # 扫描已存在的封面文件，获取正确的扩展名
+        existing_covers = {}
+        if thumbs_dir.exists():
+            for thumb_file in thumbs_dir.glob("BV*"):
+                if thumb_file.is_file():
+                    bvid = thumb_file.stem  # 获取不含扩展名的文件名
+                    existing_covers[bvid] = thumb_file.name
+        
         # 生成与前端videos.json相同格式的数据
         timeline_data = []
         for idx, video in enumerate(videos):
-            # 修复BV前缀重复问题
             bv_code = video.get('bv', '')
             if bv_code.startswith('BV'):
                 bvid = bv_code
             else:
                 bvid = f"BV{bv_code}"
             
-            # 统一日期格式为YYYY-MM-DD
             publish_date = video.get('publish_date', '')
             if len(publish_date) > 10:
                 date = publish_date[:10]
             else:
                 date = publish_date
             
+            # 使用已存在的文件名，或默认使用 .jpg
+            cover = existing_covers.get(bvid, f"{bvid}.jpg")
+            
             timeline_item = {
-                "id": str(idx + 1),  # 按时间倒序排列的字符串序号
+                "id": str(idx + 1),
                 "title": video.get('title'),
                 "date": date,
                 "videoUrl": f"https://www.bilibili.com/video/{bvid}",
-                "cover": f"{bvid}.jpg",  # 封面文件名
-                "tags": [],  # 初始为空列表，供人工填写
-                "duration": video.get('duration', "00:00")  # 视频时长
+                "cover": cover,
+                "cover_url": video.get('cover_url'),
+                "tags": [],
+                "duration": video.get('duration', "00:00")
             }
             timeline_data.append(timeline_item)
         
@@ -555,19 +638,32 @@ class BiliBiliAutoCrawler:
         print(f"生成了时间线数据，保存到: {TIMELINE_OUTPUT_FILE}")
         print(f"时间线包含 {len(timeline_data)} 个视频")
         
-        # 下载视频封面到前端目录
+        # 下载缺失的视频封面到前端目录
         if download_covers:
             print("\n开始下载视频封面...")
-            
-            # 计算前端thumbs目录路径
-            backend_dir = Path(__file__).parent.parent.parent.parent
-            frontend_public = backend_dir / "frontend" / "public"
-            thumbs_dir = frontend_public / "thumbs"
             
             # 调用封面下载函数
             results = download_all_covers(TIMELINE_OUTPUT_FILE, thumbs_dir, quiet=False)
             
             print(f"封面下载完成: 成功 {results['success']}, 失败 {results['failed']}, 跳过 {results['skipped']}")
+            
+            # 如果有新下载的文件，更新 timeline 数据中的 cover 字段
+            if results.get('downloaded_files'):
+                print("更新时间线数据中的封面字段...")
+                updated = False
+                for idx, video in enumerate(timeline_data):
+                    video_url = video.get('videoUrl', '')
+                    bv_code_match = re.search(r'(BV[0-9A-Za-z]+)', video_url)
+                    if bv_code_match:
+                        bvid = bv_code_match.group(1)
+                        if bvid in results['downloaded_files']:
+                            timeline_data[idx]['cover'] = results['downloaded_files'][bvid]
+                            updated = True
+                
+                if updated:
+                    with open(TIMELINE_OUTPUT_FILE, 'w', encoding='utf-8') as f:
+                        json.dump(timeline_data, f, ensure_ascii=False, indent=2)
+                    print("时间线数据已更新")
         
         return len(timeline_data)
 

@@ -9,7 +9,6 @@ if (typeof window !== "undefined") {
   const originalError = window.console.error;
 
   window.console.error = (...args: unknown[]) => {
-    // 过滤WebSocket相关错误
     const message = args[0]?.toString?.() || "";
     if (message.includes("WebSocket") || message.includes("ws://")) {
       return;
@@ -27,19 +26,42 @@ import PerformanceMonitor from "../components/PerformanceMonitor";
 import MobileNotSupported from "../components/MobileNotSupported";
 import { useIsMobile } from "../hooks/use-mobile";
 
-// 创建QueryClient实例
 const queryClient = new QueryClient();
 
-// 主应用组件，包含移动端检测逻辑
+function registerServiceWorker() {
+  if ("serviceWorker" in navigator && import.meta.env.PROD) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(registration => {
+          console.log("[SW] 注册成功:", registration.scope);
+          registration.addEventListener("updatefound", () => {
+            const newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener("statechange", () => {
+                if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                  console.log("[SW] 新版本可用，刷新页面更新");
+                }
+              });
+            }
+          });
+        })
+        .catch(error => {
+          console.log("[SW] 注册失败:", error);
+        });
+    });
+  }
+}
+
+registerServiceWorker();
+
 const MainApp: React.FC = () => {
   const isMobile = useIsMobile();
 
-  // 如果是移动端，显示不支持提示页面
   if (isMobile) {
     return <MobileNotSupported />;
   }
 
-  // 否则，正常渲染应用
   return (
     <QueryClientProvider client={queryClient}>
       <PerformanceMonitor />

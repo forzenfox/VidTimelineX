@@ -1,6 +1,7 @@
 # 哔哩哔哩时间线 - 前端项目
 
 > **📁 项目文档导航**
+>
 > - **根目录README**：项目全局说明、架构概览、部署指南 → [查看](../README.md)
 > - **本文档**：前端详细技术文档、安装指南、测试说明
 
@@ -75,17 +76,17 @@ frontend/
 │   │   ├── App.tsx           # 首页组件
 │   │   ├── main.tsx          # React DOM 渲染入口
 │   │   └── routes.tsx        # 路由配置
-│   ├── assets/               # 静态资源
 │   ├── components/           # 公共组件
 │   │   ├── ui/               # UI 基础组件（基于 Radix UI）
 │   │   │   ├── button.tsx
 │   │   │   ├── dialog.tsx
 │   │   │   ├── dropdown-menu.tsx
 │   │   │   ├── tooltip.tsx
-│   │   │   └── ...          # 更多 UI 组件
-│   │   ├── common/           # 通用组件
-│   │   ├── PerformanceMonitor.tsx
-│   │   └── figma/ImageWithFallback.tsx
+│   │   │   └── ...          # 共30+ UI 组件
+│   │   ├── figma/            # Figma相关组件
+│   │   │   └── ImageWithFallback.tsx
+│   │   ├── MobileNotSupported.tsx  # 移动端提示组件
+│   │   └── PerformanceMonitor.tsx  # 性能监控组件
 │   ├── features/             # 功能模块（按业务划分）
 │   │   ├── lvjiang/          # 驴酱模块
 │   │   │   ├── LvjiangPage.tsx   # 驴酱页面组件
@@ -97,33 +98,39 @@ frontend/
 │   │   │   │   ├── VideoModal.tsx
 │   │   │   │   └── VideoTimeline.tsx
 │   │   │   ├── data/         # 驴酱数据
-│   │   │   ├── hooks/        # 驴酱自定义钩子
-│   │   │   ├── styles/       # 驴酱样式
-│   │   │   └── types/        # 驴酱类型定义
+│   │   │   └── styles/       # 驴酱样式
 │   │   └── tiantong/         # 甜筒模块
 │   │       ├── TiantongPage.tsx  # 甜筒页面组件
 │   │       ├── components/   # 甜筒业务组件
-│   │       │   ├── DanmakuWelcome.tsx
+│   │       │   ├── HorizontalDanmaku.tsx
+│   │       │   ├── LoadingAnimation.tsx
 │   │       │   ├── SidebarDanmu.tsx
 │   │       │   ├── ThemeToggle.tsx
 │   │       │   ├── TimelineItem.tsx
 │   │       │   ├── VideoCard.tsx
 │   │       │   └── VideoModal.tsx
 │   │       ├── data/         # 甜筒数据
-│   │       ├── hooks/        # 甜筒自定义钩子
-│   │       ├── styles/       # 甜筒样式
-│   │       └── types/        # 甜筒类型定义
+│   │       └── styles/       # 甜筒样式
 │   ├── hooks/                # 公共自定义钩子
 │   │   ├── use-mobile.ts    # 响应式设备检测
-│   │   └── use-dynamic-component.tsx
+│   │   └── use-dynamic-component.tsx  # 动态组件加载
 │   ├── styles/              # 全局样式
-│   │   └── globals.css      # 全局 CSS 变量和基础样式
+│   │   ├── animations.css   # 动画样式
+│   │   ├── components.css   # 组件样式
+│   │   ├── globals.css      # 全局 CSS 变量和基础样式
+│   │   ├── utilities.css    # 工具类样式
+│   │   └── variables.css    # CSS 变量定义
 │   └── setupTests.ts        # 测试环境配置
 ├── tests/                    # 测试文件
+│   ├── unit/                 # 单元测试（22个测试套件）
 │   ├── integration/          # 集成测试
-│   └── e2e/                  # 端到端测试（Playwright）
+│   ├── e2e/                  # 端到端测试（Playwright）
+│   ├── fixtures/             # 测试数据
+│   └── utils/                # 测试工具函数
 ├── public/                  # 静态资源
+│   └── thumbs/              # 视频缩略图
 ├── .env.development         # 开发环境变量
+├── .env.production          # 生产环境变量
 ├── package.json             # 项目依赖配置
 ├── vite.config.ts           # Vite 构建配置
 ├── tailwind.config.js       # Tailwind CSS 配置
@@ -140,24 +147,39 @@ frontend/
 
 **src/app/** 目录包含应用的核心配置，包括应用入口、路由配置和首页组件。这个目录集中管理应用的核心逻辑，便于维护和扩展。
 
-**src/components/ui/** 目录包含基于 Radix UI 构建的基础 UI 组件，这些组件遵循统一的接口设计，可以被项目中的任何位置复用。每个组件都包含完整的类型定义和无障碍支持，确保使用的便捷性和可访问性。
+**src/components/** 目录包含公共组件：
 
-**src/components/common/** 目录存放通用组件，这些组件不与特定业务模块耦合，可以在多个业务模块中复用。
+- **ui/**：基于 Radix UI 构建的基础 UI 组件（30+组件），遵循统一接口设计，包含完整的类型定义和无障碍支持
+- **figma/**：Figma 设计系统相关组件
+- **MobileNotSupported.tsx**：移动端访问提示组件
+- **PerformanceMonitor.tsx**：性能监控组件
 
-**src/features/** 目录按业务功能组织模块，每个子目录对应一个独立的功能模块。这种模块化设计使得代码更加清晰，便于维护和扩展。每个功能模块包含自己的页面组件、业务组件、数据、钩子、样式和类型定义。
-
-**src/features/lvjiang/** 和 **src/features/tiantong/** 目录分别存放两个视频集模块的完整代码。每个模块包含：
+**src/features/** 目录按业务功能组织模块，每个子目录对应一个独立的功能模块。这种模块化设计使得代码更加清晰，便于维护和扩展。每个功能模块包含：
 
 - 页面组件（如 LvjiangPage.tsx、TiantongPage.tsx）
 - 业务组件（与模块业务逻辑紧密耦合的组件）
-- 数据（模块专用的数据）
-- 自定义钩子（模块专用的逻辑提取）
-- 样式（模块专用的样式）
-- 类型定义（模块专用的 TypeScript 类型）
+- 数据（模块专用的数据文件）
+- 样式（模块专用的样式文件）
 
 **src/hooks/** 目录包含公共的自定义 React Hook，用于提取和复用跨模块的组件逻辑。use-mobile hook 实现了响应式设备检测，use-dynamic-component hook 提供动态组件加载能力。
 
-**tests/** 目录组织测试文件，分为集成测试和端到端测试（Playwright）。这种分类使得测试更加清晰，便于维护和运行。
+**src/styles/** 目录包含全局样式文件：
+
+- **animations.css**：动画样式定义
+- **components.css**：组件级样式
+- **globals.css**：全局 CSS 变量和基础样式
+- **utilities.css**：工具类样式
+- **variables.css**：CSS 变量定义
+
+**tests/** 目录组织测试文件，分为单元测试、集成测试和端到端测试（Playwright）：
+
+- **unit/**：单元测试（22个测试套件，135个测试用例）
+- **integration/**：集成测试
+- **e2e/**：端到端测试（Playwright）
+- **fixtures/**：测试数据
+- **utils/**：测试工具函数
+
+**public/thumbs/** 目录存储视频缩略图，用于本地缓存和展示。
 
 ## 安装与设置
 

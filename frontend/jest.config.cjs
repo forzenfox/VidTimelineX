@@ -105,5 +105,4 @@ module.exports = {
   // 测试设置文件
   setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
   setupFiles: ["<rootDir>/tests/setup-global.ts"],
-
 };

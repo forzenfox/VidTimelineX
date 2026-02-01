@@ -10,26 +10,38 @@
 tests/
 ├── unit/                          # 单元测试
 │   ├── components/                # 组件单元测试
-│   │   ├── common/            # 通用组件测试
-│   │   ├── ui/                # UI组件测试
-│   │   └── features/          # 功能模块组件测试
-│   │       ├── tiantong/       # 甜筒模块组件测试
-│   │       └── lvjiang/       # 驴酱模块组件测试
+│   │   ├── __snapshots__/        # 快照测试
+│   │   ├── features/             # 功能模块组件测试
+│   │   │   ├── tiantong/         # 甜筒模块组件测试
+│   │   │   └── lvjiang/          # 驴酱模块组件测试
+│   │   ├── MobileNotSupported.test.tsx
+│   │   └── ui/                   # UI组件测试
 │   ├── hooks/                    # Hooks单元测试
 │   └── utils/                    # 工具函数单元测试
-├── integration/                    # 集成测试
-│   ├── tiantong/                 # 甜筒模块集成测试
-│   ├── lvjiang/                  # 驴酱模块集成测试
-│   └── cross-module/             # 跨模块集成测试
-├── e2e/                         # 端到端测试
+├── integration/                   # 集成测试
+│   ├── cross-module/             # 跨模块集成测试
+│   └── tiantong/                 # 甜筒模块集成测试
+├── e2e/                          # 端到端测试
 │   ├── tiantong/                 # 甜筒模块E2E测试
-│   └── lvjiang/                  # 驴酱模块E2E测试
-├── fixtures/                     # 测试数据
+│   ├── lvjiang/                  # 驴酱模块E2E测试
+│   ├── search-flow.e2e.tsx       # 搜索流程E2E测试
+│   ├── filter-flow.e2e.tsx       # 筛选流程E2E测试
+│   ├── user-journey.e2e.tsx      # 用户旅程E2E测试
+│   └── visual/                   # 视觉回归测试
+├── fixtures/                      # 测试数据
 │   ├── videos.ts                 # 视频测试数据
 │   └── danmaku.ts               # 弹幕测试数据
-├── utils/                       # 测试工具函数
-│   └── render.tsx               # 渲染工具函数
-└── setup.ts                     # 测试配置
+├── utils/                        # 测试工具函数
+│   ├── data-generator.ts         # 数据生成器
+│   ├── data-loading.ts           # 数据加载器
+│   ├── error-handling.ts         # 错误处理工具
+│   └── render.tsx                # 渲染工具函数
+├── config/                       # 测试配置
+│   └── test-config.ts
+├── setup.ts                      # Jest测试配置
+├── setup-global.ts               # 全局测试配置
+├── performance-test.ts           # 性能测试
+└── docs/                         # 测试文档
 ```
 
 ## 命名规范

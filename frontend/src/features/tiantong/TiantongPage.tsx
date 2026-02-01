@@ -229,24 +229,24 @@ const TiantongPage = () => {
     <QueryClientProvider client={queryClient}>
       <>
         <title>亿口甜筒·时光视频集</title>
-        <meta name="description" content="探索甜筒的精彩视频内容，包含直播片段、精彩集锦等" />
-        <meta name="keywords" content="甜筒, 时光视频集, 直播片段, 精彩集锦" />
+        <meta name="description" content="探索亿口甜筒的精彩视频内容，包含直播片段、精彩集锦等" />
+        <meta name="keywords" content="亿口甜筒, 时光视频集, 直播片段, 精彩集锦" />
         <Suspense
           fallback={<div className="flex items-center justify-center min-h-screen">加载中...</div>}
         >
           <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30 tiger-stripe relative overflow-hidden">
             {/* 页面边角装饰图标 */}
-            <div className="absolute top-4 left-4 text-primary opacity-30 text-4xl pointer-events-none">
-              🐯
+            <div className="absolute top-40 left-4 text-primary opacity-30 text-4xl pointer-events-none">
+              {theme === "tiger" ? "🐯" : "🍦"}
             </div>
-            <div className="absolute top-4 right-4 text-primary opacity-30 text-4xl pointer-events-none">
-              🐯
+            <div className="absolute top-40 right-4 text-primary opacity-30 text-4xl pointer-events-none">
+              {theme === "tiger" ? "🐯" : "🍦"}
             </div>
             <div className="absolute bottom-4 left-4 text-primary opacity-30 text-4xl pointer-events-none">
-              🐯
+              {theme === "tiger" ? "🐯" : "🍦"}
             </div>
             <div className="absolute bottom-4 right-4 text-primary opacity-30 text-4xl pointer-events-none">
-              🐯
+              {theme === "tiger" ? "🐯" : "🍦"}
             </div>
 
             <HorizontalDanmaku theme={theme} />

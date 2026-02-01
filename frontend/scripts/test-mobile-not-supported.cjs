@@ -121,7 +121,7 @@ function parseTestResults(output) {
     // Jest 的 JSON 输出通常以 {"numFailedTestSuites": 或 {"success": 开头
     const jsonPatterns = ['{"numFailedTestSuites":', '{"success":'];
     let jsonStartIndex = -1;
-    
+
     for (const pattern of jsonPatterns) {
       const index = output.indexOf(pattern);
       if (index !== -1) {
@@ -129,7 +129,7 @@ function parseTestResults(output) {
         break;
       }
     }
-    
+
     if (jsonStartIndex === -1) {
       Logger.warning("无法找到 Jest JSON 输出");
       return results;
@@ -146,7 +146,12 @@ function parseTestResults(output) {
             results.tests.push({
               id: tcMatch ? tcMatch[1] : "",
               name: testName,
-              status: test.status === "passed" ? "passed" : test.status === "failed" ? "failed" : "skipped",
+              status:
+                test.status === "passed"
+                  ? "passed"
+                  : test.status === "failed"
+                    ? "failed"
+                    : "skipped",
             });
             if (test.status === "passed") results.passed++;
             else if (test.status === "failed") results.failed++;

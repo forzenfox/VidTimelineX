@@ -1,6 +1,6 @@
 import React from "react";
 import { Play, Eye, Calendar, Heart, Music, Smile } from "lucide-react";
-import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
+import { VideoCover } from "../../../components/figma/ImageWithFallback";
 import type { Video } from "../data/types";
 
 interface VideoCardProps {
@@ -11,6 +11,7 @@ interface VideoCardProps {
 /**
  * 视频卡片组件
  * 使用React.memo优化性能，避免不必要的重新渲染
+ * 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
  */
 const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
   const getIconComponent = () => {
@@ -48,11 +49,11 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
       onKeyDown={handleKeyDown}
     >
       <div className="relative aspect-video overflow-hidden">
-        <ImageWithFallback
-          src={video.cover}
+        <VideoCover
+          cover_url={video.cover_url}
+          cover={video.cover}
           alt={video.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          loading="lazy"
         />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div

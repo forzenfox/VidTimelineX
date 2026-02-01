@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Play, Calendar, Clock, Search } from "lucide-react";
 import { videos, type Video } from "../data/data";
-import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
+import { VideoCover } from "../../../components/figma/ImageWithFallback";
 
 interface VideoTimelineProps {
   theme: "tiger" | "sweet";
@@ -9,7 +9,7 @@ interface VideoTimelineProps {
   onVideoClick: (video: Video) => void;
 }
 
-// 单个视频项组件
+// 单个视频项组件 - 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
 const VideoItem: React.FC<{
   video: Video;
   index: number;
@@ -93,11 +93,11 @@ const VideoItem: React.FC<{
         >
           {/* 封面图 */}
           <div className="relative aspect-video overflow-hidden">
-            <ImageWithFallback
-              src={safeVideo.cover}
+            <VideoCover
+              cover_url={safeVideo.cover_url}
+              cover={safeVideo.cover}
               alt={safeVideo.title}
               className="w-full h-full object-cover"
-              loading="lazy" // 懒加载图片
             />
 
             {/* 播放按钮遮罩 */}
