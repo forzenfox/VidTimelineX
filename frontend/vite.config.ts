@@ -7,8 +7,14 @@ import path from "path";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
+  // 自定义域名配置
+  const customDomain = env.VITE_CUSTOM_DOMAIN;
+  const baseUrl = customDomain 
+    ? `https://${customDomain}/` 
+    : (env.VITE_BASE_URL || "/");
+
   return {
-    base: env.VITE_BASE_URL || "/",
+    base: baseUrl,
     plugins: [
       react(),
       tailwindcss(),
