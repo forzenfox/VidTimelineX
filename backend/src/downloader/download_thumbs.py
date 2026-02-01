@@ -193,7 +193,7 @@ def is_cover_exists(thumbs_dir: Path, bvid: str, html: str = None) -> bool:
     return False
 
 
-def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False) -> Optional[Path]:
+def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False) -> Dict[str, Any]:
     """下载单个视频的封面
     
     Args:
@@ -202,7 +202,12 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
         quiet: 静默模式，减少日志输出
         
     Returns:
-        成功返回文件路径，失败返回None，跳过返回None
+        包含结果信息的字典: {
+            'status': 'success' | 'skipped' | 'failed',
+            'bvid': str,
+            'filename': str (实际下载的文件名),
+            'path': Path (文件路径)
+        }
     """
     video_url = video.get('videoUrl', '')
     bvid = extract_bvid(video_url)
@@ -210,7 +215,7 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
     if not bvid:
         if not quiet:
             print(f"  [跳过] 无法提取BV号: {video_url}")
-        return None
+        return {'status': 'failed', 'bvid': None, 'filename': None, 'path': None}
     
     try:
         if not quiet:
@@ -222,47 +227,53 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
         if resp.status_code != 200:
             if not quiet:
                 print(f"  [失败] HTTP {resp.status_code}")
-            return None
+            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
         
         html = resp.text
         
+        # 获取扩展名和文件名
+        img_url = get_og_image(html)
+        if img_url:
+            img_url = ensure_protocol(img_url)
+            ext = sanitize_ext(img_url)
+        else:
+            ext = '.jpg'
+        filename = choose_filename(bvid, ext)
+        
         # 检查封面是否已存在
         if is_cover_exists(thumbs_dir, bvid, html):
+            # 返回已存在的文件名
+            existing_file = None
+            for check_ext in ['.jpg', '.jpeg', '.png', '.webp']:
+                check_file = thumbs_dir / f"{bvid}{check_ext}"
+                if check_file.exists() and check_file.stat().st_size > 0:
+                    existing_file = f"{bvid}{check_ext}"
+                    break
             if not quiet:
                 print(f"  [跳过] 封面已存在: {bvid}")
-            return None
+            return {'status': 'skipped', 'bvid': bvid, 'filename': existing_file or filename, 'path': None}
         
-        img_url = get_og_image(html)
-        
-        if not img_url:
-            if not quiet:
-                print(f"  [失败] 未找到封面图片")
-            return None
-        
-        img_url = ensure_protocol(img_url)
-        ext = sanitize_ext(img_url)
-        filename = choose_filename(bvid, ext)
         outpath = thumbs_dir / filename
         
         if not quiet:
-            print(f"  下载封面: {img_url}")
+            print(f"  下载封面: {img_url or 'unknown'}")
         
-        if download_binary(img_url, outpath):
+        if img_url and download_binary(img_url, outpath):
             if not quiet:
                 print(f"  [成功] {outpath}")
-            return outpath
+            return {'status': 'success', 'bvid': bvid, 'filename': filename, 'path': outpath}
         else:
             if not quiet:
                 print(f"  [失败] 下载失败")
-            return None
+            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
             
     except Exception as e:
         if not quiet:
             print(f"  [错误] {str(e)}")
-        return None
+        return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
 
 
-def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False) -> Dict[str, int]:
+def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False) -> Dict[str, Any]:
     """下载所有视频封面
     
     Args:
@@ -271,12 +282,17 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
         quiet: 静默模式
         
     Returns:
-        包含成功和失败数量的字典 {'success': int, 'failed': int, 'skipped': int}
+        包含结果信息的字典: {
+            'success': int,
+            'failed': int,
+            'skipped': int,
+            'downloaded_files': Dict[str, str]  # bvid -> filename
+        }
     """
     if not videos_path.exists():
         if not quiet:
             print(f"[错误] videos.json不存在: {videos_path}")
-        return {'success': 0, 'failed': 0, 'skipped': 0}
+        return {'success': 0, 'failed': 0, 'skipped': 0, 'downloaded_files': {}}
     
     with videos_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
@@ -289,7 +305,7 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
     
     thumbs_dir.mkdir(parents=True, exist_ok=True)
     
-    results = {'success': 0, 'failed': 0, 'skipped': 0}
+    results = {'success': 0, 'failed': 0, 'skipped': 0, 'downloaded_files': {}}
     
     for idx, video in enumerate(videos):
         video_url = video.get('videoUrl', '')
@@ -302,24 +318,20 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
             results['skipped'] += 1
             continue
         
-        # 先检查本地是否已存在封面
         bvid = extract_bvid(video_url)
-        if bvid and is_cover_exists(thumbs_dir, bvid):
-            if not quiet:
-                print(f"  [跳过] {bvid} 封面已存在")
-            results['skipped'] += 1
-            continue
         
-        outpath = download_cover(video, thumbs_dir, quiet)
+        result = download_cover(video, thumbs_dir, quiet)
         
-        if outpath:
+        if result['status'] == 'success':
             results['success'] += 1
+            if bvid and result['filename']:
+                results['downloaded_files'][bvid] = result['filename']
+        elif result['status'] == 'skipped':
+            results['skipped'] += 1
+            if bvid and result['filename']:
+                results['downloaded_files'][bvid] = result['filename']
         else:
-            # 检查是否是跳过（封面已存在）
-            if bvid and is_cover_exists(thumbs_dir, bvid):
-                results['skipped'] += 1
-            else:
-                results['failed'] += 1
+            results['failed'] += 1
         
         time.sleep(DELAY_SECONDS)
     
