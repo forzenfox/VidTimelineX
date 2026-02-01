@@ -145,6 +145,54 @@ def download_binary(url: str, outpath: Path) -> bool:
         return False
 
 
+def get_cover_filename(bvid: str, html: str) -> str:
+    """根据视频信息生成封面文件名
+    
+    Args:
+        bvid: 视频BV号
+        html: 页面HTML内容（用于提取扩展名）
+        
+    Returns:
+        文件名，如 'BV195zoB2EFY.jpg'
+    """
+    # 尝试从页面提取扩展名
+    og_image = get_og_image(html)
+    if og_image:
+        ext = sanitize_ext(og_image)
+        return f"{bvid}{ext}"
+    return f"{bvid}.jpg"
+
+
+def is_cover_exists(thumbs_dir: Path, bvid: str, html: str = None) -> bool:
+    """检查封面图片是否已存在
+    
+    Args:
+        thumbs_dir: 封面保存目录
+        bvid: 视频BV号
+        html: 页面HTML内容（可选，用于确定扩展名）
+        
+    Returns:
+        存在返回True，否则返回False
+    """
+    # 可能的扩展名列表
+    possible_exts = ['.jpg', '.jpeg', '.png', '.webp']
+    
+    if html:
+        # 尝试从HTML获取准确的扩展名
+        filename = get_cover_filename(bvid, html)
+        filepath = thumbs_dir / filename
+        if filepath.exists() and filepath.stat().st_size > 0:
+            return True
+    
+    # 尝试所有可能的扩展名
+    for ext in possible_exts:
+        filepath = thumbs_dir / f"{bvid}{ext}"
+        if filepath.exists() and filepath.stat().st_size > 0:
+            return True
+    
+    return False
+
+
 def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False) -> Optional[Path]:
     """下载单个视频的封面
     
@@ -154,7 +202,7 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
         quiet: 静默模式，减少日志输出
         
     Returns:
-        成功返回文件路径，失败返回None
+        成功返回文件路径，失败返回None，跳过返回None
     """
     video_url = video.get('videoUrl', '')
     bvid = extract_bvid(video_url)
@@ -177,6 +225,13 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
             return None
         
         html = resp.text
+        
+        # 检查封面是否已存在
+        if is_cover_exists(thumbs_dir, bvid, html):
+            if not quiet:
+                print(f"  [跳过] 封面已存在: {bvid}")
+            return None
+        
         img_url = get_og_image(html)
         
         if not img_url:
@@ -247,12 +302,24 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
             results['skipped'] += 1
             continue
         
+        # 先检查本地是否已存在封面
+        bvid = extract_bvid(video_url)
+        if bvid and is_cover_exists(thumbs_dir, bvid):
+            if not quiet:
+                print(f"  [跳过] {bvid} 封面已存在")
+            results['skipped'] += 1
+            continue
+        
         outpath = download_cover(video, thumbs_dir, quiet)
         
         if outpath:
             results['success'] += 1
         else:
-            results['failed'] += 1
+            # 检查是否是跳过（封面已存在）
+            if bvid and is_cover_exists(thumbs_dir, bvid):
+                results['skipped'] += 1
+            else:
+                results['failed'] += 1
         
         time.sleep(DELAY_SECONDS)
     

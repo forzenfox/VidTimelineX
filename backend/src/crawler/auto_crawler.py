@@ -46,6 +46,58 @@ class BiliBiliAutoCrawler:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump({"videos": []}, f, ensure_ascii=False, indent=2)
     
+    def get_crawled_bv_set(self) -> set:
+        """获取所有已爬取的BV号集合
+        
+        Returns:
+            set: 已爬取的BV号集合
+        """
+        crawled_bvs = set()
+        
+        # 从 approved.json 读取已通过的
+        if self.approved_file.exists():
+            with open(self.approved_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for video in data.get('videos', []):
+                    bv = video.get('bv', '')
+                    if bv:
+                        crawled_bvs.add(bv)
+                        # 同时添加带 BV 前缀的版本
+                        if not bv.startswith('BV'):
+                            crawled_bvs.add(f'BV{bv}')
+        
+        # 从 pending.json 读取待审核的
+        if self.pending_file.exists():
+            with open(self.pending_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for video in data.get('videos', []):
+                    bv = video.get('bv', '')
+                    if bv:
+                        crawled_bvs.add(bv)
+                        if not bv.startswith('BV'):
+                            crawled_bvs.add(f'BV{bv}')
+        
+        return crawled_bvs
+    
+    def is_already_crawled(self, bv_code: str) -> bool:
+        """检查BV号是否已爬取
+        
+        Args:
+            bv_code: BV号（可能带或不带BV前缀）
+            
+        Returns:
+            bool: 已爬取返回True，否则返回False
+        """
+        crawled_bvs = self.get_crawled_bv_set()
+        
+        # 标准化 BV 号
+        if bv_code.startswith('BV'):
+            normalized = bv_code
+        else:
+            normalized = f'BV{bv_code}'
+        
+        return normalized in crawled_bvs or bv_code in crawled_bvs
+    
     def search_videos(self, keyword, page=1, order='totalrank'):
         """搜索视频"""
         print(f"搜索视频: {keyword}, 页码: {page}, 排序: {order}")
@@ -435,11 +487,23 @@ class BiliBiliAutoCrawler:
             print("没有有效的BV号，爬取任务终止")
             return 0
         
+        # 获取已爬取的BV号集合
+        crawled_bvs = self.get_crawled_bv_set()
+        print(f"已爬取 {len(crawled_bvs)} 个视频，将跳过重复爬取")
+        
         total_crawled = 0
         total_saved = 0
+        total_skipped = 0
         
         for bv_code in bv_list:
             print(f"\n--- 处理BV号: {bv_code} ---")
+            
+            # 检查是否已爬取
+            normalized_bv = f'BV{bv_code}' if not bv_code.startswith('BV') else bv_code
+            if normalized_bv in crawled_bvs:
+                print(f"  [跳过] BV{normalized_bv} 已爬取过，仅标记用于下载检查")
+                total_skipped += 1
+                continue
             
             # 爬取视频元数据
             metadata = self.crawl_video_metadata(bv_code)
@@ -450,6 +514,8 @@ class BiliBiliAutoCrawler:
                 # 直接保存到已通过列表
                 if self.save_to_approved(metadata):
                     total_saved += 1
+                    # 添加到已爬取集合，避免重复检查
+                    crawled_bvs.add(normalized_bv)
                 
                 # 遵守请求频率限制
                 time.sleep(2)
@@ -457,6 +523,7 @@ class BiliBiliAutoCrawler:
         print(f"\n=== 从文件爬取任务完成 ===")
         print(f"总共爬取: {total_crawled} 个视频")
         print(f"新保存: {total_saved} 个视频")
+        print(f"跳过(已爬取): {total_skipped} 个视频")
         
         return total_saved
     
