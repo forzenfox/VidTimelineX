@@ -4,6 +4,11 @@ on:
   push:
     branches: [master]
   workflow_dispatch:
+    inputs:
+      custom_domain:
+        description: 'Custom domain (e.g., vx.forzenfox.com)'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -44,12 +49,18 @@ jobs:
         run: npm run build
         working-directory: frontend
         env:
-          VITE_BASE_URL: /VidTimelineX/
+          VITE_CUSTOM_DOMAIN: ${{ github.event.inputs.custom_domain || 'vx.forzenfox.com' }}
           
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/build/
+          
+      - name: Configure custom domain
+        if: github.event.inputs.custom_domain != '' || true
+        run: |
+          echo "${{ github.event.inputs.custom_domain || 'vx.forzenfox.com' }}" > frontend/build/CNAME
+        shell: bash
           
   deploy:
     environment:
