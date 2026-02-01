@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { dongzhuDanmaku, kaigeDanmaku } from "../data";
 
 interface SideDanmakuProps {
@@ -13,6 +13,7 @@ interface DanmakuMessage {
 
 export function SideDanmaku({ theme }: SideDanmakuProps) {
   const pool = useMemo(() => (theme === "dongzhu" ? dongzhuDanmaku : kaigeDanmaku), [theme]);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const initialMessages = useMemo(() => {
     return Array.from({ length: 50 }, (_, i) => ({
@@ -30,7 +31,7 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
   }, [pool]);
 
   const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>(
-    initialMessages.slice(-15)
+    initialMessages.slice(-16)
   );
 
   useEffect(() => {
@@ -48,10 +49,16 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
 
         setDisplayMessages(prev => {
           const updated = [...prev, newMessage];
-          if (updated.length > 15) {
-            return updated.slice(-15);
-          }
-          return updated;
+          const result = updated.length > 16 ? updated.slice(-16) : updated;
+
+          // 等待DOM更新后滚动到底部
+          setTimeout(() => {
+            if (contentRef.current) {
+              contentRef.current.scrollTop = contentRef.current.scrollHeight;
+            }
+          }, 0);
+
+          return result;
         });
       },
       2000 + Math.random() * 2000
@@ -62,7 +69,7 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
 
   return (
     <div
-      className="fixed right-0 top-0 bottom-0 w-80 flex flex-col theme-transition"
+      className="fixed right-0 top-[160px] bottom-0 w-80 flex flex-col theme-transition"
       style={{
         background:
           theme === "dongzhu"
@@ -106,7 +113,11 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
         )}
       </div>
 
-      <div className="flex-1 flex flex-col p-2 gap-2" style={{ overflowY: "auto" }}>
+      <div
+        className="flex-1 flex flex-col p-2 gap-2"
+        style={{ overflowY: "auto" }}
+        ref={contentRef}
+      >
         {displayMessages.map((msg, index) => (
           <div
             key={msg.id}
