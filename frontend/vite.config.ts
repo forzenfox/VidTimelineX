@@ -72,18 +72,6 @@ export default defineConfig(({ mode }) => {
             });
           },
         },
-        "/unsplash": {
-          target: "https://images.unsplash.com",
-          changeOrigin: true,
-          secure: false,
-          rewrite: path => path.replace(/^\/unsplash/, ""),
-          configure: proxy => {
-            proxy.on("proxyReq", proxyReq => {
-              proxyReq.setHeader("Referer", "https://images.unsplash.com/");
-              proxyReq.setHeader("Origin", "https://images.unsplash.com");
-            });
-          },
-        },
       },
     },
     optimizeDeps: {

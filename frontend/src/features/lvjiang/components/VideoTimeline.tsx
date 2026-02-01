@@ -2,14 +2,14 @@ import React, { useMemo } from "react";
 import { Play, Calendar, Clock } from "lucide-react";
 import { videos } from "../data";
 import type { Video } from "../data";
-import { ImageWithFallback } from "../../../components/figma/ImageWithFallback";
+import { VideoCover } from "../../../components/figma/ImageWithFallback";
 
 interface VideoTimelineProps {
   theme: "dongzhu" | "kaige";
   onVideoClick: (video: Video) => void;
 }
 
-// 单个视频项组件
+// 单个视频项组件 - 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
 const VideoItem: React.FC<{
   video: Video;
   index: number;
@@ -84,11 +84,11 @@ const VideoItem: React.FC<{
           onClick={() => onVideoClick(video)}
         >
           <div className="relative aspect-video overflow-hidden">
-            <ImageWithFallback
-              src={video.cover}
+            <VideoCover
+              cover_url={video.cover_url}
+              cover={video.cover}
               alt={video.title}
               className="w-full h-full object-cover"
-              loading="lazy"
             />
             <div
               className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 theme-transition"

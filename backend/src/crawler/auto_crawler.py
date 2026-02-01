@@ -166,7 +166,8 @@ class BiliBiliAutoCrawler:
             "views": stats.get('views', 0),
             "danmaku": stats.get('danmaku', 0),
             "up主": up_info.get('name', ''),
-            "thumbnail": thumbnail,
+            "cover_url": thumbnail,  # B站CDN封面图URL（前端优先加载）
+            "thumbnail": thumbnail,   # 封面图URL（本地下载路径或CDN URL）
             "duration": duration,
             "crawled_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "review_status": "pending",
@@ -540,7 +541,8 @@ class BiliBiliAutoCrawler:
                 "title": video.get('title'),
                 "date": date,
                 "videoUrl": f"https://www.bilibili.com/video/{bvid}",
-                "cover": f"{bvid}.jpg",  # 封面文件名
+                "cover": video.get('cover', f"{bvid}.jpg"),  # 封面文件名（本地缓存），从cover_url推断扩展名
+                "cover_url": video.get('cover_url'),  # B站CDN封面图URL（前端优先加载）
                 "tags": [],  # 初始为空列表，供人工填写
                 "duration": video.get('duration', "00:00")  # 视频时长
             }

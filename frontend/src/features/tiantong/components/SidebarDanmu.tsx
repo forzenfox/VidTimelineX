@@ -311,12 +311,6 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            {/* 核心粉丝专属甜筒标识 */}
-            {user?.name === "甜筒" && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#F4729C] rounded-full flex items-center justify-center text-white text-xs">
-                🍦
-              </div>
-            )}
           </div>
         ) : (
           <div className={`w-9 h-9 rounded-full overflow-hidden border-2 border-[#E67E22]`}>
