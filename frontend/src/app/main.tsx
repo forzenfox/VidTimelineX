@@ -33,7 +33,7 @@ function registerServiceWorker() {
     window.addEventListener("load", () => {
       navigator.serviceWorker
         .register("/sw.js")
-        .then((registration) => {
+        .then(registration => {
           console.log("[SW] 注册成功:", registration.scope);
           registration.addEventListener("updatefound", () => {
             const newWorker = registration.installing;
@@ -46,7 +46,7 @@ function registerServiceWorker() {
             }
           });
         })
-        .catch((error) => {
+        .catch(error => {
           console.log("[SW] 注册失败:", error);
         });
     });

@@ -1,6 +1,7 @@
 # 哔哩哔哩时间线 - 前端项目
 
 > **📁 项目文档导航**
+>
 > - **根目录README**：项目全局说明、架构概览、部署指南 → [查看](../README.md)
 > - **本文档**：前端详细技术文档、安装指南、测试说明
 
@@ -147,6 +148,7 @@ frontend/
 **src/app/** 目录包含应用的核心配置，包括应用入口、路由配置和首页组件。这个目录集中管理应用的核心逻辑，便于维护和扩展。
 
 **src/components/** 目录包含公共组件：
+
 - **ui/**：基于 Radix UI 构建的基础 UI 组件（30+组件），遵循统一接口设计，包含完整的类型定义和无障碍支持
 - **figma/**：Figma 设计系统相关组件
 - **MobileNotSupported.tsx**：移动端访问提示组件
@@ -162,6 +164,7 @@ frontend/
 **src/hooks/** 目录包含公共的自定义 React Hook，用于提取和复用跨模块的组件逻辑。use-mobile hook 实现了响应式设备检测，use-dynamic-component hook 提供动态组件加载能力。
 
 **src/styles/** 目录包含全局样式文件：
+
 - **animations.css**：动画样式定义
 - **components.css**：组件级样式
 - **globals.css**：全局 CSS 变量和基础样式
@@ -169,6 +172,7 @@ frontend/
 - **variables.css**：CSS 变量定义
 
 **tests/** 目录组织测试文件，分为单元测试、集成测试和端到端测试（Playwright）：
+
 - **unit/**：单元测试（22个测试套件，135个测试用例）
 - **integration/**：集成测试
 - **e2e/**：端到端测试（Playwright）
