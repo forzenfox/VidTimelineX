@@ -19,11 +19,10 @@ backend/
 │   │   └── download_thumbs.py    # 缩略图下载功能
 │   ├── commands/        # 命令行工具
 │   │   ├── __init__.py
-│   │   ├── approve_videos.py            # 视频审核工具
-│   │   ├── approve_videos_with_duration.py  # 带时长的视频审核工具
-│   │   └── generate_timeline.py         # 时间线生成工具
+│   │   └── approve_videos.py            # 视频审核工具
 │   └── utils/           # 工具函数
-│       └── __init__.py
+│       ├── __init__.py
+│       └── config.py    # 配置文件
 ├── data/                # 数据存储目录
 │   ├── bv.txt           # BV号列表文件
 │   ├── pending.json     # 待审核视频列表
@@ -53,10 +52,11 @@ backend/
 
 ### 3. 命令行工具 (src/commands/)
 - **approve_videos.py**: 视频审核工具，用于将待审核视频移动到已通过或已拒绝列表。
-- **approve_videos_with_duration.py**: 带时长的视频审核工具，支持根据视频时长进行审核。
-- **generate_timeline.py**: 时间线生成工具，用于生成符合前端要求的时间线数据。
 
-### 4. 主入口脚本 (main.py)
+### 4. 工具模块 (src/utils/)
+- **config.py**: 配置文件，包含爬虫系统的各种配置参数，如请求头、数据存储路径、超时设置等。
+
+### 5. 主入口脚本 (main.py)
 提供命令行界面，支持两种爬取模式：
 - **file**: 从指定文件读取BV号列表进行爬取
 - **keyword**: 根据关键词搜索视频进行爬取
