@@ -9,9 +9,7 @@ export default defineConfig(({ mode }) => {
 
   // 自定义域名配置
   const customDomain = env.VITE_CUSTOM_DOMAIN;
-  const baseUrl = customDomain 
-    ? `https://${customDomain}/` 
-    : (env.VITE_BASE_URL || "/");
+  const baseUrl = customDomain ? `https://${customDomain}/` : env.VITE_BASE_URL || "/";
 
   return {
     base: baseUrl,
