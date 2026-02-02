@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""
+路径管理模块
+管理数据存储路径和目录创建
+"""
+
+from pathlib import Path
+from src.utils.config import DATA_DIR, COMMON_DIR, BV_LISTS_DIR, DEFAULT_BV_FILES
+
+
+def get_bv_file_path(data_type):
+    """获取BV号文件路径
+    
+    Args:
+        data_type: 数据类型
+        
+    Returns:
+        Path: BV号文件路径
+    """
+    file_names = {
+        'lvjiang': 'lvjiang-bv.txt',
+        'tiantong': 'tiantong-bv.txt'
+    }
+    return BV_LISTS_DIR / file_names.get(data_type, f'{data_type}-bv.txt')
+
+
+def get_data_paths(data_type):
+    """获取数据存储路径
+    
+    Args:
+        data_type: 数据类型
+        
+    Returns:
+        dict: 数据存储路径
+    """
+    from src.utils.config import get_data_type_config
+    return get_data_type_config(data_type)
+
+
+def ensure_directories(data_type):
+    """确保目录存在
+    
+    Args:
+        data_type: 数据类型
+    """
+    config = get_data_paths(data_type)
+    
+    # 确保公共目录存在
+    BV_LISTS_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # 确保数据类型目录存在
+    for path in config.values():
+        if isinstance(path, Path) and path.suffix == '':
+            path.mkdir(parents=True, exist_ok=True)
+
+
+def get_all_data_types():
+    """获取所有数据类型
+    
+    Returns:
+        list: 数据类型列表
+    """
+    return list(DATA_TYPES.values()) if 'DATA_TYPES' in globals() else ['lvjiang', 'tiantong']
+
+
+# 兼容旧配置
+from src.utils.config import DATA_TYPES

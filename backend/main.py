@@ -14,17 +14,20 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # 导入爬虫功能
 from src.crawler.auto_crawler import BiliBiliAutoCrawler
-from src.utils.config import BV_SOURCES_DIR, BV_FILE_PATH, DEFAULT_BV_FILES
+from src.utils.path_manager import get_bv_file_path
 
 
 def main():
     """主函数，提供命令行界面"""
     parser = argparse.ArgumentParser(description='B站视频爬虫工具')
+    parser.add_argument('--data-type', type=str, default='lvjiang', 
+                        choices=['lvjiang', 'tiantong'],
+                        help='数据类型：lvjiang（驴酱）或tiantong（甜筒）')
     parser.add_argument('--mode', type=str, default='file', choices=['file', 'keyword'],
                         help='爬取模式：file（从文件读取BV号）或keyword（关键词搜索）')
     parser.add_argument('--bv-file', type=str, 
-                        default=str(BV_FILE_PATH),
-                        help=f'BV号文件路径，默认使用驴酱的BV号列表。可用选项：{list(DEFAULT_BV_FILES.keys())}')
+                        default=str(get_bv_file_path('lvjiang')),
+                        help='BV号文件路径')
     parser.add_argument('--keywords', type=str, nargs='+',
                         default=['原神', '崩坏星穹铁道', '塞尔达传说'],
                         help='搜索关键词列表')
@@ -38,10 +41,11 @@ def main():
     # 控制是否下载封面
     download_covers = not args.no_download_covers
     
-    # 创建爬虫实例
-    crawler = BiliBiliAutoCrawler()
+    # 创建对应数据类型的爬虫实例
+    crawler = BiliBiliAutoCrawler(data_type=args.data_type)
     
     print("=== B站视频爬虫工具 ===")
+    print(f"数据类型: {args.data_type}")
     print(f"爬取模式: {args.mode}")
     print(f"下载封面: {'是' if download_covers else '否'}")
     

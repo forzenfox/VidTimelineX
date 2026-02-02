@@ -24,17 +24,28 @@ from src.utils.config import (
 from src.downloader.download_thumbs import download_all_covers
 
 class BiliBiliAutoCrawler:
-    def __init__(self):
+    def __init__(self, data_type='lvjiang'):
+        """初始化爬虫
+        
+        Args:
+            data_type: 数据类型，默认为'lvjiang'
+        """
+        from src.utils.path_manager import get_data_paths, ensure_directories
+        
+        self.data_type = data_type
+        self.config = get_data_paths(data_type)
         self.headers = HEADERS
         self.session = requests.Session()
         self.session.headers.update(self.headers)
         
+        # 确保目录存在
+        ensure_directories(data_type)
+        
         # 数据存储路径
-        self.data_dir = DATA_DIR
-        self.data_dir.mkdir(exist_ok=True)
-        self.pending_file = PENDING_FILE
-        self.approved_file = APPROVED_FILE
-        self.rejected_file = REJECTED_FILE
+        self.data_dir = self.config['DATA_TYPE_DIR']
+        self.pending_file = self.config['PENDING_FILE']
+        self.approved_file = self.config['APPROVED_FILE']
+        self.rejected_file = self.config['REJECTED_FILE']
         
         # 初始化存储文件
         self._init_storage_files()
@@ -586,10 +597,8 @@ class BiliBiliAutoCrawler:
         # 按照发布日期排序（降序）
         videos.sort(key=lambda x: x.get('publish_date', ''), reverse=True)
         
-        # 计算前端thumbs目录路径
-        backend_dir = Path(__file__).parent.parent.parent.parent
-        frontend_public = backend_dir / "frontend" / "public"
-        thumbs_dir = frontend_public / "thumbs"
+        # 获取封面目录路径
+        thumbs_dir = self.config['THUMBS_DIR']
         
         # 扫描已存在的封面文件，获取正确的扩展名
         existing_covers = {}
@@ -630,12 +639,13 @@ class BiliBiliAutoCrawler:
             timeline_data.append(timeline_item)
         
         # 保存到时间线数据目录
-        TIMELINE_OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
+        timeline_output_file = self.config['TIMELINE_FILE']
+        timeline_output_file.parent.mkdir(parents=True, exist_ok=True)
         
-        with open(TIMELINE_OUTPUT_FILE, 'w', encoding='utf-8') as f:
+        with open(timeline_output_file, 'w', encoding='utf-8') as f:
             json.dump(timeline_data, f, ensure_ascii=False, indent=2)
         
-        print(f"生成了时间线数据，保存到: {TIMELINE_OUTPUT_FILE}")
+        print(f"生成了时间线数据，保存到: {timeline_output_file}")
         print(f"时间线包含 {len(timeline_data)} 个视频")
         
         # 下载缺失的视频封面到前端目录
@@ -643,7 +653,7 @@ class BiliBiliAutoCrawler:
             print("\n开始下载视频封面...")
             
             # 调用封面下载函数
-            results = download_all_covers(TIMELINE_OUTPUT_FILE, thumbs_dir, quiet=False)
+            results = download_all_covers(timeline_output_file, thumbs_dir, quiet=False)
             
             print(f"封面下载完成: 成功 {results['success']}, 失败 {results['failed']}, 跳过 {results['skipped']}")
             
@@ -661,7 +671,7 @@ class BiliBiliAutoCrawler:
                             updated = True
                 
                 if updated:
-                    with open(TIMELINE_OUTPUT_FILE, 'w', encoding='utf-8') as f:
+                    with open(timeline_output_file, 'w', encoding='utf-8') as f:
                         json.dump(timeline_data, f, ensure_ascii=False, indent=2)
                     print("时间线数据已更新")
         

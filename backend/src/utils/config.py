@@ -5,7 +5,14 @@
 """
 
 from pathlib import Path
+import json
 
+
+# 数据类型定义
+DATA_TYPES = {
+    'LVJIANG': 'lvjiang',    # 驴酱
+    'TIANTONG': 'tiantong'   # 甜筒
+}
 
 # 项目根目录
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -13,17 +20,87 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 # 数据存储目录
 DATA_DIR = PROJECT_ROOT / "data"
 
-# BV号来源目录
-BV_SOURCES_DIR = DATA_DIR / "sources"
+# 公共数据目录
+COMMON_DIR = DATA_DIR / "common"
+BV_LISTS_DIR = COMMON_DIR / "bv-lists"
 
 # BV号文件路径（默认使用驴酱的BV号列表）
-BV_FILE_PATH = BV_SOURCES_DIR / "lvjiang-bv.txt"
+BV_FILE_PATH = BV_LISTS_DIR / "lvjiang-bv.txt"
 
 # 默认BV文件配置
 DEFAULT_BV_FILES = {
-    'lvjiang': BV_SOURCES_DIR / "lvjiang-bv.txt",
-    'tiantong': BV_SOURCES_DIR / "tiantong-bv.txt"
+    'lvjiang': BV_LISTS_DIR / "lvjiang-bv.txt",
+    'tiantong': BV_LISTS_DIR / "tiantong-bv.txt"
 }
+
+# 配置文件路径
+CONFIG_FILE = PROJECT_ROOT / "config.json"
+
+# 获取配置
+def get_config():
+    """获取配置
+    
+    Returns:
+        dict: 配置信息
+    """
+    # 默认配置
+    default_config = {
+        'crawler': {
+            'timeout': 30,
+            'retry': 3
+        },
+        'storage': {
+            'auto_create': True
+        }
+    }
+    
+    # 如果配置文件存在，读取配置
+    if CONFIG_FILE.exists():
+        try:
+            with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"读取配置文件失败: {e}")
+            return default_config
+    
+    return default_config
+
+# 保存配置
+def save_config(config):
+    """保存配置
+    
+    Args:
+        config: 配置信息
+    """
+    try:
+        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+            json.dump(config, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"保存配置文件失败: {e}")
+
+# 数据类型配置
+def get_data_type_config(data_type):
+    """获取数据类型配置
+    
+    Args:
+        data_type: 数据类型
+        
+    Returns:
+        dict: 数据类型配置
+    """
+    data_type_dir = DATA_DIR / data_type
+    return {
+        'DATA_TYPE_DIR': data_type_dir,
+        'PENDING_FILE': data_type_dir / "pending.json",
+        'APPROVED_FILE': data_type_dir / "approved.json",
+        'REJECTED_FILE': data_type_dir / "rejected.json",
+        'TIMELINE_FILE': data_type_dir / "videos.json",
+        'THUMBS_DIR': data_type_dir / "thumbs",
+        'bv_files': data_type_dir / "bv-files",
+        'covers': data_type_dir / "covers",
+        'timeline': data_type_dir / "timelines",
+        'videos': data_type_dir / "videos"
+    }
 
 # 存储文件路径
 PENDING_FILE = DATA_DIR / "pending.json"
