@@ -24,10 +24,16 @@ backend/
 │       ├── __init__.py
 │       └── config.py    # 配置文件
 ├── data/                # 数据存储目录
-│   ├── bv.txt           # BV号列表文件
-│   ├── pending.json     # 待审核视频列表
-│   ├── approved.json    # 已通过审核视频列表
-│   └── rejected.json    # 已拒绝视频列表
+│   ├── raw/             # 原始爬取数据
+│   │   ├── pending.json     # 待审核视频列表
+│   │   ├── approved.json    # 已通过审核视频列表
+│   │   └── rejected.json    # 已拒绝视频列表
+│   ├── processed/       # 处理后的数据
+│   │   └── videos.json      # 前端时间线数据
+│   ├── sources/         # BV号来源文件
+│   │   ├── lvjiang-bv.txt   # 驴酱UP主的BV号列表
+│   │   └── tiantong-bv.txt  # 甜筒UP主的BV号列表
+│   └── README.md        # 数据目录说明
 ├── tests/               # 测试目录
 │   ├── __init__.py
 │   ├── playwright_test.py          # Playwright测试
@@ -36,8 +42,6 @@ backend/
 │   ├── test_search_api.py          # 搜索API测试
 │   ├── test_storage_solutions.py   # 存储方案测试
 │   └── test_video_metadata.py      # 视频元数据测试
-├── docs/                # 文档目录
-│   └── search_response_sample.html # 搜索响应示例
 ├── main.py              # 主入口脚本
 └── README.md            # 项目说明文档
 ```
@@ -78,9 +82,18 @@ playwright install
 
 ## 使用方法
 
-### 1. 从文件爬取BV号（默认模式）
+### 1. 从文件爬取BV号（默认模式，默认使用驴酱的BV号列表）
 ```bash
-python main.py --mode file --bv-file ./data/bv.txt
+python main.py --mode file
+```
+
+### 指定不同的BV号文件
+```bash
+# 爬取驴酱的视频
+python main.py --mode file --bv-file ./data/sources/lvjiang-bv.txt
+
+# 爬取甜筒的视频
+python main.py --mode file --bv-file ./data/sources/tiantong-bv.txt
 ```
 
 ### 2. 关键词搜索爬取
@@ -136,7 +149,7 @@ python src/downloader/download_thumbs.py data/videos.json frontend/public/thumbs
 
 ## 数据格式
 
-### BV号文件格式 (bv.txt)
+### BV号文件格式 (sources/*.txt)
 ```
 # 这是注释行，以#开头的行会被忽略
 # 每行可以包含一个BV号，支持带或不带BV前缀
@@ -209,12 +222,14 @@ pytest tests/test_load_bv_list.py
 ### 代码结构
 - 所有核心代码位于`src/`目录下，按照功能模块划分
 - 测试代码位于`tests/`目录下，与核心代码结构对应
-- 文档位于`docs/`目录下
+- 数据文件位于`data/`目录下，按照数据类型组织
+- 详细的数据目录说明请参考 `data/README.md`
 
 ## 最佳实践
 
 1. **BV号文件管理**
-   - 定期更新`bv.txt`文件，添加新的BV号
+   - BV号文件位于 `data/sources/` 目录下，按UP主分类管理
+   - 定期更新对应的BV号文件，添加新的BV号
    - 使用注释对BV号进行分类和说明
    - 避免重复添加相同的BV号
 

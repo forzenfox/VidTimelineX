@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # 导入爬虫功能
 from src.crawler.auto_crawler import BiliBiliAutoCrawler
-from src.utils.config import BV_FILE_PATH
+from src.utils.config import BV_SOURCES_DIR, BV_FILE_PATH, DEFAULT_BV_FILES
 
 
 def main():
@@ -24,7 +24,7 @@ def main():
                         help='爬取模式：file（从文件读取BV号）或keyword（关键词搜索）')
     parser.add_argument('--bv-file', type=str, 
                         default=str(BV_FILE_PATH),
-                        help='BV号文件路径')
+                        help=f'BV号文件路径，默认使用驴酱的BV号列表。可用选项：{list(DEFAULT_BV_FILES.keys())}')
     parser.add_argument('--keywords', type=str, nargs='+',
                         default=['原神', '崩坏星穹铁道', '塞尔达传说'],
                         help='搜索关键词列表')

@@ -13,8 +13,17 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 # 数据存储目录
 DATA_DIR = PROJECT_ROOT / "data"
 
-# BV号文件路径
-BV_FILE_PATH = DATA_DIR / "bv.txt"
+# BV号来源目录
+BV_SOURCES_DIR = DATA_DIR / "sources"
+
+# BV号文件路径（默认使用驴酱的BV号列表）
+BV_FILE_PATH = BV_SOURCES_DIR / "lvjiang-bv.txt"
+
+# 默认BV文件配置
+DEFAULT_BV_FILES = {
+    'lvjiang': BV_SOURCES_DIR / "lvjiang-bv.txt",
+    'tiantong': BV_SOURCES_DIR / "tiantong-bv.txt"
+}
 
 # 存储文件路径
 PENDING_FILE = DATA_DIR / "pending.json"
