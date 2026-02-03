@@ -3,6 +3,8 @@ name: CI for Non-master Branches
 on:
   push:
     branches-ignore: [master]
+  pull_request:
+    branches: [master]
 
 permissions:
   contents: read

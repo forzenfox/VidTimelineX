@@ -13,21 +13,22 @@ Usage (as script):
   python download_thumbs.py <videos.json> <thumbs_output_dir> [--quiet]
 
 Usage (as module):
-  from download_thumbs import download_all_covers
+  from src.downloader.download_thumbs import download_all_covers
   download_all_covers(videos_path, thumbs_dir, quiet=False)
 
 Requirements:
   - Python 3.8+
   - requests (install with `pip install -r requirements.txt`)
 """
+
 import sys
 import re
 import json
 import time
-import argparse
 from pathlib import Path
 from urllib.parse import urlparse
 from typing import Optional, List, Dict, Any
+
 
 try:
     import requests
@@ -155,7 +156,6 @@ def get_cover_filename(bvid: str, html: str) -> str:
     Returns:
         文件名，如 'BV195zoB2EFY.jpg'
     """
-    # 尝试从页面提取扩展名
     og_image = get_og_image(html)
     if og_image:
         ext = sanitize_ext(og_image)
@@ -174,17 +174,14 @@ def is_cover_exists(thumbs_dir: Path, bvid: str, html: str = None) -> bool:
     Returns:
         存在返回True，否则返回False
     """
-    # 可能的扩展名列表
     possible_exts = ['.jpg', '.jpeg', '.png', '.webp']
     
     if html:
-        # 尝试从HTML获取准确的扩展名
         filename = get_cover_filename(bvid, html)
         filepath = thumbs_dir / filename
         if filepath.exists() and filepath.stat().st_size > 0:
             return True
     
-    # 尝试所有可能的扩展名
     for ext in possible_exts:
         filepath = thumbs_dir / f"{bvid}{ext}"
         if filepath.exists() and filepath.stat().st_size > 0:
@@ -231,7 +228,6 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
         
         html = resp.text
         
-        # 获取扩展名和文件名
         img_url = get_og_image(html)
         if img_url:
             img_url = ensure_protocol(img_url)
@@ -240,9 +236,7 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False)
             ext = '.jpg'
         filename = choose_filename(bvid, ext)
         
-        # 检查封面是否已存在
         if is_cover_exists(thumbs_dir, bvid, html):
-            # 返回已存在的文件名
             existing_file = None
             for check_ext in ['.jpg', '.jpeg', '.png', '.webp']:
                 check_file = thumbs_dir / f"{bvid}{check_ext}"
@@ -343,6 +337,8 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path, quiet: bool = False
 
 def main():
     """主函数，命令行入口"""
+    import argparse
+    
     parser = argparse.ArgumentParser(description='下载B站视频封面图片')
     parser.add_argument('videos_json', type=Path, help='videos.json文件路径')
     parser.add_argument('thumbs_dir', type=Path, help='封面保存目录')
