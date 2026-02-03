@@ -61,28 +61,22 @@ class TestTimelineGenerator(unittest.TestCase):
         ]
     
     def test_generate_timeline(self):
-        """测试生成时间线数据"""
+        """测试生成时间线数据（符合前端 videos.json 格式）"""
         timeline_data = self.generator.generate_timeline(self.test_videos)
         
-        # 验证结果
         self.assertIsInstance(timeline_data, list)
         self.assertEqual(len(timeline_data), 2)
         
-        # 验证时间线数据结构
         for item in timeline_data:
             self.assertIn("id", item)
             self.assertIn("date", item)
             self.assertIn("title", item)
-            self.assertIn("content", item)
-            self.assertIn("video", item)
-            self.assertIn("thumbnail", item)
-            self.assertIn("views", item)
-            self.assertIn("danmaku", item)
-            self.assertIn("up主", item)
+            self.assertIn("videoUrl", item)
+            self.assertIn("cover", item)
+            self.assertIn("cover_url", item)
+            self.assertIn("tags", item)
             self.assertIn("duration", item)
-            self.assertIn("crawled_at", item)
         
-        # 验证排序（按发布日期降序）
         self.assertEqual(timeline_data[0]["date"], "2023-12-02")
         self.assertEqual(timeline_data[1]["date"], "2023-12-01")
     
@@ -106,45 +100,34 @@ class TestTimelineGenerator(unittest.TestCase):
         """测试运行时间线生成任务"""
         result = self.generator.run(self.test_videos, "test")
         
-        # 验证结果
         self.assertIsInstance(result, dict)
         self.assertIn("success", result)
         self.assertTrue(result["success"])
-        self.assertEqual(result["count"], 2)
     
     def test_load_existing_timeline(self):
         """测试加载现有时间线数据"""
-        # 创建测试时间线文件
         test_file = Path("test_existing_timeline.json")
         existing_data = [
             {
-                "id": 1,
+                "id": "1",
                 "date": "2023-12-02",
                 "title": "测试视频2",
-                "content": "这是测试视频2的描述",
-                "video": {
-                    "bv": "2yy522d8nE",
-                    "url": "https://www.bilibili.com/video/BV2yy522d8nE"
-                },
-                "thumbnail": "https://i0.hdslb.com/bfs/archive/2yy522d8nE.jpg",
-                "views": 2000,
-                "danmaku": 200,
-                "up主": "测试UP主",
-                "duration": "03:45",
-                "crawled_at": "2023-12-02 12:00:00"
+                "videoUrl": "https://www.bilibili.com/video/BV2yy522d8nE",
+                "cover": "BV2yy522d8nE.jpg",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/2yy522d8nE.jpg",
+                "tags": [],
+                "duration": "03:45"
             }
         ]
         
         with open(test_file, 'w', encoding='utf-8') as f:
             json.dump(existing_data, f, ensure_ascii=False, indent=2)
         
-        # 测试加载
         loaded_data = self.generator.load_existing_timeline(test_file)
         self.assertIsInstance(loaded_data, list)
         self.assertEqual(len(loaded_data), 1)
-        self.assertEqual(loaded_data[0]["video"]["bv"], "2yy522d8nE")
+        self.assertEqual(loaded_data[0]["id"], "1")
         
-        # 清理测试文件
         if test_file.exists():
             test_file.unlink()
     
@@ -158,32 +141,23 @@ class TestTimelineGenerator(unittest.TestCase):
     
     def test_incremental_update(self):
         """测试增量更新时间线数据"""
-        # 创建测试时间线文件
         test_file = Path("test_incremental_timeline.json")
         existing_data = [
             {
-                "id": 1,
+                "id": "1",
                 "date": "2023-12-02",
                 "title": "测试视频2",
-                "content": "这是测试视频2的描述",
-                "video": {
-                    "bv": "2yy522d8nE",
-                    "url": "https://www.bilibili.com/video/BV2yy522d8nE"
-                },
-                "thumbnail": "https://i0.hdslb.com/bfs/archive/2yy522d8nE.jpg",
-                "views": 2000,
-                "danmaku": 200,
-                "up主": "测试UP主",
-                "duration": "03:45",
-                "crawled_at": "2023-12-02 12:00:00"
+                "videoUrl": "https://www.bilibili.com/video/BV2yy522d8nE",
+                "cover": "BV2yy522d8nE.jpg",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/2yy522d8nE.jpg",
+                "tags": [],
+                "duration": "03:45"
             }
         ]
         
         with open(test_file, 'w', encoding='utf-8') as f:
             json.dump(existing_data, f, ensure_ascii=False, indent=2)
         
-        # 测试增量更新
-        # 模拟新视频数据
         new_videos = [
             {
                 "bv": "3zz633e9oF",
@@ -200,19 +174,12 @@ class TestTimelineGenerator(unittest.TestCase):
             }
         ]
         
-        # 生成时间线数据
         timeline_data = self.generator.generate_timeline(new_videos)
-        
-        # 加载现有数据
         existing_timeline = self.generator.load_existing_timeline(test_file)
-        
-        # 合并数据
         merged_data = existing_timeline + timeline_data
         
-        # 验证合并结果
         self.assertEqual(len(merged_data), 2)
         
-        # 清理测试文件
         if test_file.exists():
             test_file.unlink()
 

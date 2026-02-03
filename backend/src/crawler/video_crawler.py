@@ -26,6 +26,54 @@ class VideoCrawler:
         self.session.headers.update(HEADERS)
         self.crawled_bvs_cache = {}  # 缓存已爬取的BV号
     
+    def _extract_bv_from_item(self, item):
+        """从时间线条目中提取 BV 号
+        
+        Args:
+            item: 时间线条目
+            
+        Returns:
+            str: BV 号，未找到返回空字符串
+        """
+        if not isinstance(item, dict):
+            return ''
+        
+        import re
+        bv = None
+        
+        # 1. 从 videoUrl 字段提取（优先级最高）
+        if not bv and 'videoUrl' in item:
+            url = item.get('videoUrl', '')
+            match = re.search(r'(BV[0-9A-Za-z]+)', url)
+            if match:
+                bv = match.group(1)
+        
+        # 2. 从 cover 字段提取（支持带或不带 BV 前缀的格式）
+        if not bv and 'cover' in item:
+            cover = item.get('cover', '')
+            # 检查是否带 BV 前缀
+            if cover.startswith('BV'):
+                bv = cover.split('.')[0]
+            else:
+                # 尝试从文件名中提取可能的 BV 号格式
+                # 匹配类似 15NzrBBEJQ.jpg 的格式
+                match = re.search(r'([0-9A-Za-z]{10,})\.[a-zA-Z]+$', cover)
+                if match:
+                    # 假设这是一个 BV 号（不带前缀）
+                    bv = f"BV{match.group(1)}"
+        
+        # 3. 从嵌套的 video 对象中提取
+        if not bv and 'video' in item:
+            video_info = item.get('video')
+            if isinstance(video_info, dict):
+                bv = video_info.get('bv')
+        
+        # 4. 从顶级 bv 字段提取
+        if not bv and 'bv' in item:
+            bv = item.get('bv')
+        
+        return bv if bv else ''
+
     def is_video_crawled(self, bv_code, timeline_file):
         """检查视频是否已经被爬取
         
@@ -52,15 +100,10 @@ class VideoCrawler:
                     crawled_bvs = set()
                     for item in timeline_data:
                         if isinstance(item, dict):
-                            # 检查视频BV号
-                            video_info = item.get('video', {})
-                            if isinstance(video_info, dict):
-                                existing_bv = video_info.get('bv')
-                                if existing_bv:
-                                    crawled_bvs.add(existing_bv)
-                            # 也检查顶级BV号字段（兼容旧格式）
-                            elif item.get('bv'):
-                                crawled_bvs.add(item.get('bv'))
+                            # 使用统一的 BV 号提取逻辑
+                            existing_bv = self._extract_bv_from_item(item)
+                            if existing_bv:
+                                crawled_bvs.add(existing_bv)
                     
                     self.crawled_bvs_cache[cache_key] = crawled_bvs
             
