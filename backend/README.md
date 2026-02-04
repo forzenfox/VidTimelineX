@@ -75,9 +75,11 @@ backend/
 │   ├── test_timeline_generator.py # 时间线生成测试
 │   ├── test_cover_downloader.py   # 封面下载测试
 │   ├── test_frontend_format.py     # 前端格式测试
+│   ├── test_memory_integration.py  # 内存处理集成测试
+│   ├── test_performance.py         # 性能测试
 │   ├── test_update_frontend.py    # 前端更新测试
 │   └── test_update_timeline.py    # 时间线更新测试
-├── update_timeline.py   # 主更新脚本
+├── main.py              # 主更新脚本
 ├── update_frontend.py   # 前端更新脚本
 ├── requirements.txt     # 依赖文件
 ├── config.json          # 配置文件
@@ -92,27 +94,29 @@ backend/
 **功能**：
 - 自动爬取B站收藏夹页面
 - 处理动态内容加载
-- 提取视频BV号
-- 保存BV号到文件
+- 提取视频BV号到内存
+- 支持API和网页两种爬取方式
 
 **核心方法**：
 - `crawl_favorites(url)`: 爬取收藏夹页面
 - `extract_bv_codes(html)`: 从HTML中提取BV号
-- `save_bv_codes(bv_codes, output_file)`: 保存BV号到文件
-- `run()`: 运行完整爬取任务
+- `run_with_memory()`: 运行内存处理模式的爬取任务
+- `crawl_favorites_to_memory(data_type)`: 爬取单个收藏夹到内存
+- `run()`: 运行完整爬取任务（兼容模式）
 
 ### 2. 视频元数据爬取模块 (src/crawler/video_crawler.py)
 
 **功能**：
-- 从文件加载BV号列表
-- 爬取视频详细元数据
+- 从内存BV列表爬取视频详细元数据
 - 智能的重试机制
 - 多维度数据提取
+- 增量爬取支持
 
 **核心方法**：
-- `load_bv_list(file_path)`: 加载BV号列表
-- `crawl_video_metadata(bv_code)`: 爬取视频元数据
+- `crawl_from_bv_list(bv_list, data_type, full_crawl=False)`: 从内存BV列表爬取
+- `crawl_video_metadata(bv_code)`: 爬取单个视频元数据
 - `_parse_video_page(html, bv_code)`: 解析视频页面
+- `is_video_crawled(bv_code, timeline_file)`: 检查视频是否已爬取
 - 多种数据提取辅助方法
 
 ### 3. 时间线生成模块 (src/crawler/timeline_generator.py)
@@ -172,20 +176,26 @@ backend/
 - `ensure_directories(data_type)`: 确保目录存在
 - `get_all_data_types()`: 获取所有数据类型
 
-### 6. 主更新脚本 (update_timeline.py)
+### 6. 主更新脚本 (main.py)
 
 **功能**：
 - 一键执行完整更新流程
 - 模块化的流程控制
 - 详细的日志输出
 - 支持多个数据类型
+- 内存处理模式
 
 **执行流程**：
-1. 爬取收藏夹获取BV号
-2. 加载BV号列表
-3. 爬取视频元数据
-4. 生成时间线数据
-5. 下载封面图片
+1. 爬取收藏夹获取BV号到内存
+2. 从内存BV列表爬取视频元数据
+3. 生成时间线数据
+4. 下载封面图片
+5. 更新前端文件
+
+**内存处理模式**：
+- BV号直接在内存中传递，无需存储到文件
+- 减少IO操作，提高运行效率
+- 简化流程，直接从内存BV列表爬取
 
 ## 安装和依赖
 
@@ -255,14 +265,17 @@ playwright install
 
 ```bash
 # 在backend目录下执行
-python update_timeline.py
+python main.py
 ```
 
 ### 3. 查看结果
 
 **生成的文件**：
-- **BV号列表**：`data/common/bv-lists/{data_type}-bv.txt`
 - **时间线数据**：`data/{data_type}/videos.json`
+
+**内存处理模式**：
+- **无BV号文件**：BV号直接在内存中传递，无需存储到文件
+- **减少文件操作**：提高运行效率，减少文件系统开销
 
 **时间线数据格式**（与前端 videos.json 完全一致）：
 
@@ -307,14 +320,16 @@ pytest --cov=src
 
 | 测试模块 | 测试数量 | 说明 |
 |---------|---------|------|
-| 配置管理 | 3 | 配置文件读写、数据类型配置 |
-| 路径管理 | 3 | 路径生成、目录创建 |
-| 收藏夹爬取 | 3 | BV号提取、文件保存、配置获取 |
-| 视频元数据 | 2 | BV号加载、元数据爬取 |
+| 配置管理 | 5 | 配置文件读写、数据类型配置、前端配置 |
+| 路径管理 | 2 | 路径生成、目录创建 |
+| 收藏夹爬取 | 5 | BV号提取、内存处理、配置获取 |
+| 视频元数据 | 6 | 内存BV列表爬取、元数据爬取、增量逻辑 |
 | 时间线生成 | 6 | 数据生成、文件保存、任务运行、增量更新 |
 | 封面下载 | 25 | HTML解析、文件下载、批量处理 |
 | 前端格式验证 | 11 | 输出格式与前端 videos.json 一致性验证 |
-| **总计** | **65** | **完整测试覆盖** |
+| 内存处理集成 | 4 | 内存处理流程、无文件操作、BV列表传递 |
+| 性能测试 | 1 | 内存处理 vs 文件处理性能比较 |
+| **总计** | **81** | **完整测试覆盖** |
 
 ## 配置说明
 
@@ -365,8 +380,7 @@ def get_data_type_config(data_type):
     return {
         'DATA_TYPE_DIR': data_type_dir,
         'THUMBS_DIR': data_type_dir / "thumbs",  # 封面图片目录
-        'TIMELINE_FILE': data_type_dir / "videos.json",
-        'BV_FILE': BV_LISTS_DIR / f"{data_type}-bv.txt"
+        'TIMELINE_FILE': data_type_dir / "videos.json"
     }
 ```
 
@@ -522,7 +536,7 @@ python -m src.downloader.download_thumbs data/lvjiang/videos.json data/lvjiang/t
 
 ## 许可证
 
-MIT License
+本项目采用 MIT 许可证开源。详细内容请参阅项目根目录的 [LICENSE](../LICENSE) 文件。
 
 ## 贡献
 
@@ -530,11 +544,20 @@ MIT License
 
 ---
 
-**📝 文档更新时间**：2026-02-03
-**📦 版本**：1.1.0
+**📝 文档更新时间**：2026-02-04
+**📦 版本**：1.2.0
 **🔧 维护者**：系统自动生成
 
 **更新日志**：
+- 1.2.0 (2026-02-04)
+  - 新增内存处理模式，BV号直接在内存中传递
+  - 移除 data/common/bv-lists/ 目录，减少文件操作
+  - 重命名 update_timeline.py 为 main.py
+  - 新增 16 个测试用例（内存集成4 + 性能1 + 其他11）
+  - 总测试数达到 81 个，完整测试覆盖
+  - 优化性能，减少IO操作
+  - 简化代码结构，提高可维护性
+
 - 1.1.0 (2026-02-03)
   - 输出格式与前端 videos.json 完全一致
   - 新增封面图片下载功能
