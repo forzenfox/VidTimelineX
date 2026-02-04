@@ -76,6 +76,9 @@ def main():
     favorites_result = favorites_crawler.run()
     print(f"收藏夹爬取结果: {favorites_result}")
     
+    # 添加成功标志，跟踪是否成功生成了时间线数据
+    timeline_generated = False
+    
     # 处理每个数据类型
     for data_type in data_types:
         print(f"\n=== 处理 {data_type} 数据 ===")
@@ -127,6 +130,8 @@ def main():
         print(f"时间线生成结果: {timeline_result}")
         
         if timeline_result.get('success'):
+            # 更新成功标志
+            timeline_generated = True
             data_config = get_data_paths(data_type)
             thumbs_dir = data_config.get('THUMBS_DIR')
             
@@ -134,27 +139,32 @@ def main():
             cover_result = download_covers_for_timeline(timeline_file, thumbs_dir)
             print(f"封面下载结果: 成功 {cover_result.get('success', 0)}, 失败 {cover_result.get('failed', 0)}, 跳过 {cover_result.get('skipped', 0)}")
     
-    # 更新前端文件
-    print("\n=== 更新前端文件 ===")
-    config = {
-        'backend_data_dir': './data',
-        'frontend_data_dir': '../frontend'
-    }
-    
-    for data_type in data_types:
-        print(f"\n=== 更新 {data_type} 前端文件 ===")
-        result = update_frontend_files(data_type, config)
+    # 只有当成功生成了时间线数据时，才执行前端文件更新
+    if timeline_generated:
+        # 更新前端文件
+        print("\n=== 更新前端文件 ===")
+        config = {
+            'backend_data_dir': './data',
+            'frontend_data_dir': '../frontend'
+        }
         
-        print(f"结果: {'成功' if result['success'] else '失败'}")
-        print(f"消息: {result.get('message', '')}")
-        
-        if 'merge_result' in result:
-            merge_msg = result['merge_result'].get('message', '')
-            print(f"合并结果: {merge_msg}")
-        
-        if 'copy_result' in result:
-            copy_msg = result['copy_result'].get('message', '')
-            print(f"复制结果: {copy_msg}")
+        for data_type in data_types:
+            print(f"\n=== 更新 {data_type} 前端文件 ===")
+            result = update_frontend_files(data_type, config)
+            
+            print(f"结果: {'成功' if result['success'] else '失败'}")
+            print(f"消息: {result.get('message', '')}")
+            
+            if 'merge_result' in result:
+                merge_msg = result['merge_result'].get('message', '')
+                print(f"合并结果: {merge_msg}")
+            
+            if 'copy_result' in result:
+                copy_msg = result['copy_result'].get('message', '')
+                print(f"复制结果: {copy_msg}")
+    else:
+        print("\n=== 跳过更新前端文件 ===")
+        print("原因: 没有成功生成时间线数据，无需更新前端文件")
 
     print("\n=== 时间线更新完成 ===")
 

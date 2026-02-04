@@ -1,0 +1,57 @@
+name: 定时更新时间线并部署
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 每天UTC时间12点执行（对应北京时间20点）
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 只需要写入内容的权限
+    
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 设置Python环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+      
+      - name: 安装依赖
+        run: |
+          cd backend
+          pip install -r requirements.txt
+      
+      - name: 执行时间线更新脚本
+        run: |
+          cd backend
+          python update_timeline.py
+      
+      - name: 检查文件变动
+        id: check-changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git status
+          if git status --porcelain | grep -q .; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: 提交并推送变动
+        if: steps.check-changes.outputs.has_changes == 'true'
+        run: |
+          git add .
+          git commit -m "自动更新时间线数据 $(date '+%Y-%m-%d %H:%M:%S')"
+          git push origin master
+      
+      - name: 无变动时输出信息
+        if: steps.check-changes.outputs.has_changes == 'false'
+        run: echo "未检测到文件变动，跳过提交"

@@ -25,6 +25,33 @@ class VideoCrawler:
         self.session = requests.Session()
         self.session.headers.update(HEADERS)
         self.crawled_bvs_cache = {}  # 缓存已爬取的BV号
+        # API配置
+        self.api_config = {
+            'base_url': 'https://api.bilibili.com/x/web-interface/wbi/view/detail',
+            'headers': {
+                'accept': 'application/json, text/plain, */*',
+                'accept-language': 'zh-CN,zh;q=0.9',
+                'origin': 'https://www.bilibili.com',
+                'priority': 'u=1, i',
+                'referer': 'https://www.bilibili.com/',
+                'sec-ch-ua': '"Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"Windows"',
+                'sec-fetch-dest': 'empty',
+                'sec-fetch-mode': 'cors',
+                'sec-fetch-site': 'same-site',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36'
+            },
+            'cookies': {}  # 空Cookie，公开视频不需要登录
+        }
+        # 速率限制
+        self.last_api_call_time = 0
+        self.api_call_interval = 1  # API调用间隔（秒）
+        # API重试配置
+        self.api_max_retries = 3
+        self.api_retry_delay = 2
+        # 必要字段配置
+        self.required_fields = ['bv', 'title', 'url', 'up主']
     
     def _extract_bv_from_item(self, item):
         """从时间线条目中提取 BV 号
@@ -121,6 +148,14 @@ class VideoCrawler:
         self.crawled_bvs_cache.clear()
         print("已清除爬取状态缓存")
     
+    def _rate_limit(self):
+        """速率限制"""
+        current_time = time.time()
+        elapsed = current_time - self.last_api_call_time
+        if elapsed < self.api_call_interval:
+            time.sleep(self.api_call_interval - elapsed)
+        self.last_api_call_time = time.time()
+    
     def load_bv_list(self, file_path):
         """从文件中加载BV号列表
         
@@ -152,8 +187,151 @@ class VideoCrawler:
             print(f"加载BV号文件失败: {e}")
             return []
     
+    def _fetch_video_info_api(self, bv_code):
+        """使用API获取视频信息
+        
+        Args:
+            bv_code: BV号
+            
+        Returns:
+            dict: 视频信息，失败返回None
+        """
+        print(f"使用API获取视频信息: BV{bv_code}")
+        
+        # 速率限制
+        self._rate_limit()
+        
+        params = {
+            'bvid': f"BV{bv_code}",
+            'need_view': 1,
+            'isGaiaAvoided': False,
+            'web_location': 1315873
+        }
+        
+        for retry in range(self.api_max_retries):
+            try:
+                response = requests.get(
+                    self.api_config['base_url'],
+                    params=params,
+                    headers=self.api_config['headers'],
+                    cookies=self.api_config['cookies'],
+                    timeout=REQUEST_TIMEOUT
+                )
+                
+                response.raise_for_status()
+                data = response.json()
+                
+                if data.get('code') != 0:
+                    print(f"API返回错误: {data.get('message')}")
+                    if retry < self.api_max_retries - 1:
+                        print(f"{self.api_retry_delay}秒后重试")
+                        time.sleep(self.api_retry_delay)
+                        continue
+                    return None
+                
+                # 解析API返回数据
+                return self._parse_api_response(data, bv_code)
+            except requests.exceptions.Timeout:
+                print(f"API请求超时，{self.api_retry_delay}秒后重试")
+                time.sleep(self.api_retry_delay)
+            except requests.exceptions.HTTPError as e:
+                print(f"API HTTP错误: {e}")
+                if retry < self.api_max_retries - 1:
+                    print(f"{self.api_retry_delay}秒后重试")
+                    time.sleep(self.api_retry_delay)
+                else:
+                    return None
+            except Exception as e:
+                print(f"API调用错误: {e}")
+                if retry < self.api_max_retries - 1:
+                    print(f"{self.api_retry_delay}秒后重试")
+                    time.sleep(self.api_retry_delay)
+                else:
+                    return None
+        
+        return None
+    
+    def _parse_api_response(self, response_data, bv_code):
+        """解析API响应数据
+        
+        Args:
+            response_data: API响应数据
+            bv_code: BV号
+            
+        Returns:
+            dict: 视频元数据
+        """
+        data = response_data.get('data', {})
+        view_detail = data.get('View', {})
+        
+        # 提取视频信息
+        metadata = {
+            "bv": bv_code,
+            "url": f"https://www.bilibili.com/video/BV{bv_code}",
+            "title": view_detail.get('title', ""),  # 未找到标题时保存空字符串
+            "description": view_detail.get('desc', ""),
+            "publish_date": view_detail.get('pubdate', datetime.now().strftime("%Y-%m-%d")),
+            "views": view_detail.get('stat', {}).get('view', 0),
+            "danmaku": view_detail.get('stat', {}).get('danmaku', 0),
+            "up主": view_detail.get('owner', {}).get('name', ""),
+            "cover_url": view_detail.get('pic', ""),
+            "thumbnail": view_detail.get('pic', ""),
+            "duration": view_detail.get('duration', 0),
+            "crawled_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        
+        # 处理发布时间
+        if isinstance(metadata['publish_date'], int):
+            try:
+                metadata['publish_date'] = datetime.fromtimestamp(metadata['publish_date']).strftime("%Y-%m-%d")
+            except:
+                metadata['publish_date'] = datetime.now().strftime("%Y-%m-%d")
+        
+        # 处理视频时长
+        if isinstance(metadata['duration'], int):
+            seconds = metadata['duration']
+            hours = seconds // 3600
+            minutes = (seconds % 3600) // 60
+            seconds = seconds % 60
+            if hours > 0:
+                metadata['duration'] = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+            else:
+                metadata['duration'] = f"{minutes:02d}:{seconds:02d}"
+        
+        return metadata
+    
+    def _validate_metadata(self, metadata, bv_code, source):
+        """校验元信息
+        
+        Args:
+            metadata: 视频元数据
+            bv_code: BV号
+            source: 数据来源（API或Crawl）
+        """
+        if not metadata:
+            return
+        
+        print(f"\n--- 校验 {source} 方式获取的元信息 ---")
+        
+        # 检查必要字段
+        missing_fields = []
+        for field in self.required_fields:
+            if not metadata.get(field):
+                missing_fields.append(field)
+        
+        if missing_fields:
+            print(f"警告: BV{bv_code} 缺少必要字段: {', '.join(missing_fields)}")
+        else:
+            print(f"BV{bv_code} 元信息完整")
+        
+        # 检查其他重要字段
+        important_fields = ['description', 'publish_date', 'views', 'cover_url', 'duration']
+        for field in important_fields:
+            if not metadata.get(field):
+                print(f"警告: BV{bv_code} 缺少字段 '{field}'")
+    
     def crawl_video_metadata(self, bv_code):
-        """爬取视频元数据
+        """爬取视频元数据（优化版）
         
         Args:
             bv_code: BV号
@@ -161,8 +339,36 @@ class VideoCrawler:
         Returns:
             dict: 视频元数据
         """
-        print(f"爬取视频元数据: BV{bv_code}")
+        print(f"获取视频元数据: BV{bv_code}")
         
+        # 1. 优先使用API方式
+        try:
+            metadata = self._fetch_video_info_api(bv_code)
+            if metadata:
+                print("API获取成功")
+                # 校验元信息
+                self._validate_metadata(metadata, bv_code, 'API')
+                return metadata
+        except Exception as e:
+            print(f"API方式执行失败: {e}")
+        
+        # 2. API失败，使用原有爬取方式
+        print("API获取失败，切换到网页爬取方式")
+        metadata = self._crawl_with_playwright(bv_code)
+        if metadata:
+            # 校验元信息
+            self._validate_metadata(metadata, bv_code, 'Crawl')
+        return metadata
+    
+    def _crawl_with_playwright(self, bv_code):
+        """使用原有爬取方式
+        
+        Args:
+            bv_code: BV号
+            
+        Returns:
+            dict: 视频元数据
+        """
         video_url = f"https://www.bilibili.com/video/BV{bv_code}"
         
         for retry in range(MAX_RETRIES):
@@ -264,7 +470,7 @@ class VideoCrawler:
         if title_match:
             return title_match.group(1)
         
-        return "未找到标题"
+        return ""  # 未找到标题时返回空字符串
     
     def _extract_description(self, soup, html):
         """提取视频描述"""
