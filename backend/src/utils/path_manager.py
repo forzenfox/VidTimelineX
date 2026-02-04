@@ -5,19 +5,7 @@
 """
 
 from pathlib import Path
-from src.utils.config import DATA_DIR, COMMON_DIR, BV_LISTS_DIR, DEFAULT_BV_FILES
-
-
-def get_bv_file_path(data_type):
-    """获取BV号文件路径
-    
-    Args:
-        data_type: 数据类型
-        
-    Returns:
-        Path: BV号文件路径
-    """
-    return DEFAULT_BV_FILES.get(data_type, BV_LISTS_DIR / f'{data_type}-bv.txt')
+from src.utils.config import DATA_DIR
 
 
 def get_data_paths(data_type):
@@ -40,9 +28,6 @@ def ensure_directories(data_type):
         data_type: 数据类型
     """
     config = get_data_paths(data_type)
-    
-    # 确保公共目录存在
-    BV_LISTS_DIR.mkdir(parents=True, exist_ok=True)
     
     # 确保数据类型目录存在
     for path in config.values():

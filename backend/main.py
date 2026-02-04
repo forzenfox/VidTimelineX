@@ -11,7 +11,7 @@ from src.crawler.video_crawler import VideoCrawler
 from src.crawler.timeline_generator import TimelineGenerator
 from src.downloader.download_thumbs import download_all_covers
 from src.updater.frontend_updater import update_frontend_files
-from src.utils.path_manager import get_bv_file_path, get_all_data_types, ensure_directories, get_data_paths
+from src.utils.path_manager import get_all_data_types, ensure_directories, get_data_paths
 from src.utils.config import get_config
 
 
@@ -71,9 +71,9 @@ def main():
     # 获取所有数据类型
     data_types = get_all_data_types()
     
-    # 爬取收藏夹
+    # 爬取收藏夹到内存
     print("\n=== 1. 爬取收藏夹获取BV号 ===")
-    favorites_result = favorites_crawler.run()
+    favorites_result = favorites_crawler.run_with_memory()
     print(f"收藏夹爬取结果: {favorites_result}")
     
     # 添加成功标志，跟踪是否成功生成了时间线数据
@@ -86,12 +86,12 @@ def main():
         # 确保目录存在
         ensure_directories(data_type)
         
-        # 获取BV号文件路径
-        bv_file_path = get_bv_file_path(data_type)
-        
-        # 加载BV号列表
-        print(f"\n=== 2. 加载BV号列表 ===")
-        bv_list = video_crawler.load_bv_list(bv_file_path)
+        # 从内存中获取BV号列表
+        print(f"\n=== 2. 从内存获取BV号列表 ===")
+        bv_list = []
+        data_result = favorites_result.get(data_type, {})
+        if data_result.get('success'):
+            bv_list = data_result.get('bv_list', [])
         
         if not bv_list:
             print(f"没有找到 {data_type} 的BV号")
@@ -100,22 +100,9 @@ def main():
         # 获取时间线文件路径
         timeline_file = get_data_paths(data_type).get('TIMELINE_FILE')
         
-        # 爬取视频元数据
-        print(f"\n=== 3. 爬取视频元数据 ===")
-        videos = []
-        
-        for bv_code in bv_list:
-            # 增量爬取模式下，检查视频是否已爬取
-            if not full_crawl and video_crawler.is_video_crawled(bv_code, timeline_file):
-                print(f"视频 BV{bv_code} 已爬取，跳过")
-                continue
-            
-            metadata = video_crawler.crawl_video_metadata(bv_code)
-            if metadata:
-                videos.append(metadata)
-            
-            # 避免请求过于频繁
-            time.sleep(2)
+        # 直接从内存中的BV号列表爬取视频元数据
+        print(f"\n=== 3. 直接爬取视频元数据 ===")
+        videos = video_crawler.crawl_from_bv_list(bv_list, data_type, full_crawl)
         
         if not videos:
             if full_crawl:

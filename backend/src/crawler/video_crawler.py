@@ -60,7 +60,7 @@ class VideoCrawler:
             item: 时间线条目
             
         Returns:
-            str: BV 号，未找到返回空字符串
+            str: 标准化的 BV 号（带 BV 前缀），未找到返回空字符串
         """
         if not isinstance(item, dict):
             return ''
@@ -99,13 +99,20 @@ class VideoCrawler:
         if not bv and 'bv' in item:
             bv = item.get('bv')
         
-        return bv if bv else ''
+        # 标准化 BV 号格式（确保带 BV 前缀）
+        if bv:
+            normalized_bv = bv.upper()
+            if not normalized_bv.startswith('BV'):
+                normalized_bv = f"BV{normalized_bv}"
+            return normalized_bv
+        
+        return ''
 
     def is_video_crawled(self, bv_code, timeline_file):
         """检查视频是否已经被爬取
         
         Args:
-            bv_code: BV号
+            bv_code: BV号（可以带或不带BV前缀）
             timeline_file: 时间线文件路径
             
         Returns:
@@ -114,6 +121,11 @@ class VideoCrawler:
         try:
             # 生成缓存键
             cache_key = str(timeline_file)
+            
+            # 标准化输入的BV号格式
+            normalized_bv = bv_code.upper()
+            if not normalized_bv.startswith('BV'):
+                normalized_bv = f"BV{normalized_bv}"
             
             # 检查缓存是否存在
             if cache_key not in self.crawled_bvs_cache:
@@ -135,7 +147,7 @@ class VideoCrawler:
                     self.crawled_bvs_cache[cache_key] = crawled_bvs
             
             # 检查BV号是否在缓存中
-            return bv_code in self.crawled_bvs_cache[cache_key]
+            return normalized_bv in self.crawled_bvs_cache[cache_key]
         except Exception as e:
             print(f"检查视频是否已爬取失败: {e}")
             return False
@@ -186,6 +198,47 @@ class VideoCrawler:
         except Exception as e:
             print(f"加载BV号文件失败: {e}")
             return []
+
+    def crawl_from_bv_list(self, bv_list, data_type, full_crawl=False):
+        """直接从BV号列表爬取视频信息
+        
+        Args:
+            bv_list: BV号列表
+            data_type: 数据类型
+            full_crawl: 是否全量爬取
+            
+        Returns:
+            list: 爬取的视频信息列表
+        """
+        if not bv_list:
+            print("BV号列表为空")
+            return []
+        
+        print(f"\n=== 直接从BV号列表爬取视频信息 ===")
+        print(f"共 {len(bv_list)} 个BV号，爬取模式: {'全量爬取' if full_crawl else '增量爬取'}")
+        
+        # 获取时间线文件路径
+        from src.utils.path_manager import get_data_paths
+        timeline_file = get_data_paths(data_type).get('TIMELINE_FILE')
+        
+        videos = []
+        
+        for bv_code in bv_list:
+            # 增量爬取模式下，检查视频是否已爬取
+            if not full_crawl and self.is_video_crawled(bv_code, timeline_file):
+                print(f"视频 BV{bv_code} 已爬取，跳过")
+                continue
+            
+            metadata = self.crawl_video_metadata(bv_code)
+            if metadata:
+                videos.append(metadata)
+            
+            # 避免请求过于频繁
+            import time
+            time.sleep(2)
+        
+        print(f"成功爬取 {len(videos)} 个视频的元数据")
+        return videos
     
     def _fetch_video_info_api(self, bv_code):
         """使用API获取视频信息

@@ -46,3 +46,13 @@ class TestFavoritesCrawler:
         assert isinstance(config, dict)
         assert "tiantong" in config
         assert "lvjiang" in config
+
+    def test_crawl_favorites_to_memory(self):
+        """测试爬取收藏夹到内存"""
+        # 测试内存处理方法是否存在
+        assert hasattr(self.crawler, 'crawl_favorites_to_memory'), "crawl_favorites_to_memory方法不存在"
+        
+    def test_run_with_memory(self):
+        """测试运行爬取任务到内存"""
+        # 测试内存处理方法是否存在
+        assert hasattr(self.crawler, 'run_with_memory'), "run_with_memory方法不存在"

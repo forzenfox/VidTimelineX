@@ -6,7 +6,9 @@
     "videoUrl": "https://www.bilibili.com/video/BV1BofDBpESU",
     "cover": "BV1BofDBpESU.jpg",
     "cover_url": "https://i1.hdslb.com/bfs/archive/447d4c193e5162617058c8d9cb9533f273b0c2d3.jpg",
-    "tags": [],
+    "tags": [
+      "团播日常"
+    ],
     "duration": "12:59"
   },
   {

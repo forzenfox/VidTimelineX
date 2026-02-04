@@ -20,16 +20,6 @@ PROJECT_ROOT = Path(__file__).parent.parent.parent
 # 数据存储目录
 DATA_DIR = PROJECT_ROOT / "data"
 
-# 公共数据目录
-COMMON_DIR = DATA_DIR / "common"
-BV_LISTS_DIR = COMMON_DIR / "bv-lists"
-
-# BV号文件路径
-DEFAULT_BV_FILES = {
-    'lvjiang': BV_LISTS_DIR / "lvjiang-bv.txt",
-    'tiantong': BV_LISTS_DIR / "tiantong-bv.txt"
-}
-
 # 配置文件路径
 CONFIG_FILE = PROJECT_ROOT / "config.json"
 
@@ -105,8 +95,7 @@ def get_data_type_config(data_type):
     return {
         'DATA_TYPE_DIR': data_type_dir,
         'THUMBS_DIR': data_type_dir / "thumbs",
-        'TIMELINE_FILE': data_type_dir / "videos.json",
-        'BV_FILE': BV_LISTS_DIR / f"{data_type}-bv.txt"
+        'TIMELINE_FILE': data_type_dir / "videos.json"
     }
 
 

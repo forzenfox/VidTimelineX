@@ -141,7 +141,7 @@ class TestTimelineGenerator(unittest.TestCase):
     
     def test_incremental_update(self):
         """测试增量更新时间线数据"""
-        test_file = Path("test_incremental_timeline.json")
+        test_file = Path("test_existing_timeline.json")
         existing_data = [
             {
                 "id": "1",
@@ -182,6 +182,23 @@ class TestTimelineGenerator(unittest.TestCase):
         
         if test_file.exists():
             test_file.unlink()
+    
+    def test_load_existing_timeline_from_test_data(self):
+        """测试从实际测试数据文件加载时间线"""
+        # 使用测试数据目录中的videos.json文件
+        test_data_file = Path(__file__).parent / "data" / "videos.json"
+        
+        # 验证测试数据文件存在
+        assert test_data_file.exists(), f"测试数据文件不存在: {test_data_file}"
+        
+        # 加载测试数据
+        existing_timeline = self.generator.load_existing_timeline(test_data_file)
+        
+        # 验证加载的数据格式正确
+        self.assertIsInstance(existing_timeline, list)
+        
+        # 测试数据中应该包含2个条目
+        self.assertEqual(len(existing_timeline), 2)
 
 
 if __name__ == "__main__":
