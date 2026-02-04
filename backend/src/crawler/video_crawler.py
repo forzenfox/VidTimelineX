@@ -407,14 +407,14 @@ class VideoCrawler:
         
         # 2. API失败，使用原有爬取方式
         print("API获取失败，切换到网页爬取方式")
-        metadata = self._crawl_with_playwright(bv_code)
+        metadata = self._crawl_with_requests(bv_code)
         if metadata:
             # 校验元信息
             self._validate_metadata(metadata, bv_code, 'Crawl')
         return metadata
     
-    def _crawl_with_playwright(self, bv_code):
-        """使用原有爬取方式
+    def _crawl_with_requests(self, bv_code):
+        """使用requests库爬取视频信息
         
         Args:
             bv_code: BV号

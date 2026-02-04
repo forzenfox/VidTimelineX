@@ -209,9 +209,15 @@ backend/
 # 在backend目录下执行
 pip install -r requirements.txt
 
-# 安装Playwright浏览器（用于收藏夹爬取）
+# 安装Playwright浏览器（用于收藏夹爬取和浏览器自动化）
+# 注意：这一步可能需要较长时间和良好的网络条件
 playwright install
 ```
+
+**重要说明**：
+- Playwright是项目的必要依赖，用于处理B站收藏夹的动态内容加载
+- 对于收藏夹爬取功能，Playwright是不可或缺的
+- 对于浏览器自动化脚本（如add_to_favorites_concurrent.py），Playwright也是必要的
 
 ### 依赖说明
 
@@ -219,7 +225,7 @@ playwright install
 |-------|------|------|
 | requests | ^2.31.0 | HTTP请求处理 |
 | beautifulsoup4 | ^4.12.3 | HTML解析 |
-| playwright | ^1.47.0 | 动态内容爬取 |
+| playwright | ^1.47.0 | 动态内容爬取和浏览器自动化 |
 | pytest | ^8.3.5 | 单元测试 |
 
 ## 使用方法
@@ -543,23 +549,3 @@ python -m src.downloader.download_thumbs data/lvjiang/videos.json data/lvjiang/t
 欢迎提交Issue和Pull Request，共同改进系统。
 
 ---
-
-**📝 文档更新时间**：2026-02-04
-**📦 版本**：1.2.0
-**🔧 维护者**：系统自动生成
-
-**更新日志**：
-- 1.2.0 (2026-02-04)
-  - 新增内存处理模式，BV号直接在内存中传递
-  - 移除 data/common/bv-lists/ 目录，减少文件操作
-  - 重命名 update_timeline.py 为 main.py
-  - 新增 16 个测试用例（内存集成4 + 性能1 + 其他11）
-  - 总测试数达到 81 个，完整测试覆盖
-  - 优化性能，减少IO操作
-  - 简化代码结构，提高可维护性
-
-- 1.1.0 (2026-02-03)
-  - 输出格式与前端 videos.json 完全一致
-  - 新增封面图片下载功能
-  - 新增 36 个测试用例（封面下载25 + 前端格式11）
-  - 总测试数达到 65 个，完整测试覆盖
