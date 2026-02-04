@@ -15,12 +15,11 @@ from src.utils.path_manager import get_all_data_types, ensure_directories, get_d
 from src.utils.config import get_config
 
 
-def download_covers_for_timeline(timeline_file: Path, thumbs_dir: Path) -> dict:
+def download_covers_for_timeline(timeline_file: Path) -> dict:
     """根据时间线文件下载封面图片
     
     Args:
         timeline_file: 时间线文件路径
-        thumbs_dir: 封面保存目录
         
     Returns:
         dict: 下载结果统计
@@ -36,18 +35,7 @@ def download_covers_for_timeline(timeline_file: Path, thumbs_dir: Path) -> dict:
     if not isinstance(data, list):
         return {'success': 0, 'failed': 0, 'skipped': 0}
     
-    videos = []
-    for item in data:
-        if isinstance(item, dict):
-            video = {
-                'videoUrl': item.get('videoUrl', '')
-            }
-            videos.append(video)
-    
-    if not videos:
-        return {'success': 0, 'failed': 0, 'skipped': 0}
-    
-    return download_all_covers(timeline_file, thumbs_dir, quiet=False)
+    return download_all_covers(timeline_file, quiet=False)
 
 
 def main():
@@ -119,20 +107,18 @@ def main():
         if timeline_result.get('success'):
             # 更新成功标志
             timeline_generated = True
-            data_config = get_data_paths(data_type)
-            thumbs_dir = data_config.get('THUMBS_DIR')
             
             print(f"\n=== 5. 下载封面图片 ===")
-            cover_result = download_covers_for_timeline(timeline_file, thumbs_dir)
+            cover_result = download_covers_for_timeline(timeline_file)
             print(f"封面下载结果: 成功 {cover_result.get('success', 0)}, 失败 {cover_result.get('failed', 0)}, 跳过 {cover_result.get('skipped', 0)}")
     
     # 只有当成功生成了时间线数据时，才执行前端文件更新
     if timeline_generated:
         # 更新前端文件
         print("\n=== 更新前端文件 ===")
+        # 从配置文件获取前端数据目录
         config = {
-            'backend_data_dir': './data',
-            'frontend_data_dir': '../frontend'
+            'backend_data_dir': './data'
         }
         
         for data_type in data_types:

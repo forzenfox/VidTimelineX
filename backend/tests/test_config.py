@@ -12,8 +12,8 @@ def test_get_config():
     """测试获取配置"""
     config = get_config()
     assert isinstance(config, dict)
-    assert "favorites" in config
-    assert isinstance(config["favorites"], dict)
+    assert "datatype" in config
+    assert isinstance(config["datatype"], dict)
 
 
 def test_get_data_type_config():

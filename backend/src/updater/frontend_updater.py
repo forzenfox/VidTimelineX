@@ -142,13 +142,13 @@ def update_frontend_files(data_type: str, config: Dict[str, Any]) -> Dict[str, A
     try:
         # 获取路径
         backend_data_dir = Path(config.get('backend_data_dir', './data'))
-        frontend_data_dir = Path(config.get('frontend_data_dir', '../frontend'))
         
         # 后端文件路径
         backend_videos_file = backend_data_dir / data_type / 'videos.json'
         
-        # 前端文件路径
-        frontend_videos_file = frontend_data_dir / 'src' / 'features' / data_type / 'data' / 'videos.json'
+        # 前端文件路径（使用配置的路径）
+        from src.utils.config import get_frontend_timeline_file
+        frontend_videos_file = get_frontend_timeline_file(data_type)
         
         # 验证路径
         if not backend_videos_file.exists():
@@ -182,10 +182,9 @@ def main(data_types: List[str] = None):
     if data_types is None:
         data_types = ['lvjiang', 'tiantong']
     
-    # 默认配置
+    # 配置
     config = {
-        'backend_data_dir': './data',
-        'frontend_data_dir': '../frontend'
+        'backend_data_dir': './data'
     }
     
     for data_type in data_types:

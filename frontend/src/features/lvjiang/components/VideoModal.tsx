@@ -36,7 +36,26 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
   if (!video) return null;
 
   const bilibiliUrl = video.videoUrl;
-  const bvid = video.videoUrl.split("/").pop();
+
+  // 智能提取视频ID，支持av和BV格式
+  const getVideoPlayerUrl = (videoUrl: string) => {
+    const lastPart = videoUrl.split("/").pop() || "";
+
+    // 检测是否为av格式
+    if (lastPart.startsWith("av")) {
+      const aid = lastPart.replace("av", "");
+      return `https://player.bilibili.com/player.html?aid=${aid}&page=1&high_quality=1&danmaku=1`;
+    }
+    // 检测是否为BV格式
+    else if (lastPart.startsWith("BV")) {
+      const bvid = lastPart;
+      return `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=1`;
+    }
+    // 默认返回原始链接
+    return `https://player.bilibili.com/player.html?bvid=${lastPart}&page=1&high_quality=1&danmaku=1`;
+  };
+
+  const videoId = video.videoUrl.split("/").pop() || "";
 
   return (
     <div
@@ -115,7 +134,7 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
             </div>
           )}
           <iframe
-            src={`https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=1`}
+            src={getVideoPlayerUrl(video.videoUrl)}
             className="w-full h-full border-0"
             allowFullScreen
             title={video.title}
@@ -147,7 +166,7 @@ export function VideoModal({ video, theme, onClose }: VideoModalProps) {
                 color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
               }}
             >
-              🎬 {bvid}
+              🎬 {videoId}
             </div>
           </div>
 

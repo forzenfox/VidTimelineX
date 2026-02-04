@@ -24,16 +24,7 @@ class FavoritesCrawler:
             'base_url': 'https://api.bilibili.com/x/v3/fav/resource/list',
             'headers': {
                 'accept': '*/*',
-                'accept-language': 'zh-CN,zh;q=0.9',
-                'origin': 'https://space.bilibili.com',
-                'priority': 'u=1, i',
                 'referer': 'https://space.bilibili.com/',
-                'sec-ch-ua': '"Not(A:Brand";v="8", "Chromium";v="144", "Google Chrome";v="144"',
-                'sec-ch-ua-mobile': '?0',
-                'sec-ch-ua-platform': '"Windows"',
-                'sec-fetch-dest': 'empty',
-                'sec-fetch-mode': 'cors',
-                'sec-fetch-site': 'same-site',
                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36'
             },
             'cookies': {},  # 空Cookie，公开收藏夹不需要登录

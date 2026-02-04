@@ -43,6 +43,9 @@ htmlcov/
 .cache
 .pytest_cache/
 
+# 测试结果目录
+test_covers/
+
 # 构建产物
 build/
 dist/

@@ -98,7 +98,7 @@ class TestTimelineGenerator(unittest.TestCase):
     
     def test_run(self):
         """测试运行时间线生成任务"""
-        result = self.generator.run(self.test_videos, "test")
+        result = self.generator.run(self.test_videos, "lvjiang")
         
         self.assertIsInstance(result, dict)
         self.assertIn("success", result)

@@ -41,8 +41,8 @@ def get_all_data_types():
     Returns:
         list: 数据类型列表
     """
-    from src.utils.config import DATA_TYPES
-    return list(DATA_TYPES.values())
+    from src.utils.config import get_all_data_types as config_get_all_data_types
+    return config_get_all_data_types()
 
 
 def get_favorites_config():
@@ -51,6 +51,5 @@ def get_favorites_config():
     Returns:
         dict: 收藏夹配置
     """
-    from src.utils.config import get_config
-    config = get_config()
-    return config.get('favorites', {})
+    from src.utils.config import get_favorites_config as config_get_favorites_config
+    return config_get_favorites_config()

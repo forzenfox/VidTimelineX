@@ -123,17 +123,19 @@ class TimelineGenerator:
             bv = video.get('bv', '')
             thumbnail = video.get('thumbnail', '')
             
-            cover = f"BV{bv}.jpg" if bv else ""
+            # 直接使用bv字段，不添加额外的BV前缀
+            cover = f"{bv}.jpg" if bv else ""
             
             # 处理日期格式，只保留日期部分
             publish_date = video.get('publish_date', '')
             date_str = publish_date
             
             if publish_date:
+                date_obj = None
                 try:
                     # 尝试解析不同格式的日期字符串
                     if ' ' in publish_date:
-                        # 包含时间的格式，如 "2026-01-17 22:59:13"
+                        # 包含时间的格式，如 "2026-01-17"
                         date_obj = datetime.strptime(publish_date, "%Y-%m-%d %H:%M:%S")
                     elif '-' in publish_date:
                         # 只包含日期的格式，如 "2026-01-17"
@@ -149,7 +151,13 @@ class TimelineGenerator:
                     date_str = publish_date
                 else:
                     # 格式化为只包含日期的字符串
-                    date_str = date_obj.strftime("%Y-%m-%d")
+                    if date_obj:
+                        date_str = date_obj.strftime("%Y-%m-%d")
+            
+            # 修复cover_url协议，确保使用https
+            cover_url = thumbnail
+            if cover_url and cover_url.startswith('http://'):
+                cover_url = cover_url.replace('http://', 'https://')
             
             timeline_item = {
                 "id": str(i + 1),
@@ -157,7 +165,7 @@ class TimelineGenerator:
                 "title": video.get('title'),
                 "videoUrl": video.get('url'),
                 "cover": cover,
-                "cover_url": thumbnail,
+                "cover_url": cover_url,
                 "tags": [],
                 "duration": video.get('duration')
             }

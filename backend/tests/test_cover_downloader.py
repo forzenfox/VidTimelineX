@@ -259,6 +259,57 @@ class TestCoverDownloader(unittest.TestCase):
             self.assertEqual(result['status'], 'success')
             self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
 
+    def test_download_cover_with_cover_url(self):
+        """测试使用cover_url下载封面"""
+        from src.downloader.download_thumbs import download_cover
+
+        video = {
+            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+            "cover_url": "https://i0.hdslb.com/bfs/archive/test_cover.jpg"
+        }
+
+        mock_img_response = Mock()
+        mock_img_response.iter_content = Mock(return_value=[b"fake", b"image", b"data"])
+        mock_img_response.__enter__ = Mock(return_value=mock_img_response)
+        mock_img_response.__exit__ = Mock(return_value=False)
+
+        with patch('requests.get', return_value=mock_img_response):
+            result = download_cover(video, self.thumbs_dir, quiet=True)
+            self.assertEqual(result['status'], 'success')
+            self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
+
+    def test_download_cover_with_cover_url_fallback(self):
+        """测试cover_url失败后回退到传统方法"""
+        from src.downloader.download_thumbs import download_cover
+
+        video = {
+            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+            "cover_url": "https://invalid-url.com/test.jpg"
+        }
+
+        html = '''
+        <html>
+        <head>
+            <meta property="og:image" content="https://i0.hdslb.com/bfs/archive/test.jpg">
+        </head>
+        </html>
+        '''
+
+        # 第一次请求cover_url失败，第二次请求视频页面，第三次请求封面图片
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.text = html
+
+        mock_img_response = Mock()
+        mock_img_response.iter_content = Mock(return_value=[b"fake", b"image", b"data"])
+        mock_img_response.__enter__ = Mock(return_value=mock_img_response)
+        mock_img_response.__exit__ = Mock(return_value=False)
+
+        with patch('requests.get', side_effect=[Exception("Network error"), mock_response, mock_img_response]):
+            result = download_cover(video, self.thumbs_dir, quiet=True)
+            self.assertEqual(result['status'], 'success')
+            self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
+
     def test_download_cover_already_exists(self):
         """测试封面已存在的情况"""
         from src.downloader.download_thumbs import download_cover
@@ -317,6 +368,38 @@ class TestCoverDownloader(unittest.TestCase):
 
             self.assertGreater(results['success'], 0)
             self.assertIn('BV19YzYBjELJ', results['downloaded_files'])
+
+    def test_download_all_covers_with_concurrent(self):
+        """测试并发下载所有视频封面"""
+        from src.downloader.download_thumbs import download_all_covers
+
+        videos_path = Path(self.test_dir) / "videos.json"
+        videos_data = [
+            {
+                "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/BV19YzYBjELJ.jpg"
+            },
+            {
+                "videoUrl": "https://www.bilibili.com/video/BV15NzrBBEJQ",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/BV15NzrBBEJQ.jpg"
+            }
+        ]
+
+        with open(videos_path, 'w', encoding='utf-8') as f:
+            import json
+            json.dump(videos_data, f, ensure_ascii=False)
+
+        mock_img_response = Mock()
+        mock_img_response.iter_content = Mock(return_value=[b"fake", b"image"])
+        mock_img_response.__enter__ = Mock(return_value=mock_img_response)
+        mock_img_response.__exit__ = Mock(return_value=False)
+
+        with patch('requests.get', return_value=mock_img_response):
+            results = download_all_covers(videos_path, self.thumbs_dir, quiet=True, max_workers=2)
+
+            self.assertGreater(results['success'], 0)
+            self.assertIn('BV19YzYBjELJ', results['downloaded_files'])
+            self.assertIn('BV15NzrBBEJQ', results['downloaded_files'])
 
     def test_download_all_covers_file_not_exists(self):
         """测试videos.json文件不存在"""
