@@ -5,14 +5,12 @@
 
 from .frontend_updater import (
     merge_videos_json,
-    copy_cover_images,
     update_frontend_files,
     main
 )
 
 __all__ = [
     'merge_videos_json',
-    'copy_cover_images',
     'update_frontend_files',
     'main'
 ]

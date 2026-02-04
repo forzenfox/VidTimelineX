@@ -1,0 +1,54 @@
+[
+  {
+    "id": "1",
+    "date": "2023-12-02",
+    "title": "测试视频2",
+    "content": "这是测试视频2的描述",
+    "video": {
+      "bv": "2yy522d8nE",
+      "url": "https://www.bilibili.com/video/BV2yy522d8nE"
+    },
+    "thumbnail": "https://i0.hdslb.com/bfs/archive/2yy522d8nE.jpg",
+    "views": 2000,
+    "danmaku": 200,
+    "up主": "测试UP主",
+    "duration": "03:45",
+    "crawled_at": "2023-12-02 12:00:00"
+  },
+  {
+    "id": "2",
+    "date": "2023-12-02",
+    "title": "测试视频2",
+    "videoUrl": "https://www.bilibili.com/video/BV2yy522d8nE",
+    "cover": "2yy522d8nE.jpg",
+    "cover_url": "https://i0.hdslb.com/bfs/archive/2yy522d8nE.jpg",
+    "tags": [],
+    "duration": "03:45"
+  },
+  {
+    "id": "3",
+    "date": "2023-12-01",
+    "title": "测试视频1",
+    "content": "这是测试视频1的描述",
+    "video": {
+      "bv": "1xx411c7mD",
+      "url": "https://www.bilibili.com/video/BV1xx411c7mD"
+    },
+    "thumbnail": "https://i0.hdslb.com/bfs/archive/1xx411c7mD.jpg",
+    "views": 1000,
+    "danmaku": 100,
+    "up主": "测试UP主",
+    "duration": "05:30",
+    "crawled_at": "2023-12-01 12:00:00"
+  },
+  {
+    "id": "4",
+    "date": "2023-12-01",
+    "title": "测试视频1",
+    "videoUrl": "https://www.bilibili.com/video/BV1xx411c7mD",
+    "cover": "1xx411c7mD.jpg",
+    "cover_url": "https://i0.hdslb.com/bfs/archive/1xx411c7mD.jpg",
+    "tags": [],
+    "duration": "05:30"
+  }
+]

@@ -8,5 +8,8 @@
     "retry": 3,
     "interval": 2,
     "full_crawl": false
+  },
+  "frontend": {
+    "thumbs_dir": "../frontend/public/thumbs"
   }
 }

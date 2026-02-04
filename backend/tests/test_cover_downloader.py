@@ -330,6 +330,44 @@ class TestCoverDownloader(unittest.TestCase):
         self.assertEqual(results['failed'], 0)
         self.assertEqual(results['skipped'], 0)
 
+    def test_get_existing_covers(self):
+        """测试获取已存在的封面列表"""
+        from src.downloader.download_thumbs import get_existing_covers
+
+        # 创建测试图片文件
+        cover_file1 = self.thumbs_dir / "BV19YzYBjELJ.jpg"
+        cover_file1.write_text("fake image content")
+        cover_file2 = self.thumbs_dir / "BV15NzrBBEJQ.png"
+        cover_file2.write_text("fake image content")
+
+        existing_covers = get_existing_covers(self.thumbs_dir)
+        self.assertIsInstance(existing_covers, set)
+        self.assertIn("BV19YzYBjELJ", existing_covers)
+        self.assertIn("BV15NzrBBEJQ", existing_covers)
+
+    def test_get_existing_covers_empty(self):
+        """测试获取空目录的封面列表"""
+        from src.downloader.download_thumbs import get_existing_covers
+
+        existing_covers = get_existing_covers(self.thumbs_dir)
+        self.assertIsInstance(existing_covers, set)
+        self.assertEqual(len(existing_covers), 0)
+
+    def test_batch_compare_covers(self):
+        """测试批量对比封面"""
+        from src.downloader.download_thumbs import get_existing_covers
+
+        # 创建测试图片文件
+        cover_file = self.thumbs_dir / "BV19YzYBjELJ.jpg"
+        cover_file.write_text("fake image content")
+
+        existing_covers = get_existing_covers(self.thumbs_dir)
+        
+        # 测试已存在的封面
+        self.assertIn("BV19YzYBjELJ", existing_covers)
+        # 测试不存在的封面
+        self.assertNotIn("BV15NzrBBEJQ", existing_covers)
+
 
 if __name__ == "__main__":
     unittest.main()

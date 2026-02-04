@@ -44,6 +44,9 @@ DEFAULT_CONFIG = {
         "retry": 3,
         "interval": 2,
         "full_crawl": False
+    },
+    "frontend": {
+        "thumbs_dir": "../frontend/public/thumbs"
     }
 }
 
@@ -130,3 +133,15 @@ HEADERS = {
     'Referer': 'https://www.bilibili.com/',
     'Connection': 'keep-alive'
 }
+
+
+def get_frontend_thumbs_dir():
+    """获取前端图片存储路径
+    
+    Returns:
+        Path: 前端图片存储路径
+    """
+    config = get_config()
+    thumbs_dir = config.get('frontend', {}).get('thumbs_dir', '../frontend/public/thumbs')
+    # 转换为绝对路径
+    return PROJECT_ROOT / thumbs_dir

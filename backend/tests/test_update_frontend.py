@@ -9,7 +9,7 @@ import shutil
 import tempfile
 import unittest
 from pathlib import Path
-from src.updater.frontend_updater import merge_videos_json, copy_cover_images, update_frontend_files
+from src.updater.frontend_updater import merge_videos_json, update_frontend_files
 
 
 class TestFrontendUpdater(unittest.TestCase):
@@ -135,21 +135,7 @@ class TestFrontendUpdater(unittest.TestCase):
         self.assertEqual(video2['title'], "测试视频2")
         self.assertEqual(video2['tags'], [])  # 新增视频没有 tags
 
-    def test_copy_cover_images(self):
-        """测试封面图片复制功能"""
-        backend_thumbs_dir = self.backend_data_dir / "lvjiang" / "thumbs"
-        frontend_thumbs_dir = self.frontend_thumbs_dir
-        
-        # 执行复制
-        result = copy_cover_images(backend_thumbs_dir, frontend_thumbs_dir)
-        
-        # 验证结果
-        self.assertTrue(result['success'])
-        self.assertEqual(result['copied'], 2)
-        
-        # 检查文件是否存在
-        self.assertTrue((frontend_thumbs_dir / "BV1234567890.jpg").exists())
-        self.assertTrue((frontend_thumbs_dir / "BV0987654321.jpg").exists())
+
 
     def test_update_frontend_files(self):
         """测试完整的前端文件更新功能"""
@@ -165,7 +151,6 @@ class TestFrontendUpdater(unittest.TestCase):
         # 验证结果
         self.assertTrue(result['success'])
         self.assertTrue('merge_result' in result)
-        self.assertTrue('copy_result' in result)
         
         # 检查 videos.json 是否更新
         frontend_file = self.lvjiang_data_dir / "videos.json"
@@ -173,10 +158,6 @@ class TestFrontendUpdater(unittest.TestCase):
             data = json.load(f)
         
         self.assertEqual(len(data), 2)
-        
-        # 检查封面图片是否复制
-        self.assertTrue((self.frontend_thumbs_dir / "BV1234567890.jpg").exists())
-        self.assertTrue((self.frontend_thumbs_dir / "BV0987654321.jpg").exists())
 
 
 if __name__ == '__main__':
