@@ -7,7 +7,8 @@
 import re
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-from src.utils.path_manager import get_bv_file_path, get_favorites_config
+import requests
+from src.utils.path_manager import get_favorites_config
 
 
 class FavoritesCrawler:
@@ -18,7 +19,25 @@ class FavoritesCrawler:
     
     def __init__(self):
         """初始化收藏夹爬虫"""
-        pass
+        # API配置（内置，不依赖config.json）
+        self.api_config = {
+            'base_url': 'https://api.bilibili.com/x/v3/fav/resource/list',
+            'headers': {
+                'accept': '*/*',
+                'referer': 'https://space.bilibili.com/',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36'
+            },
+            'cookies': {},  # 空Cookie，公开收藏夹不需要登录
+            'params': {
+                'ps': 36,  # 每页数量
+                'keyword': '',
+                'order': 'mtime',
+                'type': 0,
+                'tid': 0,
+                'platform': 'web',
+                'web_location': '333.1387'
+            }
+        }
     
     def get_favorites_config(self):
         """获取收藏夹配置
@@ -108,7 +127,10 @@ class FavoritesCrawler:
             # 保存BV号
             with open(output_file, 'w', encoding='utf-8') as f:
                 for bv_code in bv_codes:
-                    f.write(f"BV{bv_code}\n")
+                    if not bv_code.startswith('BV'):
+                        f.write(f"BV{bv_code}\n")
+                    else:
+                        f.write(f"{bv_code}\n")
             
             print(f"成功保存 {len(bv_codes)} 个BV号到 {output_file}")
             return True
@@ -116,6 +138,246 @@ class FavoritesCrawler:
             print(f"保存BV号失败: {e}")
             return False
     
+    def fetch_favorites_api(self, media_id, page=1):
+        """使用API获取收藏夹数据
+        
+        Args:
+            media_id: 收藏夹ID
+            page: 页码
+            
+        Returns:
+            dict: API响应数据
+        """
+        params = self.api_config['params'].copy()
+        params['media_id'] = media_id
+        params['pn'] = page
+        
+        try:
+            response = requests.get(
+                self.api_config['base_url'],
+                params=params,
+                headers=self.api_config['headers'],
+                cookies=self.api_config['cookies'],
+                timeout=30
+            )
+            
+            response.raise_for_status()
+            return response.json()
+        except Exception as e:
+            print(f"API请求失败: {e}")
+            return None
+    
+    def extract_bv_from_api(self, response_data):
+        """从API响应中提取BV号
+        
+        Args:
+            response_data: API响应数据
+            
+        Returns:
+            list: BV号列表
+        """
+        bv_codes = []
+        
+        if not response_data:
+            return bv_codes
+        
+        # 检查响应状态
+        if response_data.get('code') != 0:
+            print(f"API返回错误: {response_data.get('message')}")
+            return bv_codes
+        
+        # 提取媒体数据
+        medias = response_data.get('data', {}).get('medias', [])
+        
+        for media in medias:
+            bvid = media.get('bvid')
+            if bvid:
+                bv_codes.append(bvid)
+        
+        return bv_codes
+    
+    def get_all_bv_from_api(self, media_id):
+        """从API获取所有BV号
+        
+        Args:
+            media_id: 收藏夹ID
+            
+        Returns:
+            list: 所有BV号列表
+        """
+        all_bv_codes = []
+        page = 1
+        
+        while True:
+            print(f"API获取第 {page} 页数据...")
+            response = self.fetch_favorites_api(media_id, page)
+            
+            if not response:
+                break
+            
+            bv_codes = self.extract_bv_from_api(response)
+            
+            if not bv_codes:
+                break
+            
+            all_bv_codes.extend(bv_codes)
+            
+            # 检查是否还有更多数据
+            total = response.get('data', {}).get('info', {}).get('media_count', 0)
+            if len(all_bv_codes) >= total:
+                break
+            
+            page += 1
+        
+        # 去重
+        return list(set(all_bv_codes))
+    
+    def _extract_media_id(self, url):
+        """从收藏夹URL中提取media_id
+        
+        Args:
+            url: 收藏夹URL
+            
+        Returns:
+            str: media_id，如果无法提取返回None
+        """
+        match = re.search(r'fid=(\d+)', url)
+        if match:
+            return match.group(1)
+        return None
+    
+    def _crawl_with_playwright(self, url, data_type):
+        """使用原有Playwright方式爬取
+        
+        Args:
+            url: 收藏夹URL
+            data_type: 数据类型
+            
+        Returns:
+            dict: 爬取结果
+        """
+        # 爬取收藏夹页面
+        html = self.crawl_favorites(url)
+        if not html:
+            return {"success": False, "message": "爬取失败"}
+        
+        # 提取BV号
+        bv_codes = self.extract_bv_codes(html)
+        if not bv_codes:
+            return {"success": False, "message": "未提取到BV号"}
+        
+        # 内存处理模式下直接返回结果
+        return {"success": True, "count": len(bv_codes), "bv_list": bv_codes}
+    
+    def crawl_favorites_to_memory(self, data_type):
+        """爬取收藏夹并直接返回BV号列表
+        
+        Args:
+            data_type: 数据类型（lvjiang 或 tiantong）
+            
+        Returns:
+            list: 提取的BV号列表
+        """
+        favorites_config = self.get_favorites_config()
+        url = favorites_config.get(data_type)
+        
+        if not url:
+            print(f"警告: 未找到 {data_type} 的收藏夹配置")
+            return []
+        
+        print(f"\n=== 爬取 {data_type} 收藏夹到内存 ===")
+        
+        # 从URL中提取media_id
+        media_id = self._extract_media_id(url)
+        if not media_id:
+            # 如果无法提取media_id，使用网页爬取方式
+            print("无法从URL中提取media_id，使用网页爬取方式")
+            # 爬取收藏夹页面
+            html = self.crawl_favorites(url)
+            if not html:
+                print("网页爬取失败")
+                return []
+            
+            # 提取BV号
+            bv_codes = self.extract_bv_codes(html)
+            if not bv_codes:
+                print("未提取到BV号")
+                return []
+            
+            print(f"成功提取 {len(bv_codes)} 个BV号")
+            return bv_codes
+        
+        # 优先使用API方式
+        try:
+            print(f"使用API方式获取收藏夹数据，media_id: {media_id}")
+            bv_codes = self.get_all_bv_from_api(media_id)
+            
+            if bv_codes:
+                print(f"成功获取 {len(bv_codes)} 个BV号")
+                return bv_codes
+            else:
+                # API方式失败，使用网页爬取方式
+                print("API方式获取失败，切换到网页爬取方式")
+                # 爬取收藏夹页面
+                html = self.crawl_favorites(url)
+                if not html:
+                    print("网页爬取失败")
+                    return []
+                
+                # 提取BV号
+                bv_codes = self.extract_bv_codes(html)
+                if not bv_codes:
+                    print("未提取到BV号")
+                    return []
+                
+                print(f"成功提取 {len(bv_codes)} 个BV号")
+                return bv_codes
+        except Exception as e:
+            print(f"API方式执行失败: {e}")
+            # 异常时使用网页爬取方式
+            html = self.crawl_favorites(url)
+            if not html:
+                print("网页爬取失败")
+                return []
+            
+            # 提取BV号
+            bv_codes = self.extract_bv_codes(html)
+            if not bv_codes:
+                print("未提取到BV号")
+                return []
+            
+            print(f"成功提取 {len(bv_codes)} 个BV号")
+            return bv_codes
+
+    def run_with_memory(self):
+        """运行爬取任务并直接返回BV号字典
+        
+        Returns:
+            dict: 包含各数据类型BV号列表的字典
+        """
+        result = {}
+        favorites_config = self.get_favorites_config()
+        
+        for data_type, url in favorites_config.items():
+            print(f"\n=== 爬取 {data_type} 收藏夹 ===")
+            
+            # 直接爬取到内存
+            bv_codes = self.crawl_favorites_to_memory(data_type)
+            
+            if bv_codes:
+                result[data_type] = {
+                    "success": True,
+                    "count": len(bv_codes),
+                    "bv_list": bv_codes
+                }
+            else:
+                result[data_type] = {
+                    "success": False,
+                    "message": "未提取到BV号"
+                }
+        
+        return result
+
     def run(self):
         """运行爬取任务
         
@@ -128,25 +390,29 @@ class FavoritesCrawler:
         for data_type, url in favorites_config.items():
             print(f"\n=== 爬取 {data_type} 收藏夹 ===")
             
-            # 爬取收藏夹页面
-            html = self.crawl_favorites(url)
-            if not html:
-                result[data_type] = {"success": False, "message": "爬取失败"}
+            # 从URL中提取media_id
+            media_id = self._extract_media_id(url)
+            if not media_id:
+                # 如果无法提取media_id，使用原有爬取方式
+                print("无法从URL中提取media_id，使用网页爬取方式")
+                result[data_type] = self._crawl_with_playwright(url, data_type)
                 continue
             
-            # 提取BV号
-            bv_codes = self.extract_bv_codes(html)
-            if not bv_codes:
-                result[data_type] = {"success": False, "message": "未提取到BV号"}
-                continue
-            
-            # 保存BV号
-            output_file = get_bv_file_path(data_type)
-            saved = self.save_bv_codes(bv_codes, output_file)
-            
-            if saved:
-                result[data_type] = {"success": True, "count": len(bv_codes)}
-            else:
-                result[data_type] = {"success": False, "message": "保存失败"}
+            # 优先使用API方式
+            try:
+                print(f"使用API方式获取收藏夹数据，media_id: {media_id}")
+                bv_codes = self.get_all_bv_from_api(media_id)
+                
+                if bv_codes:
+                    # 内存处理模式下直接返回结果
+                    result[data_type] = {"success": True, "count": len(bv_codes), "bv_list": bv_codes}
+                else:
+                    # API方式失败，使用原有爬取方式
+                    print("API方式获取失败，切换到网页爬取方式")
+                    result[data_type] = self._crawl_with_playwright(url, data_type)
+            except Exception as e:
+                print(f"API方式执行失败: {e}")
+                # 异常时使用原有爬取方式
+                result[data_type] = self._crawl_with_playwright(url, data_type)
         
         return result

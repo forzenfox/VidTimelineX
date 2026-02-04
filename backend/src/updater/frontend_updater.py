@@ -2,16 +2,16 @@
 """
 前端文件更新模块
 
-用于将后端生成的视频数据和封面图片更新到前端项目中。
+用于将后端生成的视频数据更新到前端项目中。
 
 功能：
 - 合并 videos.json 文件，保留前端的 tags 字段
-- 复制封面图片到前端 thumbs 目录
 - 支持 lvjiang 和 tiantong 两个数据类型
+
+注意：封面图片现在直接下载到前端目录，无需复制操作。
 """
 
 import json
-import shutil
 import re
 from pathlib import Path
 from typing import Dict, List, Any
@@ -126,41 +126,7 @@ def merge_videos_json(backend_file: Path, frontend_file: Path) -> Dict[str, Any]
         }
 
 
-def copy_cover_images(backend_thumbs_dir: Path, frontend_thumbs_dir: Path) -> Dict[str, Any]:
-    """复制封面图片到前端目录
-    
-    实现全量覆盖策略。
-    
-    Args:
-        backend_thumbs_dir: 后端封面图片目录
-        frontend_thumbs_dir: 前端封面图片目录
-        
-    Returns:
-        dict: 复制结果
-    """
-    try:
-        # 确保前端目录存在
-        frontend_thumbs_dir.mkdir(parents=True, exist_ok=True)
-        
-        # 复制所有图片文件
-        copied = 0
-        for img_file in backend_thumbs_dir.iterdir():
-            if img_file.is_file() and img_file.suffix.lower() in ('.jpg', '.jpeg', '.png', '.webp'):
-                dest_file = frontend_thumbs_dir / img_file.name
-                shutil.copy2(img_file, dest_file)
-                copied += 1
-        
-        return {
-            "success": True,
-            "copied": copied,
-            "message": f"成功复制 {copied} 张封面图片"
-        }
-        
-    except Exception as e:
-        return {
-            "success": False,
-            "message": f"复制失败: {str(e)}"
-        }
+
 
 
 def update_frontend_files(data_type: str, config: Dict[str, Any]) -> Dict[str, Any]:
@@ -176,15 +142,13 @@ def update_frontend_files(data_type: str, config: Dict[str, Any]) -> Dict[str, A
     try:
         # 获取路径
         backend_data_dir = Path(config.get('backend_data_dir', './data'))
-        frontend_data_dir = Path(config.get('frontend_data_dir', '../frontend'))
         
         # 后端文件路径
         backend_videos_file = backend_data_dir / data_type / 'videos.json'
-        backend_thumbs_dir = backend_data_dir / data_type / 'thumbs'
         
-        # 前端文件路径
-        frontend_videos_file = frontend_data_dir / 'src' / 'features' / data_type / 'data' / 'videos.json'
-        frontend_thumbs_dir = frontend_data_dir / 'public' / 'thumbs'
+        # 前端文件路径（使用配置的路径）
+        from src.utils.config import get_frontend_timeline_file
+        frontend_videos_file = get_frontend_timeline_file(data_type)
         
         # 验证路径
         if not backend_videos_file.exists():
@@ -196,13 +160,9 @@ def update_frontend_files(data_type: str, config: Dict[str, Any]) -> Dict[str, A
         # 合并 videos.json
         merge_result = merge_videos_json(backend_videos_file, frontend_videos_file)
         
-        # 复制封面图片
-        copy_result = copy_cover_images(backend_thumbs_dir, frontend_thumbs_dir)
-        
         return {
-            "success": merge_result['success'] and copy_result['success'],
+            "success": merge_result['success'],
             "merge_result": merge_result,
-            "copy_result": copy_result,
             "message": f"更新 {data_type} 前端文件完成"
         }
         
@@ -222,10 +182,9 @@ def main(data_types: List[str] = None):
     if data_types is None:
         data_types = ['lvjiang', 'tiantong']
     
-    # 默认配置
+    # 配置
     config = {
-        'backend_data_dir': './data',
-        'frontend_data_dir': '../frontend'
+        'backend_data_dir': './data'
     }
     
     for data_type in data_types:
@@ -238,10 +197,6 @@ def main(data_types: List[str] = None):
         if 'merge_result' in result:
             merge_msg = result['merge_result'].get('message', '')
             print(f"合并结果: {merge_msg}")
-        
-        if 'copy_result' in result:
-            copy_msg = result['copy_result'].get('message', '')
-            print(f"复制结果: {copy_msg}")
 
 
 if __name__ == "__main__":

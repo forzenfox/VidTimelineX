@@ -38,7 +38,25 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
     setIsLoading(false);
   };
 
-  const bvid = video.videoUrl.split("/").pop();
+  // 智能提取视频ID，支持av和BV格式
+  const getVideoPlayerUrl = (videoUrl: string) => {
+    const lastPart = videoUrl.split("/").pop() || "";
+
+    // 检测是否为av格式
+    if (lastPart.startsWith("av")) {
+      const aid = lastPart.replace("av", "");
+      return `https://player.bilibili.com/player.html?aid=${aid}&page=1&high_quality=1&danmaku=1`;
+    }
+    // 检测是否为BV格式
+    else if (lastPart.startsWith("BV")) {
+      const bvid = lastPart;
+      return `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=1`;
+    }
+    // 默认返回原始链接
+    return `https://player.bilibili.com/player.html?bvid=${lastPart}&page=1&high_quality=1&danmaku=1`;
+  };
+
+  const videoId = video.videoUrl.split("/").pop() || "";
 
   return (
     <div
@@ -104,7 +122,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
             </div>
           )}
           <iframe
-            src={`https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=1`}
+            src={getVideoPlayerUrl(video.videoUrl)}
             className="w-full h-full border-0"
             allowFullScreen
             allow="autoplay; fullscreen"
@@ -137,7 +155,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
                 color: theme === "tiger" ? "#E5E5E5" : "#666666",
               }}
             >
-              🎬 {bvid}
+              🎬 {videoId}
             </div>
           </div>
 

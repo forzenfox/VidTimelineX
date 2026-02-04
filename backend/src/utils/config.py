@@ -8,44 +8,79 @@ from pathlib import Path
 import json
 
 
-# 数据类型定义
-DATA_TYPES = {
-    'LVJIANG': 'lvjiang',    # 驴酱
-    'TIANTONG': 'tiantong'   # 甜筒
-}
-
 # 项目根目录
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 
 # 数据存储目录
 DATA_DIR = PROJECT_ROOT / "data"
 
-# 公共数据目录
-COMMON_DIR = DATA_DIR / "common"
-BV_LISTS_DIR = COMMON_DIR / "bv-lists"
-
-# BV号文件路径
-DEFAULT_BV_FILES = {
-    'lvjiang': BV_LISTS_DIR / "lvjiang-bv.txt",
-    'tiantong': BV_LISTS_DIR / "tiantong-bv.txt"
-}
-
 # 配置文件路径
 CONFIG_FILE = PROJECT_ROOT / "config.json"
 
-# 默认配置
-DEFAULT_CONFIG = {
-    "favorites": {
-        "tiantong": "https://space.bilibili.com/57320454/favlist?fid=3869352154&ftype=create&ctype=21",
-        "lvjiang": "https://space.bilibili.com/57320454/favlist?fid=3965175154&ftype=create&ctype=21"
-    },
-    "crawler": {
-        "timeout": 15,
-        "retry": 3,
-        "interval": 2,
-        "full_crawl": False
-    }
-}
+
+# 配置校验函数
+def validate_config(config):
+    """校验配置文件
+    
+    Args:
+        config: 配置信息
+        
+    Returns:
+        bool: 校验是否通过
+    """
+    if not isinstance(config, dict):
+        print("配置文件格式错误: 配置必须是一个字典")
+        return False
+    
+    # 校验datatype配置
+    if 'datatype' not in config:
+        print("配置文件错误: 缺少datatype配置")
+        return False
+    
+    datatype_config = config['datatype']
+    if not isinstance(datatype_config, dict):
+        print("配置文件错误: datatype配置必须是一个字典")
+        return False
+    
+    # 校验每个数据类型的配置
+    for data_type, data_config in datatype_config.items():
+        if not isinstance(data_config, dict):
+            print(f"配置文件错误: {data_type}配置必须是一个字典")
+            return False
+        
+        if 'favorites_url' not in data_config:
+            print(f"配置文件错误: {data_type}缺少favorites_url配置")
+            return False
+        
+        if 'backend_timeline_file' not in data_config:
+            print(f"配置文件错误: {data_type}缺少backend_timeline_file配置")
+            return False
+        
+        if 'frontend_timeline_file' not in data_config:
+            print(f"配置文件错误: {data_type}缺少frontend_timeline_file配置")
+            return False
+    
+    # 校验crawler配置
+    if 'crawler' not in config:
+        print("配置文件错误: 缺少crawler配置")
+        return False
+    
+    crawler_config = config['crawler']
+    if not isinstance(crawler_config, dict):
+        print("配置文件错误: crawler配置必须是一个字典")
+        return False
+    
+    # 校验frontend配置
+    if 'frontend' not in config:
+        print("配置文件错误: 缺少frontend配置")
+        return False
+    
+    frontend_config = config['frontend']
+    if not isinstance(frontend_config, dict):
+        print("配置文件错误: frontend配置必须是一个字典")
+        return False
+    
+    return True
 
 
 def get_config():
@@ -59,17 +94,19 @@ def get_config():
         try:
             with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
                 config = json.load(f)
-                # 合并默认配置
-                for key, value in DEFAULT_CONFIG.items():
-                    if key not in config:
-                        config[key] = value
+                
+                # 校验配置
+                if not validate_config(config):
+                    print("配置文件校验失败，程序终止")
+                    exit(1)
+                
                 return config
         except Exception as e:
             print(f"读取配置文件失败: {e}")
-            return DEFAULT_CONFIG
-    
-    # 配置文件不存在，返回默认配置
-    return DEFAULT_CONFIG
+            exit(1)
+    else:
+        print(f"配置文件不存在: {CONFIG_FILE}")
+        exit(1)
 
 
 def save_config(config):
@@ -98,13 +135,72 @@ def get_data_type_config(data_type):
     Returns:
         dict: 数据类型配置
     """
-    data_type_dir = DATA_DIR / data_type
+    config = get_config()
+    data_config = config['datatype'].get(data_type, {})
+    
+    if not data_config:
+        print(f"配置文件错误: 缺少{data_type}配置")
+        exit(1)
+    
+    backend_timeline_file = Path(data_config['backend_timeline_file'])
+    if not backend_timeline_file.is_absolute():
+        backend_timeline_file = PROJECT_ROOT / backend_timeline_file
+    
+    data_type_dir = backend_timeline_file.parent
+    
     return {
         'DATA_TYPE_DIR': data_type_dir,
         'THUMBS_DIR': data_type_dir / "thumbs",
-        'TIMELINE_FILE': data_type_dir / "videos.json",
-        'BV_FILE': BV_LISTS_DIR / f"{data_type}-bv.txt"
+        'TIMELINE_FILE': backend_timeline_file
     }
+
+
+def get_frontend_timeline_file(data_type):
+    """获取前端时间线文件路径
+    
+    Args:
+        data_type: 数据类型
+        
+    Returns:
+        Path: 前端时间线文件路径
+    """
+    config = get_config()
+    data_config = config['datatype'].get(data_type, {})
+    
+    if not data_config:
+        print(f"配置文件错误: 缺少{data_type}配置")
+        exit(1)
+    
+    frontend_timeline_file = Path(data_config['frontend_timeline_file'])
+    if not frontend_timeline_file.is_absolute():
+        frontend_timeline_file = PROJECT_ROOT / frontend_timeline_file
+    
+    return frontend_timeline_file
+
+
+def get_all_data_types():
+    """获取所有数据类型
+    
+    Returns:
+        list: 数据类型列表
+    """
+    config = get_config()
+    return list(config['datatype'].keys())
+
+
+def get_favorites_config():
+    """获取收藏夹配置
+    
+    Returns:
+        dict: 收藏夹配置
+    """
+    config = get_config()
+    favorites_config = {}
+    
+    for data_type, data_config in config['datatype'].items():
+        favorites_config[data_type] = data_config.get('favorites_url', '')
+    
+    return favorites_config
 
 
 # 存储文件路径
@@ -124,9 +220,27 @@ REQUEST_INTERVAL = 2  # 请求间隔（秒）
 
 # 浏览器配置
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-    'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-    'Referer': 'https://www.bilibili.com/',
-    'Connection': 'keep-alive'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Sec-Fetch-User': '?1',
+    'Referer': 'https://www.bilibili.com/'
 }
+
+
+def get_frontend_thumbs_dir():
+    """获取前端图片存储路径
+    
+    Returns:
+        Path: 前端图片存储路径
+    """
+    config = get_config()
+    thumbs_dir = config.get('frontend', {}).get('thumbs_dir', '../frontend/public/thumbs')
+    # 转换为绝对路径
+    return PROJECT_ROOT / thumbs_dir

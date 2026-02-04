@@ -52,34 +52,25 @@ def parse_args():
         help='指定后端数据目录'
     )
     
-    parser.add_argument(
-        '--frontend-dir', '-f',
-        type=str,
-        default='../frontend',
-        help='指定前端项目目录'
-    )
-    
     return parser.parse_args()
 
 
 def main():
     """主函数"""
-    print("=== 前端文件更新脚本 ===")
-    
-    # 解析参数
+    # 解析命令行参数
     args = parse_args()
     
     # 确定要更新的数据类型
-    data_types = args.data_type if args.data_type else ['lvjiang', 'tiantong']
+    data_types = args.data_type
+    if not data_types:
+        data_types = ['lvjiang', 'tiantong']
     
-    # 配置
+    # 构造配置
     config = {
-        'backend_data_dir': args.backend_dir,
-        'frontend_data_dir': args.frontend_dir
+        'backend_data_dir': args.backend_dir
     }
     
-    # 更新每个数据类型
-    all_success = True
+    # 执行更新
     for data_type in data_types:
         print(f"\n=== 更新 {data_type} 前端文件 ===")
         result = update_frontend_files(data_type, config)

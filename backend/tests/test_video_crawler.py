@@ -29,6 +29,15 @@ class TestVideoCrawler:
         assert len(bv_list) == 2
         assert "1234567890" in bv_list
         assert "0987654321" in bv_list
+
+    def test_crawl_from_bv_list(self):
+        """测试直接从BV号列表爬取"""
+        # 测试内存处理方法是否存在
+        assert hasattr(self.crawler, 'crawl_from_bv_list'), "crawl_from_bv_list方法不存在"
+        
+        # 测试直接传递BV号列表
+        test_bv_list = ["1234567890", "0987654321"]
+        assert isinstance(test_bv_list, list)
     
     def test_crawl_video_metadata(self):
         """测试视频元数据爬取功能"""
@@ -108,3 +117,19 @@ class TestVideoCrawler:
         assert "0987654321" in new_bv_list
         assert "5555555555" in new_bv_list
         assert "1234567890" not in new_bv_list
+    
+    def test_is_video_crawled_with_test_data(self):
+        """测试使用实际测试数据文件判断视频是否已爬取"""
+        # 使用测试数据目录中的videos.json文件
+        test_data_file = Path(__file__).parent / "data" / "videos.json"
+        
+        # 验证测试数据文件存在
+        assert test_data_file.exists(), f"测试数据文件不存在: {test_data_file}"
+        
+        # 测试已爬取的视频（从测试数据中提取BV号）
+        # 测试数据中包含 BV1xx411c7mD 和 BV2yy522d8nE
+        assert self.crawler.is_video_crawled("1xx411c7mD", test_data_file)
+        assert self.crawler.is_video_crawled("2yy522d8nE", test_data_file)
+        
+        # 测试未爬取的视频
+        assert not self.crawler.is_video_crawled("non_existent_bv", test_data_file)

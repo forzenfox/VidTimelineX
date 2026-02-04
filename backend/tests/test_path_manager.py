@@ -5,14 +5,7 @@
 
 import pytest
 from pathlib import Path
-from src.utils.path_manager import get_bv_file_path, get_data_paths, ensure_directories
-
-
-def test_get_bv_file_path():
-    """测试获取BV号文件路径"""
-    file_path = get_bv_file_path("tiantong")
-    assert isinstance(file_path, Path)
-    assert "tiantong-bv.txt" in str(file_path)
+from src.utils.path_manager import get_data_paths, ensure_directories
 
 
 def test_get_data_paths():

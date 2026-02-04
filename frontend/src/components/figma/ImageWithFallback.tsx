@@ -105,19 +105,19 @@ export function ImageWithFallback({
   const [corsStatus, setCorsStatus] = useState<CorsStatus>({ tried: false, failed: false });
 
   const handleCorsError = useCallback(() => {
-    console.warn(`[Image] 跨域加载失败，尝试回退: ${currentSrc}`);
+    console.debug(`[Image] 跨域加载失败，尝试回退: ${currentSrc}`);
     setCorsStatus({ tried: true, failed: true, message: "跨域被拒绝" });
 
     if (priorityLoad && src && !isExternalUrl(src)) {
       const localUrl = getLocalImageUrl(src);
-      console.warn(`[Image] 优先加载CDN失败，回退到本地图片: ${localUrl}`);
+      console.debug(`[Image] 优先加载CDN失败，回退到本地图片: ${localUrl}`);
       setCurrentSrc(localUrl);
       setFallbackUsed(true);
       setHasError(false);
       setCorsStatus({ tried: false, failed: false });
     } else if (!fallbackUsed && fallbackSrc && !isExternalUrl(fallbackSrc)) {
       const fallbackUrl = getLocalImageUrl(fallbackSrc);
-      console.warn(`[Image] 回退到本地备用图片: ${fallbackUrl}`);
+      console.debug(`[Image] 回退到本地备用图片: ${fallbackUrl}`);
       setCurrentSrc(fallbackUrl);
       setFallbackUsed(true);
       setHasError(false);
@@ -125,7 +125,7 @@ export function ImageWithFallback({
     } else if (!fallbackUsed && src) {
       const localUrl = getLocalImageUrl(src);
       if (localUrl !== currentSrc) {
-        console.warn(`[Image] 回退到本地图片: ${localUrl}`);
+        console.debug(`[Image] 回退到本地图片: ${localUrl}`);
         setCurrentSrc(localUrl);
         setFallbackUsed(true);
         setHasError(false);
@@ -152,7 +152,7 @@ export function ImageWithFallback({
     if (!fallbackUsed && src && !isExternalUrl(src)) {
       const localUrl = getLocalImageUrl(src);
       if (localUrl !== currentSrc) {
-        console.warn(`[Image] 加载失败，回退到本地图片: ${localUrl}`);
+        console.debug(`[Image] 加载失败，回退到本地图片: ${localUrl}`);
         setCurrentSrc(localUrl);
         setFallbackUsed(true);
         setHasError(false);
@@ -162,7 +162,7 @@ export function ImageWithFallback({
 
     if (!fallbackUsed && fallbackSrc && !isExternalUrl(fallbackSrc)) {
       const fallbackUrl = getLocalImageUrl(fallbackSrc);
-      console.warn(`[Image] 加载失败，回退到本地备用图片: ${fallbackUrl}`);
+      console.debug(`[Image] 加载失败，回退到本地备用图片: ${fallbackUrl}`);
       setCurrentSrc(fallbackUrl);
       setFallbackUsed(true);
       setHasError(false);

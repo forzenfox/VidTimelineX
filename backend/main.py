@@ -11,16 +11,15 @@ from src.crawler.video_crawler import VideoCrawler
 from src.crawler.timeline_generator import TimelineGenerator
 from src.downloader.download_thumbs import download_all_covers
 from src.updater.frontend_updater import update_frontend_files
-from src.utils.path_manager import get_bv_file_path, get_all_data_types, ensure_directories, get_data_paths
+from src.utils.path_manager import get_all_data_types, ensure_directories, get_data_paths
 from src.utils.config import get_config
 
 
-def download_covers_for_timeline(timeline_file: Path, thumbs_dir: Path) -> dict:
+def download_covers_for_timeline(timeline_file: Path) -> dict:
     """根据时间线文件下载封面图片
     
     Args:
         timeline_file: 时间线文件路径
-        thumbs_dir: 封面保存目录
         
     Returns:
         dict: 下载结果统计
@@ -36,18 +35,7 @@ def download_covers_for_timeline(timeline_file: Path, thumbs_dir: Path) -> dict:
     if not isinstance(data, list):
         return {'success': 0, 'failed': 0, 'skipped': 0}
     
-    videos = []
-    for item in data:
-        if isinstance(item, dict):
-            video = {
-                'videoUrl': item.get('videoUrl', '')
-            }
-            videos.append(video)
-    
-    if not videos:
-        return {'success': 0, 'failed': 0, 'skipped': 0}
-    
-    return download_all_covers(timeline_file, thumbs_dir, quiet=False)
+    return download_all_covers(timeline_file, quiet=False)
 
 
 def main():
@@ -71,10 +59,13 @@ def main():
     # 获取所有数据类型
     data_types = get_all_data_types()
     
-    # 爬取收藏夹
+    # 爬取收藏夹到内存
     print("\n=== 1. 爬取收藏夹获取BV号 ===")
-    favorites_result = favorites_crawler.run()
+    favorites_result = favorites_crawler.run_with_memory()
     print(f"收藏夹爬取结果: {favorites_result}")
+    
+    # 添加成功标志，跟踪是否成功生成了时间线数据
+    timeline_generated = False
     
     # 处理每个数据类型
     for data_type in data_types:
@@ -83,12 +74,12 @@ def main():
         # 确保目录存在
         ensure_directories(data_type)
         
-        # 获取BV号文件路径
-        bv_file_path = get_bv_file_path(data_type)
-        
-        # 加载BV号列表
-        print(f"\n=== 2. 加载BV号列表 ===")
-        bv_list = video_crawler.load_bv_list(bv_file_path)
+        # 从内存中获取BV号列表
+        print(f"\n=== 2. 从内存获取BV号列表 ===")
+        bv_list = []
+        data_result = favorites_result.get(data_type, {})
+        if data_result.get('success'):
+            bv_list = data_result.get('bv_list', [])
         
         if not bv_list:
             print(f"没有找到 {data_type} 的BV号")
@@ -97,22 +88,9 @@ def main():
         # 获取时间线文件路径
         timeline_file = get_data_paths(data_type).get('TIMELINE_FILE')
         
-        # 爬取视频元数据
-        print(f"\n=== 3. 爬取视频元数据 ===")
-        videos = []
-        
-        for bv_code in bv_list:
-            # 增量爬取模式下，检查视频是否已爬取
-            if not full_crawl and video_crawler.is_video_crawled(bv_code, timeline_file):
-                print(f"视频 BV{bv_code} 已爬取，跳过")
-                continue
-            
-            metadata = video_crawler.crawl_video_metadata(bv_code)
-            if metadata:
-                videos.append(metadata)
-            
-            # 避免请求过于频繁
-            time.sleep(2)
+        # 直接从内存中的BV号列表爬取视频元数据
+        print(f"\n=== 3. 直接爬取视频元数据 ===")
+        videos = video_crawler.crawl_from_bv_list(bv_list, data_type, full_crawl)
         
         if not videos:
             if full_crawl:
@@ -127,34 +105,39 @@ def main():
         print(f"时间线生成结果: {timeline_result}")
         
         if timeline_result.get('success'):
-            data_config = get_data_paths(data_type)
-            thumbs_dir = data_config.get('THUMBS_DIR')
+            # 更新成功标志
+            timeline_generated = True
             
             print(f"\n=== 5. 下载封面图片 ===")
-            cover_result = download_covers_for_timeline(timeline_file, thumbs_dir)
+            cover_result = download_covers_for_timeline(timeline_file)
             print(f"封面下载结果: 成功 {cover_result.get('success', 0)}, 失败 {cover_result.get('failed', 0)}, 跳过 {cover_result.get('skipped', 0)}")
     
-    # 更新前端文件
-    print("\n=== 更新前端文件 ===")
-    config = {
-        'backend_data_dir': './data',
-        'frontend_data_dir': '../frontend'
-    }
-    
-    for data_type in data_types:
-        print(f"\n=== 更新 {data_type} 前端文件 ===")
-        result = update_frontend_files(data_type, config)
+    # 只有当成功生成了时间线数据时，才执行前端文件更新
+    if timeline_generated:
+        # 更新前端文件
+        print("\n=== 更新前端文件 ===")
+        # 从配置文件获取前端数据目录
+        config = {
+            'backend_data_dir': './data'
+        }
         
-        print(f"结果: {'成功' if result['success'] else '失败'}")
-        print(f"消息: {result.get('message', '')}")
-        
-        if 'merge_result' in result:
-            merge_msg = result['merge_result'].get('message', '')
-            print(f"合并结果: {merge_msg}")
-        
-        if 'copy_result' in result:
-            copy_msg = result['copy_result'].get('message', '')
-            print(f"复制结果: {copy_msg}")
+        for data_type in data_types:
+            print(f"\n=== 更新 {data_type} 前端文件 ===")
+            result = update_frontend_files(data_type, config)
+            
+            print(f"结果: {'成功' if result['success'] else '失败'}")
+            print(f"消息: {result.get('message', '')}")
+            
+            if 'merge_result' in result:
+                merge_msg = result['merge_result'].get('message', '')
+                print(f"合并结果: {merge_msg}")
+            
+            if 'copy_result' in result:
+                copy_msg = result['copy_result'].get('message', '')
+                print(f"复制结果: {copy_msg}")
+    else:
+        print("\n=== 跳过更新前端文件 ===")
+        print("原因: 没有成功生成时间线数据，无需更新前端文件")
 
     print("\n=== 时间线更新完成 ===")
 

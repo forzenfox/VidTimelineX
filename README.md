@@ -1,11 +1,12 @@
-# B站视频时间线系统
+# VidTimelineX - B站视频时间线系统
 
 > **📁 项目文档导航**
-> - **本文档**：项目全局说明、架构概览、部署指南
+> - **本文档**：项目全局说明、架构概览、快速开始
 > - **后端README**：后端架构详细技术文档、TDD开发流程、使用说明 → [查看](./backend/README.md)
 > - **前端README**：前端架构详细技术文档、组件说明、开发指南 → [查看](./frontend/README.md)
+> - **测试文档**：前端测试结构说明、测试指南 → [查看](./frontend/tests/README.md)
 
-基于TDD方法开发的B站收藏夹视频时间线系统，支持自动爬取收藏夹视频、生成时间线数据，采用前后端分离架构，模块化设计和数据隔离架构。
+基于TDD方法开发的B站收藏夹视频时间线系统，支持自动爬取收藏夹视频、生成时间线数据，采用前后端分离架构，模块化设计和数据隔离架构。项目提供驴酱和甜筒两个视频集的展示，支持主题切换、弹幕互动、搜索筛选等丰富功能。
 
 ## 项目概述
 
@@ -16,10 +17,7 @@ VidTimelineX/
 ├── backend/           # 后端目录
 │   ├── src/           # 后端源码
 │   ├── tests/         # 后端测试
-│   ├── update_timeline.py   # 主更新脚本
-│   ├── update_frontend.py   # 前端文件更新脚本
-│   ├── config.json    # 配置文件
-│   ├── requirements.txt   # 依赖文件
+│   ├── main.py        # 主更新脚本
 │   └── README.md      # 后端文档
 ├── frontend/          # 前端目录
 │   ├── src/           # 前端源码
@@ -34,207 +32,276 @@ VidTimelineX/
 
 1. **B站收藏夹自动爬取**
    - 自动爬取B站收藏夹视频
-   - 支持多个收藏夹并行管理
+   - 支持多个收藏夹并行管理（驴酱、甜筒）
    - 配置化的收藏夹URL映射
+   - 支持API和网页两种爬取方式
 
 2. **时间线数据生成**
    - 按发布日期排序
    - 生成符合前端格式的 videos.json
    - 支持多个数据类型（驴酱、甜筒）
+   - 增量爬取和全量爬取模式
 
 3. **封面图片管理**
    - 自动下载视频封面图片
    - 统一的图片命名规范
    - 支持批量下载和更新
+   - 智能去重，避免重复下载
 
 4. **前端文件自动更新**
    - 自动更新前端 videos.json 文件
    - 保留前端的 tags 字段内容
    - 覆盖更新其他字段
 
-5. **完整的测试覆盖**
+5. **视频时间线展示**
+   - 驴酱视频集：时间轴式布局，按发布日期倒序排列
+   - 甜筒视频集：分类筛选加时间分组的复合布局
+   - 支持视频弹窗播放和详情查看
+
+6. **主题切换系统**
+   - 驴酱主题：洞主主题（家猪）和凯哥主题（野猪）
+   - 甜筒主题：老虎主题（橙色调）和甜筒主题（粉色系）
+   - CSS变量实现，性能优良且过渡流畅
+
+7. **弹幕互动效果**
+   - 水平弹幕：页面顶部滚动显示
+   - 侧边弹幕：右侧实时显示用户互动信息
+   - 支持主题联动和定时更新
+
+8. **搜索与筛选**
+   - 实时搜索和自动补全
+   - 搜索历史记录
+   - 分类筛选器（甜筒视频集）
+   - 筛选结果实时更新
+
+9. **完整的测试覆盖**
    - TDD开发方法
-   - 完整的测试套件
+   - 完整的测试套件（单元测试、集成测试、E2E测试）
    - 确保代码质量
+
+10. **代码质量保障**
+    - ESLint静态代码检查
+    - Prettier代码格式化
+    - Husky Git钩子自动检查
+    - 代码覆盖率要求>80%
+
+## 技术栈
+
+### 后端技术栈
+
+- **Python 3.8+**：后端开发语言
+- **Playwright 1.47+**：动态内容爬取和浏览器自动化
+- **Requests 2.28+**：HTTP请求处理
+- **BeautifulSoup4 4.11+**：HTML解析
+- **Pytest 7.0+**：单元测试框架
+
+### 前端技术栈
+
+- **React 19.2.0**：前端UI框架
+- **TypeScript 5.9**：类型安全
+- **Vite 7.2.4**：构建工具和开发服务器
+- **React Router DOM 7.10.0**：客户端路由
+- **Tailwind CSS 4.1.17**：CSS框架
+- **Radix UI**：无样式组件库（30+组件）
+- **@tanstack/react-query 5.83.0**：服务器状态管理
+- **Jest 30.2**：单元测试框架
+- **Playwright 1.58.0**：E2E测试框架
+- **ESLint 9.39.1**：静态代码检查
+- **Prettier 3.8.1**：代码格式化
+
+### 开发工具
+
+- **Husky 9.1.7**：Git钩子管理
+- **lint-staged 16.2.7**：提交前代码检查
+- **Node.js 18+**：前端运行环境
+- **npm 9+**：包管理器
 
 ## 快速开始
 
 ### 环境要求
 
-- **后端**：Python 3.8+，Playwright
+- **后端**：Python 3.8+，Playwright 1.47+
 - **前端**：Node.js 18+，npm 9+
-- **操作系统**：Windows 11 或其他支持的操作系统
+- **操作系统**：Windows 11、macOS 或 Linux
+- **浏览器**：Chrome、Firefox、Safari、Edge（最新版本）
 
-### 后端部署
+### 基本部署步骤
 
-1. **安装依赖**
+#### 1. 克隆项目
+
+```bash
+git clone <repository-url>
+cd VidTimelineX
+```
+
+#### 2. 后端设置
 
 ```bash
 # 进入后端目录
 cd backend
 
-# 安装Python依赖
+# 创建虚拟环境（推荐）
+python -m venv .venv
+
+# 激活虚拟环境
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# 安装依赖
 pip install -r requirements.txt
 
-# 安装Playwright浏览器
+# 安装Playwright浏览器（必要步骤）
 playwright install
+
+# 配置收藏夹URL（编辑config.json）
+# 确保收藏夹URL正确且公开可见
 ```
 
-2. **配置收藏夹**
-
-编辑 `backend/config.json` 文件，配置收藏夹URL：
-
-```json
-{
-  "favorites": {
-    "tiantong": "https://space.bilibili.com/57320454/favlist?fid=3869352154&ftype=create&ctype=21",
-    "lvjiang": "https://space.bilibili.com/57320454/favlist?fid=3965175154&ftype=create&ctype=21"
-  },
-  "crawler": {
-    "timeout": 15,
-    "retry": 3,
-    "interval": 2,
-    "full_crawl": false
-  }
-}
-```
-
-3. **运行更新**
-
-```bash
-# 在backend目录下执行
-python update_timeline.py
-```
-
-### 前端部署
-
-1. **安装依赖**
+#### 3. 前端设置
 
 ```bash
 # 进入前端目录
 cd frontend
 
-# 安装npm依赖
+# 安装依赖
 npm install
+
+# （可选）配置npm镜像源（中国大陆用户）
+npm config set registry https://registry.npmmirror.com
 ```
 
-2. **开发模式运行**
+#### 4. 运行项目
+
+**启动后端服务**：
 
 ```bash
+# 在backend目录下
+python main.py
+```
+
+**启动前端开发服务器**：
+
+```bash
+# 在frontend目录下
 npm run dev
 ```
 
-3. **构建生产版本**
+前端开发服务器默认运行在 http://localhost:5173
+
+#### 5. 访问应用
+
+打开浏览器访问 http://localhost:5173，即可看到应用界面。
+
+### 开发模式
+
+#### 后端开发
 
 ```bash
-npm run build
+# 运行测试
+pytest
+
+# 运行特定测试
+pytest tests/test_favorites_crawler.py
+
+# 查看测试覆盖率
+pytest --cov=src
 ```
 
-## 数据流程
+#### 前端开发
 
-1. **收藏夹爬取**：后端自动爬取B站收藏夹，提取视频BV号
-2. **视频元数据**：根据BV号爬取视频详细信息和发布日期
-3. **时间线生成**：生成符合前端格式的 videos.json 数据
-4. **封面下载**：下载视频封面图片
-5. **前端更新**：自动更新前端 videos.json 文件和封面图片
+```bash
+# 开发模式（支持热更新）
+npm run dev
 
-## 项目特点
+# 运行所有测试
+npm test
 
-### 后端特点
+# 运行单元测试
+npm run test:unit
 
-- **TDD开发**：先编写测试用例，再实现功能代码
-- **模块化设计**：清晰的职责分离，高内聚低耦合
-- **收藏夹管理**：自动爬取B站收藏夹视频
-- **数据隔离**：支持多个数据类型（驴酱、甜筒）
-- **路径管理**：智能的路径生成，自动目录创建
-- **错误处理**：完善的异常捕获，智能的重试机制
+# 运行集成测试
+npm run test:integration
 
-### 前端特点
+# 运行E2E测试
+npm run test:e2e
 
-- **响应式设计**：适配不同屏幕尺寸
-- **模块化组件**：可复用的UI组件
-- **时间线展示**：按发布日期排序的视频时间线
-- **视频播放**：集成B站视频播放器
-- **封面图片**：统一的封面图片管理
+# 生成测试覆盖率报告
+npm run test:coverage
 
-## 部署指南
+# 代码检查
+npm run lint
 
-### 本地开发环境
+# 代码格式化
+npx prettier --write "src/**/*.{ts,tsx,js,jsx}"
+```
 
-1. **后端**：
-   - Python 3.8+
-   - Playwright
-   - 运行 `python update_timeline.py` 更新数据
+### 生产部署
 
-2. **前端**：
-   - Node.js 18+
-   - 运行 `npm run dev` 启动开发服务器
+#### 后端部署
 
-### 生产环境部署
+```bash
+# 在backend目录下
+# 配置生产环境变量（如需要）
+# 运行更新脚本
+python main.py
 
-1. **后端**：
-   - 部署到服务器
-   - 设置定时任务定期运行 `python update_timeline.py`
+# （可选）设置定时任务（如cron）定期更新
+```
 
-2. **前端**：
-   - 运行 `npm run build` 构建生产版本
-   - 部署构建产物到静态文件服务器
+#### 前端部署
 
-## 维护指南
+```bash
+# 在frontend目录下
+# 构建生产版本
+npm run build
 
-### 1. 收藏夹管理
+# 预览生产版本
+npm run preview
 
-- **定期更新收藏夹URL**：确保收藏夹URL正确
-- **分类管理**：按不同数据类型创建不同收藏夹
-- **合理组织**：避免收藏夹过大，影响爬取效率
+# 部署build目录到静态文件服务器
+# 支持的部署平台：Vercel、Netlify、Cloudflare Pages、GitHub Pages等
+```
 
-### 2. 数据管理
+### 常见问题
 
-- **备份数据**：定期备份生成的时间线数据
-- **清理冗余**：移除无效的BV号
-- **检查格式**：确保生成的数据格式正确
+#### 1. Playwright安装失败
 
-### 3. 错误处理
+**解决方案**：
+- 检查网络连接
+- 尝试使用代理
+- 手动下载浏览器驱动
 
-- **网络问题**：检查网络连接和代理设置
-- **BV号无效**：定期清理无效的BV号
-- **收藏夹权限**：确保收藏夹可公开访问
+#### 2. 前端依赖安装失败
 
-### 4. 扩展开发
+**解决方案**：
+- 清除npm缓存：`npm cache clean --force`
+- 删除node_modules和package-lock.json后重新安装
+- 使用npm镜像源
 
-- **添加新功能**：在对应模块中添加新方法
-- **修改配置**：通过配置文件调整系统行为
-- **添加测试**：为新功能编写测试用例
+#### 3. 收藏夹爬取失败
 
-## 技术栈
+**解决方案**：
+- 检查收藏夹URL是否正确
+- 确保收藏夹为公开可见
+- 检查网络连接
+- 查看日志输出定位问题
 
-### 后端
+#### 4. 前端页面无法访问
 
-- Python 3.8+
-- Playwright（动态内容爬取）
-- BeautifulSoup4（HTML解析）
-- Requests（HTTP请求）
-- Pytest（单元测试）
-
-### 前端
-
-- React
-- TypeScript
-- Vite
-- Tailwind CSS
-- Jest（单元测试）
-- Playwright（端到端测试）
+**解决方案**：
+- 确认开发服务器已启动
+- 检查端口是否被占用
+- 清除浏览器缓存
+- 检查防火墙设置
 
 ## 许可证
 
-MIT License
+本项目采用 MIT 许可证开源。详细内容请参阅 [LICENSE](LICENSE) 文件。
 
 ## 贡献
 
 欢迎提交Issue和Pull Request，共同改进系统。
 
 ---
-
-**📝 文档更新时间**：2025-07-03
-**📦 版本**：1.1.0
-**🔧 维护者**：系统自动生成

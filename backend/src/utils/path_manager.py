@@ -5,19 +5,7 @@
 """
 
 from pathlib import Path
-from src.utils.config import DATA_DIR, COMMON_DIR, BV_LISTS_DIR, DEFAULT_BV_FILES
-
-
-def get_bv_file_path(data_type):
-    """获取BV号文件路径
-    
-    Args:
-        data_type: 数据类型
-        
-    Returns:
-        Path: BV号文件路径
-    """
-    return DEFAULT_BV_FILES.get(data_type, BV_LISTS_DIR / f'{data_type}-bv.txt')
+from src.utils.config import DATA_DIR
 
 
 def get_data_paths(data_type):
@@ -41,9 +29,6 @@ def ensure_directories(data_type):
     """
     config = get_data_paths(data_type)
     
-    # 确保公共目录存在
-    BV_LISTS_DIR.mkdir(parents=True, exist_ok=True)
-    
     # 确保数据类型目录存在
     for path in config.values():
         if isinstance(path, Path) and path.suffix == '':
@@ -56,8 +41,8 @@ def get_all_data_types():
     Returns:
         list: 数据类型列表
     """
-    from src.utils.config import DATA_TYPES
-    return list(DATA_TYPES.values())
+    from src.utils.config import get_all_data_types as config_get_all_data_types
+    return config_get_all_data_types()
 
 
 def get_favorites_config():
@@ -66,6 +51,5 @@ def get_favorites_config():
     Returns:
         dict: 收藏夹配置
     """
-    from src.utils.config import get_config
-    config = get_config()
-    return config.get('favorites', {})
+    from src.utils.config import get_favorites_config as config_get_favorites_config
+    return config_get_favorites_config()

@@ -259,6 +259,57 @@ class TestCoverDownloader(unittest.TestCase):
             self.assertEqual(result['status'], 'success')
             self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
 
+    def test_download_cover_with_cover_url(self):
+        """测试使用cover_url下载封面"""
+        from src.downloader.download_thumbs import download_cover
+
+        video = {
+            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+            "cover_url": "https://i0.hdslb.com/bfs/archive/test_cover.jpg"
+        }
+
+        mock_img_response = Mock()
+        mock_img_response.iter_content = Mock(return_value=[b"fake", b"image", b"data"])
+        mock_img_response.__enter__ = Mock(return_value=mock_img_response)
+        mock_img_response.__exit__ = Mock(return_value=False)
+
+        with patch('requests.get', return_value=mock_img_response):
+            result = download_cover(video, self.thumbs_dir, quiet=True)
+            self.assertEqual(result['status'], 'success')
+            self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
+
+    def test_download_cover_with_cover_url_fallback(self):
+        """测试cover_url失败后回退到传统方法"""
+        from src.downloader.download_thumbs import download_cover
+
+        video = {
+            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+            "cover_url": "https://invalid-url.com/test.jpg"
+        }
+
+        html = '''
+        <html>
+        <head>
+            <meta property="og:image" content="https://i0.hdslb.com/bfs/archive/test.jpg">
+        </head>
+        </html>
+        '''
+
+        # 第一次请求cover_url失败，第二次请求视频页面，第三次请求封面图片
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.text = html
+
+        mock_img_response = Mock()
+        mock_img_response.iter_content = Mock(return_value=[b"fake", b"image", b"data"])
+        mock_img_response.__enter__ = Mock(return_value=mock_img_response)
+        mock_img_response.__exit__ = Mock(return_value=False)
+
+        with patch('requests.get', side_effect=[Exception("Network error"), mock_response, mock_img_response]):
+            result = download_cover(video, self.thumbs_dir, quiet=True)
+            self.assertEqual(result['status'], 'success')
+            self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
+
     def test_download_cover_already_exists(self):
         """测试封面已存在的情况"""
         from src.downloader.download_thumbs import download_cover
@@ -318,6 +369,38 @@ class TestCoverDownloader(unittest.TestCase):
             self.assertGreater(results['success'], 0)
             self.assertIn('BV19YzYBjELJ', results['downloaded_files'])
 
+    def test_download_all_covers_with_concurrent(self):
+        """测试并发下载所有视频封面"""
+        from src.downloader.download_thumbs import download_all_covers
+
+        videos_path = Path(self.test_dir) / "videos.json"
+        videos_data = [
+            {
+                "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/BV19YzYBjELJ.jpg"
+            },
+            {
+                "videoUrl": "https://www.bilibili.com/video/BV15NzrBBEJQ",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/BV15NzrBBEJQ.jpg"
+            }
+        ]
+
+        with open(videos_path, 'w', encoding='utf-8') as f:
+            import json
+            json.dump(videos_data, f, ensure_ascii=False)
+
+        mock_img_response = Mock()
+        mock_img_response.iter_content = Mock(return_value=[b"fake", b"image"])
+        mock_img_response.__enter__ = Mock(return_value=mock_img_response)
+        mock_img_response.__exit__ = Mock(return_value=False)
+
+        with patch('requests.get', return_value=mock_img_response):
+            results = download_all_covers(videos_path, self.thumbs_dir, quiet=True, max_workers=2)
+
+            self.assertGreater(results['success'], 0)
+            self.assertIn('BV19YzYBjELJ', results['downloaded_files'])
+            self.assertIn('BV15NzrBBEJQ', results['downloaded_files'])
+
     def test_download_all_covers_file_not_exists(self):
         """测试videos.json文件不存在"""
         from src.downloader.download_thumbs import download_all_covers
@@ -329,6 +412,44 @@ class TestCoverDownloader(unittest.TestCase):
         self.assertEqual(results['success'], 0)
         self.assertEqual(results['failed'], 0)
         self.assertEqual(results['skipped'], 0)
+
+    def test_get_existing_covers(self):
+        """测试获取已存在的封面列表"""
+        from src.downloader.download_thumbs import get_existing_covers
+
+        # 创建测试图片文件
+        cover_file1 = self.thumbs_dir / "BV19YzYBjELJ.jpg"
+        cover_file1.write_text("fake image content")
+        cover_file2 = self.thumbs_dir / "BV15NzrBBEJQ.png"
+        cover_file2.write_text("fake image content")
+
+        existing_covers = get_existing_covers(self.thumbs_dir)
+        self.assertIsInstance(existing_covers, set)
+        self.assertIn("BV19YzYBjELJ", existing_covers)
+        self.assertIn("BV15NzrBBEJQ", existing_covers)
+
+    def test_get_existing_covers_empty(self):
+        """测试获取空目录的封面列表"""
+        from src.downloader.download_thumbs import get_existing_covers
+
+        existing_covers = get_existing_covers(self.thumbs_dir)
+        self.assertIsInstance(existing_covers, set)
+        self.assertEqual(len(existing_covers), 0)
+
+    def test_batch_compare_covers(self):
+        """测试批量对比封面"""
+        from src.downloader.download_thumbs import get_existing_covers
+
+        # 创建测试图片文件
+        cover_file = self.thumbs_dir / "BV19YzYBjELJ.jpg"
+        cover_file.write_text("fake image content")
+
+        existing_covers = get_existing_covers(self.thumbs_dir)
+        
+        # 测试已存在的封面
+        self.assertIn("BV19YzYBjELJ", existing_covers)
+        # 测试不存在的封面
+        self.assertNotIn("BV15NzrBBEJQ", existing_covers)
 
 
 if __name__ == "__main__":

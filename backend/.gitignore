@@ -35,8 +35,6 @@ temp/
 Thumbs.db
 .DS_Store
 
-# 数据目录（包含大量图片和视频数据，不适合版本控制）
-data/
 
 # 测试覆盖率报告
 htmlcov/
@@ -44,6 +42,9 @@ htmlcov/
 .coverage.*
 .cache
 .pytest_cache/
+
+# 测试结果目录
+test_covers/
 
 # 构建产物
 build/

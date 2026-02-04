@@ -1,12 +1,23 @@
 {
-  "favorites": {
-    "tiantong": "https://space.bilibili.com/57320454/favlist?fid=3869352154&ftype=create&ctype=21",
-    "lvjiang": "https://space.bilibili.com/57320454/favlist?fid=3965175154&ftype=create&ctype=21"
+  "datatype": {
+    "lvjiang": {
+      "favorites_url": "https://space.bilibili.com/57320454/favlist?fid=3965175154&ftype=create&ctype=21",
+      "backend_timeline_file": "data/lvjiang/videos.json",
+      "frontend_timeline_file": "C:\\Users\\skyzl\\AppData\\Local\\Temp\\tmp93_u4b0p\\frontend_data\\src\\features\\lvjiang\\data\\videos.json"
+    },
+    "tiantong": {
+      "favorites_url": "https://space.bilibili.com/57320454/favlist?fid=3869352154&ftype=create&ctype=21",
+      "backend_timeline_file": "data/tiantong/videos.json",
+      "frontend_timeline_file": "../frontend/src/features/tiantong/data/videos.json"
+    }
   },
   "crawler": {
     "timeout": 15,
     "retry": 3,
     "interval": 2,
     "full_crawl": false
+  },
+  "frontend": {
+    "thumbs_dir": "../frontend/public/thumbs"
   }
 }
