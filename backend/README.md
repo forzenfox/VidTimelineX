@@ -1,10 +1,11 @@
-# B站视频时间线系统
+# VidTimelineX - 后端项目
 
 > **📁 项目文档导航**
+>
 > - **根目录README**：项目全局说明、架构概览、部署指南 → [查看](../README.md)
 > - **本文档**：后端架构详细技术文档、TDD开发流程、使用说明
 >
-> 基于TDD方法开发的B站收藏夹视频时间线系统，支持自动爬取收藏夹视频、生成时间线数据，采用模块化设计和数据隔离架构。
+> 基于TDD方法开发的B站收藏夹视频时间线系统后端，支持自动爬取收藏夹视频、生成时间线数据，采用模块化设计和数据隔离架构。
 
 ## 项目概述
 
@@ -201,7 +202,8 @@ backend/
 
 ### 环境要求
 - Python 3.8+
-- Windows 11 或其他支持的操作系统
+- Windows 11、macOS 或 Linux
+- 网络连接（用于爬取B站数据和安装依赖）
 
 ### 安装依赖
 
@@ -223,10 +225,28 @@ playwright install
 
 | 依赖项 | 版本 | 用途 |
 |-------|------|------|
-| requests | ^2.31.0 | HTTP请求处理 |
-| beautifulsoup4 | ^4.12.3 | HTML解析 |
-| playwright | ^1.47.0 | 动态内容爬取和浏览器自动化 |
-| pytest | ^8.3.5 | 单元测试 |
+| requests | >=2.28.0 | HTTP请求处理 |
+| beautifulsoup4 | >=4.11.0 | HTML解析 |
+| playwright | >=1.47.0,<1.50.0 | 动态内容爬取和浏览器自动化 |
+| pytest | >=7.0.0 | 单元测试 |
+| python-dotenv | >=0.20.0 | 环境变量管理（可选） |
+
+### 虚拟环境设置（推荐）
+
+```bash
+# 创建虚拟环境
+python -m venv .venv
+
+# 激活虚拟环境
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+source .venv/bin/activate
+
+# 安装依赖
+pip install -r requirements.txt
+playwright install
+```
 
 ## 使用方法
 
@@ -266,12 +286,38 @@ playwright install
 - 收藏夹URL需要确保该收藏夹**公开可见**
 - `full_crawl: false` 为增量模式，只爬取新增视频
 - `full_crawl: true` 为全量模式，会重新爬取所有视频
+- 建议定期使用增量模式更新，全量模式仅在数据损坏时使用
 
 ### 2. 运行更新
+
+#### 完整更新流程
 
 ```bash
 # 在backend目录下执行
 python main.py
+```
+
+**执行流程**：
+1. 爬取收藏夹获取BV号到内存
+2. 从内存BV列表爬取视频元数据
+3. 生成时间线数据
+4. 下载封面图片
+5. 更新前端文件
+
+#### 单独运行各个模块
+
+```bash
+# 仅爬取收藏夹
+python -m src.crawler.favorites_crawler
+
+# 仅生成时间线
+python -m src.crawler.timeline_generator
+
+# 仅下载封面
+python -m src.downloader.download_thumbs data/lvjiang/videos.json data/lvjiang/thumbs
+
+# 仅更新前端文件
+python update_frontend.py
 ```
 
 ### 3. 查看结果
@@ -303,6 +349,72 @@ python main.py
 **封面图片目录**：`data/{data_type}/thumbs/`
 
 **封面图片文件**：`{BV号}.jpg`（如 `BV19YzYBjELJ.jpg`）
+
+### 4. 调试和日志
+
+**启用详细日志**：
+
+```bash
+# 设置环境变量
+export DEBUG=1
+
+# 运行更新
+python main.py
+```
+
+**查看日志文件**：
+
+```bash
+# 日志文件位置（如果配置了日志输出）
+tail -f logs/app.log
+```
+
+### 5. 定时任务设置
+
+#### Windows 任务计划程序
+
+1. 打开"任务计划程序"
+2. 创建基本任务
+3. 设置触发器（如每天凌晨2点）
+4. 设置操作：启动程序
+   - 程序：`python.exe`
+   - 参数：`main.py`
+   - 起始于：`D:\workspace\VidTimelineX\backend`
+
+#### Linux/Mac cron
+
+```bash
+# 编辑crontab
+crontab -e
+
+# 添加定时任务（每天凌晨2点运行）
+0 2 * * * cd /path/to/VidTimelineX/backend && /usr/bin/python3 main.py >> logs/cron.log 2>&1
+```
+
+### 6. 性能优化
+
+#### 并发爬取
+
+```bash
+# 使用并发脚本添加到收藏夹
+python scripts/add_to_favorites_concurrent.py
+```
+
+#### 增量更新
+
+```json
+{
+  "crawler": {
+    "full_crawl": false
+  }
+}
+```
+
+#### 缓存优化
+
+- BV号在内存中传递，减少文件IO
+- 已爬取的视频会跳过，避免重复请求
+- 封面图片智能去重，避免重复下载
 
 ## 测试
 

@@ -1,19 +1,28 @@
-# 哔哩哔哩时间线 - 前端项目
+# VidTimelineX - 前端项目
 
 > **📁 项目文档导航**
 >
 > - **根目录README**：项目全局说明、架构概览、部署指南 → [查看](../README.md)
 > - **本文档**：前端详细技术文档、安装指南、测试说明
+> - **测试文档**：前端测试结构说明、测试指南 → [查看](./tests/README.md)
 
 ## 项目概述
 
-哔哩哔哩时间线是一个基于现代前端技术栈构建的视频内容展示平台，主要用于展示和分享两位主播（驴酱和甜筒）的精彩视频集。该项目采用 React 19 与 Vite 构建，结合了 Tailwind CSS 4 和 Radix UI 组件库，提供流畅的用户体验和响应式设计。项目的核心功能包括视频时间线展示、弹幕互动效果、主题切换、搜索过滤以及视频弹窗播放等，为用户打造沉浸式的视频浏览体验。
+VidTimelineX 前端是一个基于现代前端技术栈构建的视频内容展示平台，主要用于展示和分享两位主播（驴酱和甜筒）的精彩视频集。该项目采用 React 19 与 Vite 构建，结合了 Tailwind CSS 4 和 Radix UI 组件库，提供流畅的用户体验和响应式设计。项目的核心功能包括视频时间线展示、弹幕互动效果、主题切换、搜索过滤以及视频弹窗播放等，为用户打造沉浸式的视频浏览体验。
 
 本项目采用模块化架构设计，将驴酱视频集和甜筒视频集分别作为独立的页面模块进行管理，每个模块都包含完整的组件体系和数据结构。这种设计使得项目具有良好的可扩展性和维护性，便于后续功能迭代和主题扩展。项目还集成了完善的代码质量保障体系，包括 ESLint 静态检查、Prettier 代码格式化以及 Jest 单元测试，确保代码的一致性和可靠性。
 
 ### 设备兼容性
 
 > **重要提示**：当前项目**仅支持 PC 和平板设备**，不支持手机设备。在手机设备上访问可能会导致布局错乱、功能异常等问题，建议使用 PC 或平板设备获得最佳体验。
+
+### 项目版本信息
+
+- **版本号**：0.1.0
+- **React 版本**：19.2.0
+- **TypeScript 版本**：5.9.3
+- **Vite 版本**：7.2.4
+- **Tailwind CSS 版本**：4.1.17
 
 ## 主要功能
 
@@ -185,7 +194,17 @@ frontend/
 
 ### 环境要求
 
-在开始安装之前，请确保开发环境满足以下要求。操作系统支持 Windows、macOS 和 Linux，Node.js 版本需要 18.0.0 或更高版本，推荐使用 LTS 长期支持版本以获得最佳的稳定性。npm 版本应大于等于 9.0.0，或者使用 yarn、pnpm 等替代包管理器。项目开发基于 Visual Studio Code 编辑器，建议安装推荐的扩展以获得最佳的开发体验，包括 ESLint、Prettier、Tailwind CSS IntelliSense 等。
+在开始安装之前，请确保开发环境满足以下要求：
+
+- **操作系统**：Windows 11、macOS 或 Linux
+- **Node.js 版本**：18.0.0 或更高版本（推荐使用 LTS 长期支持版本）
+- **npm 版本**：9.0.0 或更高版本（或使用 yarn、pnpm 等替代包管理器）
+- **浏览器**：Chrome、Firefox、Safari、Edge（最新版本）
+- **编辑器**：推荐使用 Visual Studio Code，并安装以下扩展：
+  - ESLint
+  - Prettier
+  - Tailwind CSS IntelliSense
+  - TypeScript and JavaScript Language Features
 
 ### 安装依赖
 
@@ -196,7 +215,14 @@ cd frontend
 npm install
 ```
 
-npm install 命令会根据 package.json 中声明的依赖关系，自动下载并安装所有必要的包。安装过程可能需要几分钟时间，取决于网络连接速度和包的大小。安装完成后，项目根目录下会生成 node_modules 目录，其中包含所有已安装的依赖包。如果遇到安装问题，可以尝试删除 node_modules 目录和 package-lock.json 文件后重新执行安装命令。
+npm install 命令会根据 package.json 中声明的依赖关系，自动下载并安装所有必要的包。安装过程可能需要几分钟时间，取决于网络连接速度和包的大小。安装完成后，项目根目录下会生成 node_modules 目录，其中包含所有已安装的依赖包。
+
+如果遇到安装问题，可以尝试删除 node_modules 目录和 package-lock.json 文件后重新执行安装命令：
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+```
 
 对于中国大陆地区的用户，建议配置 npm 镜像源以加速依赖下载：
 
@@ -206,7 +232,20 @@ npm config set registry https://registry.npmmirror.com
 
 ### 环境变量配置
 
-项目使用环境变量管理敏感配置和构建参数。开发环境配置文件为 .env.development，包含了开发环境的特定设置。在项目根目录创建或修改该文件，配置必要的环境变量。如果变量涉及敏感信息，请确保不要将其提交到版本控制系统。
+项目使用环境变量管理敏感配置和构建参数。开发环境配置文件为 `.env.development`，包含了开发环境的特定设置。在项目根目录创建或修改该文件，配置必要的环境变量。
+
+**示例配置**：
+
+```bash
+# .env.development
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_APP_TITLE=VidTimelineX
+```
+
+**注意事项**：
+- 环境变量必须以 `VITE_` 开头才能在客户端代码中访问
+- 如果变量涉及敏感信息，请确保不要将其提交到版本控制系统
+- 修改环境变量后需要重启开发服务器才能生效
 
 ### 启动开发服务器
 
@@ -216,13 +255,19 @@ npm config set registry https://registry.npmmirror.com
 npm run dev
 ```
 
-开发服务器默认运行在 http://localhost:3000 端口，启动后会自动打开浏览器窗口。Vite 的热模块替换功能使得代码修改可以实时生效，无需刷新页面即可看到更新效果。开发模式下会启用 Source Map，便于调试和定位问题。
+开发服务器默认运行在 http://localhost:5173 端口，启动后会自动打开浏览器窗口。Vite 的热模块替换功能使得代码修改可以实时生效，无需刷新页面即可看到更新效果。开发模式下会启用 Source Map，便于调试和定位问题。
 
 如果需要指定自定义端口，可以在命令中添加参数：
 
 ```bash
 npm run dev -- --port 8080
 ```
+
+**开发服务器特性**：
+- 即时启动：利用原生 ES 模块实现快速启动
+- 热模块替换（HMR）：代码修改实时生效，无需刷新页面
+- Source Map：便于调试和定位问题
+- TypeScript 支持：实时的类型检查和错误提示
 
 ## 构建与部署
 
@@ -266,9 +311,17 @@ location / {
 
 ## 测试
 
+### 测试概览
+
+项目采用多层测试策略，包括单元测试、集成测试和端到端测试，确保代码质量和功能稳定性。
+
+- **单元测试**：测试单个组件、函数或Hook的功能
+- **集成测试**：测试多个组件或模块之间的交互
+- **E2E测试**：测试完整的用户流程
+
 ### 运行测试
 
-项目使用 Jest 框架进行单元测试，执行以下命令运行所有测试：
+#### 运行所有测试
 
 ```bash
 npm test
@@ -276,7 +329,20 @@ npm test
 
 测试命令会查找项目中的测试文件（位于 **tests** 目录或以 .test.tsx/.spec.tsx 结尾的文件），执行测试并输出结果。测试框架会自动处理 TypeScript 文件的转译，无需额外配置。
 
-### 监听模式
+#### 运行特定类型的测试
+
+```bash
+# 运行单元测试
+npm run test:unit
+
+# 运行集成测试
+npm run test:integration
+
+# 运行E2E测试
+npm run test:e2e
+```
+
+#### 监听模式
 
 开发过程中可以使用监听模式运行测试，测试文件变化时自动重新执行：
 
@@ -286,7 +352,7 @@ npm run test:watch
 
 监听模式会进入交互式界面，支持筛选测试、查看详细输出等操作，便于快速验证代码修改的正确性。
 
-### 代码覆盖率
+#### 测试覆盖率
 
 生成代码覆盖率报告可以帮助评估测试的完整性：
 
@@ -295,6 +361,52 @@ npm run test:coverage
 ```
 
 覆盖率报告展示了语句、分支、函数和行四个维度的覆盖情况。项目配置的阈值要求每个维度都达到 50% 以上，未达标的测试运行会导致构建失败。报告生成在 coverage 目录，支持多种格式输出（text、lcov、json-summary）。
+
+#### 其他测试命令
+
+```bash
+# 选择性运行测试
+npm run test:selective
+
+# 按标签运行测试
+npm run test:tag
+
+# 使用缓存运行测试
+npm run test:cached
+
+# 不使用缓存运行测试
+npm run test:no-cache
+
+# 调试模式运行测试
+npm run test:debug
+
+# 快速运行测试（减少并发）
+npm run test:quick
+
+# 慢速运行测试（详细输出）
+npm run test:slow
+
+# CI模式运行测试
+npm run test:ci
+
+# 开发模式运行测试
+npm run test:dev
+
+# 按模式过滤测试
+npm run test:filter
+
+# 只运行标记为only的测试
+npm run test:only
+
+# 运行冒烟测试
+npm run test:smoke
+
+# 运行回归测试
+npm run test:regression
+
+# 运行性能测试
+npm run test:performance
+```
 
 ### MobileNotSupported 组件测试
 
@@ -312,6 +424,23 @@ npm run test:mobile-not-supported
 - 详细的测试用例列表（状态、ID、名称）
 
 详细的测试文档请参考：[tests/docs/mobile-not-supported-test-doc.md](tests/docs/mobile-not-supported-test-doc.md)
+
+### 测试覆盖率目标
+
+| 覆盖率类型 | 目标值 | 当前值 |
+|-----------|--------|--------|
+| 语句覆盖率 | > 80% | 待更新 |
+| 分支覆盖率 | > 80% | 待更新 |
+| 函数覆盖率 | > 80% | 待更新 |
+| 行覆盖率 | > 80% | 待更新 |
+
+### 测试最佳实践
+
+1. **编写测试**：遵循 AAA 原则（Arrange、Act、Assert）
+2. **独立性**：每个测试应该独立运行，不依赖其他测试
+3. **可读性**：测试代码应该易于理解和维护
+4. **描述性**：测试名称和描述应该清晰说明测试目的
+5. **覆盖率**：测试应该覆盖正常流程、边界条件和异常情况
 
 ## 代码规范
 
