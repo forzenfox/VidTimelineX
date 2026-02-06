@@ -13,6 +13,8 @@ concurrency:
 
 jobs:
   frontend-ci:
+    # 跳过 PR 合并产生的 push，因为 ci-non-master.yml 已在 PR 阶段检查
+    if: ${{ !contains(github.event.head_commit.message, 'Merge pull request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,6 +46,8 @@ jobs:
           VITE_BASE_URL: /
 
   backend-ci:
+    # 跳过 PR 合并产生的 push，因为 ci-non-master.yml 已在 PR 阶段检查
+    if: ${{ !contains(github.event.head_commit.message, 'Merge pull request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
