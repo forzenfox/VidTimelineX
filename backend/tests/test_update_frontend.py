@@ -138,38 +138,26 @@ class TestFrontendUpdater(unittest.TestCase):
 
 
     def test_update_frontend_files(self):
-        """测试完整的前端文件更新功能"""
-        # 构造配置
+        """测试完整的前端文件更新功能 - 不修改生产配置"""
+        # 构造测试配置 - 直接传入前端文件路径，不修改全局配置
         config = {
-            'backend_data_dir': str(self.backend_data_dir)
+            'backend_data_dir': str(self.backend_data_dir),
+            'frontend_timeline_file': str(self.lvjiang_data_dir / "videos.json")
         }
-        
-        # 由于现在使用配置文件中的路径，我们需要临时修改配置
-        from src.utils.config import get_config, save_config
-        original_config = get_config()
-        
-        try:
-            # 修改配置为测试路径
-            test_config = original_config.copy()
-            test_config['datatype']['lvjiang']['frontend_timeline_file'] = str(self.lvjiang_data_dir / "videos.json")
-            save_config(test_config)
-            
-            # 执行更新
-            result = update_frontend_files('lvjiang', config)
-            
-            # 验证结果
-            self.assertTrue(result['success'])
-            self.assertTrue('merge_result' in result)
-            
-            # 检查 videos.json 是否更新
-            frontend_file = self.lvjiang_data_dir / "videos.json"
-            with open(frontend_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            
-            self.assertEqual(len(data), 2)
-        finally:
-            # 恢复原始配置
-            save_config(original_config)
+
+        # 执行更新
+        result = update_frontend_files('lvjiang', config)
+
+        # 验证结果
+        self.assertTrue(result['success'])
+        self.assertTrue('merge_result' in result)
+
+        # 检查 videos.json 是否更新
+        frontend_file = self.lvjiang_data_dir / "videos.json"
+        with open(frontend_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        self.assertEqual(len(data), 2)
 
 
 if __name__ == '__main__':

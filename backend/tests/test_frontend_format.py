@@ -105,7 +105,7 @@ class TestFrontendFormat(unittest.TestCase):
         for item in timeline_data:
             cover = item["cover"]
             self.assertTrue(
-                cover.endswith(".jpg") or cover.endswith(".png"),
+                cover.endswith(".jpg") or cover.endswith(".png") or cover.endswith(".webp"),
                 f"cover 应该是图片文件名: {cover}"
             )
             self.assertNotIn(

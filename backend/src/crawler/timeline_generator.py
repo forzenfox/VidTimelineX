@@ -122,9 +122,10 @@ class TimelineGenerator:
         for i, video in enumerate(sorted_videos):
             bv = video.get('bv', '')
             thumbnail = video.get('thumbnail', '')
+            author = video.get('author', '')
             
-            # 直接使用bv字段，不添加额外的BV前缀
-            cover = f"{bv}.jpg" if bv else ""
+            # cover 字段使用BV号作为默认文件名（等待下载模块填充实际文件名）
+            cover = f"{bv}.webp" if bv else ""
             
             # 处理日期格式，只保留日期部分
             publish_date = video.get('publish_date', '')
@@ -164,10 +165,12 @@ class TimelineGenerator:
                 "date": date_str,
                 "title": video.get('title'),
                 "videoUrl": video.get('url'),
+                "bv": bv,
                 "cover": cover,
                 "cover_url": cover_url,
                 "tags": [],
-                "duration": video.get('duration')
+                "duration": video.get('duration'),
+                "author": author
             }
             timeline_data.append(timeline_item)
         

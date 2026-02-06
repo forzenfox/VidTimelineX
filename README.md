@@ -4,9 +4,8 @@
 > - **本文档**：项目全局说明、架构概览、快速开始
 > - **后端README**：后端架构详细技术文档、TDD开发流程、使用说明 → [查看](./backend/README.md)
 > - **前端README**：前端架构详细技术文档、组件说明、开发指南 → [查看](./frontend/README.md)
-> - **测试文档**：前端测试结构说明、测试指南 → [查看](./frontend/tests/README.md)
 
-基于TDD方法开发的B站收藏夹视频时间线系统，支持自动爬取收藏夹视频、生成时间线数据，采用前后端分离架构，模块化设计和数据隔离架构。项目提供驴酱和甜筒两个视频集的展示，支持主题切换、弹幕互动、搜索筛选等丰富功能。
+基于TDD方法开发的B站收藏夹视频时间线系统，支持自动爬取收藏夹视频、生成时间线数据，采用前后端分离架构。
 
 ## 项目概述
 
@@ -18,112 +17,60 @@ VidTimelineX/
 │   ├── src/           # 后端源码
 │   ├── tests/         # 后端测试
 │   ├── main.py        # 主更新脚本
-│   └── README.md      # 后端文档
+│   └── README.md      # 后端详细文档
 ├── frontend/          # 前端目录
 │   ├── src/           # 前端源码
 │   ├── public/        # 前端静态资源
 │   ├── tests/         # 前端测试
-│   └── README.md      # 前端文档
+│   └── README.md      # 前端详细文档
 ├── docs/              # 项目文档
 └── README.md          # 项目根目录文档
 ```
 
 ### 核心功能
 
-1. **B站收藏夹自动爬取**
-   - 自动爬取B站收藏夹视频
-   - 支持多个收藏夹并行管理（驴酱、甜筒）
-   - 配置化的收藏夹URL映射
-   - 支持API和网页两种爬取方式
-
-2. **时间线数据生成**
-   - 按发布日期排序
-   - 生成符合前端格式的 videos.json
-   - 支持多个数据类型（驴酱、甜筒）
-   - 增量爬取和全量爬取模式
-
-3. **封面图片管理**
-   - 自动下载视频封面图片
-   - 统一的图片命名规范
-   - 支持批量下载和更新
-   - 智能去重，避免重复下载
-
-4. **前端文件自动更新**
-   - 自动更新前端 videos.json 文件
-   - 保留前端的 tags 字段内容
-   - 覆盖更新其他字段
-
-5. **视频时间线展示**
-   - 驴酱视频集：时间轴式布局，按发布日期倒序排列
-   - 甜筒视频集：分类筛选加时间分组的复合布局
-   - 支持视频弹窗播放和详情查看
-
-6. **主题切换系统**
-   - 驴酱主题：洞主主题（家猪）和凯哥主题（野猪）
-   - 甜筒主题：老虎主题（橙色调）和甜筒主题（粉色系）
-   - CSS变量实现，性能优良且过渡流畅
-
-7. **弹幕互动效果**
-   - 水平弹幕：页面顶部滚动显示
-   - 侧边弹幕：右侧实时显示用户互动信息
-   - 支持主题联动和定时更新
-
-8. **搜索与筛选**
-   - 实时搜索和自动补全
-   - 搜索历史记录
-   - 分类筛选器（甜筒视频集）
-   - 筛选结果实时更新
-
-9. **完整的测试覆盖**
-   - TDD开发方法
-   - 完整的测试套件（单元测试、集成测试、E2E测试）
-   - 确保代码质量
-
-10. **代码质量保障**
-    - ESLint静态代码检查
-    - Prettier代码格式化
-    - Husky Git钩子自动检查
-    - 代码覆盖率要求>80%
+1. **B站收藏夹自动爬取** - 自动爬取B站收藏夹视频，支持多个收藏夹并行管理
+2. **时间线数据生成** - 按发布日期排序，生成符合前端格式的 videos.json
+3. **封面图片管理** - 自动下载视频封面图片，支持批量下载和智能去重
+4. **前端文件自动更新** - 自动更新前端 videos.json 文件，保留 tags 字段
+5. **视频时间线展示** - 驴酱时间轴式布局、甜筒分类筛选加时间分组布局
+6. **主题切换系统** - 支持驴酱主题（洞主/凯哥）和甜筒主题（老虎/甜筒）
+7. **弹幕互动效果** - 水平弹幕和侧边弹幕，支持主题联动
+8. **搜索与筛选** - 实时搜索、自动补全、搜索历史、分类筛选
+9. **完整的测试覆盖** - TDD开发方法，单元测试、集成测试、E2E测试
+10. **代码质量保障** - ESLint、Prettier、Husky Git钩子
 
 ## 技术栈
 
 ### 后端技术栈
 
-- **Python 3.8+**：后端开发语言
-- **Playwright 1.47+**：动态内容爬取和浏览器自动化
-- **Requests 2.28+**：HTTP请求处理
-- **BeautifulSoup4 4.11+**：HTML解析
-- **Pytest 7.0+**：单元测试框架
+- **Python 3.8+** - 后端开发语言
+- **Playwright** (>=1.47.0,<1.50.0) - 动态内容爬取和浏览器自动化
+- **Requests** (>=2.28.0) - HTTP请求处理
+- **BeautifulSoup4** (>=4.11.0) - HTML解析
+- **Pillow** (>=10.0.0) - 图片处理
+- **Pytest** (>=7.0.0) - 单元测试框架
+- **pytest-cov** (>=4.0.0) - 测试覆盖率统计
 
 ### 前端技术栈
 
-- **React 19.2.0**：前端UI框架
-- **TypeScript 5.9**：类型安全
-- **Vite 7.2.4**：构建工具和开发服务器
-- **React Router DOM 7.10.0**：客户端路由
-- **Tailwind CSS 4.1.17**：CSS框架
-- **Radix UI**：无样式组件库（30+组件）
-- **@tanstack/react-query 5.83.0**：服务器状态管理
-- **Jest 30.2**：单元测试框架
-- **Playwright 1.58.0**：E2E测试框架
-- **ESLint 9.39.1**：静态代码检查
-- **Prettier 3.8.1**：代码格式化
-
-### 开发工具
-
-- **Husky 9.1.7**：Git钩子管理
-- **lint-staged 16.2.7**：提交前代码检查
-- **Node.js 18+**：前端运行环境
-- **npm 9+**：包管理器
+- **React 19.2.0** - 前端UI框架
+- **TypeScript 5.9.3** - 类型安全
+- **Vite 7.2.4** - 构建工具和开发服务器
+- **React Router DOM 7.10.0** - 客户端路由
+- **Tailwind CSS 4.1.17** - CSS框架
+- **Radix UI** - 无样式组件库
+- **@tanstack/react-query 5.83.0** - 服务器状态管理
+- **Jest 30.2.0** - 单元测试框架
+- **Playwright 1.58.0** - E2E测试框架
 
 ## 快速开始
 
 ### 环境要求
 
-- **后端**：Python 3.8+，Playwright 1.47+
+- **后端**：Python 3.8+，Playwright
 - **前端**：Node.js 18+，npm 9+
 - **操作系统**：Windows 11、macOS 或 Linux
-- **浏览器**：Chrome、Firefox、Safari、Edge（最新版本）
 
 ### 基本部署步骤
 
@@ -136,40 +83,23 @@ cd VidTimelineX
 
 #### 2. 后端设置
 
+详细的后端设置说明请参考 [backend/README.md](./backend/README.md)。
+
 ```bash
-# 进入后端目录
 cd backend
-
-# 创建虚拟环境（推荐）
 python -m venv .venv
-
-# 激活虚拟环境
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
-# 安装依赖
+.venv\Scripts\activate  # Windows
 pip install -r requirements.txt
-
-# 安装Playwright浏览器（必要步骤）
 playwright install
-
-# 配置收藏夹URL（编辑config.json）
-# 确保收藏夹URL正确且公开可见
 ```
 
 #### 3. 前端设置
 
+详细的前端设置说明请参考 [frontend/README.md](./frontend/README.md)。
+
 ```bash
-# 进入前端目录
 cd frontend
-
-# 安装依赖
 npm install
-
-# （可选）配置npm镜像源（中国大陆用户）
-npm config set registry https://registry.npmmirror.com
 ```
 
 #### 4. 运行项目
@@ -177,124 +107,89 @@ npm config set registry https://registry.npmmirror.com
 **启动后端服务**：
 
 ```bash
-# 在backend目录下
+cd backend
 python main.py
 ```
 
 **启动前端开发服务器**：
 
 ```bash
-# 在frontend目录下
+cd frontend
 npm run dev
 ```
 
 前端开发服务器默认运行在 http://localhost:5173
 
-#### 5. 访问应用
+## 开发模式
 
-打开浏览器访问 http://localhost:5173，即可看到应用界面。
-
-### 开发模式
-
-#### 后端开发
+### 后端开发
 
 ```bash
-# 运行测试
-pytest
-
-# 运行特定测试
-pytest tests/test_favorites_crawler.py
-
-# 查看测试覆盖率
-pytest --cov=src
+cd backend
+pytest                    # 运行测试
+pytest --cov=src         # 查看测试覆盖率
 ```
 
-#### 前端开发
+详细的后端开发说明请参考 [backend/README.md](./backend/README.md)。
+
+### 前端开发
 
 ```bash
-# 开发模式（支持热更新）
-npm run dev
-
-# 运行所有测试
-npm test
-
-# 运行单元测试
-npm run test:unit
-
-# 运行集成测试
-npm run test:integration
-
-# 运行E2E测试
-npm run test:e2e
-
-# 生成测试覆盖率报告
-npm run test:coverage
-
-# 代码检查
-npm run lint
-
-# 代码格式化
-npx prettier --write "src/**/*.{ts,tsx,js,jsx}"
+cd frontend
+npm run dev              # 开发模式
+npm test                 # 运行测试
+npm run test:coverage    # 生成测试覆盖率报告
+npm run lint             # 代码检查
 ```
 
-### 生产部署
+详细的前端开发说明请参考 [frontend/README.md](./frontend/README.md)。
 
-#### 后端部署
+## 生产部署
+
+### 后端部署
 
 ```bash
-# 在backend目录下
-# 配置生产环境变量（如需要）
-# 运行更新脚本
+cd backend
 python main.py
-
-# （可选）设置定时任务（如cron）定期更新
 ```
 
-#### 前端部署
+### 前端部署
 
 ```bash
-# 在frontend目录下
-# 构建生产版本
+cd frontend
 npm run build
-
-# 预览生产版本
 npm run preview
-
-# 部署build目录到静态文件服务器
-# 支持的部署平台：Vercel、Netlify、Cloudflare Pages、GitHub Pages等
 ```
 
-### 常见问题
+详细的部署说明请参考前后端各自的 README 文档。
 
-#### 1. Playwright安装失败
+## 常见问题
 
-**解决方案**：
+### 1. Playwright安装失败
+
 - 检查网络连接
 - 尝试使用代理
 - 手动下载浏览器驱动
 
-#### 2. 前端依赖安装失败
+### 2. 前端依赖安装失败
 
-**解决方案**：
 - 清除npm缓存：`npm cache clean --force`
 - 删除node_modules和package-lock.json后重新安装
-- 使用npm镜像源
+- 使用npm镜像源：`npm config set registry https://registry.npmmirror.com`
 
-#### 3. 收藏夹爬取失败
+### 3. 收藏夹爬取失败
 
-**解决方案**：
 - 检查收藏夹URL是否正确
 - 确保收藏夹为公开可见
 - 检查网络连接
-- 查看日志输出定位问题
 
-#### 4. 前端页面无法访问
+### 4. 前端页面无法访问
 
-**解决方案**：
 - 确认开发服务器已启动
 - 检查端口是否被占用
 - 清除浏览器缓存
-- 检查防火墙设置
+
+详细的故障排除说明请参考 [backend/README.md](./backend/README.md) 和 [frontend/README.md](./frontend/README.md)。
 
 ## 许可证
 

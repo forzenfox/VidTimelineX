@@ -29,10 +29,10 @@ def ensure_directories(data_type):
     """
     config = get_data_paths(data_type)
     
-    # 确保数据类型目录存在
-    for path in config.values():
-        if isinstance(path, Path) and path.suffix == '':
-            path.mkdir(parents=True, exist_ok=True)
+    # 只创建数据类型目录
+    config['DATA_TYPE_DIR'].mkdir(parents=True, exist_ok=True)
+    # 确保时间线文件的父目录存在
+    config['TIMELINE_FILE'].parent.mkdir(parents=True, exist_ok=True)
 
 
 def get_all_data_types():

@@ -27,7 +27,7 @@ import json
 import time
 from pathlib import Path
 from urllib.parse import urlparse
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Set
 
 from src.utils.config import get_frontend_thumbs_dir
 
@@ -100,14 +100,67 @@ def extract_bvid(video_url: str) -> Optional[str]:
     """从视频URL中提取BV号
     
     Args:
-        video_url: B站视频URL
+        video_url: B站视频URL或包含BV号的字符串
         
     Returns:
         BV号字符串，如'BV195zoB2EFY'，未找到返回None
     """
+    if not video_url:
+        return None
     m = re.search(r'(BV[0-9A-Za-z]+)', video_url)
     if m:
         return m.group(1)
+    return None
+
+
+def convert_to_webp(input_path: Path, output_path: Path, quality: int = 85) -> bool:
+    """将图片转换为 WebP 格式
+    
+    Args:
+        input_path: 输入图片路径
+        output_path: 输出 WebP 路径
+        quality: 压缩质量 (0-100)
+        
+    Returns:
+        转换成功返回 True
+    """
+    try:
+        from PIL import Image
+        with Image.open(input_path) as img:
+            # 转换为 RGB 模式（处理 RGBA 等）
+            if img.mode in ('RGBA', 'LA', 'P'):
+                background = Image.new('RGB', img.size, (255, 255, 255))
+                if img.mode == 'P':
+                    img = img.convert('RGBA')
+                if img.mode in ('RGBA', 'LA'):
+                    background.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
+                    img = background
+                else:
+                    img = img.convert('RGB')
+            elif img.mode != 'RGB':
+                img = img.convert('RGB')
+            
+            img.save(output_path, 'WEBP', quality=quality, method=6)
+        return True
+    except Exception as e:
+        print(f"转换 WebP 失败: {e}")
+        return False
+
+
+def get_existing_cover_filename(thumbs_dir: Path, bvid: str) -> Optional[str]:
+    """获取已存在封面的文件名
+    
+    Args:
+        thumbs_dir: 封面目录
+        bvid: BV号
+        
+    Returns:
+        文件名（如 BV1.webp），不存在返回 None
+    """
+    for ext in ['.webp', '.jpg', '.jpeg', '.png']:
+        filepath = thumbs_dir / f"{bvid}{ext}"
+        if filepath.exists() and filepath.stat().st_size > 0:
+            return f"{bvid}{ext}"
     return None
 
 
@@ -124,12 +177,13 @@ def choose_filename(bvid: str, ext: str) -> str:
     return f"{bvid}{ext}"
 
 
-def download_binary(url: str, outpath: Path) -> bool:
+def download_binary(url: str, outpath: Path, quiet: bool = False) -> bool:
     """下载二进制文件
     
     Args:
         url: 下载URL
         outpath: 保存路径
+        quiet: 静默模式，减少日志输出
         
     Returns:
         下载成功返回True，失败返回False
@@ -144,7 +198,21 @@ def download_binary(url: str, outpath: Path) -> bool:
                     if chunk:
                         f.write(chunk)
         return True
-    except Exception:
+    except requests.exceptions.Timeout:
+        if not quiet:
+            print(f"  [失败] 下载超时: {url}")
+        return False
+    except requests.exceptions.HTTPError as e:
+        if not quiet:
+            print(f"  [失败] HTTP错误 {e.response.status_code}: {url}")
+        return False
+    except requests.exceptions.ConnectionError:
+        if not quiet:
+            print(f"  [失败] 连接错误: {url}")
+        return False
+    except Exception as e:
+        if not quiet:
+            print(f"  [失败] 下载异常: {str(e)}: {url}")
         return False
 
 
@@ -224,119 +292,173 @@ def is_cover_exists(thumbs_dir: Path, bvid: str, html: str = None, existing_cove
     return False
 
 
-def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False, existing_covers: set = None) -> Dict[str, Any]:
+def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False, 
+                   existing_covers: set = None, enable_webp_conversion: bool = True) -> Dict[str, Any]:
     """下载单个视频的封面
     
+    新流程：
+    1. 从 video['bv'] 获取 BV 号（不再依赖 videoUrl）
+    2. 检查封面是否已存在
+    3. 下载原图到临时文件
+    4. 转换为 WebP 格式（可选）
+    5. 删除原图，保留 WebP
+    6. 返回实际文件名
+    
     Args:
-        video: 视频数据字典
+        video: 视频数据字典，优先使用 'bv' 字段
         thumbs_dir: 封面保存目录
         quiet: 静默模式，减少日志输出
         existing_covers: 已存在的BV号集合（可选，用于内存检查）
+        enable_webp_conversion: 是否转换为 WebP 格式
         
     Returns:
         包含结果信息的字典: {
             'status': 'success' | 'skipped' | 'failed',
             'bvid': str,
             'filename': str (实际下载的文件名),
+            'cover': str (同 filename，用于更新 videos.json),
             'path': Path (文件路径)
         }
     """
-    video_url = video.get('videoUrl', '')
-    bvid = extract_bvid(video_url)
+    # 1. 从 bv 字段获取 BV 号（优先级最高）
+    bvid = video.get('bv', '')
+    
+    # 如果 bv 字段不存在，尝试从 cover 字段提取（兼容旧数据）
+    if not bvid:
+        cover = video.get('cover', '')
+        bvid = extract_bvid(cover)
+    
+    # 如果还没有，尝试从 videoUrl 提取（最后的回退）
+    if not bvid:
+        video_url = video.get('videoUrl', '')
+        bvid = extract_bvid(video_url)
     
     if not bvid:
         if not quiet:
-            print(f"  [跳过] 无法提取BV号: {video_url}")
-        return {'status': 'failed', 'bvid': None, 'filename': None, 'path': None}
+            print(f"  [跳过] 无法获取 BV 号")
+        return {'status': 'failed', 'bvid': None, 'filename': None, 'cover': None, 'path': None}
     
-    # 检查封面是否已存在
+    # 2. 检查封面是否已存在
     if is_cover_exists(thumbs_dir, bvid, existing_covers=existing_covers):
-        existing_file = None
-        if existing_covers is None or bvid in existing_covers:
-            # 仅当需要时才检查文件系统
-            for check_ext in ['.jpg', '.jpeg', '.png', '.webp']:
-                check_file = thumbs_dir / f"{bvid}{check_ext}"
-                if check_file.exists() and check_file.stat().st_size > 0:
-                    existing_file = f"{bvid}{check_ext}"
-                    break
+        existing_file = get_existing_cover_filename(thumbs_dir, bvid)
         if not quiet:
             print(f"  [跳过] 封面已存在: {bvid}")
-        return {'status': 'skipped', 'bvid': bvid, 'filename': existing_file or f"{bvid}.jpg", 'path': None}
+        return {
+            'status': 'skipped', 
+            'bvid': bvid, 
+            'filename': existing_file or f"{bvid}.webp",
+            'cover': existing_file or f"{bvid}.webp",
+            'path': None
+        }
     
-    # 优先使用 cover_url 下载封面
-    cover_url = video.get('cover_url', '')
-    if cover_url:
-        try:
-            cover_url = ensure_protocol(cover_url)
-            ext = sanitize_ext(cover_url)
-            filename = choose_filename(bvid, ext)
-            outpath = thumbs_dir / filename
-            
-            if not quiet:
-                print(f"  使用 cover_url 下载: {cover_url}")
-            
-            if download_binary(cover_url, outpath):
-                if not quiet:
-                    print(f"  [成功] {outpath}")
-                return {'status': 'success', 'bvid': bvid, 'filename': filename, 'path': outpath}
-            else:
-                if not quiet:
-                    print(f"  [失败] cover_url 下载失败，尝试传统方法")
-        except Exception as e:
-            if not quiet:
-                print(f"  [错误] cover_url 处理失败: {str(e)}，尝试传统方法")
+    # 3. 下载原图
+    # 优先使用 cover_url，如果没有则尝试使用 thumbnail
+    cover_url = video.get('cover_url', '') or video.get('thumbnail', '')
+    if not cover_url:
+        if not quiet:
+            print(f"  [失败] 没有 cover_url 或 thumbnail")
+        return {'status': 'failed', 'bvid': bvid, 'filename': None, 'cover': None, 'path': None}
     
-    # 回退到传统方法
     try:
-        if not quiet:
-            print(f"  请求页面: {video_url}")
+        cover_url = ensure_protocol(cover_url)
+        ext = sanitize_ext(cover_url)
         
-        headers = {"User-Agent": "Mozilla/5.0 (thumb-fetcher)"}
-        resp = requests.get(video_url, headers=headers, timeout=15)
-        
-        if resp.status_code != 200:
-            if not quiet:
-                print(f"  [失败] HTTP {resp.status_code}")
-            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
-        
-        html = resp.text
-        
-        img_url = get_og_image(html)
-        if img_url:
-            img_url = ensure_protocol(img_url)
-            ext = sanitize_ext(img_url)
-        else:
-            ext = '.jpg'
-        filename = choose_filename(bvid, ext)
-        outpath = thumbs_dir / filename
+        # 下载到临时文件
+        temp_filename = f"{bvid}_temp{ext}"
+        temp_path = thumbs_dir / temp_filename
         
         if not quiet:
-            print(f"  下载封面: {img_url or 'unknown'}")
+            print(f"  下载: {cover_url}")
         
-        if img_url and download_binary(img_url, outpath):
-            if not quiet:
-                print(f"  [成功] {outpath}")
-            return {'status': 'success', 'bvid': bvid, 'filename': filename, 'path': outpath}
+        if not download_binary(cover_url, temp_path, quiet):
+            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'cover': None, 'path': None}
+        
+        # 4. 转换为 WebP（如果启用）
+        if enable_webp_conversion:
+            webp_path = thumbs_dir / f"{bvid}.webp"
+            if convert_to_webp(temp_path, webp_path):
+                # 删除原图
+                temp_path.unlink()
+                actual_filename = f"{bvid}.webp"
+                actual_path = webp_path
+            else:
+                # 转换失败，保留原图
+                actual_filename = temp_filename
+                actual_path = temp_path
         else:
-            if not quiet:
-                print(f"  [失败] 下载失败")
-            return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
-            
+            actual_filename = temp_filename
+            actual_path = temp_path
+        
+        if not quiet:
+            print(f"  [成功] {actual_filename}")
+        
+        return {
+            'status': 'success',
+            'bvid': bvid,
+            'filename': actual_filename,
+            'cover': actual_filename,  # 用于更新 videos.json
+            'path': actual_path
+        }
+        
     except Exception as e:
         if not quiet:
             print(f"  [错误] {str(e)}")
-        return {'status': 'failed', 'bvid': bvid, 'filename': None, 'path': None}
+        return {'status': 'failed', 'bvid': bvid, 'filename': None, 'cover': None, 'path': None}
 
 
-def download_all_covers(videos_path: Path, thumbs_dir: Path = None, quiet: bool = False, max_workers: int = 4) -> Dict[str, Any]:
-    """下载所有视频封面
+def load_videos_json(videos_path: Path) -> List[Dict]:
+    """加载 videos.json
     
     Args:
-        videos_path: videos.json文件路径
+        videos_path: 文件路径
+        
+    Returns:
+        视频数据列表
+    """
+    with videos_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+    return data if isinstance(data, list) else data.get("videos", [])
+
+
+def save_videos_json(videos_path: Path, videos: List[Dict]) -> bool:
+    """保存 videos.json
+    
+    Args:
+        videos_path: 文件路径
+        videos: 视频数据列表
+        
+    Returns:
+        保存成功返回 True
+    """
+    try:
+        with videos_path.open('w', encoding='utf-8') as f:
+            json.dump(videos, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception as e:
+        print(f"保存 videos.json 失败: {e}")
+        return False
+
+
+def download_all_covers(videos_path: Path, thumbs_dir: Path = None, quiet: bool = False,
+                       max_workers: int = 4, update_videos_json: bool = True,
+                       enable_webp_conversion: bool = True) -> Dict[str, Any]:
+    """下载所有视频封面
+
+    新流程：
+    1. 加载 videos.json
+    2. 预过滤：只保留需要下载的视频（封面不存在或为空）
+    3. 并发下载封面
+    4. 更新 videos.json 中的 cover 字段为实际文件名
+    5. 保存更新后的 videos.json
+
+    Args:
+        videos_path: videos.json 文件路径
         thumbs_dir: 封面保存目录（默认使用配置文件中的前端路径）
         quiet: 静默模式
         max_workers: 并发下载线程数
-        
+        update_videos_json: 是否更新 videos.json 中的 cover 字段
+        enable_webp_conversion: 是否转换为 WebP 格式
+
     Returns:
         包含结果信息的字典: {
             'success': int,
@@ -354,10 +476,8 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path = None, quiet: bool 
             print(f"[错误] videos.json不存在: {videos_path}")
         return {'success': 0, 'failed': 0, 'skipped': 0, 'downloaded_files': {}}
     
-    with videos_path.open("r", encoding="utf-8") as f:
-        data = json.load(f)
-    
-    videos = data if isinstance(data, list) else data.get("videos", [])
+    # 1. 加载 videos.json
+    videos = load_videos_json(videos_path)
     
     if not quiet:
         print(f"找到 {len(videos)} 个视频")
@@ -366,60 +486,116 @@ def download_all_covers(videos_path: Path, thumbs_dir: Path = None, quiet: bool 
     
     thumbs_dir.mkdir(parents=True, exist_ok=True)
     
-    # 批量预加载已存在的封面
+    # 2. 批量预加载已存在的封面
     existing_covers = get_existing_covers(thumbs_dir)
     if not quiet:
         print(f"已存在 {len(existing_covers)} 个封面")
     
     results = {'success': 0, 'failed': 0, 'skipped': 0, 'downloaded_files': {}}
     
-    # 过滤有效视频
-    valid_videos = []
+    # 3. 预过滤：只保留需要下载的视频
+    videos_need_download = []
     for video in videos:
-        video_url = video.get('videoUrl', '')
-        if video_url and "BV" in video_url and "bilibili.com" in video_url:
-            valid_videos.append(video)
+        bv = video.get('bv', '')
+        # 如果没有 bv 字段，尝试从 cover 提取（兼容旧数据）
+        if not bv:
+            bv = extract_bvid(video.get('cover', ''))
+        # 如果还没有，尝试从 videoUrl 提取
+        if not bv:
+            bv = extract_bvid(video.get('videoUrl', ''))
+        
+        # 检查是否需要下载
+        if bv:
+            if bv not in existing_covers:
+                videos_need_download.append(video)
+            else:
+                # 已存在，记录到结果中
+                results['skipped'] += 1
+                existing_file = get_existing_cover_filename(thumbs_dir, bv)
+                if existing_file:
+                    results['downloaded_files'][bv] = existing_file
         else:
+            # 无法获取 BV 号，跳过
             results['skipped'] += 1
     
-    if not valid_videos:
+    if not quiet:
+        print(f"需要下载 {len(videos_need_download)} 个封面")
+    
+    if not videos_need_download:
         if not quiet:
-            print("没有有效的视频URL")
-        return results
+            print("没有需要下载的封面")
+        # 仍然需要更新 videos.json 中已存在封面的文件名
+        # 继续执行更新逻辑，跳过下载部分
     
-    # 并发下载
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-    
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # 提交下载任务
-        future_to_video = {}
-        for video in valid_videos:
-            future = executor.submit(download_cover, video, thumbs_dir, quiet, existing_covers)
-            future_to_video[future] = video
+    # 4. 并发下载（只在有需要下载的视频时执行）
+    if videos_need_download:
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         
-        # 收集结果
-        for future in as_completed(future_to_video):
-            video = future_to_video[future]
-            try:
-                result = future.result()
-                bvid = extract_bvid(video.get('videoUrl', ''))
-                
-                if result['status'] == 'success':
-                    results['success'] += 1
-                    if bvid and result['filename']:
-                        results['downloaded_files'][bvid] = result['filename']
-                        # 将新下载的封面添加到集合中
-                        existing_covers.add(bvid)
-                elif result['status'] == 'skipped':
-                    results['skipped'] += 1
-                    if bvid and result['filename']:
-                        results['downloaded_files'][bvid] = result['filename']
-                else:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # 提交下载任务
+            future_to_video = {}
+            for video in videos_need_download:
+                future = executor.submit(
+                    download_cover,
+                    video,
+                    thumbs_dir,
+                    quiet,
+                    existing_covers,
+                    enable_webp_conversion
+                )
+                future_to_video[future] = video
+            
+            # 收集结果
+            for future in as_completed(future_to_video):
+                try:
+                    result = future.result()
+                    bvid = result['bvid']
+                    filename = result.get('cover') or result.get('filename')
+                    
+                    if result['status'] == 'success':
+                        results['success'] += 1
+                        if bvid and filename:
+                            results['downloaded_files'][bvid] = filename
+                            # 将新下载的封面添加到集合中
+                            existing_covers.add(bvid)
+                    elif result['status'] == 'skipped':
+                        results['skipped'] += 1
+                        if bvid and filename:
+                            results['downloaded_files'][bvid] = filename
+                    else:
+                        results['failed'] += 1
+                except Exception as e:
+                    if not quiet:
+                        print(f"  [错误] 任务执行失败: {str(e)}")
                     results['failed'] += 1
-            except Exception as e:
+    
+    # 5. 更新 videos.json 中的 cover 字段
+    if update_videos_json and results['downloaded_files']:
+        updated_count = 0
+        for video in videos:
+            bv = video.get('bv', '')
+            if not bv:
+                bv = extract_bvid(video.get('cover', ''))
+            if not bv:
+                bv = extract_bvid(video.get('videoUrl', ''))
+            
+            if bv in results['downloaded_files']:
+                # 更新 cover 为实际文件名
+                old_cover = video.get('cover', '')
+                new_cover = results['downloaded_files'][bv]
+                video['cover'] = new_cover
+                updated_count += 1
+                
                 if not quiet:
-                    print(f"  [错误] 任务执行失败: {str(e)}")
-                results['failed'] += 1
+                    print(f"  更新 cover: {old_cover} -> {new_cover}")
+        
+        # 保存更新后的 videos.json
+        if save_videos_json(videos_path, videos):
+            if not quiet:
+                print(f"已更新 {updated_count} 条视频的 cover 字段")
+        else:
+            if not quiet:
+                print(f"更新 videos.json 失败")
     
     if not quiet:
         print(f"\n下载完成: 成功 {results['success']}, 失败 {results['failed']}, 跳过 {results['skipped']}")

@@ -23,6 +23,8 @@ VidTimelineX 前端是一个基于现代前端技术栈构建的视频内容展�
 - **TypeScript 版本**：5.9.3
 - **Vite 版本**：7.2.4
 - **Tailwind CSS 版本**：4.1.17
+- **Jest 版本**：30.2.0
+- **Playwright 版本**：1.58.0
 
 ## 主要功能
 

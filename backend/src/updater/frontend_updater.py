@@ -131,41 +131,46 @@ def merge_videos_json(backend_file: Path, frontend_file: Path) -> Dict[str, Any]
 
 def update_frontend_files(data_type: str, config: Dict[str, Any]) -> Dict[str, Any]:
     """更新前端文件
-    
+
     Args:
         data_type: 数据类型，可选值: lvjiang, tiantong
         config: 配置字典，包含路径信息
-        
+            - backend_data_dir: 后端数据目录
+            - frontend_timeline_file: 前端时间线文件路径（可选，默认从全局配置读取）
+
     Returns:
         dict: 更新结果
     """
     try:
         # 获取路径
         backend_data_dir = Path(config.get('backend_data_dir', './data'))
-        
+
         # 后端文件路径
         backend_videos_file = backend_data_dir / data_type / 'videos.json'
-        
-        # 前端文件路径（使用配置的路径）
-        from src.utils.config import get_frontend_timeline_file
-        frontend_videos_file = get_frontend_timeline_file(data_type)
-        
+
+        # 前端文件路径（优先使用传入的配置，否则从全局配置读取）
+        if 'frontend_timeline_file' in config:
+            frontend_videos_file = Path(config['frontend_timeline_file'])
+        else:
+            from src.utils.config import get_frontend_timeline_file
+            frontend_videos_file = get_frontend_timeline_file(data_type)
+
         # 验证路径
         if not backend_videos_file.exists():
             return {
                 "success": False,
                 "message": f"后端文件不存在: {backend_videos_file}"
             }
-        
+
         # 合并 videos.json
         merge_result = merge_videos_json(backend_videos_file, frontend_videos_file)
-        
+
         return {
             "success": merge_result['success'],
             "merge_result": merge_result,
             "message": f"更新 {data_type} 前端文件完成"
         }
-        
+
     except Exception as e:
         return {
             "success": False,

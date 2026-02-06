@@ -234,27 +234,16 @@ class TestCoverDownloader(unittest.TestCase):
         from src.downloader.download_thumbs import download_cover
 
         video = {
-            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ"
+            "bv": "BV19YzYBjELJ",
+            "cover_url": "https://i0.hdslb.com/bfs/archive/test.jpg"
         }
-
-        html = '''
-        <html>
-        <head>
-            <meta property="og:image" content="https://i0.hdslb.com/bfs/archive/test.jpg">
-        </head>
-        </html>
-        '''
-
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.text = html
 
         mock_img_response = Mock()
         mock_img_response.iter_content = Mock(return_value=[b"fake", b"image", b"data"])
         mock_img_response.__enter__ = Mock(return_value=mock_img_response)
         mock_img_response.__exit__ = Mock(return_value=False)
 
-        with patch('requests.get', side_effect=[mock_response, mock_img_response]):
+        with patch('requests.get', return_value=mock_img_response):
             result = download_cover(video, self.thumbs_dir, quiet=True)
             self.assertEqual(result['status'], 'success')
             self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
@@ -264,7 +253,7 @@ class TestCoverDownloader(unittest.TestCase):
         from src.downloader.download_thumbs import download_cover
 
         video = {
-            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
+            "bv": "BV19YzYBjELJ",
             "cover_url": "https://i0.hdslb.com/bfs/archive/test_cover.jpg"
         }
 
@@ -278,34 +267,22 @@ class TestCoverDownloader(unittest.TestCase):
             self.assertEqual(result['status'], 'success')
             self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
 
-    def test_download_cover_with_cover_url_fallback(self):
-        """测试cover_url失败后回退到传统方法"""
+    def test_download_cover_with_thumbnail_fallback(self):
+        """测试使用thumbnail字段作为封面URL"""
         from src.downloader.download_thumbs import download_cover
 
+        # 当cover_url不存在时，应该使用thumbnail字段
         video = {
-            "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ",
-            "cover_url": "https://invalid-url.com/test.jpg"
+            "bv": "BV19YzYBjELJ",
+            "thumbnail": "https://i0.hdslb.com/bfs/archive/test.jpg"
         }
-
-        html = '''
-        <html>
-        <head>
-            <meta property="og:image" content="https://i0.hdslb.com/bfs/archive/test.jpg">
-        </head>
-        </html>
-        '''
-
-        # 第一次请求cover_url失败，第二次请求视频页面，第三次请求封面图片
-        mock_response = Mock()
-        mock_response.status_code = 200
-        mock_response.text = html
 
         mock_img_response = Mock()
         mock_img_response.iter_content = Mock(return_value=[b"fake", b"image", b"data"])
         mock_img_response.__enter__ = Mock(return_value=mock_img_response)
         mock_img_response.__exit__ = Mock(return_value=False)
 
-        with patch('requests.get', side_effect=[Exception("Network error"), mock_response, mock_img_response]):
+        with patch('requests.get', return_value=mock_img_response):
             result = download_cover(video, self.thumbs_dir, quiet=True)
             self.assertEqual(result['status'], 'success')
             self.assertEqual(result['bvid'], 'BV19YzYBjELJ')
@@ -331,10 +308,12 @@ class TestCoverDownloader(unittest.TestCase):
         videos_path = Path(self.test_dir) / "videos.json"
         videos_data = [
             {
-                "videoUrl": "https://www.bilibili.com/video/BV19YzYBjELJ"
+                "bv": "BV19YzYBjELJ",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/BV19YzYBjELJ.jpg"
             },
             {
-                "videoUrl": "https://www.bilibili.com/video/BV15NzrBBEJQ"
+                "bv": "BV15NzrBBEJQ",
+                "cover_url": "https://i0.hdslb.com/bfs/archive/BV15NzrBBEJQ.jpg"
             }
         ]
 
@@ -342,26 +321,12 @@ class TestCoverDownloader(unittest.TestCase):
             import json
             json.dump(videos_data, f, ensure_ascii=False)
 
-        html_template = '''
-        <html>
-        <head>
-            <meta property="og:image" content="https://i0.hdslb.com/bfs/archive/{bvid}.jpg">
-        </head>
-        </html>
-        '''
-
         def mock_get(url, **kwargs):
-            if 'video' in url:
-                response = Mock()
-                response.status_code = 200
-                response.text = html_template.format(bvid=url.split('/')[-1])
-                return response
-            else:
-                img_response = Mock()
-                img_response.iter_content = Mock(return_value=[b"fake", b"image"])
-                img_response.__enter__ = Mock(return_value=img_response)
-                img_response.__exit__ = Mock(return_value=False)
-                return img_response
+            img_response = Mock()
+            img_response.iter_content = Mock(return_value=[b"fake", b"image"])
+            img_response.__enter__ = Mock(return_value=img_response)
+            img_response.__exit__ = Mock(return_value=False)
+            return img_response
 
         with patch('requests.get', side_effect=mock_get):
             results = download_all_covers(videos_path, self.thumbs_dir, quiet=True)
