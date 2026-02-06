@@ -22,6 +22,7 @@ describe("核心内容区测试", () => {
     views: "10万",
     icon: "Heart",
     videoUrl: "https://www.bilibili.com/video/BV1xx411c7mD",
+    bv: "BV1xx411c7mD",
     duration: "10:30",
   };
 
