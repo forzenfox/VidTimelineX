@@ -3,12 +3,17 @@
     "lvjiang": {
       "favorites_url": "https://space.bilibili.com/57320454/favlist?fid=3965175154&ftype=create&ctype=21",
       "backend_timeline_file": "data/lvjiang/videos.json",
-      "frontend_timeline_file": "C:\\Users\\skyzl\\AppData\\Local\\Temp\\tmp93_u4b0p\\frontend_data\\src\\features\\lvjiang\\data\\videos.json"
+      "frontend_timeline_file": "../frontend/src/features/lvjiang/data/videos.json"
     },
     "tiantong": {
       "favorites_url": "https://space.bilibili.com/57320454/favlist?fid=3869352154&ftype=create&ctype=21",
       "backend_timeline_file": "data/tiantong/videos.json",
       "frontend_timeline_file": "../frontend/src/features/tiantong/data/videos.json"
+    },
+    "test": {
+      "favorites_url": "",
+      "backend_timeline_file": "data/test/videos.json",
+      "frontend_timeline_file": "data/test/frontend_videos.json"
     }
   },
   "crawler": {

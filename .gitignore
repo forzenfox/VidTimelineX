@@ -114,3 +114,6 @@ dmypy.json
 .project
 .pydevproject
 .settings/
+
+# Backend test data
+backend/data/test/
