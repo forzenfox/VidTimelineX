@@ -1,18 +1,20 @@
-name: CI for Non-master Branches
+name: CI for Master Branch
 
 on:
-  pull_request:
+  push:
     branches: [master]
 
 permissions:
   contents: read
 
 concurrency:
-  group: "ci-${{ github.ref }}"
+  group: "ci-master"
   cancel-in-progress: true
 
 jobs:
   frontend-ci:
+    # 跳过 PR 合并产生的 push，因为 ci-non-master.yml 已在 PR 阶段检查
+    if: ${{ !contains(github.event.head_commit.message, 'Merge pull request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,7 +31,7 @@ jobs:
         run: npm ci
         working-directory: frontend
 
-      - name: Static analysis (Lint)
+      - name: Lint code
         run: npm run lint
         working-directory: frontend
 
@@ -44,6 +46,8 @@ jobs:
           VITE_BASE_URL: /
 
   backend-ci:
+    # 跳过 PR 合并产生的 push，因为 ci-non-master.yml 已在 PR 阶段检查
+    if: ${{ !contains(github.event.head_commit.message, 'Merge pull request') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
