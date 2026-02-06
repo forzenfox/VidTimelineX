@@ -127,9 +127,9 @@ class TestVideoCrawler:
         assert test_data_file.exists(), f"测试数据文件不存在: {test_data_file}"
         
         # 测试已爬取的视频（从测试数据中提取BV号）
-        # 测试数据中包含 BV1xx411c7mD 和 BV2yy522d8nE
-        assert self.crawler.is_video_crawled("1xx411c7mD", test_data_file)
-        assert self.crawler.is_video_crawled("2yy522d8nE", test_data_file)
+        # 测试数据中包含 BV1XCffBPEj4 和 BV1zAFTzeEZ6
+        assert self.crawler.is_video_crawled("BV1XCffBPEj4", test_data_file)
+        assert self.crawler.is_video_crawled("BV1zAFTzeEZ6", test_data_file)
         
         # 测试未爬取的视频
         assert not self.crawler.is_video_crawled("non_existent_bv", test_data_file)

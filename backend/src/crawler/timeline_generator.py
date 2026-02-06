@@ -124,8 +124,8 @@ class TimelineGenerator:
             thumbnail = video.get('thumbnail', '')
             author = video.get('author', '')
             
-            # cover 字段初始为空，等待下载模块填充实际文件名
-            cover = ""
+            # cover 字段使用BV号作为默认文件名（等待下载模块填充实际文件名）
+            cover = f"{bv}.webp" if bv else ""
             
             # 处理日期格式，只保留日期部分
             publish_date = video.get('publish_date', '')

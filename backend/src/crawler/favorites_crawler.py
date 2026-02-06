@@ -5,20 +5,51 @@
 """
 
 import re
+import time
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 import requests
 from src.utils.path_manager import get_favorites_config
+from src.crawler.utils.user_agent_rotator import UserAgentRotator
+from src.crawler.utils.rate_limiter import RateLimiter
+from src.crawler.utils.session_manager import SessionManager
 
 
 class FavoritesCrawler:
     """收藏夹爬虫类
     
-    用于爬取B站收藏夹中的视频BV号
+    用于爬取B站收藏夹中的视频BV号，集成反爬机制
     """
     
-    def __init__(self):
-        """初始化收藏夹爬虫"""
+    def __init__(self, use_anti_crawler=True):
+        """初始化收藏夹爬虫
+        
+        Args:
+            use_anti_crawler: 是否启用反爬机制
+        """
+        self.use_anti_crawler = use_anti_crawler
+        
+        # 初始化反爬组件
+        if use_anti_crawler:
+            # User-Agent轮换器
+            self.user_agent_rotator = UserAgentRotator()
+            # 请求频率限制器
+            self.rate_limiter = RateLimiter(
+                min_delay=1.0,
+                max_delay=3.0,
+                enable_jitter=True,
+                enable_adaptive=True
+            )
+            # Session管理器
+            self.session_manager = SessionManager(
+                session_count=2,
+                rotate_interval=300
+            )
+        else:
+            self.user_agent_rotator = None
+            self.rate_limiter = None
+            self.session_manager = None
+        
         # API配置（内置，不依赖config.json）
         self.api_config = {
             'base_url': 'https://api.bilibili.com/x/v3/fav/resource/list',
@@ -138,6 +169,44 @@ class FavoritesCrawler:
             print(f"保存BV号失败: {e}")
             return False
     
+    def _get_api_headers(self):
+        """获取API请求头（支持User-Agent轮换）
+        
+        Returns:
+            dict: 请求头字典
+        """
+        headers = self.api_config['headers'].copy()
+        
+        if self.use_anti_crawler and self.user_agent_rotator:
+            # 使用随机User-Agent
+            random_headers = self.user_agent_rotator.get_full_headers({
+                'Referer': 'https://space.bilibili.com/'
+            })
+            headers.update(random_headers)
+        
+        return headers
+    
+    def _rate_limit(self, attempt=0):
+        """请求频率限制
+        
+        Args:
+            attempt: 当前尝试次数
+        """
+        if self.use_anti_crawler and self.rate_limiter:
+            self.rate_limiter.wait(attempt=attempt)
+        else:
+            time.sleep(1)
+    
+    def _record_success(self):
+        """记录请求成功"""
+        if self.use_anti_crawler and self.rate_limiter:
+            self.rate_limiter.record_success()
+    
+    def _record_failure(self):
+        """记录请求失败"""
+        if self.use_anti_crawler and self.rate_limiter:
+            self.rate_limiter.record_failure()
+    
     def fetch_favorites_api(self, media_id, page=1):
         """使用API获取收藏夹数据
         
@@ -152,19 +221,42 @@ class FavoritesCrawler:
         params['media_id'] = media_id
         params['pn'] = page
         
+        # 获取请求头
+        headers = self._get_api_headers()
+        
+        # 频率限制
+        self._rate_limit()
+        
         try:
-            response = requests.get(
-                self.api_config['base_url'],
-                params=params,
-                headers=self.api_config['headers'],
-                cookies=self.api_config['cookies'],
-                timeout=30
-            )
+            # 如果启用反爬，使用SessionManager的session
+            if self.use_anti_crawler and self.session_manager:
+                session = self.session_manager.get_session()
+                response = session.get(
+                    self.api_config['base_url'],
+                    params=params,
+                    headers=headers,
+                    cookies=self.api_config['cookies'],
+                    timeout=30
+                )
+            else:
+                response = requests.get(
+                    self.api_config['base_url'],
+                    params=params,
+                    headers=headers,
+                    cookies=self.api_config['cookies'],
+                    timeout=30
+                )
             
             response.raise_for_status()
+            
+            # 记录成功
+            self._record_success()
+            
             return response.json()
         except Exception as e:
             print(f"API请求失败: {e}")
+            # 记录失败
+            self._record_failure()
             return None
     
     def extract_bv_from_api(self, response_data):
@@ -208,6 +300,8 @@ class FavoritesCrawler:
         all_bv_codes = []
         page = 1
         
+        print(f"反爬机制: {'已启用' if self.use_anti_crawler else '已禁用'}")
+        
         while True:
             print(f"API获取第 {page} 页数据...")
             response = self.fetch_favorites_api(media_id, page)
@@ -228,6 +322,11 @@ class FavoritesCrawler:
                 break
             
             page += 1
+        
+        # 打印统计信息
+        if self.use_anti_crawler and self.rate_limiter:
+            stats = self.rate_limiter.get_stats()
+            print(f"请求统计: 成功 {stats['success_count']}, 失败 {stats['failure_count']}")
         
         # 去重
         return list(set(all_bv_codes))

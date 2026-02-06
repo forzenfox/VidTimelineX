@@ -45,22 +45,24 @@ VidTimelineX/
 ### 后端技术栈
 
 - **Python 3.8+** - 后端开发语言
-- **Playwright** - 动态内容爬取和浏览器自动化
-- **Requests** - HTTP请求处理
-- **BeautifulSoup4** - HTML解析
-- **Pytest** - 单元测试框架
+- **Playwright** (>=1.47.0,<1.50.0) - 动态内容爬取和浏览器自动化
+- **Requests** (>=2.28.0) - HTTP请求处理
+- **BeautifulSoup4** (>=4.11.0) - HTML解析
+- **Pillow** (>=10.0.0) - 图片处理
+- **Pytest** (>=7.0.0) - 单元测试框架
+- **pytest-cov** (>=4.0.0) - 测试覆盖率统计
 
 ### 前端技术栈
 
-- **React 19** - 前端UI框架
-- **TypeScript 5** - 类型安全
-- **Vite 7** - 构建工具和开发服务器
-- **React Router DOM** - 客户端路由
-- **Tailwind CSS 4** - CSS框架
+- **React 19.2.0** - 前端UI框架
+- **TypeScript 5.9.3** - 类型安全
+- **Vite 7.2.4** - 构建工具和开发服务器
+- **React Router DOM 7.10.0** - 客户端路由
+- **Tailwind CSS 4.1.17** - CSS框架
 - **Radix UI** - 无样式组件库
-- **@tanstack/react-query** - 服务器状态管理
-- **Jest** - 单元测试框架
-- **Playwright** - E2E测试框架
+- **@tanstack/react-query 5.83.0** - 服务器状态管理
+- **Jest 30.2.0** - 单元测试框架
+- **Playwright 1.58.0** - E2E测试框架
 
 ## 快速开始
 

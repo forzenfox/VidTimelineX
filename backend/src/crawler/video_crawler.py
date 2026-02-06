@@ -12,19 +12,52 @@ from bs4 import BeautifulSoup
 from pathlib import Path
 from datetime import datetime
 from src.utils.config import REQUEST_TIMEOUT, MAX_RETRIES, INITIAL_RETRY_DELAY, HEADERS
+from src.crawler.utils.user_agent_rotator import UserAgentRotator
+from src.crawler.utils.rate_limiter import RateLimiter
+from src.crawler.utils.session_manager import SessionManager
 
 
 class VideoCrawler:
     """视频爬虫类
     
-    用于爬取B站视频的元数据
+    用于爬取B站视频的元数据，集成反爬机制
     """
     
-    def __init__(self):
-        """初始化视频爬虫"""
-        self.session = requests.Session()
-        self.session.headers.update(HEADERS)
+    def __init__(self, use_anti_crawler=True):
+        """初始化视频爬虫
+        
+        Args:
+            use_anti_crawler: 是否启用反爬机制
+        """
+        self.use_anti_crawler = use_anti_crawler
         self.crawled_bvs_cache = {}  # 缓存已爬取的BV号
+        
+        # 初始化反爬组件
+        if use_anti_crawler:
+            # User-Agent轮换器
+            self.user_agent_rotator = UserAgentRotator()
+            # 请求频率限制器（带抖动和自适应）
+            self.rate_limiter = RateLimiter(
+                min_delay=1.0,
+                max_delay=5.0,
+                enable_jitter=True,
+                enable_adaptive=True
+            )
+            # Session管理器（多Session轮换）
+            self.session_manager = SessionManager(
+                session_count=3,
+                rotate_interval=300
+            )
+            # 使用SessionManager的session
+            self.session = self.session_manager.get_session()
+        else:
+            # 传统方式
+            self.session = requests.Session()
+            self.session.headers.update(HEADERS)
+            self.user_agent_rotator = None
+            self.rate_limiter = None
+            self.session_manager = None
+        
         # API配置
         self.api_config = {
             'base_url': 'https://api.bilibili.com/x/web-interface/wbi/view/detail',
@@ -43,7 +76,7 @@ class VideoCrawler:
             },
             'cookies': {}  # 空Cookie，公开视频不需要登录
         }
-        # 速率限制
+        # 速率限制（传统方式）
         self.last_api_call_time = 0
         self.api_call_interval = 1  # API调用间隔（秒）
         # API重试配置
@@ -164,13 +197,43 @@ class VideoCrawler:
         self.crawled_bvs_cache.clear()
         print("已清除爬取状态缓存")
     
-    def _rate_limit(self):
-        """速率限制"""
-        current_time = time.time()
-        elapsed = current_time - self.last_api_call_time
-        if elapsed < self.api_call_interval:
-            time.sleep(self.api_call_interval - elapsed)
-        self.last_api_call_time = time.time()
+    def _rate_limit(self, attempt=0):
+        """速率限制
+        
+        Args:
+            attempt: 当前尝试次数（用于指数退避）
+        """
+        if self.use_anti_crawler and self.rate_limiter:
+            # 使用智能频率限制器
+            self.rate_limiter.wait(attempt=attempt)
+        else:
+            # 传统方式
+            current_time = time.time()
+            elapsed = current_time - self.last_api_call_time
+            if elapsed < self.api_call_interval:
+                time.sleep(self.api_call_interval - elapsed)
+            self.last_api_call_time = time.time()
+    
+    def _update_session_headers(self):
+        """更新Session请求头（使用随机User-Agent）"""
+        if self.use_anti_crawler and self.user_agent_rotator:
+            # 获取新的Session（可能已轮换）
+            self.session = self.session_manager.get_session()
+            # 更新User-Agent
+            headers = self.user_agent_rotator.get_full_headers({
+                'Referer': 'https://www.bilibili.com/'
+            })
+            self.session.headers.update(headers)
+    
+    def _record_request_success(self):
+        """记录请求成功"""
+        if self.use_anti_crawler and self.rate_limiter:
+            self.rate_limiter.record_success()
+    
+    def _record_request_failure(self):
+        """记录请求失败"""
+        if self.use_anti_crawler and self.rate_limiter:
+            self.rate_limiter.record_failure()
     
     def load_bv_list(self, file_path):
         """从文件中加载BV号列表
@@ -220,6 +283,7 @@ class VideoCrawler:
         
         print(f"\n=== 直接从BV号列表爬取视频信息 ===")
         print(f"共 {len(bv_list)} 个BV号，爬取模式: {'全量爬取' if full_crawl else '增量爬取'}")
+        print(f"反爬机制: {'已启用' if self.use_anti_crawler else '已禁用'}")
         
         # 获取时间线文件路径
         from src.utils.path_manager import get_data_paths
@@ -239,9 +303,18 @@ class VideoCrawler:
             if metadata:
                 videos.append(metadata)
             
-            # 避免请求过于频繁
-            import time
-            time.sleep(2)
+            # 使用智能频率控制（如果启用反爬）或固定延迟
+            if self.use_anti_crawler and self.rate_limiter:
+                # 智能延迟已在 crawl_video_metadata 中处理
+                pass
+            else:
+                # 传统方式：固定延迟
+                time.sleep(2)
+        
+        # 打印统计信息
+        if self.use_anti_crawler and self.rate_limiter:
+            stats = self.rate_limiter.get_stats()
+            print(f"\n请求统计: 成功 {stats['success_count']}, 失败 {stats['failure_count']}")
         
         print(f"成功爬取 {len(videos)} 个视频的元数据")
         return videos
@@ -256,9 +329,6 @@ class VideoCrawler:
             dict: 视频信息，失败返回None
         """
         print(f"使用搜索API获取视频信息: {bv_code}")
-        
-        # 速率限制
-        self._rate_limit()
         
         # 使用配置中的搜索API URL
         search_api_url = self.api_config['search_url']
@@ -277,7 +347,15 @@ class VideoCrawler:
         headers = self.api_config['search_headers'].copy()
         headers['referer'] = f"https://search.bilibili.com/all?keyword={bv_code}&from_source=webtop_search"
         
+        # 如果启用反爬，更新User-Agent
+        if self.use_anti_crawler:
+            self._update_session_headers()
+            headers.update(self.session.headers)
+        
         for retry in range(self.api_max_retries):
+            # 速率限制（带指数退避）
+            self._rate_limit(attempt=retry)
+            
             try:
                 response = requests.get(
                     search_api_url,
@@ -292,19 +370,25 @@ class VideoCrawler:
                 
                 if data.get('code') != 0:
                     print(f"搜索API返回错误: {data.get('message')}")
+                    self._record_request_failure()
                     if retry < self.api_max_retries - 1:
                         print(f"{self.api_retry_delay}秒后重试")
                         time.sleep(self.api_retry_delay)
                         continue
                     return None
                 
+                # 记录成功
+                self._record_request_success()
+                
                 # 解析搜索API返回数据
                 return self._parse_search_api_response(data, bv_code)
             except requests.exceptions.Timeout:
                 print(f"搜索API请求超时，{self.api_retry_delay}秒后重试")
+                self._record_request_failure()
                 time.sleep(self.api_retry_delay)
             except requests.exceptions.HTTPError as e:
                 print(f"搜索API HTTP错误: {e}")
+                self._record_request_failure()
                 if retry < self.api_max_retries - 1:
                     print(f"{self.api_retry_delay}秒后重试")
                     time.sleep(self.api_retry_delay)
@@ -312,6 +396,7 @@ class VideoCrawler:
                     return None
             except Exception as e:
                 print(f"搜索API调用错误: {e}")
+                self._record_request_failure()
                 if retry < self.api_max_retries - 1:
                     print(f"{self.api_retry_delay}秒后重试")
                     time.sleep(self.api_retry_delay)
@@ -331,9 +416,6 @@ class VideoCrawler:
         """
         print(f"使用详情API获取视频信息: {bv_code}")
         
-        # 速率限制
-        self._rate_limit()
-        
         params = {
             'bvid': bv_code,
             'need_view': 1,
@@ -341,12 +423,21 @@ class VideoCrawler:
             'web_location': 1315873
         }
         
+        # 如果启用反爬，更新请求头
+        headers = self.api_config['headers'].copy()
+        if self.use_anti_crawler:
+            self._update_session_headers()
+            headers.update(self.session.headers)
+        
         for retry in range(self.api_max_retries):
+            # 速率限制（带指数退避）
+            self._rate_limit(attempt=retry)
+            
             try:
                 response = requests.get(
                     self.api_config['base_url'],
                     params=params,
-                    headers=self.api_config['headers'],
+                    headers=headers,
                     cookies=self.api_config['cookies'],
                     timeout=REQUEST_TIMEOUT
                 )
@@ -356,19 +447,25 @@ class VideoCrawler:
                 
                 if data.get('code') != 0:
                     print(f"详情API返回错误: {data.get('message')}")
+                    self._record_request_failure()
                     if retry < self.api_max_retries - 1:
                         print(f"{self.api_retry_delay}秒后重试")
                         time.sleep(self.api_retry_delay)
                         continue
                     return None
                 
+                # 记录成功
+                self._record_request_success()
+                
                 # 解析API返回数据
                 return self._parse_api_response(data, bv_code)
             except requests.exceptions.Timeout:
                 print(f"详情API请求超时，{self.api_retry_delay}秒后重试")
+                self._record_request_failure()
                 time.sleep(self.api_retry_delay)
             except requests.exceptions.HTTPError as e:
                 print(f"详情API HTTP错误: {e}")
+                self._record_request_failure()
                 if retry < self.api_max_retries - 1:
                     print(f"{self.api_retry_delay}秒后重试")
                     time.sleep(self.api_retry_delay)
@@ -376,6 +473,7 @@ class VideoCrawler:
                     return None
             except Exception as e:
                 print(f"详情API调用错误: {e}")
+                self._record_request_failure()
                 if retry < self.api_max_retries - 1:
                     print(f"{self.api_retry_delay}秒后重试")
                     time.sleep(self.api_retry_delay)
@@ -589,19 +687,31 @@ class VideoCrawler:
         video_url = f"https://www.bilibili.com/video/{bv_code}"
         
         for retry in range(MAX_RETRIES):
+            # 速率限制（带指数退避）
+            self._rate_limit(attempt=retry)
+            
+            # 如果启用反爬，更新Session和User-Agent
+            if self.use_anti_crawler:
+                self._update_session_headers()
+            
             try:
                 response = self.session.get(video_url, timeout=REQUEST_TIMEOUT)
                 response.raise_for_status()
                 response.encoding = response.apparent_encoding
+                
+                # 记录成功
+                self._record_request_success()
                 
                 # 解析视频页面
                 metadata = self._parse_video_page(response.text, bv_code)
                 return metadata
             except requests.exceptions.Timeout:
                 print(f"请求超时，{INITIAL_RETRY_DELAY}秒后重试")
+                self._record_request_failure()
                 time.sleep(INITIAL_RETRY_DELAY)
             except requests.exceptions.HTTPError as e:
                 print(f"HTTP错误: {e}")
+                self._record_request_failure()
                 if retry < MAX_RETRIES - 1:
                     print(f"{INITIAL_RETRY_DELAY}秒后重试")
                     time.sleep(INITIAL_RETRY_DELAY)
@@ -609,6 +719,7 @@ class VideoCrawler:
                     print("达到最大重试次数，放弃爬取")
             except Exception as e:
                 print(f"爬取错误: {e}")
+                self._record_request_failure()
                 if retry < MAX_RETRIES - 1:
                     print(f"{INITIAL_RETRY_DELAY}秒后重试")
                     time.sleep(INITIAL_RETRY_DELAY)

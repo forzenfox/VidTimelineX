@@ -352,10 +352,11 @@ def download_cover(video: Dict[str, Any], thumbs_dir: Path, quiet: bool = False,
         }
     
     # 3. 下载原图
-    cover_url = video.get('cover_url', '')
+    # 优先使用 cover_url，如果没有则尝试使用 thumbnail
+    cover_url = video.get('cover_url', '') or video.get('thumbnail', '')
     if not cover_url:
         if not quiet:
-            print(f"  [失败] 没有 cover_url")
+            print(f"  [失败] 没有 cover_url 或 thumbnail")
         return {'status': 'failed', 'bvid': bvid, 'filename': None, 'cover': None, 'path': None}
     
     try:

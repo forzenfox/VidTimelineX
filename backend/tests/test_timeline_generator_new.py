@@ -66,15 +66,15 @@ class TestTimelineGenerator:
         assert len(result) == 1
         assert result[0]['author'] == '测试作者'
     
-    def test_generate_timeline_empty_cover(self):
-        """测试 cover 字段初始为空字符串，等待下载模块填充"""
+    def test_generate_timeline_default_cover(self):
+        """测试 cover 字段默认使用BV号作为文件名"""
         # Arrange
         videos = [
             {
                 'bv': 'BV1XCffBPEj4',
                 'title': '测试视频',
                 'url': 'https://www.bilibili.com/video/av116012955473501',
-                'thumbnail': 'https://example.com/cover.jpg',
+                'thumbnail': 'https://i2.hdslb.com/bfs/archive/test.jpg',
                 'publish_date': '2026-02-04',
                 'duration': '7:16',
                 'author': '测试作者'
@@ -86,7 +86,7 @@ class TestTimelineGenerator:
         
         # Assert
         assert len(result) == 1
-        assert result[0]['cover'] == ''
+        assert result[0]['cover'] == 'BV1XCffBPEj4.webp'
     
     def test_generate_timeline_preserves_cover_url(self):
         """测试 cover_url 字段被正确保留"""

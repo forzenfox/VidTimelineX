@@ -228,7 +228,9 @@ playwright install
 | requests | >=2.28.0 | HTTP请求处理 |
 | beautifulsoup4 | >=4.11.0 | HTML解析 |
 | playwright | >=1.47.0,<1.50.0 | 动态内容爬取和浏览器自动化 |
-| pytest | >=7.0.0 | 单元测试 |
+| pillow | >=10.0.0 | 图片处理（WebP转换等） |
+| pytest | >=7.0.0 | 单元测试框架 |
+| pytest-cov | >=4.0.0 | 测试覆盖率统计 |
 | python-dotenv | >=0.20.0 | 环境变量管理（可选） |
 
 ### 虚拟环境设置（推荐）

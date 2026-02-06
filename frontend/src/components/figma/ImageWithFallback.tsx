@@ -275,6 +275,7 @@ interface CanvasImageProps extends React.CanvasHTMLAttributes<HTMLCanvasElement>
 export function CanvasImage({
   cover_url,
   cover,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   alt,
   onLoadSuccess,
   onLoadError,

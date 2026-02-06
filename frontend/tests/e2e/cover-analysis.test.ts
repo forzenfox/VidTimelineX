@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 
 test.describe("视频封面加载分析", () => {
   test("分析甜筒页面视频封面的加载情况", async ({ page }) => {
