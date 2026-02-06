@@ -37,6 +37,8 @@ jobs:
         run: |
           cd backend
           python main.py
+        env:
+          PYTHONPATH: ${{ github.workspace }}/backend
       
       - name: 检查文件变动
         id: check-changes
