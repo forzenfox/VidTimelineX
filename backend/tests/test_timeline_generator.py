@@ -98,12 +98,26 @@ class TestTimelineGenerator(unittest.TestCase):
     
     def test_run(self):
         """测试运行时间线生成任务"""
-        # 使用 test 数据类型，避免写入生产文件
-        result = self.generator.run(self.test_videos, "test")
+        # 使用 mock 配置和临时目录，避免依赖 config.json 的 test 配置
+        import tempfile
+        from unittest.mock import patch
+        from pathlib import Path
 
-        self.assertIsInstance(result, dict)
-        self.assertIn("success", result)
-        self.assertTrue(result["success"])
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_timeline_file = Path(tmpdir) / "test_videos.json"
+
+            # Mock get_data_paths 返回测试配置
+            mock_config = {
+                'DATA_TYPE_DIR': Path(tmpdir),
+                'TIMELINE_FILE': test_timeline_file
+            }
+
+            with patch('src.crawler.timeline_generator.get_data_paths', return_value=mock_config):
+                result = self.generator.run(self.test_videos, "test")
+
+                self.assertIsInstance(result, dict)
+                self.assertIn("success", result)
+                self.assertTrue(result["success"])
     
     def test_load_existing_timeline(self):
         """测试加载现有时间线数据"""

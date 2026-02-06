@@ -13,7 +13,6 @@ def test_get_data_paths():
     paths = get_data_paths("tiantong")
     assert isinstance(paths, dict)
     assert "DATA_TYPE_DIR" in paths
-    assert "THUMBS_DIR" in paths
     assert "TIMELINE_FILE" in paths
 
 

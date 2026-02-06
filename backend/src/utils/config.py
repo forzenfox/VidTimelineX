@@ -150,7 +150,6 @@ def get_data_type_config(data_type):
     
     return {
         'DATA_TYPE_DIR': data_type_dir,
-        'THUMBS_DIR': data_type_dir / "thumbs",
         'TIMELINE_FILE': backend_timeline_file
     }
 

@@ -35,7 +35,7 @@ def download_covers_for_timeline(timeline_file: Path) -> dict:
     if not isinstance(data, list):
         return {'success': 0, 'failed': 0, 'skipped': 0}
     
-    return download_all_covers(timeline_file, quiet=False)
+    return download_all_covers(timeline_file, quiet=False, update_videos_json=True)
 
 
 def main():
@@ -110,7 +110,6 @@ def main():
             
             print(f"\n=== 5. 下载封面图片 ===")
             cover_result = download_covers_for_timeline(timeline_file)
-            print(f"封面下载结果: 成功 {cover_result.get('success', 0)}, 失败 {cover_result.get('failed', 0)}, 跳过 {cover_result.get('skipped', 0)}")
     
     # 只有当成功生成了时间线数据时，才执行前端文件更新
     if timeline_generated:

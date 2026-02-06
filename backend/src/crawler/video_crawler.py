@@ -230,7 +230,9 @@ class VideoCrawler:
         for bv_code in bv_list:
             # 增量爬取模式下，检查视频是否已爬取
             if not full_crawl and self.is_video_crawled(bv_code, timeline_file):
-                print(f"视频 BV{bv_code} 已爬取，跳过")
+                # 确保BV号格式正确显示（避免双重BV前缀）
+                display_bv = bv_code if bv_code.startswith('BV') else f'BV{bv_code}'
+                print(f"视频 {display_bv} 已爬取，跳过")
                 continue
             
             metadata = self.crawl_video_metadata(bv_code)
@@ -415,6 +417,7 @@ class VideoCrawler:
             return None
         
         # 提取视频信息
+        author = video_data.get('author', "")
         metadata = {
             "bv": video_data.get('bvid', bv_code),
             "url": video_data.get('arcurl', f"https://www.bilibili.com/video/{bv_code}"),
@@ -423,7 +426,8 @@ class VideoCrawler:
             "publish_date": video_data.get('pubdate', datetime.now().strftime("%Y-%m-%d")),
             "views": video_data.get('play', 0),
             "danmaku": video_data.get('danmaku', 0),
-            "up主": video_data.get('author', ""),
+            "up主": author,
+            "author": author,
             "cover_url": video_data.get('pic', ""),
             "thumbnail": video_data.get('pic', ""),
             "duration": video_data.get('duration', "00:00"),
@@ -458,6 +462,7 @@ class VideoCrawler:
         view_detail = data.get('View', {})
         
         # 提取视频信息
+        author = view_detail.get('owner', {}).get('name', "")
         metadata = {
             "bv": bv_code,
             "url": f"https://www.bilibili.com/video/{bv_code}",
@@ -466,7 +471,8 @@ class VideoCrawler:
             "publish_date": view_detail.get('pubdate', datetime.now().strftime("%Y-%m-%d")),
             "views": view_detail.get('stat', {}).get('view', 0),
             "danmaku": view_detail.get('stat', {}).get('danmaku', 0),
-            "up主": view_detail.get('owner', {}).get('name', ""),
+            "up主": author,
+            "author": author,
             "cover_url": view_detail.get('pic', ""),
             "thumbnail": view_detail.get('pic', ""),
             "duration": view_detail.get('duration', 0),
@@ -645,6 +651,7 @@ class VideoCrawler:
         duration = self._extract_duration(html)
         
         # 构建元数据
+        author = up_info.get('name', '')
         metadata = {
             "bv": bv_code,
             "url": f"https://www.bilibili.com/video/{bv_code}",
@@ -653,7 +660,8 @@ class VideoCrawler:
             "publish_date": publish_date,
             "views": stats.get('views', 0),
             "danmaku": stats.get('danmaku', 0),
-            "up主": up_info.get('name', ''),
+            "up主": author,
+            "author": author,
             "cover_url": thumbnail,
             "thumbnail": thumbnail,
             "duration": duration,

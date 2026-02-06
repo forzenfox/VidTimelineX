@@ -21,7 +21,6 @@ def test_get_data_type_config():
     config = get_data_type_config("tiantong")
     assert isinstance(config, dict)
     assert "DATA_TYPE_DIR" in config
-    assert "THUMBS_DIR" in config
     assert "TIMELINE_FILE" in config
 
 
