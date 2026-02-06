@@ -28,10 +28,15 @@ jobs:
           cd backend
           pip install -r requirements.txt
       
+      - name: 安装 Playwright 浏览器
+        run: |
+          cd backend
+          playwright install chromium
+      
       - name: 执行时间线更新脚本
         run: |
           cd backend
-          python update_timeline.py
+          python main.py
       
       - name: 检查文件变动
         id: check-changes
