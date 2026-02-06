@@ -9,37 +9,38 @@ jobs:
   update-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 只需要写入内容的权限
-    
+      contents: write  # 写入内容的权限
+      pull-requests: write  # 创建PR的权限
+
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
         with:
           ref: master
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: 设置Python环境
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
-      
+
       - name: 安装依赖
         run: |
           cd backend
           pip install -r requirements.txt
-      
+
       - name: 安装 Playwright 浏览器
         run: |
           cd backend
           playwright install chromium
-      
+
       - name: 执行时间线更新脚本
         run: |
           cd backend
           python main.py
         env:
           PYTHONPATH: ${{ github.workspace }}/backend
-      
+
       - name: 检查文件变动
         id: check-changes
         run: |
@@ -48,17 +49,65 @@ jobs:
           git status
           if git status --porcelain | grep -q .; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
+            # 生成时间戳用于PR标题
+            echo "datetime=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
           fi
-      
-      - name: 提交并推送变动
+
+      - name: 创建auto-deploy分支并提交变动
         if: steps.check-changes.outputs.has_changes == 'true'
         run: |
+          # 删除已存在的auto-deploy分支（如果存在）
+          git push origin --delete auto-deploy 2>/dev/null || true
+
+          # 创建新的auto-deploy分支
+          git checkout -b auto-deploy
+
+          # 提交更改
           git add .
-          git commit -m "自动更新时间线数据 $(date '+%Y-%m-%d %H:%M:%S')"
-          git push origin master
-      
+          git commit -m "自动更新时间线数据 ${{ steps.check-changes.outputs.datetime }}"
+
+          # 推送到远程
+          git push origin auto-deploy
+        id: create-branch
+
+      - name: 创建 Pull Request
+        if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 检查是否已存在从auto-deploy到master的PR
+          EXISTING_PR=$(gh pr list --head auto-deploy --base master --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "已存在PR #$EXISTING_PR，更新该PR"
+            gh pr comment $EXISTING_PR --body "数据已更新: ${{ steps.check-changes.outputs.datetime }}"
+          else
+            # 创建新的PR
+            gh pr create \
+              --base master \
+              --head auto-deploy \
+              --title "[自动] 时间线数据更新 ${{ steps.check-changes.outputs.datetime }}" \
+              --body "## 自动更新时间线数据
+
+            - 更新时间: ${{ steps.check-changes.outputs.datetime }}
+            - 触发方式: ${{ github.event_name == 'schedule' && '定时任务' || '手动触发' }}
+            - 源分支: \`auto-deploy\`
+            - 目标分支: \`master\`
+
+            ### 变更说明
+            此 PR 由 GitHub Actions 自动生成，包含最新的时间线数据更新。
+
+            ### 检查清单
+            - [ ] 数据格式正确
+            - [ ] 时间线内容完整
+            - [ ] 无敏感信息泄露
+
+            ---
+            *此 PR 由 schedule-update 工作流自动创建*"
+          fi
+
       - name: 无变动时输出信息
         if: steps.check-changes.outputs.has_changes == 'false'
         run: echo "未检测到文件变动，跳过提交"
