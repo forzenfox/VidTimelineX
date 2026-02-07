@@ -11,6 +11,8 @@ interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElemen
   priorityLoad?: boolean;
   lazy?: boolean;
   crossOrigin?: "anonymous" | "use-credentials" | "";
+  /** 图片索引，用于首屏优化 */
+  index?: number;
 }
 
 declare global {
@@ -118,6 +120,13 @@ function getInitialSrc(src: string, fallbackSrc: string, priorityLoad: boolean):
   return "";
 }
 
+/**
+ * 判断图片是否在首屏（前8张）
+ */
+const isAboveFold = (index: number): boolean => {
+  return index < 8;
+};
+
 export function ImageWithFallback({
   src,
   alt,
@@ -125,6 +134,7 @@ export function ImageWithFallback({
   priorityLoad = false,
   lazy = false,
   crossOrigin = "",
+  index = 0,
   style,
   className,
   ...rest
@@ -281,31 +291,44 @@ export function ImageWithFallback({
           <div className="flex items-center justify-center w-full h-full" />
         </div>
       )}
-      <img
-        src={currentSrc}
-        alt={alt}
-        className={className}
-        style={style}
-        loading={lazy ? "lazy" : undefined}
-        decoding={lazy ? "async" : undefined}
-        crossOrigin={effectiveCrossOrigin}
-        data-image-source={
-          hasError
-            ? "error"
-            : fallbackUsed
-              ? "fallback"
-              : currentSrc.includes("cdn.jsdelivr.net")
-                ? "jsdelivr"
-                : isExternalUrl(currentSrc)
-                  ? "external"
-                  : "local"
-        }
-        data-image-url={currentSrc}
-        data-cors-status={corsStatus.tried ? "cors-failed" : "ok"}
-        onError={handleError}
-        onLoad={handleLoad}
-        {...rest}
-      />
+      {(() => {
+        // 根据 index 判断是否在首屏，优化加载策略
+        const aboveFold = isAboveFold(index);
+        const isLazy = lazy && !aboveFold;
+        const loading = isLazy ? "lazy" : "eager";
+        const fetchPriority = aboveFold ? "high" : "low";
+        const decoding = aboveFold ? "sync" : "async";
+
+        return (
+          <img
+            src={currentSrc}
+            alt={alt}
+            className={className}
+            style={style}
+            loading={loading}
+            fetchPriority={fetchPriority}
+            decoding={decoding}
+            crossOrigin={effectiveCrossOrigin}
+            data-image-source={
+              hasError
+                ? "error"
+                : fallbackUsed
+                  ? "fallback"
+                  : currentSrc.includes("cdn.jsdelivr.net")
+                    ? "jsdelivr"
+                    : isExternalUrl(currentSrc)
+                      ? "external"
+                      : "local"
+            }
+            data-image-url={currentSrc}
+            data-cors-status={corsStatus.tried ? "cors-failed" : "ok"}
+            data-above-fold={aboveFold ? "true" : "false"}
+            onError={handleError}
+            onLoad={handleLoad}
+            {...rest}
+          />
+        );
+      })()}
     </>
   );
 }
@@ -316,6 +339,8 @@ interface VideoCoverProps {
   alt: string;
   className?: string;
   priorityLoad?: boolean;
+  /** 图片索引，用于首屏优化 */
+  index?: number;
 }
 
 export function VideoCover({
@@ -324,6 +349,7 @@ export function VideoCover({
   alt,
   className,
   priorityLoad = true,
+  index = 0,
 }: VideoCoverProps) {
   return (
     <ImageWithFallback
@@ -333,6 +359,7 @@ export function VideoCover({
       className={className}
       priorityLoad={priorityLoad}
       lazy={true}
+      index={index}
     />
   );
 }
