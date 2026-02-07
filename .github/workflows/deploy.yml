@@ -53,6 +53,7 @@ jobs:
         working-directory: frontend
         env:
           VITE_CUSTOM_DOMAIN: ${{ github.event.inputs.custom_domain || 'vx.forzenfox.com' }}
+          VITE_USE_JSDELIVR_CDN: true
           
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v3

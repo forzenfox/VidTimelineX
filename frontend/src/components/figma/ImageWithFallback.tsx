@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { getJsdelivrImageUrl } from "@/utils/cdn";
 
 const ERROR_IMG_SRC =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg==";
@@ -46,6 +47,26 @@ function getLocalImageUrl(filename: string): string {
   return `${baseUrl}thumbs/${filename}`;
 }
 
+/**
+ * 获取 jsDelivr CDN 图片 URL
+ * 当启用 CDN 时，优先使用 jsDelivr 加速
+ */
+function getCdnImageUrl(filename: string): string {
+  if (!filename) return "";
+  if (filename.startsWith("http://") || filename.startsWith("https://")) {
+    return filename;
+  }
+
+  // 检查是否启用 jsDelivr CDN
+  const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+
+  if (useJsdelivr) {
+    return getJsdelivrImageUrl(filename);
+  }
+
+  return getLocalImageUrl(filename);
+}
+
 function isExternalUrl(url: string): boolean {
   return url.startsWith("http://") || url.startsWith("https://");
 }
@@ -65,19 +86,33 @@ function getInitialSrc(src: string, fallbackSrc: string, priorityLoad: boolean):
     return "";
   }
 
+  // 检查是否启用 jsDelivr CDN
+  const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+
   if (priorityLoad && src) {
+    // 优先级1: jsDelivr CDN（如果启用）
+    if (useJsdelivr && !isExternalUrl(src)) {
+      return getJsdelivrImageUrl(src);
+    }
+    // 优先级2: B站CDN（外部URL）
     if (isExternalUrl(src)) {
       return src;
-    } else if (fallbackSrc && isExternalUrl(fallbackSrc)) {
-      return fallbackSrc;
-    } else {
-      return getLocalImageUrl(src);
     }
+    // 优先级3: fallbackSrc（B站CDN）
+    if (fallbackSrc && isExternalUrl(fallbackSrc)) {
+      return fallbackSrc;
+    }
+    // 优先级4: 本地图片
+    return getLocalImageUrl(src);
   } else {
+    // 非优先加载模式：先尝试本地/jsDelivr，失败后再尝试B站CDN
     if (src) {
+      if (useJsdelivr && !isExternalUrl(src)) {
+        return getJsdelivrImageUrl(src);
+      }
       return getLocalImageUrl(src);
     } else if (fallbackSrc) {
-      return getLocalImageUrl(fallbackSrc);
+      return getCdnImageUrl(fallbackSrc);
     }
   }
   return "";
@@ -108,16 +143,37 @@ export function ImageWithFallback({
     console.debug(`[Image] 跨域加载失败，尝试回退: ${currentSrc}`);
     setCorsStatus({ tried: true, failed: true, message: "跨域被拒绝" });
 
-    if (priorityLoad && src && !isExternalUrl(src)) {
+    // 检查当前是否在使用 jsDelivr CDN
+    const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+
+    if (useJsdelivr && src && currentSrc.includes("cdn.jsdelivr.net")) {
+      // jsDelivr 失败，优先回退到 B站CDN（如果有）
+      if (fallbackSrc && isExternalUrl(fallbackSrc) && !fallbackUsed) {
+        console.debug(`[Image] jsDelivr CDN 失败，回退到 B站CDN: ${fallbackSrc}`);
+        setCurrentSrc(fallbackSrc);
+        setFallbackUsed(true);
+        setHasError(false);
+        setCorsStatus({ tried: false, failed: false });
+      } else {
+        // 没有 B站CDN，回退到本地图片
+        const localUrl = getLocalImageUrl(src);
+        console.debug(`[Image] jsDelivr CDN 失败，回退到本地图片: ${localUrl}`);
+        setCurrentSrc(localUrl);
+        setFallbackUsed(true);
+        setHasError(false);
+        setCorsStatus({ tried: false, failed: false });
+      }
+    } else if (priorityLoad && src && !isExternalUrl(src)) {
+      // B站CDN 失败，回退到本地图片
       const localUrl = getLocalImageUrl(src);
-      console.debug(`[Image] 优先加载CDN失败，回退到本地图片: ${localUrl}`);
+      console.debug(`[Image] B站CDN 失败，回退到本地图片: ${localUrl}`);
       setCurrentSrc(localUrl);
       setFallbackUsed(true);
       setHasError(false);
       setCorsStatus({ tried: false, failed: false });
     } else if (!fallbackUsed && fallbackSrc && !isExternalUrl(fallbackSrc)) {
-      const fallbackUrl = getLocalImageUrl(fallbackSrc);
-      console.debug(`[Image] 回退到本地备用图片: ${fallbackUrl}`);
+      const fallbackUrl = getCdnImageUrl(fallbackSrc);
+      console.debug(`[Image] 回退到备用图片: ${fallbackUrl}`);
       setCurrentSrc(fallbackUrl);
       setFallbackUsed(true);
       setHasError(false);
@@ -142,14 +198,29 @@ export function ImageWithFallback({
 
   const handleError = useCallback(() => {
     const isExternalCurrentSrc = isExternalUrl(currentSrc);
-    const isCdnCurrentSrc = isExternalCurrentSrc && isBilibiliCdn(currentSrc);
+    const isBilibiliCdnSrc = isExternalCurrentSrc && isBilibiliCdn(currentSrc);
+    const isJsdelivrSrc = currentSrc.includes("cdn.jsdelivr.net");
 
-    if (isCdnCurrentSrc) {
+    // B站CDN 或 jsDelivr CDN 跨域失败
+    if (isBilibiliCdnSrc || isJsdelivrSrc) {
       handleCorsError();
       return;
     }
 
+    // 检查是否在使用 CDN
+    const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+
     if (!fallbackUsed && src && !isExternalUrl(src)) {
+      // 如果当前是本地图片失败，尝试 CDN
+      if (useJsdelivr && !currentSrc.includes("cdn.jsdelivr.net")) {
+        const cdnUrl = getJsdelivrImageUrl(src);
+        console.debug(`[Image] 本地图片失败，尝试 jsDelivr CDN: ${cdnUrl}`);
+        setCurrentSrc(cdnUrl);
+        setFallbackUsed(true);
+        setHasError(false);
+        return;
+      }
+
       const localUrl = getLocalImageUrl(src);
       if (localUrl !== currentSrc) {
         console.debug(`[Image] 加载失败，回退到本地图片: ${localUrl}`);
@@ -161,8 +232,8 @@ export function ImageWithFallback({
     }
 
     if (!fallbackUsed && fallbackSrc && !isExternalUrl(fallbackSrc)) {
-      const fallbackUrl = getLocalImageUrl(fallbackSrc);
-      console.debug(`[Image] 加载失败，回退到本地备用图片: ${fallbackUrl}`);
+      const fallbackUrl = getCdnImageUrl(fallbackSrc);
+      console.debug(`[Image] 加载失败，回退到备用图片: ${fallbackUrl}`);
       setCurrentSrc(fallbackUrl);
       setFallbackUsed(true);
       setHasError(false);
@@ -223,9 +294,11 @@ export function ImageWithFallback({
             ? "error"
             : fallbackUsed
               ? "fallback"
-              : isExternalUrl(currentSrc)
-                ? "external"
-                : "local"
+              : currentSrc.includes("cdn.jsdelivr.net")
+                ? "jsdelivr"
+                : isExternalUrl(currentSrc)
+                  ? "external"
+                  : "local"
         }
         data-image-url={currentSrc}
         data-cors-status={corsStatus.tried ? "cors-failed" : "ok"}

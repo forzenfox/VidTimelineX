@@ -11,6 +11,13 @@ export default defineConfig(({ mode }) => {
   const customDomain = env.VITE_CUSTOM_DOMAIN;
   const baseUrl = customDomain ? `https://${customDomain}/` : env.VITE_BASE_URL || "/";
 
+  // 是否启用 jsDelivr CDN 加速
+  const useJsdelivrCdn = env.VITE_USE_JSDELIVR_CDN === "true";
+
+  console.log(`[Vite Config] 构建模式: ${mode}`);
+  console.log(`[Vite Config] jsDelivr CDN: ${useJsdelivrCdn ? "启用" : "禁用"}`);
+  console.log(`[Vite Config] 基础 URL: ${baseUrl}`);
+
   return {
     base: baseUrl,
     plugins: [
@@ -82,6 +89,18 @@ export default defineConfig(({ mode }) => {
                 expiration: {
                   maxEntries: 100,
                   maxAgeSeconds: 60 * 60 * 24 * 7,
+                },
+                cacheableResponse: { statuses: [0, 200] },
+              },
+            },
+            {
+              urlPattern: ({ url }) => url.hostname.includes("cdn.jsdelivr.net"),
+              handler: "CacheFirst",
+              options: {
+                cacheName: "jsdelivr-cdn-images",
+                expiration: {
+                  maxEntries: 200,
+                  maxAgeSeconds: 60 * 60 * 24 * 30,
                 },
                 cacheableResponse: { statuses: [0, 200] },
               },

@@ -26,6 +26,13 @@ import PerformanceMonitor from "../components/PerformanceMonitor";
 import MobileNotSupported from "../components/MobileNotSupported";
 import { useIsMobile } from "../hooks/use-mobile";
 
+// 将环境变量暴露给 window 对象，供 CDN 工具使用
+if (typeof window !== "undefined") {
+  window.__USE_JSDELIVR_CDN__ = import.meta.env.VITE_USE_JSDELIVR_CDN === "true";
+  window.__BASE_URL__ = import.meta.env.VITE_BASE_URL || "/";
+  console.log("[Main] jsDelivr CDN enabled:", window.__USE_JSDELIVR_CDN__);
+}
+
 const queryClient = new QueryClient();
 
 function registerServiceWorker() {
