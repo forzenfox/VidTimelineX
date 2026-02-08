@@ -256,10 +256,11 @@ describe("CDN 工具模块测试", () => {
         const mockDate = new Date("2024-01-01T12:00:00+08:00");
         jest.spyOn(globalThis, "Date").mockImplementation(() => mockDate);
 
+        // 使用 Asia/Shanghai 时区（中国大陆时区）
         jest.spyOn(Intl, "DateTimeFormat").mockImplementation(
           () =>
             ({
-              resolvedOptions: () => ({ timeZone: "Asia/Singapore" }),
+              resolvedOptions: () => ({ timeZone: "Asia/Shanghai" }),
             }) as Intl.DateTimeFormat
         );
 
