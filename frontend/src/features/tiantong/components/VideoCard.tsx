@@ -6,6 +6,8 @@ import type { Video } from "../data/types";
 interface VideoCardProps {
   video: Video;
   onClick: (video: Video) => void;
+  /** 卡片索引，用于首屏图片优化 */
+  index?: number;
 }
 
 /**
@@ -13,7 +15,7 @@ interface VideoCardProps {
  * 使用React.memo优化性能，避免不必要的重新渲染
  * 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
  */
-const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
+const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick, index = 0 }) => {
   const getIconComponent = () => {
     switch (video.icon) {
       case "Heart":
@@ -54,6 +56,7 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick }) => {
           cover={video.cover}
           alt={video.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          index={index}
         />
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
           <div

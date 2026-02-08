@@ -89,6 +89,7 @@ const VideoItem: React.FC<{
               cover={video.cover}
               alt={video.title}
               className="w-full h-full object-cover"
+              index={index}
             />
             <div
               className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 theme-transition"

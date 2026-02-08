@@ -75,7 +75,7 @@ jobs:
       - name: 创建 Pull Request
         if: steps.check-changes.outputs.has_changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           # 检查是否已存在从auto-deploy到master的PR
           EXISTING_PR=$(gh pr list --head auto-deploy --base master --json number --jq '.[0].number')

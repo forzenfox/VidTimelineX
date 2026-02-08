@@ -98,6 +98,7 @@ const VideoItem: React.FC<{
               cover={safeVideo.cover}
               alt={safeVideo.title}
               className="w-full h-full object-cover"
+              index={index}
             />
 
             {/* 播放按钮遮罩 */}
