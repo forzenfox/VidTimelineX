@@ -31,6 +31,14 @@ const CDN_CONFIG = {
 let cachedLocation: "china" | "global" | null = null;
 
 /**
+ * 重置地理位置缓存（主要用于测试）
+ * @internal
+ */
+export function resetLocationCache(): void {
+  cachedLocation = null;
+}
+
+/**
  * 检测是否在中国大陆
  * 方法：通过时区 + 语言综合判断
  * @returns 是否在中国大陆

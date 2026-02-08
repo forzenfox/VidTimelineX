@@ -7,9 +7,7 @@
 
 基于TDD方法开发的B站收藏夹视频时间线系统，支持自动爬取收藏夹视频、生成时间线数据，采用前后端分离架构。
 
-## 项目概述
-
-### 系统架构
+## 系统架构
 
 ```
 VidTimelineX/
@@ -27,7 +25,7 @@ VidTimelineX/
 └── README.md          # 项目根目录文档
 ```
 
-### 核心功能
+## 核心功能
 
 1. **B站收藏夹自动爬取** - 自动爬取B站收藏夹视频，支持多个收藏夹并行管理
 2. **时间线数据生成** - 按发布日期排序，生成符合前端格式的 videos.json
@@ -38,31 +36,23 @@ VidTimelineX/
 7. **弹幕互动效果** - 水平弹幕和侧边弹幕，支持主题联动
 8. **搜索与筛选** - 实时搜索、自动补全、搜索历史、分类筛选
 9. **完整的测试覆盖** - TDD开发方法，单元测试、集成测试、E2E测试
-10. **代码质量保障** - ESLint、Prettier、Husky Git钩子
 
 ## 技术栈
 
-### 后端技术栈
-
+### 后端
 - **Python 3.8+** - 后端开发语言
-- **Playwright** (>=1.47.0,<1.50.0) - 动态内容爬取和浏览器自动化
-- **Requests** (>=2.28.0) - HTTP请求处理
-- **BeautifulSoup4** (>=4.11.0) - HTML解析
-- **Pillow** (>=10.0.0) - 图片处理
-- **Pytest** (>=7.0.0) - 单元测试框架
-- **pytest-cov** (>=4.0.0) - 测试覆盖率统计
+- **Playwright** - 动态内容爬取和浏览器自动化
+- **Requests** - HTTP请求处理
+- **BeautifulSoup4** - HTML解析
+- **Pytest** - 单元测试框架
 
-### 前端技术栈
-
-- **React 19.2.0** - 前端UI框架
-- **TypeScript 5.9.3** - 类型安全
-- **Vite 7.2.4** - 构建工具和开发服务器
-- **React Router DOM 7.10.0** - 客户端路由
-- **Tailwind CSS 4.1.17** - CSS框架
+### 前端
+- **React 19** - 前端UI框架
+- **TypeScript 5** - 类型安全
+- **Vite 7** - 构建工具和开发服务器
+- **Tailwind CSS 4** - CSS框架
 - **Radix UI** - 无样式组件库
-- **@tanstack/react-query 5.83.0** - 服务器状态管理
-- **Jest 30.2.0** - 单元测试框架
-- **Playwright 1.58.0** - E2E测试框架
+- **Jest** - 单元测试框架
 
 ## 快速开始
 
@@ -83,8 +73,6 @@ cd VidTimelineX
 
 #### 2. 后端设置
 
-详细的后端设置说明请参考 [backend/README.md](./backend/README.md)。
-
 ```bash
 cd backend
 python -m venv .venv
@@ -93,14 +81,16 @@ pip install -r requirements.txt
 playwright install
 ```
 
-#### 3. 前端设置
+详细说明请参考 [backend/README.md](./backend/README.md)。
 
-详细的前端设置说明请参考 [frontend/README.md](./frontend/README.md)。
+#### 3. 前端设置
 
 ```bash
 cd frontend
 npm install
 ```
+
+详细说明请参考 [frontend/README.md](./frontend/README.md)。
 
 #### 4. 运行项目
 
@@ -130,7 +120,7 @@ pytest                    # 运行测试
 pytest --cov=src         # 查看测试覆盖率
 ```
 
-详细的后端开发说明请参考 [backend/README.md](./backend/README.md)。
+详细说明请参考 [backend/README.md](./backend/README.md)。
 
 ### 前端开发
 
@@ -142,26 +132,7 @@ npm run test:coverage    # 生成测试覆盖率报告
 npm run lint             # 代码检查
 ```
 
-详细的前端开发说明请参考 [frontend/README.md](./frontend/README.md)。
-
-## 生产部署
-
-### 后端部署
-
-```bash
-cd backend
-python main.py
-```
-
-### 前端部署
-
-```bash
-cd frontend
-npm run build
-npm run preview
-```
-
-详细的部署说明请参考前后端各自的 README 文档。
+详细说明请参考 [frontend/README.md](./frontend/README.md)。
 
 ## 常见问题
 
@@ -177,19 +148,7 @@ npm run preview
 - 删除node_modules和package-lock.json后重新安装
 - 使用npm镜像源：`npm config set registry https://registry.npmmirror.com`
 
-### 3. 收藏夹爬取失败
-
-- 检查收藏夹URL是否正确
-- 确保收藏夹为公开可见
-- 检查网络连接
-
-### 4. 前端页面无法访问
-
-- 确认开发服务器已启动
-- 检查端口是否被占用
-- 清除浏览器缓存
-
-详细的故障排除说明请参考 [backend/README.md](./backend/README.md) 和 [frontend/README.md](./frontend/README.md)。
+更多问题请参考 [backend/README.md](./backend/README.md) 和 [frontend/README.md](./frontend/README.md)。
 
 ## 许可证
 

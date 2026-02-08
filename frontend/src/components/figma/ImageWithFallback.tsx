@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { getJsdelivrImageUrl } from "@/utils/cdn";
+import { getCdnImageUrl as getGeoCdnImageUrl } from "@/utils/cdn";
 
 const ERROR_IMG_SRC =
   "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODgiIGhlaWdodD0iODgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3Ryb2tlPSIjMDAwIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBvcGFjaXR5PSIuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIzLjciPjxyZWN0IHg9IjE2IiB5PSIxNiIgd2lkdGg9IjU2IiBoZWlnaHQ9IjU2IiByeD0iNiIvPjxwYXRoIGQ9Im0xNiA1OCAxNi0xOCAzMiAzMiIvPjxjaXJjbGUgY3g9IjUzIiBjeT0iMzUiIHI9IjciLz48L3N2Zz4KCg==";
@@ -50,8 +50,9 @@ function getLocalImageUrl(filename: string): string {
 }
 
 /**
- * 获取 jsDelivr CDN 图片 URL
- * 当启用 CDN 时，优先使用 jsDelivr 加速
+ * 获取 CDN 图片 URL
+ * 根据用户地理位置自动选择最佳 CDN（中国大陆使用 JSDMirror，海外使用 jsDelivr）
+ * 当禁用 CDN 时，返回本地图片 URL
  */
 function getCdnImageUrl(filename: string): string {
   if (!filename) return "";
@@ -59,11 +60,12 @@ function getCdnImageUrl(filename: string): string {
     return filename;
   }
 
-  // 检查是否启用 jsDelivr CDN
-  const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+  // 检查是否启用 CDN
+  const useCdn = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
 
-  if (useJsdelivr) {
-    return getJsdelivrImageUrl(filename);
+  if (useCdn) {
+    // 使用地理感知的 CDN 选择（自动选择 JSDMirror 或 jsDelivr）
+    return getGeoCdnImageUrl(filename);
   }
 
   return getLocalImageUrl(filename);
@@ -88,29 +90,30 @@ function getInitialSrc(src: string, fallbackSrc: string, priorityLoad: boolean):
     return "";
   }
 
-  // 检查是否启用 jsDelivr CDN
-  const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+  // 检查是否启用 CDN
+  const useCdn = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
 
   if (priorityLoad && src) {
-    // 优先级1: jsDelivr CDN（如果启用）
-    if (useJsdelivr && !isExternalUrl(src)) {
-      return getJsdelivrImageUrl(src);
+    // 优先级1: 自动选择最佳 CDN（如果启用）
+    // 根据用户地理位置选择 JSDMirror（中国大陆）或 jsDelivr（海外）
+    if (useCdn && !isExternalUrl(src)) {
+      return getGeoCdnImageUrl(src);
     }
-    // 优先级2: B站CDN（外部URL）
+    // 优先级2: B站CDN（外部URL）- 保留逻辑但默认不使用
     if (isExternalUrl(src)) {
       return src;
     }
-    // 优先级3: fallbackSrc（B站CDN）
+    // 优先级3: fallbackSrc（B站CDN）- 保留逻辑但默认不使用
     if (fallbackSrc && isExternalUrl(fallbackSrc)) {
       return fallbackSrc;
     }
     // 优先级4: 本地图片
     return getLocalImageUrl(src);
   } else {
-    // 非优先加载模式：先尝试本地/jsDelivr，失败后再尝试B站CDN
+    // 非优先加载模式：先尝试自动选择 CDN，失败后再尝试本地
     if (src) {
-      if (useJsdelivr && !isExternalUrl(src)) {
-        return getJsdelivrImageUrl(src);
+      if (useCdn && !isExternalUrl(src)) {
+        return getGeoCdnImageUrl(src);
       }
       return getLocalImageUrl(src);
     } else if (fallbackSrc) {
@@ -153,13 +156,15 @@ export function ImageWithFallback({
     console.debug(`[Image] 跨域加载失败，尝试回退: ${currentSrc}`);
     setCorsStatus({ tried: true, failed: true, message: "跨域被拒绝" });
 
-    // 检查当前是否在使用 jsDelivr CDN
-    const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+    // 检查当前是否在使用 CDN
+    const useCdn = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+    const isCdnSrc =
+      currentSrc.includes("cdn.jsdelivr.net") || currentSrc.includes("cdn.jsdmirror.com");
 
-    if (useJsdelivr && src && currentSrc.includes("cdn.jsdelivr.net")) {
-      // jsDelivr 失败，优先回退到 B站CDN（如果有）
+    if (useCdn && src && isCdnSrc) {
+      // CDN 失败，优先回退到 B站CDN（如果有）- 保留逻辑但默认不使用
       if (fallbackSrc && isExternalUrl(fallbackSrc) && !fallbackUsed) {
-        console.debug(`[Image] jsDelivr CDN 失败，回退到 B站CDN: ${fallbackSrc}`);
+        console.debug(`[Image] CDN 失败，回退到 B站CDN: ${fallbackSrc}`);
         setCurrentSrc(fallbackSrc);
         setFallbackUsed(true);
         setHasError(false);
@@ -167,7 +172,7 @@ export function ImageWithFallback({
       } else {
         // 没有 B站CDN，回退到本地图片
         const localUrl = getLocalImageUrl(src);
-        console.debug(`[Image] jsDelivr CDN 失败，回退到本地图片: ${localUrl}`);
+        console.debug(`[Image] CDN 失败，回退到本地图片: ${localUrl}`);
         setCurrentSrc(localUrl);
         setFallbackUsed(true);
         setHasError(false);
@@ -209,22 +214,23 @@ export function ImageWithFallback({
   const handleError = useCallback(() => {
     const isExternalCurrentSrc = isExternalUrl(currentSrc);
     const isBilibiliCdnSrc = isExternalCurrentSrc && isBilibiliCdn(currentSrc);
-    const isJsdelivrSrc = currentSrc.includes("cdn.jsdelivr.net");
+    const isCdnSrc =
+      currentSrc.includes("cdn.jsdelivr.net") || currentSrc.includes("cdn.jsdmirror.com");
 
-    // B站CDN 或 jsDelivr CDN 跨域失败
-    if (isBilibiliCdnSrc || isJsdelivrSrc) {
+    // B站CDN 或 CDN 跨域失败
+    if (isBilibiliCdnSrc || isCdnSrc) {
       handleCorsError();
       return;
     }
 
     // 检查是否在使用 CDN
-    const useJsdelivr = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
+    const useCdn = typeof window !== "undefined" && window.__USE_JSDELIVR_CDN__;
 
     if (!fallbackUsed && src && !isExternalUrl(src)) {
-      // 如果当前是本地图片失败，尝试 CDN
-      if (useJsdelivr && !currentSrc.includes("cdn.jsdelivr.net")) {
-        const cdnUrl = getJsdelivrImageUrl(src);
-        console.debug(`[Image] 本地图片失败，尝试 jsDelivr CDN: ${cdnUrl}`);
+      // 如果当前是本地图片失败，尝试 CDN（自动选择最佳 CDN）
+      if (useCdn && !isCdnSrc) {
+        const cdnUrl = getGeoCdnImageUrl(src);
+        console.debug(`[Image] 本地图片失败，尝试 CDN: ${cdnUrl}`);
         setCurrentSrc(cdnUrl);
         setFallbackUsed(true);
         setHasError(false);
