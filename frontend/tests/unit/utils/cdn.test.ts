@@ -668,6 +668,110 @@ describe("CDN 工具模块测试", () => {
       expect(url).toContain(filename);
     });
   });
+
+  describe("CDN 自动选择逻辑测试", () => {
+    beforeEach(() => {
+      resetLocationCache();
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      resetLocationCache();
+    });
+
+    test("中国大陆用户应该使用 JSDMirror", () => {
+      // 模拟中国大陆时区
+      jest.spyOn(Intl, "DateTimeFormat").mockImplementation(
+        () =>
+          ({
+            resolvedOptions: () => ({ timeZone: "Asia/Shanghai" }),
+          }) as Intl.DateTimeFormat
+      );
+
+      const url = getCdnImageUrl("test.webp");
+
+      // 应该使用 JSDMirror
+      expect(url).toContain("cdn.jsdmirror.com");
+      expect(url).not.toContain("cdn.jsdelivr.net");
+    });
+
+    test("海外用户应该使用 jsDelivr", () => {
+      // 模拟美国时区
+      jest.spyOn(Intl, "DateTimeFormat").mockImplementation(
+        () =>
+          ({
+            resolvedOptions: () => ({ timeZone: "America/New_York" }),
+          }) as Intl.DateTimeFormat
+      );
+
+      Object.defineProperty(window, "navigator", {
+        value: { language: "en-us" },
+        writable: true,
+        configurable: true,
+      });
+
+      const url = getCdnImageUrl("test.webp");
+
+      // 应该使用 jsDelivr
+      expect(url).toContain("cdn.jsdelivr.net");
+      expect(url).not.toContain("cdn.jsdmirror.com");
+    });
+  });
+
+  describe("B站 CDN 禁用测试", () => {
+    test("getOptimizedImageUrl 不应该返回 B站 CDN URL", () => {
+      // 模拟启用 CDN
+      globalThis.window.__USE_JSDELIVR_CDN__ = true;
+
+      const url = getOptimizedImageUrl("test.webp");
+
+      // 不应该包含 B站 CDN 域名
+      expect(url).not.toContain("hdslb.com");
+      expect(url).not.toContain("bilibili.com");
+      // 应该使用 jsDelivr 或 JSDMirror
+      expect(url).toMatch(/^https:\/\/cdn\.(jsdelivr\.net|jsdmirror\.com)\/gh\//);
+    });
+
+    test("禁用 CDN 时应该返回本地 URL，而不是 B站 CDN", () => {
+      globalThis.window.__USE_JSDELIVR_CDN__ = false;
+
+      const url = getOptimizedImageUrl("test.webp");
+
+      // 应该返回本地 URL
+      expect(url).toBe("/thumbs/test.webp");
+      // 不应该包含任何 CDN 域名
+      expect(url).not.toContain("hdslb.com");
+      expect(url).not.toContain("bilibili.com");
+      expect(url).not.toContain("jsdelivr");
+      expect(url).not.toContain("jsdmirror");
+    });
+  });
+
+  describe("本地图片加载测试", () => {
+    test("本地图片 URL 格式正确", () => {
+      globalThis.window.__USE_JSDELIVR_CDN__ = false;
+
+      const url = getOptimizedImageUrl("BV1BofDBpESU.webp");
+
+      expect(url).toBe("/thumbs/BV1BofDBpESU.webp");
+    });
+
+    test("自定义基础 URL 的本地图片路径正确", () => {
+      globalThis.window.__USE_JSDELIVR_CDN__ = false;
+
+      const url = getOptimizedImageUrl("test.webp", "/app/");
+
+      expect(url).toBe("/app/thumbs/test.webp");
+    });
+
+    test("自定义基础 URL 不带斜杠时正确处理", () => {
+      globalThis.window.__USE_JSDELIVR_CDN__ = false;
+
+      const url = getOptimizedImageUrl("test.webp", "/app");
+
+      expect(url).toBe("/app/thumbs/test.webp");
+    });
+  });
 });
 
 /**
