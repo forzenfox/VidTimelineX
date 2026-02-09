@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 const HomePage = React.lazy(() => import("./App").then(module => ({ default: module.HomePage })));
 const LvjiangPage = React.lazy(() => import("../features/lvjiang/LvjiangPage"));
 const TiantongPage = React.lazy(() => import("../features/tiantong/TiantongPage"));
+const YuxiaocPage = React.lazy(() => import("../features/yuxiaoc/YuxiaocPage"));
 
 // 加载中组件
 const Loading = () => (
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/lvjiang" element={<LvjiangPage />} />
         <Route path="/tiantong" element={<TiantongPage />} />
+        <Route path="/yuxiaoc" element={<YuxiaocPage />} />
         <Route path="*" element={<HomePage />} />
       </Routes>
     </React.Suspense>
