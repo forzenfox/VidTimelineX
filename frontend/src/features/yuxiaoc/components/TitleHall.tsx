@@ -1,46 +1,70 @@
-import React from "react";
+import React, { useMemo } from "react";
 import type { Theme } from "../data/types";
-import { titles } from "../data/videos";
-import { Crown, Fish, Swords, Shield, TowerControl, Skull, Sparkles, Target } from "lucide-react";
+import titlesData from "../data/titles.json";
+import {
+  Crown,
+  Fish,
+  Swords,
+  Shield,
+  TowerControl,
+  Skull,
+  Sparkles,
+  Target,
+  Zap,
+  Flame,
+  User,
+  Bed,
+  Heart,
+  Utensils,
+} from "lucide-react";
 
 interface TitleHallProps {
   theme: Theme;
 }
 
-const iconMap: Record<string, React.ReactNode> = {
-  C皇: <Crown className="w-6 h-6" />,
-  鳃皇: <Fish className="w-6 h-6" />,
-  鱼酱: <Fish className="w-6 h-6" />,
-  反驴复鱼: <Swords className="w-6 h-6" />,
-  "solo king": <Target className="w-6 h-6" />,
-  鱼人: <Fish className="w-6 h-6" />,
-  峡谷第一混: <Shield className="w-6 h-6" />,
-  峡谷鬼见愁: <Skull className="w-6 h-6" />,
-  峡谷养爹人: <Sparkles className="w-6 h-6" />,
-  塔下战神: <TowerControl className="w-6 h-6" />,
-  塔之子: <TowerControl className="w-6 h-6" />,
+// 图标映射表
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  crown: Crown,
+  fish: Fish,
+  swords: Swords,
+  shield: Shield,
+  tower: TowerControl,
+  skull: Skull,
+  sparkles: Sparkles,
+  target: Target,
+  zap: Zap,
+  flame: Flame,
+  user: User,
+  bed: Bed,
+  heart: Heart,
+  utensils: Utensils,
 };
 
+/**
+ * 称号殿堂组件
+ * 从 JSON 配置文件加载称号数据，根据主题显示不同的称号
+ */
 export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
   const isBlood = theme === "blood";
 
-  // 将称号分组，第一组显示重点称号
-  const featuredTitles = titles.slice(0, 4);
-  const regularTitles = titles.slice(4);
+  // 从 JSON 获取当前主题的称号数据
+  const titles = useMemo(() => {
+    return titlesData[theme] || { featured: [], regular: [] };
+  }, [theme]);
 
   return (
     <section
       id="titles"
-      className="py-20 px-4"
+      className="py-16 px-4"
       style={{
         background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
       }}
     >
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <h2
-            className="text-4xl md:text-5xl font-black mb-4"
+            className="text-3xl md:text-4xl font-black mb-3"
             style={{
               fontFamily: "Russo One, sans-serif",
               color: isBlood ? "#E11D48" : "#F59E0B",
@@ -51,94 +75,100 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
           >
             称号殿堂
           </h2>
-          <p className="text-gray-400 text-lg">C皇的荣耀称号集合</p>
+          <p className="text-gray-400">{isBlood ? "血怒荣耀，战斗称号" : "C皇的荣耀称号集合"}</p>
         </div>
 
         {/* Featured Titles - Large Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {featuredTitles.map(title => (
-            <div
-              key={title.id}
-              className="group relative p-6 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
-              style={{
-                background: `linear-gradient(135deg, ${title.color}20 0%, rgba(30, 27, 75, 0.8) 100%)`,
-                border: `2px solid ${title.color}50`,
-              }}
-            >
-              {/* Glow Effect */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+          {titles.featured.map(title => {
+            const IconComponent = iconMap[title.icon] || Crown;
+            return (
               <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                key={title.id}
+                className="group relative p-5 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
                 style={{
-                  background: `radial-gradient(circle at center, ${title.color}30 0%, transparent 70%)`,
+                  background: `linear-gradient(135deg, ${title.color}20 0%, rgba(30, 27, 75, 0.8) 100%)`,
+                  border: `2px solid ${title.color}50`,
                 }}
-              />
-
-              {/* Content */}
-              <div className="relative z-10 text-center">
+              >
+                {/* Glow Effect */}
                 <div
-                  className="w-14 h-14 mx-auto mb-4 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   style={{
-                    background: `${title.color}30`,
-                    color: title.color,
-                    boxShadow: `0 0 20px ${title.color}40`,
+                    background: `radial-gradient(circle at center, ${title.color}30 0%, transparent 70%)`,
                   }}
-                >
-                  {iconMap[title.name] || <Crown className="w-6 h-6" />}
-                </div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: title.color }}>
-                  {title.name}
-                </h3>
-                <p className="text-sm text-gray-400">{title.description}</p>
-              </div>
+                />
 
-              {/* Border Glow on Hover */}
-              <div
-                className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                style={{
-                  boxShadow: `inset 0 0 30px ${title.color}30, 0 0 30px ${title.color}40`,
-                }}
-              />
-            </div>
-          ))}
+                {/* Content */}
+                <div className="relative z-10 text-center">
+                  <div
+                    className="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                    style={{
+                      background: `${title.color}30`,
+                      color: title.color,
+                      boxShadow: `0 0 15px ${title.color}40`,
+                    }}
+                  >
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-1" style={{ color: title.color }}>
+                    {title.name}
+                  </h3>
+                  <p className="text-xs text-gray-400">{title.description}</p>
+                </div>
+
+                {/* Border Glow on Hover */}
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    boxShadow: `inset 0 0 20px ${title.color}30, 0 0 20px ${title.color}40`,
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
 
         {/* Regular Titles - Smaller Cards */}
-        <div className="grid grid-cols-3 md:grid-cols-7 gap-3">
-          {regularTitles.map(title => (
-            <div
-              key={title.id}
-              className="group relative p-4 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer"
-              style={{
-                background: "rgba(30, 27, 75, 0.5)",
-                border: `1px solid ${title.color}40`,
-              }}
-            >
-              {/* Content */}
-              <div className="relative z-10 text-center">
-                <div
-                  className="w-10 h-10 mx-auto mb-2 rounded-lg flex items-center justify-center"
-                  style={{
-                    background: `${title.color}20`,
-                    color: title.color,
-                  }}
-                >
-                  {iconMap[title.name] || <Crown className="w-5 h-5" />}
-                </div>
-                <h3 className="text-sm font-bold mb-1" style={{ color: title.color }}>
-                  {title.name}
-                </h3>
-                <p className="text-xs text-gray-500">{title.description}</p>
-              </div>
-
-              {/* Hover Glow */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
+          {titles.regular.map(title => {
+            const IconComponent = iconMap[title.icon] || Crown;
+            return (
               <div
-                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                key={title.id}
+                className="group relative p-3 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{
-                  boxShadow: `0 0 20px ${title.color}30`,
+                  background: "rgba(30, 27, 75, 0.5)",
+                  border: `1px solid ${title.color}40`,
                 }}
-              />
-            </div>
-          ))}
+              >
+                {/* Content */}
+                <div className="relative z-10 text-center">
+                  <div
+                    className="w-8 h-8 mx-auto mb-2 rounded-lg flex items-center justify-center"
+                    style={{
+                      background: `${title.color}20`,
+                      color: title.color,
+                    }}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-xs font-bold mb-0.5" style={{ color: title.color }}>
+                    {title.name}
+                  </h3>
+                  <p className="text-[10px] text-gray-500">{title.description}</p>
+                </div>
+
+                {/* Hover Glow */}
+                <div
+                  className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    boxShadow: `0 0 15px ${title.color}30`,
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

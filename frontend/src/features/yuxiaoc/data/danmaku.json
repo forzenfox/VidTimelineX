@@ -1,0 +1,66 @@
+{
+  "users": [
+    { "id": "1", "name": "鱼吧小将", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
+    { "id": "2", "name": "C皇铁粉", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=2" },
+    { "id": "3", "name": "混学博士", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=3" },
+    { "id": "4", "name": "血怒战士", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=4" },
+    { "id": "5", "name": "下饭观众", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=5" },
+    { "id": "6", "name": "塔下保安", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=6" },
+    { "id": "7", "name": "诺手玩家", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=7" },
+    { "id": "8", "name": "峡谷混子", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=8" },
+    { "id": "9", "name": "躺赢专家", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=9" },
+    { "id": "10", "name": "破防小子", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=10" }
+  ],
+  "blood": {
+    "horizontal": [
+      { "text": "C皇血怒时刻！", "color": "#E11D48", "speed": "normal" },
+      { "text": "无情铁手！", "color": "#DC2626", "speed": "fast" },
+      { "text": "致残打击！", "color": "#E11D48", "speed": "normal" },
+      { "text": "这波血C！", "color": "#F59E0B", "speed": "fast" },
+      { "text": "天神下凡！", "color": "#EAB308", "speed": "slow" },
+      { "text": "五杀！", "color": "#E11D48", "speed": "fast" },
+      { "text": "A就完事了！", "color": "#DC2626", "speed": "normal" },
+      { "text": "血怒！", "color": "#E11D48", "speed": "fast" },
+      { "text": "C！", "color": "#F59E0B", "speed": "fast" },
+      { "text": "诺克萨斯即将崛起！", "color": "#7C3AED", "speed": "slow" }
+    ],
+    "tower": [
+      { "text": "C皇！", "color": "#E11D48", "size": "large" },
+      { "text": "血怒！", "color": "#DC2626", "size": "large" },
+      { "text": "无情铁手！", "color": "#E11D48", "size": "large" },
+      { "text": "致残打击！", "color": "#F59E0B", "size": "medium" },
+      { "text": "这波血C！", "color": "#E11D48", "size": "large" },
+      { "text": "天神下凡！", "color": "#EAB308", "size": "large" },
+      { "text": "五杀！", "color": "#DC2626", "size": "large" },
+      { "text": "A就完事了！", "color": "#E11D48", "size": "medium" },
+      { "text": "大杀四方！", "color": "#DC2626", "size": "medium" },
+      { "text": "断头台！", "color": "#E11D48", "size": "large" }
+    ]
+  },
+  "mix": {
+    "horizontal": [
+      { "text": "混与躺轮回不止", "color": "#F59E0B", "speed": "normal" },
+      { "text": "这把混", "color": "#3B82F6", "speed": "fast" },
+      { "text": "下把躺", "color": "#10B981", "speed": "fast" },
+      { "text": "饱了饱了", "color": "#F59E0B", "speed": "normal" },
+      { "text": "下饭！", "color": "#EC4899", "speed": "fast" },
+      { "text": "离谱", "color": "#8B5CF6", "speed": "normal" },
+      { "text": "这波啊，这波是下饭操作", "color": "#F59E0B", "speed": "slow" },
+      { "text": "混是一种态度", "color": "#3B82F6", "speed": "normal" },
+      { "text": "躺是一种境界", "color": "#10B981", "speed": "normal" },
+      { "text": "吃饭要紧", "color": "#F59E0B", "speed": "fast" }
+    ],
+    "tower": [
+      { "text": "混与躺轮回不止", "color": "#F59E0B", "size": "large" },
+      { "text": "这把混", "color": "#3B82F6", "size": "medium" },
+      { "text": "下把躺", "color": "#10B981", "size": "medium" },
+      { "text": "饱了", "color": "#F59E0B", "size": "large" },
+      { "text": "下饭！", "color": "#EC4899", "size": "large" },
+      { "text": "离谱", "color": "#8B5CF6", "size": "medium" },
+      { "text": "混", "color": "#3B82F6", "size": "large" },
+      { "text": "躺", "color": "#10B981", "size": "large" },
+      { "text": "C皇！", "color": "#F59E0B", "size": "large" },
+      { "text": "鱼酱！", "color": "#3B82F6", "size": "medium" }
+    ]
+  }
+}

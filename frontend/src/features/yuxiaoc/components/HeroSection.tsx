@@ -1,22 +1,53 @@
 import React from "react";
 import type { Theme } from "../data/types";
-import { Crown, Gamepad2, ExternalLink } from "lucide-react";
+import { Crown, Gamepad2, ExternalLink, Sword, Shield } from "lucide-react";
 
 interface HeroSectionProps {
   theme: Theme;
 }
 
+/**
+ * Hero区域组件
+ * 根据主题显示不同的背景、标题和描述
+ */
 export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
   const isBlood = theme === "blood";
+
+  // 主题特定的内容配置
+  const themeContent = {
+    blood: {
+      subtitle: "血怒之下，众生平等；无情铁手，致残打击！",
+      description: "诺克萨斯即将崛起，大杀四方，断头台！",
+      rageLabel: "当前血怒值",
+      ragePercentage: "100%",
+      primaryButton: "进入直播间",
+      secondaryButton: "观看血怒时刻",
+      gradient: "linear-gradient(135deg, #0F0F23 0%, #1E1B4B 50%, #0F0F23 100%)",
+      orbColors: ["#E11D48", "#DC2626"],
+      icon: Sword,
+    },
+    mix: {
+      subtitle: "混与躺轮回不止，这把混，下把躺",
+      description: "峡谷路远，混躺轮回。吃饭要紧，下饭经典。",
+      rageLabel: "当前混躺值",
+      ragePercentage: "50%",
+      primaryButton: "进入直播间",
+      secondaryButton: "浏览食堂",
+      gradient: "linear-gradient(135deg, #1E1B4B 0%, #0F0F23 50%, #1E1B4B 100%)",
+      orbColors: ["#F59E0B", "#3B82F6"],
+      icon: Shield,
+    },
+  };
+
+  const content = themeContent[theme];
+  const IconComponent = content.icon;
 
   return (
     <section
       id="hero"
       className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden"
       style={{
-        background: isBlood
-          ? "linear-gradient(135deg, #0F0F23 0%, #1E1B4B 50%, #0F0F23 100%)"
-          : "linear-gradient(135deg, #1E1B4B 0%, #0F0F23 50%, #1E1B4B 100%)",
+        background: content.gradient,
       }}
     >
       {/* Background Effects */}
@@ -25,17 +56,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
         <div
           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl animate-pulse-glow"
           style={{
-            background: isBlood
-              ? "radial-gradient(circle, #E11D48 0%, transparent 70%)"
-              : "radial-gradient(circle, #F59E0B 0%, transparent 70%)",
+            background: `radial-gradient(circle, ${content.orbColors[0]} 0%, transparent 70%)`,
           }}
         />
         <div
           className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl animate-pulse-glow"
           style={{
-            background: isBlood
-              ? "radial-gradient(circle, #DC2626 0%, transparent 70%)"
-              : "radial-gradient(circle, #3B82F6 0%, transparent 70%)",
+            background: `radial-gradient(circle, ${content.orbColors[1]} 0%, transparent 70%)`,
             animationDelay: "1s",
           }}
         />
@@ -51,6 +78,44 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             backgroundSize: "60px 60px",
           }}
         />
+
+        {/* Theme-specific decorative elements */}
+        {isBlood && (
+          <>
+            {/* Blood Rage decorative lines */}
+            <div
+              className="absolute top-1/3 right-10 w-32 h-1 rounded-full opacity-30"
+              style={{
+                background: "linear-gradient(90deg, transparent, #E11D48, transparent)",
+                transform: "rotate(-45deg)",
+              }}
+            />
+            <div
+              className="absolute bottom-1/3 left-10 w-24 h-1 rounded-full opacity-30"
+              style={{
+                background: "linear-gradient(90deg, transparent, #DC2626, transparent)",
+                transform: "rotate(45deg)",
+              }}
+            />
+          </>
+        )}
+        {!isBlood && (
+          <>
+            {/* Mix/Lie decorative circles */}
+            <div
+              className="absolute top-1/4 right-1/4 w-4 h-4 rounded-full opacity-40"
+              style={{ background: "#F59E0B" }}
+            />
+            <div
+              className="absolute bottom-1/3 left-1/3 w-3 h-3 rounded-full opacity-40"
+              style={{ background: "#3B82F6" }}
+            />
+            <div
+              className="absolute top-2/3 right-1/3 w-2 h-2 rounded-full opacity-40"
+              style={{ background: "#10B981" }}
+            />
+          </>
+        )}
       </div>
 
       {/* Content */}
@@ -102,6 +167,22 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
                 />
               </div>
             </div>
+
+            {/* Theme indicator badge */}
+            <div
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold"
+              style={{
+                background: isBlood
+                  ? "linear-gradient(135deg, #E11D48, #DC2626)"
+                  : "linear-gradient(135deg, #F59E0B, #3B82F6)",
+                color: "white",
+                boxShadow: isBlood
+                  ? "0 2px 10px rgba(225, 29, 72, 0.5)"
+                  : "0 2px 10px rgba(245, 158, 11, 0.5)",
+              }}
+            >
+              {isBlood ? "血怒模式" : "混躺模式"}
+            </div>
           </div>
         </div>
 
@@ -132,23 +213,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             color: "#E2E8F0",
           }}
         >
-          血怒之下，众生平等；混躺之间，百味俱全
+          {content.subtitle}
         </p>
 
         {/* Secondary Subtitle */}
-        <p className="text-base md:text-lg mb-8 text-gray-400">
-          峡谷路远，混躺轮回。诺手无情，食堂开胃。
-        </p>
+        <p className="text-base md:text-lg mb-8 text-gray-400">{content.description}</p>
 
-        {/* Blood Rage Indicator */}
+        {/* Rage/Mix Indicator */}
         <div className="w-full max-w-md mx-auto mb-8">
           <div className="flex justify-between mb-2">
             <span className="text-white font-bold flex items-center gap-2">
-              <Gamepad2 className="w-4 h-4" />
-              当前血怒值
+              <IconComponent className="w-4 h-4" />
+              {content.rageLabel}
             </span>
             <span className="font-bold" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}>
-              {isBlood ? "100%" : "50%"}
+              {content.ragePercentage}
             </span>
           </div>
           <div
@@ -158,7 +237,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             <div
               className="h-full rounded-full transition-all duration-1000"
               style={{
-                width: isBlood ? "100%" : "50%",
+                width: content.ragePercentage,
                 background: isBlood
                   ? "linear-gradient(90deg, #E11D48 0%, #F59E0B 100%)"
                   : "linear-gradient(90deg, #F59E0B 0%, #3B82F6 100%)",
@@ -187,7 +266,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             }}
           >
             <Gamepad2 className="w-5 h-5" />
-            <span>进入直播间</span>
+            <span>{content.primaryButton}</span>
           </a>
 
           <button
@@ -203,7 +282,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             }}
           >
             <ExternalLink className="w-5 h-5" />
-            <span>浏览视频</span>
+            <span>{content.secondaryButton}</span>
           </button>
         </div>
       </div>

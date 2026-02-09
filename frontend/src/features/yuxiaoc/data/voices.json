@@ -1,0 +1,44 @@
+{
+  "blood": {
+    "featured": {
+      "text": "血怒之下，众生平等；无情铁手，致残打击！",
+      "author": "C皇 · 血怒宣言",
+      "category": "blood"
+    },
+    "list": [
+      { "id": "1", "text": "无情铁手！", "category": "skill" },
+      { "id": "2", "text": "致残打击！", "category": "skill" },
+      { "id": "3", "text": "A就完事了！", "category": "classic" },
+      { "id": "4", "text": "血怒！", "category": "skill" },
+      { "id": "5", "text": "C！", "category": "classic" },
+      { "id": "6", "text": "这波血C！", "category": "skill" },
+      { "id": "7", "text": "诺克萨斯即将崛起！", "category": "skill" },
+      { "id": "8", "text": "大杀四方！", "category": "skill" },
+      { "id": "9", "text": "断头台！", "category": "skill" },
+      { "id": "10", "text": "五杀！", "category": "skill" },
+      { "id": "11", "text": "天神下凡！", "category": "skill" },
+      { "id": "12", "text": "这波操作你打几分？", "category": "classic" }
+    ]
+  },
+  "mix": {
+    "featured": {
+      "text": "混与躺轮回不止，这把混，下把躺",
+      "author": "C皇 · 峡谷哲学",
+      "category": "philosophy"
+    },
+    "list": [
+      { "id": "1", "text": "混与躺轮回不止，这把混，下把躺", "category": "philosophy" },
+      { "id": "2", "text": "这把混", "category": "philosophy" },
+      { "id": "3", "text": "下把躺", "category": "philosophy" },
+      { "id": "4", "text": "这把躺", "category": "philosophy" },
+      { "id": "5", "text": "下把混", "category": "philosophy" },
+      { "id": "6", "text": "混是一种态度", "category": "philosophy" },
+      { "id": "7", "text": "躺是一种境界", "category": "philosophy" },
+      { "id": "8", "text": "我混我骄傲", "category": "philosophy" },
+      { "id": "9", "text": "吃饭要紧", "category": "classic" },
+      { "id": "10", "text": "饱了饱了", "category": "classic" },
+      { "id": "11", "text": "这波啊，这波是下饭操作", "category": "classic" },
+      { "id": "12", "text": "离谱", "category": "classic" }
+    ]
+  }
+}

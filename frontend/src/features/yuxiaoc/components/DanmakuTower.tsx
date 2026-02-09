@@ -1,154 +1,235 @@
-import React, { useEffect, useState } from "react";
-import type { Theme, Danmaku } from "../data/types";
-import { danmakuList } from "../data/videos";
-import { MessageSquare } from "lucide-react";
+import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from "react";
+import type { Theme } from "../data/types";
+import danmakuData from "../data/danmaku.json";
+import { MessageSquare, Users } from "lucide-react";
 
 interface DanmakuTowerProps {
   theme: Theme;
 }
 
+interface DanmakuMessage {
+  id: string;
+  text: string;
+  color: string;
+  size: "small" | "medium" | "large";
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  timestamp: string;
+}
+
+/**
+ * 弹幕天梯组件 - 右侧固定侧边栏样式
+ * 类似 lvjiang/SideDanmaku，固定在页面右侧
+ */
 export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
-  const [danmaku, setDanmaku] = useState<Danmaku[]>(() => danmakuList.slice(0, 8));
+  const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>([]);
+  const contentRef = useRef<HTMLDivElement>(null);
   const isBlood = theme === "blood";
 
+  // 获取用户列表
+  const users = useMemo(() => danmakuData.users, []);
+
+  // 获取当前主题的弹幕数据
+  const danmakuPool = useMemo(() => {
+    return danmakuData[theme]?.tower || [];
+  }, [theme]);
+
+  // 初始化弹幕消息
+  const initialMessages = useMemo(() => {
+    const now = new Date();
+    return Array.from({ length: 12 }, (_, i) => {
+      const danmakuItem = danmakuPool[i % danmakuPool.length];
+      const user = users[i % users.length];
+      return {
+        id: `initial-${i}`,
+        text: danmakuItem?.text || "弹幕",
+        color: danmakuItem?.color || (isBlood ? "#E11D48" : "#F59E0B"),
+        size: (danmakuItem?.size as "small" | "medium" | "large") || "medium",
+        userId: user?.id || "user1",
+        userName: user?.name || "用户",
+        userAvatar: user?.avatar || "",
+        timestamp: new Date(now.getTime() - (12 - i) * 2000).toLocaleTimeString("zh-CN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      };
+    });
+  }, [danmakuPool, users, isBlood]);
+
   useEffect(() => {
-    // Add new danmaku periodically
+    setDisplayMessages(initialMessages);
+  }, [initialMessages]);
+
+  // 智能滚动到最新消息
+  useLayoutEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [displayMessages]);
+
+  // 定期添加新弹幕
+  useEffect(() => {
     const interval = setInterval(() => {
-      const randomDanmaku = danmakuList[Math.floor(Math.random() * danmakuList.length)];
-      setDanmaku(prev => {
-        const newDanmaku = [...prev, { ...randomDanmaku, id: `${randomDanmaku.id}-${Date.now()}` }];
-        if (newDanmaku.length > 12) {
-          return newDanmaku.slice(newDanmaku.length - 12);
-        }
-        return newDanmaku;
+      const randomDanmaku = danmakuPool[Math.floor(Math.random() * danmakuPool.length)];
+      const randomUser = users[Math.floor(Math.random() * users.length)];
+
+      if (!randomDanmaku || !randomUser) return;
+
+      const newMessage: DanmakuMessage = {
+        id: `msg-${Date.now()}-${Math.random()}`,
+        text: randomDanmaku.text,
+        color: randomDanmaku.color,
+        size: randomDanmaku.size as "small" | "medium" | "large",
+        userId: randomUser.id,
+        userName: randomUser.name,
+        userAvatar: randomUser.avatar,
+        timestamp: new Date().toLocaleTimeString("zh-CN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      };
+
+      setDisplayMessages(prev => {
+        const updated = [...prev, newMessage];
+        return updated.length > 16 ? updated.slice(-16) : updated;
       });
     }, 2500);
 
     return () => clearInterval(interval);
-  }, []);
-
-  const getSizeClass = (size: string) => {
-    switch (size) {
-      case "small":
-        return "text-sm px-3 py-1.5";
-      case "large":
-        return "text-lg px-5 py-2.5";
-      default:
-        return "text-base px-4 py-2";
-    }
-  };
+  }, [danmakuPool, users]);
 
   return (
-    <section
-      className="py-20 px-4 overflow-hidden"
+    <div
+      className="fixed right-0 top-[120px] bottom-0 w-80 flex flex-col z-20"
       style={{
-        background: "linear-gradient(180deg, #1E1B4B 0%, #0F0F23 100%)",
+        background: isBlood
+          ? "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))"
+          : "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
+        borderLeft: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
+        boxShadow: isBlood
+          ? "-5px 0 20px rgba(225, 29, 72, 0.3)"
+          : "-5px 0 20px rgba(245, 158, 11, 0.3)",
       }}
     >
-      <div className="max-w-6xl mx-auto">
-        {/* Section Title */}
-        <div className="text-center mb-12">
-          <h2
-            className="text-4xl md:text-5xl font-black mb-4"
+      {/* Header - 聊天室标题 */}
+      <div
+        className="flex items-center gap-3 px-4 py-3 font-bold"
+        style={{
+          background: isBlood
+            ? "linear-gradient(135deg, rgba(225, 29, 72, 0.3), rgba(220, 38, 38, 0.2))"
+            : "linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(59, 130, 246, 0.2))",
+          borderBottom: isBlood ? "2px solid #E11D48" : "2px solid #F59E0B",
+          color: isBlood ? "#E11D48" : "#F59E0B",
+        }}
+      >
+        <MessageSquare className="w-5 h-5" />
+        <div className="flex-1">
+          <div className="text-sm">弹幕聊天室</div>
+          <div className="text-xs opacity-70 flex items-center gap-1">
+            <Users className="w-3 h-3" />
+            {users.length} 人在线
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <span
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ backgroundColor: isBlood ? "#E11D48" : "#F59E0B" }}
+          />
+          <span className="text-xs">LIVE</span>
+        </div>
+      </div>
+
+      {/* Danmaku Content - 弹幕内容区 */}
+      <div
+        ref={contentRef}
+        className="flex-1 overflow-y-auto p-3 scrollbar-hide"
+        style={{
+          scrollBehavior: "smooth",
+          overflowX: "hidden",
+          msOverflowStyle: "none",
+          scrollbarWidth: "none",
+        }}
+      >
+        <style>{`
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+
+        {displayMessages.map((message, index) => (
+          <div
+            key={message.id}
+            className="mb-3 rounded-lg px-3 py-2 transition-all duration-300"
             style={{
-              fontFamily: "Russo One, sans-serif",
-              color: isBlood ? "#E11D48" : "#F59E0B",
-              textShadow: isBlood
-                ? "0 0 30px rgba(225, 29, 72, 0.5)"
-                : "0 0 30px rgba(245, 158, 11, 0.5)",
+              background:
+                index % 2 === 0
+                  ? isBlood
+                    ? "rgba(225, 29, 72, 0.1)"
+                    : "rgba(245, 158, 11, 0.1)"
+                  : isBlood
+                    ? "rgba(220, 38, 38, 0.08)"
+                    : "rgba(59, 130, 246, 0.08)",
+              border: isBlood
+                ? "1px solid rgba(225, 29, 72, 0.2)"
+                : "1px solid rgba(245, 158, 11, 0.2)",
+              animation: `fadeInUp 0.3s ease-out ${index * 0.05}s both`,
             }}
           >
-            弹幕天梯
-          </h2>
-          <p className="text-gray-400 text-lg">粉丝们的实时吐槽</p>
-        </div>
-
-        {/* Danmaku Display */}
-        <div
-          className="relative rounded-3xl overflow-hidden p-8"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(15, 15, 35, 0.9) 0%, rgba(30, 27, 75, 0.8) 100%)",
-            border: `2px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
-            boxShadow: isBlood
-              ? "0 0 60px rgba(225, 29, 72, 0.15), inset 0 0 60px rgba(225, 29, 72, 0.05)"
-              : "0 0 60px rgba(245, 158, 11, 0.15), inset 0 0 60px rgba(245, 158, 11, 0.05)",
-          }}
-        >
-          {/* Background Grid */}
-          <div
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `
-                linear-gradient(to right, ${isBlood ? "#E11D48" : "#F59E0B"} 1px, transparent 1px),
-                linear-gradient(to bottom, ${isBlood ? "#E11D48" : "#F59E0B"} 1px, transparent 1px)
-              `,
-              backgroundSize: "40px 40px",
-            }}
-          />
-
-          {/* Header */}
-          <div className="relative z-10 flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <MessageSquare
-                className="w-5 h-5"
-                style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}
-              />
-              <span className="text-sm text-gray-400">实时弹幕</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{ backgroundColor: isBlood ? "#E11D48" : "#F59E0B" }}
-              />
-              <span className="text-xs text-gray-500">LIVE</span>
-            </div>
-          </div>
-
-          {/* Danmaku Items */}
-          <div className="relative z-10 space-y-3 min-h-[300px]">
-            {danmaku.map((item, index) => (
+            {/* User Info Row */}
+            <div className="flex items-center gap-2 mb-1.5">
               <div
-                key={item.id}
-                className={`inline-block rounded-full font-bold transition-all duration-500 ${getSizeClass(item.size)}`}
+                className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0 border"
                 style={{
-                  background: `${item.color}15`,
-                  color: item.color,
-                  border: `1px solid ${item.color}40`,
-                  marginLeft: `${(index % 4) * 80 + 20}px`,
-                  boxShadow: `0 0 15px ${item.color}20`,
-                  animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`,
+                  borderColor: message.color,
+                  boxShadow: `0 0 8px ${message.color}40`,
                 }}
               >
-                {item.text}
+                <img
+                  src={message.userAvatar}
+                  alt={message.userName}
+                  className="w-full h-full object-cover"
+                />
               </div>
-            ))}
-          </div>
-
-          {/* Glow Effect */}
-          <div
-            className="absolute inset-0 pointer-events-none rounded-3xl"
-            style={{
-              boxShadow: `inset 0 0 100px ${isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(245, 158, 11, 0.1)"}`,
-            }}
-          />
-        </div>
-
-        {/* Stats */}
-        <div className="mt-8 flex justify-center gap-8">
-          <div className="text-center">
-            <div className="text-2xl font-bold" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}>
-              {danmakuList.length}+
+              <span
+                className="text-xs font-medium truncate flex-1"
+                style={{ color: message.color }}
+              >
+                {message.userName}
+              </span>
+              <span className="text-[10px] text-gray-500">{message.timestamp}</span>
             </div>
-            <div className="text-sm text-gray-500">经典弹幕</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}>
-              实时
+
+            {/* Message Text */}
+            <div
+              className="text-sm leading-relaxed break-words"
+              style={{
+                color: "#E2E8F0",
+                fontSize:
+                  message.size === "large" ? "15px" : message.size === "small" ? "12px" : "13px",
+                fontWeight: message.size === "large" ? 700 : 500,
+              }}
+            >
+              {message.text}
             </div>
-            <div className="text-sm text-gray-500">滚动更新</div>
           </div>
-        </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div
+        className="px-4 py-2 text-center text-xs"
+        style={{
+          background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(245, 158, 11, 0.1)",
+          borderTop: isBlood
+            ? "1px solid rgba(225, 29, 72, 0.3)"
+            : "1px solid rgba(245, 158, 11, 0.3)",
+          color: isBlood ? "rgba(225, 29, 72, 0.8)" : "rgba(245, 158, 11, 0.8)",
+        }}
+      >
+        {isBlood ? "🔥 血怒弹幕区 🔥" : "😴 混躺弹幕区 😴"}
       </div>
 
       <style>{`
@@ -163,7 +244,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           }
         }
       `}</style>
-    </section>
+    </div>
   );
 };
 

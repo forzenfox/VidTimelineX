@@ -1,54 +1,67 @@
-import React from "react";
+import React, { useMemo } from "react";
 import type { Theme } from "../data/types";
-import { cVoices } from "../data/videos";
-import { Volume2, Quote, Sparkles } from "lucide-react";
+import voicesData from "../data/voices.json";
+import { Volume2, Quote, Sparkles, Sword, Brain, MessageCircle } from "lucide-react";
 
 interface CVoiceArchiveProps {
   theme: Theme;
 }
 
+// 分类图标映射
+const categoryIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  skill: Sword,
+  philosophy: Brain,
+  classic: MessageCircle,
+  blood: Sword,
+};
+
+// 分类颜色映射
+const categoryColorMap: Record<string, string> = {
+  skill: "#E11D48",
+  philosophy: "#F59E0B",
+  classic: "#3B82F6",
+  blood: "#DC2626",
+};
+
+// 分类标签映射
+const categoryLabelMap: Record<string, string> = {
+  skill: "技能",
+  philosophy: "哲学",
+  classic: "经典",
+  blood: "血怒",
+};
+
+/**
+ * C言C语典藏馆组件
+ * 从 JSON 配置文件加载语录数据，根据主题显示不同的语录
+ */
 export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
   const isBlood = theme === "blood";
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "skill":
-        return "#E11D48";
-      case "philosophy":
-        return "#F59E0B";
-      case "classic":
-        return "#3B82F6";
-      default:
-        return "#94A3B8";
-    }
-  };
+  // 从 JSON 获取当前主题的语录数据
+  const voices = useMemo(() => {
+    return voicesData[theme] || { featured: { text: "", author: "" }, list: [] };
+  }, [theme]);
 
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case "skill":
-        return "技能";
-      case "philosophy":
-        return "哲学";
-      case "classic":
-        return "经典";
-      default:
-        return "其他";
-    }
-  };
+  // 获取特色语录的分类颜色
+  const featuredCategoryColor = useMemo(() => {
+    const category = voices.featured?.category || "classic";
+    return categoryColorMap[category] || "#94A3B8";
+  }, [voices]);
 
   return (
     <section
       id="voices"
-      className="py-20 px-4"
+      className="py-16 px-4"
       style={{
         background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
       }}
     >
       <div className="max-w-6xl mx-auto">
         {/* Section Title */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10">
           <h2
-            className="text-4xl md:text-5xl font-black mb-4"
+            className="text-3xl md:text-4xl font-black mb-3"
             style={{
               fontFamily: "Russo One, sans-serif",
               color: isBlood ? "#E11D48" : "#F59E0B",
@@ -57,14 +70,14 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 : "0 0 30px rgba(245, 158, 11, 0.5)",
             }}
           >
-            C言C语典藏馆
+            {isBlood ? "血怒宣言" : "C言C语典藏馆"}
           </h2>
-          <p className="text-gray-400 text-lg">经典语录，永流传</p>
+          <p className="text-gray-400">{isBlood ? "战斗语录，激情澎湃" : "经典语录，永流传"}</p>
         </div>
 
         {/* Philosophy Wall - Featured Quote */}
         <div
-          className="mb-12 p-8 md:p-12 rounded-3xl relative overflow-hidden"
+          className="mb-8 p-6 md:p-10 rounded-3xl relative overflow-hidden"
           style={{
             background:
               "linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 15, 35, 0.9) 100%)",
@@ -76,16 +89,16 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
         >
           {/* Decorative Elements */}
           <div className="absolute top-4 left-4 opacity-20">
-            <Quote className="w-16 h-16" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
+            <Quote className="w-12 h-12" style={{ color: featuredCategoryColor }} />
           </div>
           <div className="absolute bottom-4 right-4 opacity-20 rotate-180">
-            <Quote className="w-16 h-16" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
+            <Quote className="w-12 h-12" style={{ color: featuredCategoryColor }} />
           </div>
 
           {/* Content */}
           <div className="relative z-10 text-center">
             <div
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4"
               style={{
                 background: isBlood ? "rgba(225, 29, 72, 0.2)" : "rgba(245, 158, 11, 0.2)",
                 border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
@@ -96,12 +109,12 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 className="text-sm font-bold"
                 style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}
               >
-                哲学长廊
+                {isBlood ? "血怒长廊" : "哲学长廊"}
               </span>
             </div>
 
             <blockquote
-              className="text-2xl md:text-4xl font-bold mb-6"
+              className="text-xl md:text-3xl font-bold mb-4"
               style={{
                 fontFamily: "Chakra Petch, sans-serif",
                 color: "#E2E8F0",
@@ -110,7 +123,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                   : "0 0 20px rgba(245, 158, 11, 0.3)",
               }}
             >
-              "混与躺轮回不止，这把混，下把躺"
+              &ldquo;{voices.featured?.text || "混与躺轮回不止，这把混，下把躺"}&rdquo;
             </blockquote>
 
             <div className="flex items-center justify-center gap-3">
@@ -124,19 +137,22 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               >
                 <span className="text-white font-bold text-sm">C</span>
               </div>
-              <p className="text-gray-400">—— C皇 · 峡谷哲学</p>
+              <p className="text-gray-400">—— {voices.featured?.author || "C皇 · 峡谷哲学"}</p>
             </div>
           </div>
         </div>
 
         {/* Voices Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {cVoices.map(voice => {
-            const color = getCategoryColor(voice.category);
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {voices.list?.map(voice => {
+            const color = categoryColorMap[voice.category] || "#94A3B8";
+            const IconComponent = categoryIconMap[voice.category] || Volume2;
+            const categoryLabel = categoryLabelMap[voice.category] || "其他";
+
             return (
               <div
                 key={voice.id}
-                className="group relative p-5 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
+                className="group relative p-4 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{
                   background: "rgba(30, 27, 75, 0.5)",
                   border: `1px solid ${color}30`,
@@ -144,31 +160,31 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               >
                 {/* Category Badge */}
                 <div
-                  className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-bold"
+                  className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
                   style={{
                     background: `${color}20`,
                     color: color,
                   }}
                 >
-                  {getCategoryLabel(voice.category)}
+                  {categoryLabel}
                 </div>
 
                 {/* Icon */}
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110"
+                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110"
                   style={{
                     background: `${color}20`,
                     color: color,
-                    boxShadow: `0 0 15px ${color}30`,
+                    boxShadow: `0 0 10px ${color}30`,
                   }}
                 >
-                  <Volume2 className="w-6 h-6" />
+                  <IconComponent className="w-5 h-5" />
                 </div>
 
                 {/* Quote */}
                 <div className="relative">
-                  <Quote className="absolute -top-1 -left-1 w-4 h-4 opacity-20" style={{ color }} />
-                  <p className="text-base font-bold pl-5" style={{ color: "#E2E8F0" }}>
+                  <Quote className="absolute -top-1 -left-1 w-3 h-3 opacity-20" style={{ color }} />
+                  <p className="text-sm font-bold pl-4 leading-tight" style={{ color: "#E2E8F0" }}>
                     {voice.text}
                   </p>
                 </div>
@@ -177,7 +193,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    boxShadow: `0 0 30px ${color}25`,
+                    boxShadow: `0 0 20px ${color}25`,
                   }}
                 />
               </div>

@@ -1,0 +1,36 @@
+{
+  "blood": {
+    "featured": [
+      { "id": "1", "name": "C皇", "description": "核心尊称", "color": "#E11D48", "icon": "crown" },
+      { "id": "2", "name": "血怒战神", "description": "血怒模式专属", "color": "#DC2626", "icon": "sword" },
+      { "id": "3", "name": "无情铁手", "description": "技能专精", "color": "#E11D48", "icon": "sword" },
+      { "id": "4", "name": "致残打击", "description": "精准收割", "color": "#F59E0B", "icon": "target" }
+    ],
+    "regular": [
+      { "id": "5", "name": "反驴复鱼", "description": "历史使命", "color": "#E11D48", "icon": "swords" },
+      { "id": "6", "name": "solo king", "description": "单挑之王", "color": "#EAB308", "icon": "target" },
+      { "id": "7", "name": "峡谷鬼见愁", "description": "威慑力", "color": "#DC2626", "icon": "skull" },
+      { "id": "8", "name": "塔下战神", "description": "防御专精", "color": "#EAB308", "icon": "tower" },
+      { "id": "9", "name": "A就完事了", "description": "经典操作", "color": "#E11D48", "icon": "zap" },
+      { "id": "10", "name": "血C", "description": "carry全场", "color": "#DC2626", "icon": "flame" },
+      { "id": "11", "name": "诺手人柱力", "description": "英雄专精", "color": "#7C3AED", "icon": "user" }
+    ]
+  },
+  "mix": {
+    "featured": [
+      { "id": "1", "name": "C皇", "description": "核心尊称", "color": "#F59E0B", "icon": "crown" },
+      { "id": "2", "name": "峡谷第一混", "description": "混学宗师", "color": "#3B82F6", "icon": "shield" },
+      { "id": "3", "name": "塔之子", "description": "守塔专家", "color": "#3B82F6", "icon": "tower" },
+      { "id": "4", "name": "鱼酱", "description": "鱼吧文化", "color": "#F59E0B", "icon": "fish" }
+    ],
+    "regular": [
+      { "id": "5", "name": "鳃皇", "description": "经典梗", "color": "#3B82F6", "icon": "fish" },
+      { "id": "6", "name": "鱼人", "description": "峡谷身份", "color": "#3B82F6", "icon": "fish" },
+      { "id": "7", "name": "峡谷养爹人", "description": "特殊技能", "color": "#7C3AED", "icon": "sparkles" },
+      { "id": "8", "name": "下饭大师", "description": "食堂主厨", "color": "#F59E0B", "icon": "utensils" },
+      { "id": "9", "name": "混子", "description": "混学入门", "color": "#94A3B8", "icon": "user" },
+      { "id": "10", "name": "躺赢专家", "description": "躺学巅峰", "color": "#10B981", "icon": "bed" },
+      { "id": "11", "name": "破防小子", "description": "心态专家", "color": "#EC4899", "icon": "heart" }
+    ]
+  }
+}

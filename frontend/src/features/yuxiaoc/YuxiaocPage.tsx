@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import type { Theme, Video } from "./data/types";
 import {
   LoadingAnimation,
@@ -9,6 +9,7 @@ import {
   CVoiceArchive,
   DanmakuTower,
   VideoModal,
+  HorizontalDanmaku,
 } from "./components";
 import "./styles/yuxiaoc.css";
 
@@ -16,6 +17,7 @@ const YuxiaocPage = () => {
   const [theme, setTheme] = useState<Theme>("blood");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [showHorizontalDanmaku, setShowHorizontalDanmaku] = useState(false);
 
   const handleLoadingComplete = useCallback((selectedTheme: Theme) => {
     setTheme(selectedTheme);
@@ -34,6 +36,17 @@ const YuxiaocPage = () => {
     setSelectedVideo(null);
   }, []);
 
+  // 页面加载完成后显示水平飘屏弹幕
+  useEffect(() => {
+    if (!isLoading) {
+      // 延迟显示弹幕，等待页面完全渲染
+      const timer = setTimeout(() => {
+        setShowHorizontalDanmaku(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
   if (isLoading) {
     return <LoadingAnimation onComplete={handleLoadingComplete} />;
   }
@@ -47,10 +60,14 @@ const YuxiaocPage = () => {
       {/* CRT Scanline Overlay */}
       <div className="crt-overlay" />
 
+      {/* 水平飘屏弹幕 */}
+      <HorizontalDanmaku theme={theme} isVisible={showHorizontalDanmaku} />
+
       <div
         className="min-h-screen"
         style={{
           background: "#0F0F23",
+          paddingRight: "320px", // 为右侧弹幕侧边栏留出空间
         }}
       >
         <Header theme={theme} onThemeToggle={handleThemeToggle} />
@@ -60,8 +77,10 @@ const YuxiaocPage = () => {
           <TitleHall theme={theme} />
           <CanteenHall theme={theme} onVideoClick={handleVideoClick} />
           <CVoiceArchive theme={theme} />
-          <DanmakuTower theme={theme} />
         </main>
+
+        {/* 右侧固定弹幕侧边栏 */}
+        <DanmakuTower theme={theme} />
 
         {/* Footer */}
         <footer
