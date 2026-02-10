@@ -108,4 +108,70 @@ describe("Header组件测试", () => {
     // 验证按钮存在且可点击
     expect(titleButton).toBeInTheDocument();
   });
+
+  /**
+   * 测试用例 TC-009: 外部链接渲染测试 - 直播间
+   * 测试目标：验证直播间链接正确显示
+   */
+  test("TC-009: 外部链接渲染测试 - 直播间", () => {
+    render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
+
+    const liveLink = screen.getByText("直播间").closest("a");
+    expect(liveLink).toBeInTheDocument();
+    expect(liveLink).toHaveAttribute("href", "https://www.douyu.com/123456");
+    expect(liveLink).toHaveAttribute("target", "_blank");
+    expect(liveLink).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  /**
+   * 测试用例 TC-010: 外部链接渲染测试 - 鱼吧
+   * 测试目标：验证鱼吧链接正确显示
+   */
+  test("TC-010: 外部链接渲染测试 - 鱼吧", () => {
+    render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
+
+    const yubaLink = screen.getByText("鱼吧").closest("a");
+    expect(yubaLink).toBeInTheDocument();
+    expect(yubaLink).toHaveAttribute("href", "https://yuba.douyu.com/group/123456");
+    expect(yubaLink).toHaveAttribute("target", "_blank");
+    expect(yubaLink).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  /**
+   * 测试用例 TC-011: 外部链接渲染测试 - B站
+   * 测试目标：验证B站链接正确显示
+   */
+  test("TC-011: 外部链接渲染测试 - B站", () => {
+    render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
+
+    const bilibiliLink = screen.getByText("B站").closest("a");
+    expect(bilibiliLink).toBeInTheDocument();
+    expect(bilibiliLink).toHaveAttribute("href", "https://space.bilibili.com/xxx");
+    expect(bilibiliLink).toHaveAttribute("target", "_blank");
+    expect(bilibiliLink).toHaveAttribute("rel", "noopener noreferrer");
+  });
+
+  /**
+   * 测试用例 TC-012: 外部链接图标显示测试
+   * 测试目标：验证外部链接有对应的图标
+   */
+  test("TC-012: 外部链接图标显示测试", () => {
+    render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
+
+    // 验证外部链接容器存在
+    const externalLinksContainer = screen.getByText("直播间").parentElement;
+    expect(externalLinksContainer).toBeInTheDocument();
+  });
+
+  /**
+   * 测试用例 TC-013: 混躺模式外部链接测试
+   * 测试目标：验证混躺模式下外部链接也正确显示
+   */
+  test("TC-013: 混躺模式外部链接测试", () => {
+    render(<Header theme="mix" onThemeToggle={mockOnThemeToggle} />);
+
+    expect(screen.getByText("直播间")).toBeInTheDocument();
+    expect(screen.getByText("鱼吧")).toBeInTheDocument();
+    expect(screen.getByText("B站")).toBeInTheDocument();
+  });
 });

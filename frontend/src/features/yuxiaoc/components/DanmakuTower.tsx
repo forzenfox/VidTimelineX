@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from "react";
 import type { Theme } from "../data/types";
 import danmakuData from "../data/danmaku.json";
-import { MessageSquare, Users } from "lucide-react";
+import { MessageSquare, Users, X, MessageCircle } from "lucide-react";
 
 interface DanmakuTowerProps {
   theme: Theme;
@@ -19,13 +19,24 @@ interface DanmakuMessage {
 }
 
 /**
- * 弹幕天梯组件 - 右侧固定侧边栏样式
- * 类似 lvjiang/SideDanmaku，固定在页面右侧
+ * 弹幕天梯组件 - 右侧固定侧边栏样式（桌面端）/ 底部抽屉（移动端）
  */
 export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
   const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const isBlood = theme === "blood";
+
+  // 检测移动端
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // 获取用户列表
   const users = useMemo(() => danmakuData.users, []);
@@ -101,19 +112,9 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
     return () => clearInterval(interval);
   }, [danmakuPool, users]);
 
-  return (
-    <div
-      className="fixed right-0 top-[120px] bottom-0 w-80 flex flex-col z-20"
-      style={{
-        background: isBlood
-          ? "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))"
-          : "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
-        borderLeft: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
-        boxShadow: isBlood
-          ? "-5px 0 20px rgba(225, 29, 72, 0.3)"
-          : "-5px 0 20px rgba(245, 158, 11, 0.3)",
-      }}
-    >
+  // 弹幕内容渲染
+  const renderDanmakuContent = () => (
+    <>
       {/* Header - 聊天室标题 */}
       <div
         className="flex items-center gap-3 px-4 py-3 font-bold"
@@ -140,6 +141,16 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           />
           <span className="text-xs">LIVE</span>
         </div>
+        {/* 移动端关闭按钮 */}
+        {isMobile && (
+          <button
+            onClick={() => setIsDrawerOpen(false)}
+            aria-label="关闭弹幕"
+            className="p-1 rounded-full hover:bg-white/10 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Danmaku Content - 弹幕内容区 */}
@@ -231,6 +242,84 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
       >
         {isBlood ? "🔥 血怒弹幕区 🔥" : "😴 混躺弹幕区 😴"}
       </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* 桌面端：右侧固定侧边栏 */}
+      <div
+        className="fixed right-0 top-16 bottom-0 w-80 flex-col z-20 hidden lg:flex"
+        style={{
+          background: isBlood
+            ? "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))"
+            : "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
+          borderLeft: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
+          boxShadow: isBlood
+            ? "-5px 0 20px rgba(225, 29, 72, 0.3)"
+            : "-5px 0 20px rgba(245, 158, 11, 0.3)",
+        }}
+      >
+        {renderDanmakuContent()}
+      </div>
+
+      {/* 移动端：浮动按钮 + 底部抽屉 */}
+      <>
+        {/* 移动端打开按钮 */}
+        <button
+          onClick={() => setIsDrawerOpen(true)}
+          aria-label="打开弹幕"
+          className="fixed right-4 bottom-24 z-30 lg:hidden w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110"
+          style={{
+            background: isBlood
+              ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
+              : "linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%)",
+            boxShadow: isBlood
+              ? "0 4px 15px rgba(225, 29, 72, 0.4)"
+              : "0 4px 15px rgba(245, 158, 11, 0.4)",
+          }}
+        >
+          <MessageCircle className="w-6 h-6 text-white" />
+        </button>
+
+        {/* 移动端抽屉 */}
+        {isDrawerOpen && (
+          <>
+            {/* 遮罩层 */}
+            <div
+              data-testid="danmaku-drawer"
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={() => setIsDrawerOpen(false)}
+            />
+            {/* 抽屉内容 */}
+            <div
+              className="fixed left-0 right-0 bottom-0 z-50 lg:hidden flex flex-col rounded-t-2xl overflow-hidden"
+              style={{
+                height: "60vh",
+                background: isBlood
+                  ? "linear-gradient(to top, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))"
+                  : "linear-gradient(to top, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
+                borderTop: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
+                boxShadow: isBlood
+                  ? "0 -5px 20px rgba(225, 29, 72, 0.3)"
+                  : "0 -5px 20px rgba(245, 158, 11, 0.3)",
+              }}
+            >
+              {/* 拖动条 */}
+              <div
+                className="w-full h-6 flex items-center justify-center cursor-pointer"
+                onClick={() => setIsDrawerOpen(false)}
+              >
+                <div
+                  className="w-12 h-1 rounded-full"
+                  style={{ backgroundColor: isBlood ? "rgba(225, 29, 72, 0.5)" : "rgba(245, 158, 11, 0.5)" }}
+                />
+              </div>
+              {renderDanmakuContent()}
+            </div>
+          </>
+        )}
+      </>
 
       <style>{`
         @keyframes fadeInUp {
@@ -244,7 +333,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           }
         }
       `}</style>
-    </div>
+    </>
   );
 };
 

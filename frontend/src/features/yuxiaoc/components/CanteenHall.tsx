@@ -188,8 +188,8 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
           </span>
         </div>
 
-        {/* Videos Grid - 多列紧凑布局 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+        {/* Videos Grid - 响应式网格布局：移动端2列，平板端3列，桌面端4列 */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredVideos.map((video, index) => (
             <div
               key={video.id}

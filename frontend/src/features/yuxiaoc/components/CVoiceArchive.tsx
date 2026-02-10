@@ -40,7 +40,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
 
   // 从 JSON 获取当前主题的语录数据
   const voices = useMemo(() => {
-    return voicesData[theme] || { featured: { text: "", author: "" }, list: [] };
+    return voicesData[theme] || { featured: { text: "", author: "", category: "classic" }, list: [] };
   }, [theme]);
 
   // 获取特色语录的分类颜色

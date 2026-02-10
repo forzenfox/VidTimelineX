@@ -10,6 +10,8 @@ import {
   MessageSquare,
   MessageCircle,
   ChevronUp,
+  Radio,
+  PlayCircle,
 } from "lucide-react";
 
 interface HeaderProps {
@@ -25,21 +27,40 @@ const navItems = [
   { id: "danmaku", label: "弹幕", icon: MessageCircle },
 ];
 
+const externalLinks = [
+  {
+    id: "live",
+    label: "直播间",
+    icon: Radio,
+    url: "https://www.douyu.com/123456",
+  },
+  {
+    id: "yuba",
+    label: "鱼吧",
+    icon: MessageCircle,
+    url: "https://yuba.douyu.com/group/123456",
+  },
+  {
+    id: "bilibili",
+    label: "B站",
+    icon: PlayCircle,
+    url: "https://space.bilibili.com/xxx",
+  },
+];
+
 export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
   const isBlood = theme === "blood";
   const [activeSection, setActiveSection] = useState("hero");
   const [isScrolled, setIsScrolled] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // 监听滚动事件，更新当前活动模块和导航栏样式
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setIsScrolled(scrollY > 50);
       setShowScrollTop(scrollY > 500);
 
-      // 检测当前活动模块
-      const sections = navItems.map(item => document.getElementById(item.id));
+      const sections = navItems.map((item) => document.getElementById(item.id));
       const scrollPosition = scrollY + 100;
 
       for (let i = sections.length - 1; i >= 0; i--) {
@@ -74,10 +95,10 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
           background: isScrolled
             ? isBlood
               ? "rgba(15, 15, 35, 0.98)"
-              : "rgba(30, 27, 75, 0.98)"
+              : "rgba(255, 255, 255, 0.98)"
             : isBlood
               ? "rgba(15, 15, 35, 0.85)"
-              : "rgba(30, 27, 75, 0.85)",
+              : "rgba(255, 255, 255, 0.85)",
           backdropFilter: "blur(12px)",
           borderBottom: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
           boxShadow: isScrolled
@@ -104,7 +125,6 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                 }}
               >
                 <Crown className="w-6 h-6 text-white" />
-                {/* Live badge */}
                 <div className="absolute bottom-0 right-0 bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
                   LIVE
                 </div>
@@ -120,13 +140,15 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                 >
                   C皇驾到
                 </h1>
-                <p className="text-xs text-gray-400">斗鱼 123456</p>
+                <p className="text-xs" style={{ color: isBlood ? "#94A3B8" : "#475569" }}>
+                  斗鱼 123456
+                </p>
               </div>
             </div>
 
             {/* Navigation - Desktop */}
-            <nav className="hidden md:flex items-center gap-1">
-              {navItems.map(item => {
+            <nav className="hidden lg:flex items-center gap-1">
+              {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeSection === item.id;
                 return (
@@ -135,14 +157,14 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                     onClick={() => scrollToSection(item.id)}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 relative"
                     style={{
-                      color: isActive ? (isBlood ? "#E11D48" : "#F59E0B") : "#94A3B8",
+                      color: isActive ? (isBlood ? "#E11D48" : "#F59E0B") : isBlood ? "#94A3B8" : "#475569",
                       background: isActive
                         ? isBlood
                           ? "rgba(225, 29, 72, 0.15)"
                           : "rgba(245, 158, 11, 0.15)"
                         : "transparent",
                     }}
-                    onMouseEnter={e => {
+                    onMouseEnter={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.color = isBlood ? "#E11D48" : "#F59E0B";
                         e.currentTarget.style.background = isBlood
@@ -150,16 +172,15 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                           : "rgba(245, 158, 11, 0.1)";
                       }
                     }}
-                    onMouseLeave={e => {
+                    onMouseLeave={(e) => {
                       if (!isActive) {
-                        e.currentTarget.style.color = "#94A3B8";
+                        e.currentTarget.style.color = isBlood ? "#94A3B8" : "#475569";
                         e.currentTarget.style.background = "transparent";
                       }
                     }}
                   >
                     <Icon className="w-4 h-4" />
                     <span>{item.label}</span>
-                    {/* Active indicator */}
                     {isActive && (
                       <div
                         className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full"
@@ -171,11 +192,39 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
               })}
             </nav>
 
+            {/* External Links - Middle Section */}
+            <div className="hidden lg:flex items-center gap-4">
+              {externalLinks.map((link) => {
+                const Icon = link.icon;
+                return (
+                  <a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm font-medium transition-colors"
+                    style={{
+                      color: isBlood ? "#94A3B8" : "#475569",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = isBlood ? "#E11D48" : "#F59E0B";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = isBlood ? "#94A3B8" : "#475569";
+                    }}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="hidden xl:inline">{link.label}</span>
+                  </a>
+                );
+              })}
+            </div>
+
             {/* Right Section - Theme Toggle & Quick Actions */}
             <div className="flex items-center gap-2">
-              {/* Quick Action Buttons - 在所有屏幕尺寸显示 */}
+              {/* Quick Action Buttons */}
               <div className="flex items-center gap-1 mr-2">
-                {navItems.slice(1, 4).map(item => {
+                {navItems.slice(1, 4).map((item) => {
                   const Icon = item.icon;
                   const isActive = activeSection === item.id;
                   return (
@@ -184,7 +233,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                       onClick={() => scrollToSection(item.id)}
                       className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium"
                       style={{
-                        color: isActive ? (isBlood ? "#E11D48" : "#F59E0B") : "#94A3B8",
+                        color: isActive ? (isBlood ? "#E11D48" : "#F59E0B") : isBlood ? "#94A3B8" : "#475569",
                         background: isActive
                           ? isBlood
                             ? "rgba(225, 29, 72, 0.2)"
@@ -192,9 +241,9 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                           : "transparent",
                         border: isActive
                           ? `1px solid ${isBlood ? "rgba(225, 29, 72, 0.5)" : "rgba(245, 158, 11, 0.5)"}`
-                          : "1px solid transparent",
+                          : `1px solid ${isBlood ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"}`,
                       }}
-                      onMouseEnter={e => {
+                      onMouseEnter={(e) => {
                         if (!isActive) {
                           e.currentTarget.style.color = isBlood ? "#E11D48" : "#F59E0B";
                           e.currentTarget.style.background = isBlood
@@ -202,9 +251,9 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                             : "rgba(245, 158, 11, 0.1)";
                         }
                       }}
-                      onMouseLeave={e => {
+                      onMouseLeave={(e) => {
                         if (!isActive) {
-                          e.currentTarget.style.color = "#94A3B8";
+                          e.currentTarget.style.color = isBlood ? "#94A3B8" : "#475569";
                           e.currentTarget.style.background = "transparent";
                         }
                       }}
