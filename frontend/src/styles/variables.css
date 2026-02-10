@@ -85,3 +85,25 @@
   --shadow-color: var(--sweet-shadow-color);
   --card-rgb: var(--sweet-card-rgb);
 }
+
+/* ========== C皇驾到 - 血怒模式 (Blood Mode) ========== */
+[data-theme="blood"] {
+  --yuxiaoc-background: #0F0F23;
+  --yuxiaoc-foreground: #E2E8F0;
+  --yuxiaoc-primary: #E11D48;
+  --yuxiaoc-secondary: #F59E0B;
+  --yuxiaoc-accent: #E11D48;
+  --yuxiaoc-muted: #94A3B8;
+  --yuxiaoc-border: rgba(225, 29, 72, 0.3);
+}
+
+/* ========== C皇驾到 - 混躺模式 (Mix Mode) ========== */
+[data-theme="mix"] {
+  --yuxiaoc-background: #FEF3C7;
+  --yuxiaoc-foreground: #78350F;
+  --yuxiaoc-primary: #B45309;
+  --yuxiaoc-secondary: #F59E0B;
+  --yuxiaoc-accent: #B45309;
+  --yuxiaoc-muted: #92400E;
+  --yuxiaoc-border: rgba(245, 158, 11, 0.3);
+}

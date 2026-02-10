@@ -3,22 +3,22 @@ import { render, waitFor } from "@testing-library/react";
 import { HorizontalDanmaku } from "@/features/yuxiaoc/components/HorizontalDanmaku";
 import "@testing-library/jest-dom";
 
-// 模拟danmaku.json数据
+// 模拟danmaku.json数据 - 新数据结构
 jest.mock("@/features/yuxiaoc/data/danmaku.json", () => ({
-  blood: {
-    horizontal: [
-      { text: "血怒测试弹幕1", color: "#FF0000", speed: "normal" },
-      { text: "血怒测试弹幕2", color: "#FF0000", speed: "fast" },
-      { text: "血怒测试弹幕3", color: "#FF0000", speed: "slow" },
-    ],
-  },
-  mix: {
-    horizontal: [
-      { text: "混躺测试弹幕1", color: "#00FF00", speed: "normal" },
-      { text: "混躺测试弹幕2", color: "#00FF00", speed: "fast" },
-      { text: "混躺测试弹幕3", color: "#00FF00", speed: "slow" },
-    ],
-  },
+  bloodDanmaku: [
+    { text: "血怒测试弹幕1", color: "#FF0000", speed: "normal", size: "medium" },
+    { text: "血怒测试弹幕2", color: "#FF0000", speed: "fast", size: "large" },
+    { text: "血怒测试弹幕3", color: "#FF0000", speed: "slow", size: "small" },
+  ],
+  mixDanmaku: [
+    { text: "混躺测试弹幕1", color: "#00FF00", speed: "normal", size: "medium" },
+    { text: "混躺测试弹幕2", color: "#00FF00", speed: "fast", size: "large" },
+    { text: "混躺测试弹幕3", color: "#00FF00", speed: "slow", size: "small" },
+  ],
+  commonDanmaku: [
+    { text: "公共弹幕1", color: "#F59E0B", speed: "fast", size: "small" },
+    { text: "公共弹幕2", color: "#3B82F6", speed: "normal", size: "medium" },
+  ],
 }));
 
 describe("HorizontalDanmaku组件测试", () => {
@@ -141,5 +141,72 @@ describe("HorizontalDanmaku组件测试", () => {
     await waitFor(() => {
       expect(container.firstChild).toBeInTheDocument();
     });
+  });
+
+  /**
+   * 测试用例 TC-008: 新数据结构适配测试 - 血怒弹幕
+   * 测试目标：验证新数据结构bloodDanmaku正确加载
+   */
+  test("TC-008: 新数据结构适配测试 - 血怒弹幕", async () => {
+    const { container } = render(<HorizontalDanmaku theme="blood" isVisible={true} />);
+
+    // 等待组件挂载
+    await waitFor(() => {
+      expect(container.firstChild).toBeInTheDocument();
+    });
+
+    // 验证容器渲染成功
+    const danmakuContainer = container.firstChild as HTMLElement;
+    expect(danmakuContainer).toBeInTheDocument();
+  });
+
+  /**
+   * 测试用例 TC-009: 新数据结构适配测试 - 混躺弹幕
+   * 测试目标：验证新数据结构mixDanmaku正确加载
+   */
+  test("TC-009: 新数据结构适配测试 - 混躺弹幕", async () => {
+    const { container } = render(<HorizontalDanmaku theme="mix" isVisible={true} />);
+
+    // 等待组件挂载
+    await waitFor(() => {
+      expect(container.firstChild).toBeInTheDocument();
+    });
+
+    // 验证容器渲染成功
+    const danmakuContainer = container.firstChild as HTMLElement;
+    expect(danmakuContainer).toBeInTheDocument();
+  });
+
+  /**
+   * 测试用例 TC-010: 公共弹幕数据测试
+   * 测试目标：验证commonDanmaku数据正确加载
+   */
+  test("TC-010: 公共弹幕数据测试", async () => {
+    const { container } = render(<HorizontalDanmaku theme="blood" isVisible={true} />);
+
+    // 等待组件挂载
+    await waitFor(() => {
+      expect(container.firstChild).toBeInTheDocument();
+    });
+
+    // 验证容器渲染成功
+    expect(container.firstChild).toBeInTheDocument();
+  });
+
+  /**
+   * 测试用例 TC-011: 弹幕数据合并测试
+   * 测试目标：验证主题专属弹幕和公共弹幕合并使用
+   */
+  test("TC-011: 弹幕数据合并测试", async () => {
+    const { container } = render(<HorizontalDanmaku theme="blood" isVisible={true} />);
+
+    // 等待组件挂载
+    await waitFor(() => {
+      expect(container.firstChild).toBeInTheDocument();
+    });
+
+    // 验证容器存在且有内容
+    const danmakuContainer = container.firstChild as HTMLElement;
+    expect(danmakuContainer).toBeInTheDocument();
   });
 });

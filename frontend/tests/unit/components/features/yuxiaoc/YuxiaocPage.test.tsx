@@ -266,7 +266,7 @@ describe("YuxiaocPage集成测试", () => {
     fireEvent.click(screen.getByText("完成加载"));
 
     await waitFor(() => {
-      // 验证所有子组件都显示blood主题
+      // 验证所有子组件都显示blood主题（默认）
       expect(screen.getByTestId("header-theme")).toHaveTextContent("blood");
       expect(screen.getByTestId("hero-section")).toHaveTextContent("blood");
       expect(screen.getByTestId("title-hall")).toHaveTextContent("blood");
@@ -340,8 +340,10 @@ describe("YuxiaocPage集成测试", () => {
 
     await waitFor(() => {
       // 验证主要结构元素存在
-      expect(container.querySelector("main")).toBeInTheDocument();
-      expect(container.querySelector("footer")).toBeInTheDocument();
+      const mainElement = container.querySelector("main");
+      expect(mainElement).toBeInTheDocument();
+      const footerElement = container.querySelector("footer");
+      expect(footerElement).toBeInTheDocument();
     });
   });
 
@@ -391,6 +393,31 @@ describe("YuxiaocPage集成测试", () => {
     fireEvent.click(screen.getByText("切换主题"));
     await waitFor(() => {
       expect(screen.getByTestId("header-theme")).toHaveTextContent("mix");
+    });
+  });
+
+  /**
+   * 测试用例 TC-016: 单一布局结构测试
+   * 测试目标：验证使用单一布局，不再区分桌面端和移动端
+   */
+  test("TC-016: 单一布局结构测试", async () => {
+    const { container } = render(<YuxiaocPage />);
+
+    // 完成加载
+    fireEvent.click(screen.getByText("完成加载"));
+
+    await waitFor(() => {
+      // 验证主内容区域存在
+      const mainContent = container.querySelector(".main-content");
+      expect(mainContent).toBeInTheDocument();
+      
+      // 验证不再有hidden md:block的容器
+      const hiddenMdBlock = container.querySelector(".hidden.md\\:block");
+      expect(hiddenMdBlock).not.toBeInTheDocument();
+      
+      // 验证不再有md:hidden的容器
+      const mdHidden = container.querySelector(".md\\:hidden");
+      expect(mdHidden).not.toBeInTheDocument();
     });
   });
 });

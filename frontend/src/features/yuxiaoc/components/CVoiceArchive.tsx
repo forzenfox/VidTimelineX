@@ -38,6 +38,28 @@ const categoryLabelMap: Record<string, string> = {
 export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
   const isBlood = theme === "blood";
 
+  // 主题配色配置
+  const themeColors = useMemo(() => {
+    if (isBlood) {
+      return {
+        // 血怒模式 - 深色配色
+        background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
+        cardBg: "linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 15, 35, 0.9) 100%)",
+        itemBg: "rgba(30, 27, 75, 0.5)",
+        textPrimary: "#E2E8F0",
+        textSecondary: "#94A3B8",
+      };
+    }
+    // 混躺模式 - 明亮配色
+    return {
+      background: "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 100%)",
+      cardBg: "linear-gradient(135deg, rgba(254, 243, 199, 0.8) 0%, rgba(254, 243, 199, 0.9) 100%)",
+      itemBg: "rgba(254, 243, 199, 0.5)",
+      textPrimary: "#78350F",
+      textSecondary: "#92400E",
+    };
+  }, [isBlood]);
+
   // 从 JSON 获取当前主题的语录数据
   const voices = useMemo(() => {
     return voicesData[theme] || { featured: { text: "", author: "", category: "classic" }, list: [] };
@@ -54,7 +76,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
       id="voices"
       className="py-16 px-4"
       style={{
-        background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
+        background: themeColors.background,
       }}
     >
       <div className="max-w-6xl mx-auto">
@@ -72,15 +94,16 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
           >
             {isBlood ? "血怒宣言" : "C言C语典藏馆"}
           </h2>
-          <p className="text-gray-400">{isBlood ? "战斗语录，激情澎湃" : "经典语录，永流传"}</p>
+          <p style={{ color: themeColors.textSecondary }}>
+            {isBlood ? "战斗语录，激情澎湃" : "经典语录，永流传"}
+          </p>
         </div>
 
         {/* Philosophy Wall - Featured Quote */}
         <div
           className="mb-8 p-6 md:p-10 rounded-3xl relative overflow-hidden"
           style={{
-            background:
-              "linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 15, 35, 0.9) 100%)",
+            background: themeColors.cardBg,
             border: `2px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
             boxShadow: isBlood
               ? "0 0 40px rgba(225, 29, 72, 0.2), inset 0 0 40px rgba(225, 29, 72, 0.1)"
@@ -117,7 +140,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               className="text-xl md:text-3xl font-bold mb-4"
               style={{
                 fontFamily: "Chakra Petch, sans-serif",
-                color: "#E2E8F0",
+                color: themeColors.textPrimary,
                 textShadow: isBlood
                   ? "0 0 20px rgba(225, 29, 72, 0.3)"
                   : "0 0 20px rgba(245, 158, 11, 0.3)",
@@ -137,7 +160,9 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               >
                 <span className="text-white font-bold text-sm">C</span>
               </div>
-              <p className="text-gray-400">—— {voices.featured?.author || "C皇 · 峡谷哲学"}</p>
+              <p style={{ color: themeColors.textSecondary }}>
+                —— {voices.featured?.author || "C皇 · 峡谷哲学"}
+              </p>
             </div>
           </div>
         </div>
@@ -154,7 +179,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 key={voice.id}
                 className="group relative p-4 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{
-                  background: "rgba(30, 27, 75, 0.5)",
+                  background: themeColors.itemBg,
                   border: `1px solid ${color}30`,
                 }}
               >
@@ -184,7 +209,10 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 {/* Quote */}
                 <div className="relative">
                   <Quote className="absolute -top-1 -left-1 w-3 h-3 opacity-20" style={{ color }} />
-                  <p className="text-sm font-bold pl-4 leading-tight" style={{ color: "#E2E8F0" }}>
+                  <p
+                    className="text-sm font-bold pl-4 leading-tight"
+                    style={{ color: themeColors.textPrimary }}
+                  >
                     {voice.text}
                   </p>
                 </div>

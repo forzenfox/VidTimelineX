@@ -38,8 +38,12 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
   const danmakuList = useMemo(() => {
     if (!isVisible || !mounted) return [];
 
-    // 获取当前主题的弹幕数据
-    const pool = danmakuData[theme]?.horizontal || [];
+    // 获取当前主题的弹幕数据（新数据结构：主题专属 + 公共弹幕）
+    const themeDanmaku = theme === "blood" ? danmakuData.bloodDanmaku : danmakuData.mixDanmaku;
+    const commonDanmaku = danmakuData.commonDanmaku || [];
+    // 合并主题专属弹幕和公共弹幕
+    const pool = [...themeDanmaku, ...commonDanmaku];
+
     if (pool.length === 0) return [];
 
     const items: DanmakuItem[] = [];

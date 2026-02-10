@@ -19,6 +19,17 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
   const [searchQuery, setSearchQuery] = useState("");
   const isBlood = theme === "blood";
 
+  // 主题配色
+  const themeColors = {
+    background: isBlood
+      ? "linear-gradient(180deg, #1E1B4B 0%, #0F0F23 100%)"
+      : "linear-gradient(180deg, #FDE68A 0%, #FEF3C7 100%)",
+    cardBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "rgba(254, 243, 199, 0.5)",
+    textPrimary: isBlood ? "#E2E8F0" : "#78350F",
+    textSecondary: isBlood ? "#94A3B8" : "#92400E",
+    textMuted: isBlood ? "#64748B" : "#B45309",
+  };
+
   // 根据主题调整分类顺序
   const sortedCategories = useMemo(() => {
     if (isBlood) {
@@ -70,7 +81,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
       id="canteen"
       className="py-16 px-4"
       style={{
-        background: "linear-gradient(180deg, #1E1B4B 0%, #0F0F23 100%)",
+        background: themeColors.background,
       }}
     >
       <div className="max-w-7xl mx-auto">
@@ -88,7 +99,9 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
           >
             {isBlood ? "血怒时刻" : "食堂大殿"}
           </h2>
-          <p className="text-gray-400">{isBlood ? "硬核操作，天神下凡" : "下饭经典，吃饱为止"}</p>
+          <p style={{ color: themeColors.textSecondary }}>
+            {isBlood ? "硬核操作，天神下凡" : "下饭经典，吃饱为止"}
+          </p>
         </div>
 
         {/* Search Bar */}
@@ -96,7 +109,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
           <div
             className="relative flex items-center"
             style={{
-              background: "rgba(30, 27, 75, 0.5)",
+              background: themeColors.cardBg,
               border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
               borderRadius: "9999px",
             }}
@@ -110,10 +123,12 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="搜索视频标题或标签..."
-              className="w-full pl-12 pr-10 py-3 bg-transparent text-white placeholder-gray-500 focus:outline-none rounded-full"
+              className="w-full pl-12 pr-10 py-3 bg-transparent focus:outline-none rounded-full"
               style={{
                 fontFamily: "Chakra Petch, sans-serif",
+                color: themeColors.textPrimary,
               }}
+              placeholder-color={themeColors.textMuted}
             />
             {searchQuery && (
               <button
@@ -137,7 +152,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                   ? isBlood
                     ? "linear-gradient(135deg, #E11D48, #DC2626)"
                     : "linear-gradient(135deg, #F59E0B, #3B82F6)"
-                  : "rgba(30, 27, 75, 0.5)",
+                  : themeColors.cardBg,
               color: activeCategory === "all" ? "white" : "#94A3B8",
               border: `2px solid ${
                 activeCategory === "all"
@@ -162,7 +177,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               onClick={() => setActiveCategory(cat.id)}
               className="px-4 py-2 rounded-full font-bold transition-all duration-300 flex items-center gap-1.5 text-sm"
               style={{
-                background: activeCategory === cat.id ? cat.color : "rgba(30, 27, 75, 0.5)",
+                background: activeCategory === cat.id ? cat.color : themeColors.cardBg,
                 color: activeCategory === cat.id ? "white" : "#94A3B8",
                 border: `2px solid ${activeCategory === cat.id ? cat.color : "rgba(148, 163, 184, 0.3)"}`,
                 boxShadow: activeCategory === cat.id ? `0 0 15px ${cat.color}40` : "none",
@@ -176,13 +191,13 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
 
         {/* Video Count */}
         <div className="text-center mb-4">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm" style={{ color: themeColors.textMuted }}>
             共{" "}
             <span style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}>{filteredVideos.length}</span>{" "}
             个视频
             {searchQuery && (
               <span className="ml-2">
-                搜索: <span className="text-gray-300">"{searchQuery}"</span>
+                搜索: <span style={{ color: themeColors.textSecondary }}>"{searchQuery}"</span>
               </span>
             )}
           </span>
@@ -196,7 +211,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               onClick={() => onVideoClick(video)}
               className="group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03]"
               style={{
-                background: "rgba(30, 27, 75, 0.5)",
+                background: themeColors.cardBg,
                 border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.2)" : "rgba(245, 158, 11, 0.2)"}`,
                 animationDelay: `${index * 0.05}s`,
               }}
@@ -245,9 +260,10 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               {/* Info */}
               <div className="p-2.5">
                 <h3
-                  className="text-white font-bold mb-1.5 line-clamp-2 text-xs group-hover:line-clamp-none transition-all leading-tight"
+                  className="font-bold mb-1.5 line-clamp-2 text-xs group-hover:line-clamp-none transition-all leading-tight"
                   style={{
                     fontFamily: "Chakra Petch, sans-serif",
+                    color: themeColors.textPrimary,
                   }}
                 >
                   {video.title}
@@ -296,7 +312,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             >
               <Search className="w-8 h-8" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
             </div>
-            <p className="text-gray-400 mb-2">没有找到匹配的视频</p>
+            <p className="mb-2" style={{ color: themeColors.textSecondary }}>没有找到匹配的视频</p>
             <button
               onClick={() => {
                 setSearchQuery("");

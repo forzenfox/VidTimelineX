@@ -11,6 +11,19 @@ interface VideoModalProps {
 export const VideoModal: React.FC<VideoModalProps> = ({ video, theme, onClose }) => {
   const isBlood = theme === "blood";
 
+  // 根据主题获取配色方案
+  const themeColors = isBlood
+    ? {
+        background: "linear-gradient(135deg, #1E1B4B 0%, #0F0F23 100%)",
+        textPrimary: "#E2E8F0",
+        textSecondary: "#9CA3AF",
+      }
+    : {
+        background: "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)",
+        textPrimary: "#78350F",
+        textSecondary: "#92400E",
+      };
+
   if (!video) return null;
 
   return (
@@ -22,7 +35,7 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, theme, onClose })
       <div
         className="relative w-full max-w-4xl rounded-2xl overflow-hidden"
         style={{
-          background: "linear-gradient(135deg, #1E1B4B 0%, #0F0F23 100%)",
+          background: themeColors.background,
           border: `2px solid ${isBlood ? "rgba(225, 29, 72, 0.5)" : "rgba(245, 158, 11, 0.5)"}`,
         }}
         onClick={e => e.stopPropagation()}
@@ -65,13 +78,17 @@ export const VideoModal: React.FC<VideoModalProps> = ({ video, theme, onClose })
             className="text-2xl font-bold mb-3"
             style={{
               fontFamily: "Russo One, sans-serif",
-              color: "#E2E8F0",
+              color: themeColors.textPrimary,
             }}
           >
             {video.title}
           </h3>
 
-          {video.description && <p className="text-gray-400 mb-4">{video.description}</p>}
+          {video.description && (
+            <p className="mb-4" style={{ color: themeColors.textSecondary }}>
+              {video.description}
+            </p>
+          )}
 
           <div className="flex flex-wrap gap-2">
             {video.tags.map((tag, idx) => (

@@ -240,3 +240,19 @@ a:hover::after,
   opacity: 1;
   transform: scale(1);
 }
+
+/* ============================================
+   C皇驾到主题样式（覆盖默认主题）
+   ============================================ */
+
+/* 血怒模式主题 */
+body[data-theme="blood"] {
+  background-color: #0F0F23 !important;
+  color: #E2E8F0 !important;
+}
+
+/* 混躺模式主题 */
+body[data-theme="mix"] {
+  background-color: #FEF3C7 !important;
+  color: #78350F !important;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import type { Theme, Video } from "./data/types";
 import {
   LoadingAnimation,
@@ -47,6 +47,45 @@ const YuxiaocPage = () => {
     }
   }, [isLoading]);
 
+  // 根据主题设置body的data-theme属性
+  useEffect(() => {
+    document.body.setAttribute("data-theme", theme);
+
+    // 清理函数
+    return () => {
+      document.body.removeAttribute("data-theme");
+    };
+  }, [theme]);
+
+  // 主题配色方案
+  const themeColors = useMemo(() => {
+    if (theme === "blood") {
+      return {
+        // 血怒模式 - 暗色主题
+        background: "#0F0F23",
+        backgroundGradient: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
+        textPrimary: "#E2E8F0",
+        textSecondary: "#94A3B8",
+        accent: "#E11D48",
+        accentSecondary: "#F59E0B",
+        border: "rgba(225, 29, 72, 0.3)",
+        decorativeLine: "#E11D48",
+      };
+    } else {
+      return {
+        // 混躺模式 - 明亮主题
+        background: "#FEF3C7",
+        backgroundGradient: "linear-gradient(180deg, #FEF3C7 0%, #FEF9C3 100%)",
+        textPrimary: "#78350F",
+        textSecondary: "#92400E",
+        accent: "#B45309",
+        accentSecondary: "#F59E0B",
+        border: "rgba(245, 158, 11, 0.3)",
+        decorativeLine: "#F59E0B",
+      };
+    }
+  }, [theme]);
+
   if (isLoading) {
     return <LoadingAnimation onComplete={handleLoadingComplete} />;
   }
@@ -63,66 +102,87 @@ const YuxiaocPage = () => {
       {/* 水平飘屏弹幕 */}
       <HorizontalDanmaku theme={theme} isVisible={showHorizontalDanmaku} />
 
+      {/* 主容器 - 使用单一布局 */}
       <div
         className="min-h-screen"
         style={{
-          background: "#0F0F23",
-          paddingRight: "320px", // 为右侧弹幕侧边栏留出空间
+          background: themeColors.background,
         }}
       >
-        <Header theme={theme} onThemeToggle={handleThemeToggle} />
-
-        <main>
-          <HeroSection theme={theme} />
-          <TitleHall theme={theme} />
-          <CanteenHall theme={theme} onVideoClick={handleVideoClick} />
-          <CVoiceArchive theme={theme} />
-        </main>
-
-        {/* 右侧固定弹幕侧边栏 */}
-        <DanmakuTower theme={theme} />
-
-        {/* Footer */}
-        <footer
-          className="py-8 text-center relative"
+        {/* 主内容区域 - 使用CSS媒体查询控制padding */}
+        <div 
+          className="main-content"
           style={{
-            background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
-            borderTop: `1px solid ${theme === "blood" ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+            // 默认移动端无padding
+            paddingRight: "0",
           }}
         >
-          {/* Decorative line */}
-          <div
-            className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5"
-            style={{
-              background:
-                theme === "blood"
-                  ? "linear-gradient(90deg, transparent, #E11D48, transparent)"
-                  : "linear-gradient(90deg, transparent, #F59E0B, transparent)",
-            }}
-          />
+          <Header theme={theme} onThemeToggle={handleThemeToggle} />
 
-          <p
-            className="text-gray-400 mb-2 font-bold"
+          <main>
+            <HeroSection theme={theme} />
+            <TitleHall theme={theme} />
+            <CanteenHall theme={theme} onVideoClick={handleVideoClick} />
+            <CVoiceArchive theme={theme} />
+          </main>
+
+          {/* Footer */}
+          <footer
+            className="py-8 text-center relative"
             style={{
-              fontFamily: "Russo One, sans-serif",
+              background: themeColors.backgroundGradient,
+              borderTop: `1px solid ${themeColors.border}`,
             }}
           >
-            C皇驾到 · 混与躺轮回不止
-          </p>
-          <p className="text-sm text-gray-500">本站点为粉丝自制，仅供娱乐</p>
-
-          {/* Live indicator */}
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <span
-              className="w-2 h-2 rounded-full animate-pulse"
-              style={{ backgroundColor: theme === "blood" ? "#E11D48" : "#F59E0B" }}
+            {/* Decorative line */}
+            <div
+              className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-0.5"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${themeColors.decorativeLine}, transparent)`,
+              }}
             />
-            <span className="text-xs text-gray-500">斗鱼直播间 123456</span>
-          </div>
-        </footer>
+
+            <p
+              className="mb-2 font-bold"
+              style={{
+                fontFamily: "Russo One, sans-serif",
+                color: themeColors.textPrimary,
+              }}
+            >
+              C皇驾到 · 混与躺轮回不止
+            </p>
+            <p className="text-sm" style={{ color: themeColors.textSecondary }}>
+              本站点为粉丝自制，仅供娱乐
+            </p>
+
+            {/* Live indicator */}
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <span
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ backgroundColor: themeColors.accentSecondary }}
+              />
+              <span className="text-xs" style={{ color: themeColors.textSecondary }}>
+                斗鱼直播间 123456
+              </span>
+            </div>
+          </footer>
+        </div>
+
+        {/* 右侧固定弹幕侧边栏 - 桌面端和平板端显示 */}
+        <DanmakuTower theme={theme} />
 
         <VideoModal video={selectedVideo} theme={theme} onClose={handleCloseModal} />
       </div>
+
+      {/* 使用style标签添加响应式样式 */}
+      <style>{`
+        /* 平板端和桌面端：为弹幕侧边栏留出空间 */
+        @media (min-width: 768px) {
+          .main-content {
+            padding-right: 320px !important;
+          }
+        }
+      `}</style>
     </>
   );
 };

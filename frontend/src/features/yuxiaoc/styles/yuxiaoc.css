@@ -24,10 +24,21 @@ html {
   scroll-behavior: smooth;
 }
 
+/* 默认样式（无主题时） */
 body {
   font-family: 'Chakra Petch', sans-serif;
-  background-color: var(--color-bg-dark);
-  color: var(--color-text-primary);
+}
+
+/* 血怒模式主题 - 使用!important覆盖globals.css */
+body[data-theme="blood"] {
+  background-color: #0F0F23 !important;
+  color: #E2E8F0 !important;
+}
+
+/* 混躺模式主题 - 使用!important覆盖globals.css */
+body[data-theme="mix"] {
+  background-color: #FEF3C7 !important;
+  color: #78350F !important;
 }
 
 /* CRT扫描线效果 */

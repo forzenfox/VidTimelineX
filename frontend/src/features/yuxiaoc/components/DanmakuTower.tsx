@@ -19,31 +19,40 @@ interface DanmakuMessage {
 }
 
 /**
- * 弹幕天梯组件 - 右侧固定侧边栏样式（桌面端）/ 底部抽屉（移动端）
+ * 弹幕天梯组件 - 右侧固定侧边栏样式（桌面端/平板端）/ 底部抽屉（移动端）
  */
 export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
   const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const isBlood = theme === "blood";
 
-  // 检测移动端
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 1024);
+  // 主题配色配置
+  const themeColors = useMemo(() => {
+    if (isBlood) {
+      return {
+        background: "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
+        textPrimary: "#E2E8F0",
+        textSecondary: "#94A3B8",
+      };
+    }
+    // 混躺模式使用明亮配色
+    return {
+      background: "linear-gradient(to left, rgba(254, 243, 199, 0.98), rgba(253, 230, 138, 0.95))",
+      textPrimary: "#78350F",
+      textSecondary: "#92400E",
     };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  }, [isBlood]);
 
   // 获取用户列表
   const users = useMemo(() => danmakuData.users, []);
 
-  // 获取当前主题的弹幕数据
+  // 获取当前主题的弹幕数据（新数据结构：主题专属 + 公共弹幕）
   const danmakuPool = useMemo(() => {
-    return danmakuData[theme]?.tower || [];
+    const themeDanmaku = theme === "blood" ? danmakuData.bloodDanmaku : danmakuData.mixDanmaku;
+    const commonDanmaku = danmakuData.commonDanmaku || [];
+    // 合并主题专属弹幕和公共弹幕
+    return [...themeDanmaku, ...commonDanmaku];
   }, [theme]);
 
   // 初始化弹幕消息
@@ -113,7 +122,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
   }, [danmakuPool, users]);
 
   // 弹幕内容渲染
-  const renderDanmakuContent = () => (
+  const renderDanmakuContent = (isInDrawer: boolean) => (
     <>
       {/* Header - 聊天室标题 */}
       <div
@@ -142,7 +151,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           <span className="text-xs">LIVE</span>
         </div>
         {/* 移动端关闭按钮 */}
-        {isMobile && (
+        {isInDrawer && (
           <button
             onClick={() => setIsDrawerOpen(false)}
             aria-label="关闭弹幕"
@@ -217,7 +226,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
             <div
               className="text-sm leading-relaxed break-words"
               style={{
-                color: "#E2E8F0",
+                color: themeColors.textPrimary,
                 fontSize:
                   message.size === "large" ? "15px" : message.size === "small" ? "12px" : "13px",
                 fontWeight: message.size === "large" ? 700 : 500,
@@ -247,81 +256,132 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
 
   return (
     <>
-      {/* 桌面端：右侧固定侧边栏 */}
+      {/* 桌面端/平板端：右侧固定侧边栏 - 使用CSS媒体查询控制显示 */}
       <div
-        className="fixed right-0 top-16 bottom-0 w-80 flex-col z-20 hidden lg:flex"
+        className="danmaku-sidebar"
         style={{
-          background: isBlood
-            ? "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))"
-            : "linear-gradient(to left, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
+          position: "fixed",
+          right: 0,
+          top: "64px",
+          bottom: 0,
+          width: "320px",
+          display: "none", // 默认隐藏，媒体查询控制显示
+          flexDirection: "column",
+          zIndex: 20,
+          background: themeColors.background,
           borderLeft: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
           boxShadow: isBlood
             ? "-5px 0 20px rgba(225, 29, 72, 0.3)"
             : "-5px 0 20px rgba(245, 158, 11, 0.3)",
         }}
       >
-        {renderDanmakuContent()}
+        {renderDanmakuContent(false)}
       </div>
 
-      {/* 移动端：浮动按钮 + 底部抽屉 */}
-      <>
-        {/* 移动端打开按钮 */}
-        <button
-          onClick={() => setIsDrawerOpen(true)}
-          aria-label="打开弹幕"
-          className="fixed right-4 bottom-24 z-30 lg:hidden w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110"
-          style={{
-            background: isBlood
-              ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
-              : "linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%)",
-            boxShadow: isBlood
-              ? "0 4px 15px rgba(225, 29, 72, 0.4)"
-              : "0 4px 15px rgba(245, 158, 11, 0.4)",
-          }}
-        >
-          <MessageCircle className="w-6 h-6 text-white" />
-        </button>
+      {/* 移动端：浮动按钮 - 使用CSS媒体查询控制显示 */}
+      <button
+        onClick={() => setIsDrawerOpen(true)}
+        aria-label="打开弹幕"
+        className="danmaku-mobile-button"
+        style={{
+          position: "fixed",
+          right: "16px",
+          bottom: "96px",
+          zIndex: 30,
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          display: "none", // 默认隐藏，媒体查询控制显示
+          alignItems: "center",
+          justifyContent: "center",
+          background: isBlood
+            ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
+            : "linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%)",
+          boxShadow: isBlood
+            ? "0 4px 15px rgba(225, 29, 72, 0.4)"
+            : "0 4px 15px rgba(245, 158, 11, 0.4)",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        <MessageCircle style={{ width: "24px", height: "24px", color: "white" }} />
+      </button>
 
-        {/* 移动端抽屉 */}
-        {isDrawerOpen && (
-          <>
-            {/* 遮罩层 */}
+      {/* 移动端抽屉 */}
+      {isDrawerOpen && (
+        <>
+          {/* 遮罩层 */}
+          <div
+            data-testid="danmaku-drawer"
+            className="danmaku-drawer-overlay"
+            onClick={() => setIsDrawerOpen(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 40,
+            }}
+          />
+          {/* 抽屉内容 */}
+          <div
+            className="danmaku-drawer"
+            style={{
+              position: "fixed",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 50,
+              height: "60vh",
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "16px 16px 0 0",
+              overflow: "hidden",
+              background: themeColors.background,
+              borderTop: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
+              boxShadow: isBlood
+                ? "0 -5px 20px rgba(225, 29, 72, 0.3)"
+                : "0 -5px 20px rgba(245, 158, 11, 0.3)",
+            }}
+          >
+            {/* 拖动条 */}
             <div
-              data-testid="danmaku-drawer"
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              className="w-full h-6 flex items-center justify-center cursor-pointer"
               onClick={() => setIsDrawerOpen(false)}
-            />
-            {/* 抽屉内容 */}
-            <div
-              className="fixed left-0 right-0 bottom-0 z-50 lg:hidden flex flex-col rounded-t-2xl overflow-hidden"
-              style={{
-                height: "60vh",
-                background: isBlood
-                  ? "linear-gradient(to top, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))"
-                  : "linear-gradient(to top, rgba(15, 15, 35, 0.98), rgba(30, 27, 75, 0.95))",
-                borderTop: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
-                boxShadow: isBlood
-                  ? "0 -5px 20px rgba(225, 29, 72, 0.3)"
-                  : "0 -5px 20px rgba(245, 158, 11, 0.3)",
-              }}
             >
-              {/* 拖动条 */}
               <div
-                className="w-full h-6 flex items-center justify-center cursor-pointer"
-                onClick={() => setIsDrawerOpen(false)}
-              >
-                <div
-                  className="w-12 h-1 rounded-full"
-                  style={{ backgroundColor: isBlood ? "rgba(225, 29, 72, 0.5)" : "rgba(245, 158, 11, 0.5)" }}
-                />
-              </div>
-              {renderDanmakuContent()}
+                className="w-12 h-1 rounded-full"
+                style={{
+                  backgroundColor: isBlood ? "rgba(225, 29, 72, 0.5)" : "rgba(245, 158, 11, 0.5)",
+                }}
+              />
             </div>
-          </>
-        )}
-      </>
+            {renderDanmakuContent(true)}
+          </div>
+        </>
+      )}
 
+      {/* 使用style标签添加响应式样式 */}
       <style>{`
+        /* 桌面端/平板端（>=768px）：显示侧边栏，隐藏移动端按钮 */
+        @media (min-width: 768px) {
+          .danmaku-sidebar {
+            display: flex !important;
+          }
+          .danmaku-mobile-button {
+            display: none !important;
+          }
+        }
+        
+        /* 移动端（<768px）：隐藏侧边栏，显示移动端按钮 */
+        @media (max-width: 767px) {
+          .danmaku-sidebar {
+            display: none !important;
+          }
+          .danmaku-mobile-button {
+            display: flex !important;
+          }
+        }
+        
         @keyframes fadeInUp {
           from {
             opacity: 0;

@@ -25,6 +25,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
       gradient: "linear-gradient(135deg, #0F0F23 0%, #1E1B4B 50%, #0F0F23 100%)",
       orbColors: ["#E11D48", "#DC2626"],
       icon: Sword,
+      progressBg: "rgba(30, 27, 75, 0.8)",
+      textPrimary: "#E2E8F0",
+      textSecondary: "#94A3B8",
     },
     mix: {
       subtitle: "混与躺轮回不止，这把混，下把躺",
@@ -33,9 +36,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
       ragePercentage: "50%",
       primaryButton: "进入直播间",
       secondaryButton: "浏览食堂",
-      gradient: "linear-gradient(135deg, #1E1B4B 0%, #0F0F23 50%, #1E1B4B 100%)",
+      gradient: "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #FEF3C7 100%)",
       orbColors: ["#F59E0B", "#3B82F6"],
       icon: Shield,
+      progressBg: "rgba(245, 158, 11, 0.3)",
+      textPrimary: "#78350F",
+      textSecondary: "#92400E",
     },
   };
 
@@ -210,19 +216,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
           className="text-xl md:text-2xl mb-3"
           style={{
             fontFamily: "Chakra Petch, sans-serif",
-            color: "#E2E8F0",
+            color: content.textPrimary,
           }}
         >
           {content.subtitle}
         </p>
 
         {/* Secondary Subtitle */}
-        <p className="text-base md:text-lg mb-8 text-gray-400">{content.description}</p>
+        <p className="text-base md:text-lg mb-8" style={{ color: content.textSecondary }}>
+          {content.description}
+        </p>
 
         {/* Rage/Mix Indicator */}
         <div className="w-full max-w-md mx-auto mb-8">
           <div className="flex justify-between mb-2">
-            <span className="text-white font-bold flex items-center gap-2">
+            <span className="font-bold flex items-center gap-2" style={{ color: content.textPrimary }}>
               <IconComponent className="w-4 h-4" />
               {content.rageLabel}
             </span>
@@ -232,7 +240,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
           </div>
           <div
             className="h-3 rounded-full overflow-hidden"
-            style={{ backgroundColor: "rgba(30, 27, 75, 0.8)" }}
+            style={{ backgroundColor: content.progressBg }}
           >
             <div
               className="h-full rounded-full transition-all duration-1000"

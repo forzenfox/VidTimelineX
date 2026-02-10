@@ -52,12 +52,27 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
     return titlesData[theme] || { featured: [], regular: [] };
   }, [theme]);
 
+  // 主题配色
+  const themeColors = {
+    background: isBlood
+      ? "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)"
+      : "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 100%)",
+    cardBg: isBlood
+      ? "rgba(30, 27, 75, 0.8)"
+      : "rgba(254, 243, 199, 0.8)",
+    smallCardBg: isBlood
+      ? "rgba(30, 27, 75, 0.5)"
+      : "rgba(254, 243, 199, 0.5)",
+    textSecondary: isBlood ? "#94A3B8" : "#92400E",
+    textMuted: isBlood ? "#64748B" : "#B45309",
+  };
+
   return (
     <section
       id="titles"
       className="py-16 px-4"
       style={{
-        background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
+        background: themeColors.background,
       }}
     >
       <div className="max-w-6xl mx-auto">
@@ -75,7 +90,9 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
           >
             称号殿堂
           </h2>
-          <p className="text-gray-400">{isBlood ? "血怒荣耀，战斗称号" : "C皇的荣耀称号集合"}</p>
+          <p style={{ color: themeColors.textSecondary }}>
+            {isBlood ? "血怒荣耀，战斗称号" : "C皇的荣耀称号集合"}
+          </p>
         </div>
 
         {/* Featured Titles - Large Cards */}
@@ -87,7 +104,7 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                 key={title.id}
                 className="group relative p-5 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden"
                 style={{
-                  background: `linear-gradient(135deg, ${title.color}20 0%, rgba(30, 27, 75, 0.8) 100%)`,
+                  background: `linear-gradient(135deg, ${title.color}20 0%, ${themeColors.cardBg} 100%)`,
                   border: `2px solid ${title.color}50`,
                 }}
               >
@@ -114,7 +131,7 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                   <h3 className="text-lg font-bold mb-1" style={{ color: title.color }}>
                     {title.name}
                   </h3>
-                  <p className="text-xs text-gray-400">{title.description}</p>
+                  <p className="text-xs" style={{ color: themeColors.textSecondary }}>{title.description}</p>
                 </div>
 
                 {/* Border Glow on Hover */}
@@ -138,7 +155,7 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                 key={title.id}
                 className="group relative p-3 rounded-xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{
-                  background: "rgba(30, 27, 75, 0.5)",
+                  background: themeColors.smallCardBg,
                   border: `1px solid ${title.color}40`,
                 }}
               >
@@ -156,7 +173,7 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                   <h3 className="text-xs font-bold mb-0.5" style={{ color: title.color }}>
                     {title.name}
                   </h3>
-                  <p className="text-[10px] text-gray-500">{title.description}</p>
+                  <p className="text-[10px]" style={{ color: themeColors.textMuted }}>{title.description}</p>
                 </div>
 
                 {/* Hover Glow */}
