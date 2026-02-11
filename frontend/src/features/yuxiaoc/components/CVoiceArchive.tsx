@@ -15,12 +15,23 @@ const categoryIconMap: Record<string, React.ComponentType<{ className?: string }
   blood: Sword,
 };
 
-// 分类颜色映射
-const categoryColorMap: Record<string, string> = {
-  skill: "#E11D48",
-  philosophy: "#F59E0B",
-  classic: "#3B82F6",
-  blood: "#DC2626",
+// 分类颜色映射 - 根据主题使用不同配色
+const getCategoryColorMap = (theme: Theme): Record<string, { bg: string; text: string }> => {
+  if (theme === "blood") {
+    return {
+      skill: { bg: "rgba(225, 29, 72, 0.25)", text: "#FB7185" },
+      philosophy: { bg: "rgba(245, 158, 11, 0.25)", text: "#FBBF24" },
+      classic: { bg: "rgba(59, 130, 246, 0.25)", text: "#60A5FA" },
+      blood: { bg: "rgba(220, 38, 38, 0.25)", text: "#F87171" },
+    };
+  }
+  // 混躺模式 - 亮色主题配色
+  return {
+    skill: { bg: "#DBEAFE", text: "#1E40AF" },
+    philosophy: { bg: "#FEF3C7", text: "#92400E" },
+    classic: { bg: "#D1FAE5", text: "#065F46" },
+    blood: { bg: "#FEE2E2", text: "#991B1B" },
+  };
 };
 
 // 分类标签映射
@@ -44,19 +55,23 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
       return {
         // 血怒模式 - 深色配色
         background: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
-        cardBg: "linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 15, 35, 0.9) 100%)",
-        itemBg: "rgba(30, 27, 75, 0.5)",
-        textPrimary: "#E2E8F0",
-        textSecondary: "#94A3B8",
+        cardBg: "linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(15, 15, 35, 0.95) 100%)",
+        itemBg: "rgba(30, 27, 75, 0.7)",
+        textPrimary: "#F1F5F9",
+        textSecondary: "#CBD5E1",
+        borderColor: "rgba(225, 29, 72, 0.4)",
+        accentColor: "#E11D48",
       };
     }
-    // 混躺模式 - 明亮配色
+    // 混躺模式 - 亮色主题配色
     return {
-      background: "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 100%)",
-      cardBg: "linear-gradient(135deg, rgba(254, 243, 199, 0.8) 0%, rgba(254, 243, 199, 0.9) 100%)",
-      itemBg: "rgba(254, 243, 199, 0.5)",
-      textPrimary: "#78350F",
-      textSecondary: "#92400E",
+      background: "#FFFFFF",
+      cardBg: "#FFFFFF",
+      itemBg: "#F8FAFC",
+      textPrimary: "#0F172A",
+      textSecondary: "#64748B",
+      borderColor: "#E2E8F0",
+      accentColor: "#D97706",
     };
   }, [isBlood]);
 
@@ -65,31 +80,34 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
     return voicesData[theme] || { featured: { text: "", author: "", category: "classic" }, list: [] };
   }, [theme]);
 
+  // 获取当前主题的分类颜色映射
+  const categoryColorMap = useMemo(() => getCategoryColorMap(theme), [theme]);
+
   // 获取特色语录的分类颜色
   const featuredCategoryColor = useMemo(() => {
     const category = voices.featured?.category || "classic";
-    return categoryColorMap[category] || "#94A3B8";
-  }, [voices]);
+    return categoryColorMap[category]?.text || "#94A3B8";
+  }, [voices, categoryColorMap]);
 
   return (
     <section
       id="voices"
-      className="py-16 px-4"
+      className="py-16 px-4 sm:px-6 lg:px-8"
       style={{
         background: themeColors.background,
       }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-10">
           <h2
             className="text-3xl md:text-4xl font-black mb-3"
             style={{
               fontFamily: "Russo One, sans-serif",
-              color: isBlood ? "#E11D48" : "#F59E0B",
+              color: themeColors.accentColor,
               textShadow: isBlood
                 ? "0 0 30px rgba(225, 29, 72, 0.5)"
-                : "0 0 30px rgba(245, 158, 11, 0.5)",
+                : "0 0 30px rgba(217, 119, 6, 0.3)",
             }}
           >
             {isBlood ? "血怒宣言" : "C言C语典藏馆"}
@@ -104,10 +122,10 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
           className="mb-8 p-6 md:p-10 rounded-3xl relative overflow-hidden"
           style={{
             background: themeColors.cardBg,
-            border: `2px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+            border: `2px solid ${themeColors.borderColor}`,
             boxShadow: isBlood
               ? "0 0 40px rgba(225, 29, 72, 0.2), inset 0 0 40px rgba(225, 29, 72, 0.1)"
-              : "0 0 40px rgba(245, 158, 11, 0.2), inset 0 0 40px rgba(245, 158, 11, 0.1)",
+              : "0 4px 20px rgba(0, 0, 0, 0.08), 0 0 40px rgba(217, 119, 6, 0.1)",
           }}
         >
           {/* Decorative Elements */}
@@ -123,14 +141,14 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
             <div
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4"
               style={{
-                background: isBlood ? "rgba(225, 29, 72, 0.2)" : "rgba(245, 158, 11, 0.2)",
-                border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+                background: isBlood ? "rgba(225, 29, 72, 0.2)" : "rgba(217, 119, 6, 0.15)",
+                border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(217, 119, 6, 0.25)"}`,
               }}
             >
-              <Sparkles className="w-4 h-4" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
+              <Sparkles className="w-4 h-4" style={{ color: themeColors.accentColor }} />
               <span
                 className="text-sm font-bold"
-                style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}
+                style={{ color: themeColors.accentColor }}
               >
                 {isBlood ? "血怒长廊" : "哲学长廊"}
               </span>
@@ -143,7 +161,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 color: themeColors.textPrimary,
                 textShadow: isBlood
                   ? "0 0 20px rgba(225, 29, 72, 0.3)"
-                  : "0 0 20px rgba(245, 158, 11, 0.3)",
+                  : "none",
               }}
             >
               &ldquo;{voices.featured?.text || "混与躺轮回不止，这把混，下把躺"}&rdquo;
@@ -155,7 +173,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 style={{
                   background: isBlood
                     ? "linear-gradient(135deg, #E11D48, #DC2626)"
-                    : "linear-gradient(135deg, #F59E0B, #3B82F6)",
+                    : "linear-gradient(135deg, #D97706, #F59E0B)",
                 }}
               >
                 <span className="text-white font-bold text-sm">C</span>
@@ -170,7 +188,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
         {/* Voices Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {voices.list?.map(voice => {
-            const color = categoryColorMap[voice.category] || "#94A3B8";
+            const categoryColors = categoryColorMap[voice.category] || { bg: "#F1F5F9", text: "#64748B" };
             const IconComponent = categoryIconMap[voice.category] || Volume2;
             const categoryLabel = categoryLabelMap[voice.category] || "其他";
 
@@ -180,15 +198,15 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 className="group relative p-4 rounded-2xl transition-all duration-300 hover:scale-105 cursor-pointer"
                 style={{
                   background: themeColors.itemBg,
-                  border: `1px solid ${color}30`,
+                  border: `1px solid ${themeColors.borderColor}`,
                 }}
               >
                 {/* Category Badge */}
                 <div
                   className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
                   style={{
-                    background: `${color}20`,
-                    color: color,
+                    background: categoryColors.bg,
+                    color: categoryColors.text,
                   }}
                 >
                   {categoryLabel}
@@ -198,9 +216,9 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 <div
                   className="w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110"
                   style={{
-                    background: `${color}20`,
-                    color: color,
-                    boxShadow: `0 0 10px ${color}30`,
+                    background: categoryColors.bg,
+                    color: categoryColors.text,
+                    boxShadow: isBlood ? `0 0 10px ${categoryColors.text}30` : "none",
                   }}
                 >
                   <IconComponent className="w-5 h-5" />
@@ -208,7 +226,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
 
                 {/* Quote */}
                 <div className="relative">
-                  <Quote className="absolute -top-1 -left-1 w-3 h-3 opacity-20" style={{ color }} />
+                  <Quote className="absolute -top-1 -left-1 w-3 h-3 opacity-20" style={{ color: categoryColors.text }} />
                   <p
                     className="text-sm font-bold pl-4 leading-tight"
                     style={{ color: themeColors.textPrimary }}
@@ -221,7 +239,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    boxShadow: `0 0 20px ${color}25`,
+                    boxShadow: isBlood ? `0 0 20px ${categoryColors.text}25` : `0 4px 12px rgba(0, 0, 0, 0.1)`,
                   }}
                 />
               </div>

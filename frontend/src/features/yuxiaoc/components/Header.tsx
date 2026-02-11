@@ -30,21 +30,21 @@ const navItems = [
 const externalLinks = [
   {
     id: "live",
-    label: "直播间",
+    label: "斗鱼直播间",
     icon: Radio,
-    url: "https://www.douyu.com/123456",
-  },
-  {
-    id: "yuba",
-    label: "鱼吧",
-    icon: MessageCircle,
-    url: "https://yuba.douyu.com/group/123456",
+    url: "https://www.douyu.com/1126960",
   },
   {
     id: "bilibili",
-    label: "B站",
+    label: "B站合集",
     icon: PlayCircle,
     url: "https://space.bilibili.com/xxx",
+  },
+  {
+    id: "yuba",
+    label: "鱼吧链接",
+    icon: MessageCircle,
+    url: "https://yuba.douyu.com/discussion/11431/posts",
   },
 ];
 
@@ -108,7 +108,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
             : "none",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:pl-8 lg:pr-[336px]">
           <div className="flex items-center justify-between h-16">
             {/* Logo and Title */}
             <div className="flex items-center gap-3">
@@ -124,10 +124,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                     : "0 0 20px rgba(245, 158, 11, 0.5)",
                 }}
               >
-                <Crown className="w-6 h-6 text-white" />
-                <div className="absolute bottom-0 right-0 bg-red-500 text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">
-                  LIVE
-                </div>
+                <Crown className="w-6 h-6 text-white mx-auto" />
               </div>
               <div>
                 <h1
@@ -140,9 +137,6 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                 >
                   C皇驾到
                 </h1>
-                <p className="text-xs" style={{ color: isBlood ? "#94A3B8" : "#475569" }}>
-                  斗鱼 123456
-                </p>
               </div>
             </div>
 
@@ -193,7 +187,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
             </nav>
 
             {/* External Links - Middle Section */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden lg:flex items-center gap-3">
               {externalLinks.map((link) => {
                 const Icon = link.icon;
                 return (
@@ -202,18 +196,35 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm font-medium transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
                     style={{
-                      color: isBlood ? "#94A3B8" : "#475569",
+                      color: isBlood ? "#E2E8F0" : "#0F172A",
+                      background: isBlood ? "rgba(30, 27, 75, 0.5)" : "rgba(255, 255, 255, 0.8)",
+                      border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+                      boxShadow: isBlood
+                        ? "0 2px 8px rgba(225, 29, 72, 0.1)"
+                        : "0 2px 8px rgba(245, 158, 11, 0.1)",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.color = isBlood ? "#E11D48" : "#F59E0B";
+                      e.currentTarget.style.background = isBlood
+                        ? "rgba(225, 29, 72, 0.2)"
+                        : "rgba(245, 158, 11, 0.15)";
+                      e.currentTarget.style.borderColor = isBlood
+                        ? "rgba(225, 29, 72, 0.5)"
+                        : "rgba(245, 158, 11, 0.5)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.color = isBlood ? "#94A3B8" : "#475569";
+                      e.currentTarget.style.background = isBlood
+                        ? "rgba(30, 27, 75, 0.5)"
+                        : "rgba(255, 255, 255, 0.8)";
+                      e.currentTarget.style.borderColor = isBlood
+                        ? "rgba(225, 29, 72, 0.3)"
+                        : "rgba(245, 158, 11, 0.3)";
+                      e.currentTarget.style.transform = "translateY(0)";
                     }}
                   >
-                    <Icon className="w-4 h-4" />
+                    <Icon className="w-4 h-4" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
                     <span className="hidden xl:inline">{link.label}</span>
                   </a>
                 );
@@ -231,7 +242,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                     <button
                       key={`quick-${item.id}`}
                       onClick={() => scrollToSection(item.id)}
-                      className="flex items-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium"
+                      className="flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg transition-all duration-200 text-xs font-medium"
                       style={{
                         color: isActive ? (isBlood ? "#E11D48" : "#F59E0B") : isBlood ? "#94A3B8" : "#475569",
                         background: isActive
@@ -259,7 +270,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                       }}
                       title={item.label}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className="w-3.5 h-3.5 mx-auto" />
                       <span className="hidden sm:inline">{item.label}</span>
                     </button>
                   );
@@ -269,7 +280,7 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
               {/* Theme Toggle */}
               <button
                 onClick={onThemeToggle}
-                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105"
+                className="flex items-center justify-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105"
                 style={{
                   background: isBlood
                     ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
@@ -282,12 +293,12 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
               >
                 {isBlood ? (
                   <>
-                    <Sword className="w-4 h-4" />
+                    <Sword className="w-4 h-4 mx-auto" />
                     <span className="hidden sm:inline">血怒模式</span>
                   </>
                 ) : (
                   <>
-                    <Fish className="w-4 h-4" />
+                    <Fish className="w-4 h-4 mx-auto" />
                     <span className="hidden sm:inline">混躺模式</span>
                   </>
                 )}
@@ -312,17 +323,20 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
       {showScrollTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+          className="fixed bottom-20 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 hover:-translate-y-1 cursor-pointer"
           style={{
+            right: "340px",
             background: isBlood
-              ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
-              : "linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%)",
+              ? "rgba(225, 29, 72, 0.9)"
+              : "rgba(245, 158, 11, 0.9)",
+            backdropFilter: "blur(8px)",
             boxShadow: isBlood
-              ? "0 4px 20px rgba(225, 29, 72, 0.4)"
-              : "0 4px 20px rgba(245, 158, 11, 0.4)",
+              ? "0 4px 15px rgba(225, 29, 72, 0.3)"
+              : "0 4px 15px rgba(245, 158, 11, 0.3)",
+            border: `1px solid ${isBlood ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.3)"}`,
           }}
         >
-          <ChevronUp className="w-6 h-6 text-white" />
+          <ChevronUp className="w-5 h-5 text-white" />
         </button>
       )}
     </>

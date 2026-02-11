@@ -67,20 +67,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-006: LIVE标识显示测试
-   * 测试目标：验证直播状态标识显示
-   */
-  test("TC-006: LIVE标识显示测试", () => {
-    render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
-
-    expect(screen.getByText("LIVE")).toBeInTheDocument();
-  });
-
-  /**
-   * 测试用例 TC-007: 快捷按钮显示测试
+   * 测试用例 TC-006: 快捷按钮显示测试
    * 测试目标：验证导航栏右侧快捷按钮正确显示（称号、食堂、语录）
    */
-  test("TC-007: 快捷按钮显示测试", () => {
+  test("TC-006: 快捷按钮显示测试", () => {
     render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
 
     // 验证快捷按钮存在（通过title属性查找）
@@ -94,10 +84,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-008: 快捷按钮点击跳转测试
+   * 测试用例 TC-007: 快捷按钮点击跳转测试
    * 测试目标：验证点击快捷按钮能正确跳转到对应模块
    */
-  test("TC-008: 快捷按钮点击跳转测试", () => {
+  test("TC-007: 快捷按钮点击跳转测试", () => {
     render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
 
     const titleButton = screen.getByTitle("称号");
@@ -110,10 +100,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-009: 外部链接渲染测试 - 直播间
+   * 测试用例 TC-008: 外部链接渲染测试 - 直播间
    * 测试目标：验证直播间链接正确显示
    */
-  test("TC-009: 外部链接渲染测试 - 直播间", () => {
+  test("TC-008: 外部链接渲染测试 - 直播间", () => {
     render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
 
     const liveLink = screen.getByText("直播间").closest("a");
@@ -124,10 +114,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-010: 外部链接渲染测试 - 鱼吧
+   * 测试用例 TC-009: 外部链接渲染测试 - 鱼吧
    * 测试目标：验证鱼吧链接正确显示
    */
-  test("TC-010: 外部链接渲染测试 - 鱼吧", () => {
+  test("TC-009: 外部链接渲染测试 - 鱼吧", () => {
     render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
 
     const yubaLink = screen.getByText("鱼吧").closest("a");
@@ -138,10 +128,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-011: 外部链接渲染测试 - B站
+   * 测试用例 TC-010: 外部链接渲染测试 - B站
    * 测试目标：验证B站链接正确显示
    */
-  test("TC-011: 外部链接渲染测试 - B站", () => {
+  test("TC-010: 外部链接渲染测试 - B站", () => {
     render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
 
     const bilibiliLink = screen.getByText("B站").closest("a");
@@ -152,10 +142,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-012: 外部链接图标显示测试
+   * 测试用例 TC-011: 外部链接图标显示测试
    * 测试目标：验证外部链接有对应的图标
    */
-  test("TC-012: 外部链接图标显示测试", () => {
+  test("TC-011: 外部链接图标显示测试", () => {
     render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
 
     // 验证外部链接容器存在
@@ -164,10 +154,10 @@ describe("Header组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-013: 混躺模式外部链接测试
+   * 测试用例 TC-012: 混躺模式外部链接测试
    * 测试目标：验证混躺模式下外部链接也正确显示
    */
-  test("TC-013: 混躺模式外部链接测试", () => {
+  test("TC-012: 混躺模式外部链接测试", () => {
     render(<Header theme="mix" onThemeToggle={mockOnThemeToggle} />);
 
     expect(screen.getByText("直播间")).toBeInTheDocument();

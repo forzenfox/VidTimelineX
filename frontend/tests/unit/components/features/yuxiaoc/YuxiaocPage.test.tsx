@@ -251,7 +251,7 @@ describe("YuxiaocPage集成测试", () => {
     await waitFor(() => {
       expect(screen.getByText(/C皇驾到 · 混与躺轮回不止/)).toBeInTheDocument();
       expect(screen.getByText("本站点为粉丝自制，仅供娱乐")).toBeInTheDocument();
-      expect(screen.getByText(/斗鱼直播间 123456/)).toBeInTheDocument();
+      expect(screen.getByText(/斗鱼直播间 1126960/)).toBeInTheDocument();
     });
   });
 

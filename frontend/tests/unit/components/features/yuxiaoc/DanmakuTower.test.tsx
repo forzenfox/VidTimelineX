@@ -3,24 +3,23 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { DanmakuTower } from "@/features/yuxiaoc/components/DanmakuTower";
 import "@testing-library/jest-dom";
 
-// 模拟danmaku数据 - 新数据结构
+// 模拟danmaku数据 - 简化后的数据结构
 jest.mock("@/features/yuxiaoc/data/danmaku.json", () => ({
-  users: [
-    { id: "1", name: "用户1", avatar: "https://example.com/avatar1.png" },
-    { id: "2", name: "用户2", avatar: "https://example.com/avatar2.png" },
-  ],
-  bloodDanmaku: [
-    { text: "无情铁手！", color: "#E11D48", speed: "normal", size: "medium" },
-    { text: "致残打击！", color: "#DC2626", speed: "fast", size: "large" },
-  ],
-  mixDanmaku: [
-    { text: "这把混", color: "#F59E0B", speed: "normal", size: "medium" },
-    { text: "下把躺", color: "#3B82F6", speed: "fast", size: "medium" },
-  ],
-  commonDanmaku: [
-    { text: "666", color: "#F59E0B", speed: "fast", size: "small" },
-    { text: "来了来了", color: "#3B82F6", speed: "normal", size: "small" },
-  ],
+  bloodDanmaku: ["无情铁手！", "致残打击！"],
+  mixDanmaku: ["这把混", "下把躺"],
+  commonDanmaku: ["666", "来了来了"],
+}));
+
+// 模拟users数据
+jest.mock("@/features/yuxiaoc/data/users.json", () => [
+  { id: "1", name: "用户1", avatar: "https://example.com/avatar1.png" },
+  { id: "2", name: "用户2", avatar: "https://example.com/avatar2.png" },
+]);
+
+// 模拟danmakuColors.ts
+jest.mock("@/features/yuxiaoc/data/danmakuColors", () => ({
+  getDanmakuColor: jest.fn(() => "#E11D48"),
+  getCommonDanmakuColor: jest.fn(() => "#6B7280"),
 }));
 
 describe("DanmakuTower组件测试", () => {
@@ -68,7 +67,7 @@ describe("DanmakuTower组件测试", () => {
 
   /**
    * 测试用例 TC-004: 弹幕消息渲染测试
-   * 测试目标：验证弹幕消息正确渲染（使用新数据结构）
+   * 测试目标：验证弹幕消息正确渲染（使用简化数据结构）
    */
   test("TC-004: 弹幕消息渲染测试", async () => {
     render(<DanmakuTower theme="blood" />);
@@ -222,10 +221,10 @@ describe("DanmakuTower组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-015: 新数据结构适配测试 - 血怒弹幕
-   * 测试目标：验证新数据结构bloodDanmaku正确加载
+   * 测试用例 TC-015: 简化数据结构适配测试 - 血怒弹幕
+   * 测试目标：验证简化后的bloodDanmaku数据结构正确加载
    */
-  test("TC-015: 新数据结构适配测试 - 血怒弹幕", async () => {
+  test("TC-015: 简化数据结构适配测试 - 血怒弹幕", async () => {
     render(<DanmakuTower theme="blood" />);
 
     // 验证血怒专属弹幕
@@ -241,10 +240,10 @@ describe("DanmakuTower组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-016: 新数据结构适配测试 - 混躺弹幕
-   * 测试目标：验证新数据结构mixDanmaku正确加载
+   * 测试用例 TC-016: 简化数据结构适配测试 - 混躺弹幕
+   * 测试目标：验证简化后的mixDanmaku数据结构正确加载
    */
-  test("TC-016: 新数据结构适配测试 - 混躺弹幕", async () => {
+  test("TC-016: 简化数据结构适配测试 - 混躺弹幕", async () => {
     render(<DanmakuTower theme="mix" />);
 
     // 验证混躺专属弹幕

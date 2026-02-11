@@ -23,11 +23,14 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
   const themeColors = {
     background: isBlood
       ? "linear-gradient(180deg, #1E1B4B 0%, #0F0F23 100%)"
-      : "linear-gradient(180deg, #FDE68A 0%, #FEF3C7 100%)",
-    cardBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "rgba(254, 243, 199, 0.5)",
-    textPrimary: isBlood ? "#E2E8F0" : "#78350F",
-    textSecondary: isBlood ? "#94A3B8" : "#92400E",
-    textMuted: isBlood ? "#64748B" : "#B45309",
+      : "#FFFFFF",
+    cardBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "#FFFFFF",
+    textPrimary: isBlood ? "#E2E8F0" : "#0F172A",
+    textSecondary: isBlood ? "#94A3B8" : "#334155",
+    textMuted: isBlood ? "#64748B" : "#64748B",
+    borderColor: isBlood ? "rgba(225, 29, 72, 0.3)" : "#E2E8F0",
+    accentColor: isBlood ? "#E11D48" : "#D97706",
+    searchBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "#F8FAFC",
   };
 
   // 根据主题调整分类顺序
@@ -91,10 +94,10 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             className="text-3xl md:text-4xl font-black mb-3"
             style={{
               fontFamily: "Russo One, sans-serif",
-              color: isBlood ? "#E11D48" : "#F59E0B",
+              color: themeColors.accentColor,
               textShadow: isBlood
                 ? "0 0 30px rgba(225, 29, 72, 0.5)"
-                : "0 0 30px rgba(245, 158, 11, 0.5)",
+                : "0 0 30px rgba(217, 119, 6, 0.3)",
             }}
           >
             {isBlood ? "血怒时刻" : "食堂大殿"}
@@ -109,14 +112,14 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
           <div
             className="relative flex items-center"
             style={{
-              background: themeColors.cardBg,
-              border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+              background: themeColors.searchBg,
+              border: `1px solid ${themeColors.borderColor}`,
               borderRadius: "9999px",
             }}
           >
             <Search
               className="absolute left-4 w-5 h-5"
-              style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}
+              style={{ color: themeColors.accentColor }}
             />
             <input
               type="text"
@@ -133,9 +136,9 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             {searchQuery && (
               <button
                 onClick={clearSearch}
-                className="absolute right-4 p-1 rounded-full hover:bg-white/10 transition-colors"
+                className="absolute right-4 p-1 rounded-full hover:bg-black/5 transition-colors"
               >
-                <X className="w-4 h-4 text-gray-400" />
+                <X className="w-4 h-4" style={{ color: themeColors.textMuted }} />
               </button>
             )}
           </div>
@@ -151,21 +154,21 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                 activeCategory === "all"
                   ? isBlood
                     ? "linear-gradient(135deg, #E11D48, #DC2626)"
-                    : "linear-gradient(135deg, #F59E0B, #3B82F6)"
+                    : "#D97706"
                   : themeColors.cardBg,
-              color: activeCategory === "all" ? "white" : "#94A3B8",
+              color: activeCategory === "all" ? "white" : themeColors.textSecondary,
               border: `2px solid ${
                 activeCategory === "all"
                   ? isBlood
                     ? "#E11D48"
-                    : "#F59E0B"
-                  : "rgba(148, 163, 184, 0.3)"
+                    : "#D97706"
+                  : themeColors.borderColor
               }`,
               boxShadow:
                 activeCategory === "all"
                   ? isBlood
                     ? "0 0 15px rgba(225, 29, 72, 0.4)"
-                    : "0 0 15px rgba(245, 158, 11, 0.4)"
+                    : "0 0 15px rgba(217, 119, 6, 0.3)"
                   : "none",
             }}
           >
@@ -177,10 +180,10 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               onClick={() => setActiveCategory(cat.id)}
               className="px-4 py-2 rounded-full font-bold transition-all duration-300 flex items-center gap-1.5 text-sm"
               style={{
-                background: activeCategory === cat.id ? cat.color : themeColors.cardBg,
-                color: activeCategory === cat.id ? "white" : "#94A3B8",
-                border: `2px solid ${activeCategory === cat.id ? cat.color : "rgba(148, 163, 184, 0.3)"}`,
-                boxShadow: activeCategory === cat.id ? `0 0 15px ${cat.color}40` : "none",
+                background: activeCategory === cat.id ? (isBlood ? cat.color : "#D97706") : themeColors.cardBg,
+                color: activeCategory === cat.id ? "white" : themeColors.textSecondary,
+                border: `2px solid ${activeCategory === cat.id ? (isBlood ? cat.color : "#D97706") : themeColors.borderColor}`,
+                boxShadow: activeCategory === cat.id ? `0 0 15px ${isBlood ? cat.color : "rgba(217, 119, 6, 0.3)"}` : "none",
               }}
             >
               {iconMap[cat.icon]}
@@ -193,7 +196,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
         <div className="text-center mb-4">
           <span className="text-sm" style={{ color: themeColors.textMuted }}>
             共{" "}
-            <span style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}>{filteredVideos.length}</span>{" "}
+            <span style={{ color: themeColors.accentColor }}>{filteredVideos.length}</span>{" "}
             个视频
             {searchQuery && (
               <span className="ml-2">
@@ -212,8 +215,9 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               className="group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03]"
               style={{
                 background: themeColors.cardBg,
-                border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.2)" : "rgba(245, 158, 11, 0.2)"}`,
+                border: `1px solid ${themeColors.borderColor}`,
                 animationDelay: `${index * 0.05}s`,
+                boxShadow: isBlood ? "none" : "0 1px 3px rgba(0, 0, 0, 0.1)",
               }}
             >
               {/* Thumbnail */}
@@ -235,10 +239,10 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                     style={{
                       background: isBlood
                         ? "linear-gradient(135deg, #E11D48, #DC2626)"
-                        : "linear-gradient(135deg, #F59E0B, #3B82F6)",
+                        : "#D97706",
                       boxShadow: isBlood
                         ? "0 0 20px rgba(225, 29, 72, 0.6)"
-                        : "0 0 20px rgba(245, 158, 11, 0.6)",
+                        : "0 0 20px rgba(217, 119, 6, 0.5)",
                     }}
                   >
                     <Play className="w-5 h-5 text-white ml-0.5" />
@@ -276,9 +280,9 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                       style={{
                         background: isBlood
                           ? "rgba(225, 29, 72, 0.15)"
-                          : "rgba(245, 158, 11, 0.15)",
-                        color: isBlood ? "#E11D48" : "#F59E0B",
-                        border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
+                          : "rgba(217, 119, 6, 0.1)",
+                        color: themeColors.accentColor,
+                        border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(217, 119, 6, 0.2)"}`,
                       }}
                     >
                       <Tag className="w-2.5 h-2.5" />
@@ -294,7 +298,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                 style={{
                   boxShadow: isBlood
                     ? "inset 0 0 20px rgba(225, 29, 72, 0.2), 0 0 20px rgba(225, 29, 72, 0.3)"
-                    : "inset 0 0 20px rgba(245, 158, 11, 0.2), 0 0 20px rgba(245, 158, 11, 0.3)",
+                    : "inset 0 0 20px rgba(217, 119, 6, 0.1), 0 0 20px rgba(217, 119, 6, 0.15)",
                 }}
               />
             </div>
@@ -307,10 +311,10 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             <div
               className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
               style={{
-                background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(245, 158, 11, 0.1)",
+                background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(217, 119, 6, 0.1)",
               }}
             >
-              <Search className="w-8 h-8" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
+              <Search className="w-8 h-8" style={{ color: themeColors.accentColor }} />
             </div>
             <p className="mb-2" style={{ color: themeColors.textSecondary }}>没有找到匹配的视频</p>
             <button
@@ -319,7 +323,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                 setActiveCategory("all");
               }}
               className="text-sm underline"
-              style={{ color: isBlood ? "#E11D48" : "#F59E0B" }}
+              style={{ color: themeColors.accentColor }}
             >
               清除筛选条件
             </button>

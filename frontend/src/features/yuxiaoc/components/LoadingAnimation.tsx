@@ -84,7 +84,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }
             <button
               data-testid="theme-blood"
               onClick={() => handleThemeSelect("blood")}
-              className="px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+              className="w-48 h-32 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 flex flex-col items-center justify-center"
               style={{
                 background: "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)",
                 boxShadow: "0 0 20px rgba(225, 29, 72, 0.5)",
@@ -97,7 +97,7 @@ export const LoadingAnimation: React.FC<LoadingAnimationProps> = ({ onComplete }
             <button
               data-testid="theme-mix"
               onClick={() => handleThemeSelect("mix")}
-              className="px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
+              className="w-48 h-32 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 flex flex-col items-center justify-center"
               style={{
                 background: "linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%)",
                 boxShadow: "0 0 20px rgba(245, 158, 11, 0.5)",

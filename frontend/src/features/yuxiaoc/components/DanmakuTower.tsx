@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from "react";
 import type { Theme } from "../data/types";
 import danmakuData from "../data/danmaku.json";
+import users from "../data/users.json";
+import { getDanmakuColor, getCommonDanmakuColor } from "../data/danmakuColors";
 import { MessageSquare, Users, X, MessageCircle } from "lucide-react";
 
 interface DanmakuTowerProps {
@@ -36,18 +38,18 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
         textSecondary: "#94A3B8",
       };
     }
-    // 混躺模式使用明亮配色
+    // 混躺模式使用新的亮色主题配色
     return {
-      background: "linear-gradient(to left, rgba(254, 243, 199, 0.98), rgba(253, 230, 138, 0.95))",
-      textPrimary: "#78350F",
-      textSecondary: "#92400E",
+      background: "linear-gradient(to left, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95))",
+      textPrimary: "#0F172A",
+      textSecondary: "#334155",
     };
   }, [isBlood]);
 
-  // 获取用户列表
-  const users = useMemo(() => danmakuData.users, []);
+  // 用户列表（直接从 JSON 导入）
+  const usersList = useMemo(() => users, []);
 
-  // 获取当前主题的弹幕数据（新数据结构：主题专属 + 公共弹幕）
+  // 获取当前主题的弹幕数据（主题专属 + 公共弹幕）
   const danmakuPool = useMemo(() => {
     const themeDanmaku = theme === "blood" ? danmakuData.bloodDanmaku : danmakuData.mixDanmaku;
     const commonDanmaku = danmakuData.commonDanmaku || [];
@@ -55,17 +57,35 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
     return [...themeDanmaku, ...commonDanmaku];
   }, [theme]);
 
+  // 辅助函数：根据文本长度分配大小
+  const getSizeByTextLength = (text: string): "small" | "medium" | "large" => {
+    const length = text.length;
+    if (length <= 3) return "large";
+    if (length <= 8) return "medium";
+    return "small";
+  };
+
+  // 辅助函数：获取弹幕颜色
+  const getMessageColor = (text: string, index: number): string => {
+    const themeDanmaku = theme === "blood" ? danmakuData.bloodDanmaku : danmakuData.mixDanmaku;
+    const isCommon = index >= themeDanmaku.length;
+    return isCommon ? getCommonDanmakuColor() : getDanmakuColor(theme);
+  };
+
   // 初始化弹幕消息
   const initialMessages = useMemo(() => {
     const now = new Date();
     return Array.from({ length: 12 }, (_, i) => {
-      const danmakuItem = danmakuPool[i % danmakuPool.length];
-      const user = users[i % users.length];
+      const text = danmakuPool[i % danmakuPool.length];
+      const user = usersList[i % usersList.length];
+      const size = getSizeByTextLength(text);
+      const color = getMessageColor(text, i);
+
       return {
         id: `initial-${i}`,
-        text: danmakuItem?.text || "弹幕",
-        color: danmakuItem?.color || (isBlood ? "#E11D48" : "#F59E0B"),
-        size: (danmakuItem?.size as "small" | "medium" | "large") || "medium",
+        text: text || "弹幕",
+        color: color || (isBlood ? "#E11D48" : "#F59E0B"),
+        size,
         userId: user?.id || "user1",
         userName: user?.name || "用户",
         userAvatar: user?.avatar || "",
@@ -76,7 +96,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
         }),
       };
     });
-  }, [danmakuPool, users, isBlood]);
+  }, [danmakuPool, usersList, isBlood, theme]);
 
   useEffect(() => {
     setDisplayMessages(initialMessages);
@@ -92,16 +112,20 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
   // 定期添加新弹幕
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomDanmaku = danmakuPool[Math.floor(Math.random() * danmakuPool.length)];
-      const randomUser = users[Math.floor(Math.random() * users.length)];
+      const randomIndex = Math.floor(Math.random() * danmakuPool.length);
+      const randomText = danmakuPool[randomIndex];
+      const randomUser = usersList[Math.floor(Math.random() * usersList.length)];
 
-      if (!randomDanmaku || !randomUser) return;
+      if (!randomText || !randomUser) return;
+
+      const size = getSizeByTextLength(randomText);
+      const color = getMessageColor(randomText, randomIndex);
 
       const newMessage: DanmakuMessage = {
         id: `msg-${Date.now()}-${Math.random()}`,
-        text: randomDanmaku.text,
-        color: randomDanmaku.color,
-        size: randomDanmaku.size as "small" | "medium" | "large",
+        text: randomText,
+        color,
+        size,
         userId: randomUser.id,
         userName: randomUser.name,
         userAvatar: randomUser.avatar,
@@ -119,7 +143,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [danmakuPool, users]);
+  }, [danmakuPool, usersList, theme]);
 
   // 弹幕内容渲染
   const renderDanmakuContent = (isInDrawer: boolean) => (
@@ -130,7 +154,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
         style={{
           background: isBlood
             ? "linear-gradient(135deg, rgba(225, 29, 72, 0.3), rgba(220, 38, 38, 0.2))"
-            : "linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(59, 130, 246, 0.2))",
+            : "linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(59, 130, 246, 0.08))",
           borderBottom: isBlood ? "2px solid #E11D48" : "2px solid #F59E0B",
           color: isBlood ? "#E11D48" : "#F59E0B",
         }}
@@ -140,7 +164,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           <div className="text-sm">弹幕聊天室</div>
           <div className="text-xs opacity-70 flex items-center gap-1">
             <Users className="w-3 h-3" />
-            {users.length} 人在线
+            {usersList.length} 人在线
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -188,13 +212,13 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
                 index % 2 === 0
                   ? isBlood
                     ? "rgba(225, 29, 72, 0.1)"
-                    : "rgba(245, 158, 11, 0.1)"
+                    : "#F8FAFC"
                   : isBlood
                     ? "rgba(220, 38, 38, 0.08)"
-                    : "rgba(59, 130, 246, 0.08)",
+                    : "#F1F5F9",
               border: isBlood
                 ? "1px solid rgba(225, 29, 72, 0.2)"
-                : "1px solid rgba(245, 158, 11, 0.2)",
+                : "1px solid rgba(245, 158, 11, 0.3)",
               animation: `fadeInUp 0.3s ease-out ${index * 0.05}s both`,
             }}
           >
@@ -242,11 +266,11 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
       <div
         className="px-4 py-2 text-center text-xs"
         style={{
-          background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(245, 158, 11, 0.1)",
+          background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(245, 158, 11, 0.08)",
           borderTop: isBlood
             ? "1px solid rgba(225, 29, 72, 0.3)"
             : "1px solid rgba(245, 158, 11, 0.3)",
-          color: isBlood ? "rgba(225, 29, 72, 0.8)" : "rgba(245, 158, 11, 0.8)",
+          color: isBlood ? "rgba(225, 29, 72, 0.8)" : "rgba(245, 158, 6, 0.8)",
         }}
       >
         {isBlood ? "🔥 血怒弹幕区 🔥" : "😴 混躺弹幕区 😴"}
@@ -272,7 +296,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           borderLeft: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
           boxShadow: isBlood
             ? "-5px 0 20px rgba(225, 29, 72, 0.3)"
-            : "-5px 0 20px rgba(245, 158, 11, 0.3)",
+            : "-5px 0 20px rgba(245, 158, 11, 0.25)",
         }}
       >
         {renderDanmakuContent(false)}
@@ -296,7 +320,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
           justifyContent: "center",
           background: isBlood
             ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
-            : "linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%)",
+            : "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
           boxShadow: isBlood
             ? "0 4px 15px rgba(225, 29, 72, 0.4)"
             : "0 4px 15px rgba(245, 158, 11, 0.4)",
@@ -340,7 +364,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
               borderTop: isBlood ? "3px solid #E11D48" : "3px solid #F59E0B",
               boxShadow: isBlood
                 ? "0 -5px 20px rgba(225, 29, 72, 0.3)"
-                : "0 -5px 20px rgba(245, 158, 11, 0.3)",
+                : "0 -5px 20px rgba(245, 158, 11, 0.25)",
             }}
           >
             {/* 拖动条 */}

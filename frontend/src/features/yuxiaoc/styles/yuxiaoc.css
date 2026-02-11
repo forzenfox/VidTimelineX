@@ -2,182 +2,274 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 余小C粉丝站全局样式 - Retro-Futurism Edition */
+/* 余小C粉丝站全局样式 - 双主题版本 */
 
 /* 引入自定义字体 */
 @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Russo+One&display=swap');
 
-/* 全局样式 */
+/* ============================================
+   CSS变量定义 - 双主题系统
+   ============================================ */
+
 :root {
-  --color-blood-primary: #E11D48;
-  --color-blood-secondary: #DC2626;
-  --color-mix-gold: #F59E0B;
-  --color-mix-blue: #3B82F6;
-  --color-accent-purple: #7C3AED;
-  --color-bg-dark: #0F0F23;
-  --color-bg-surface: #1E1B4B;
-  --color-text-primary: #E2E8F0;
-  --color-text-secondary: #94A3B8;
+  /* 血怒模式 - 深色主题 */
+  --blood-bg-primary: #0F0F23;
+  --blood-bg-secondary: #1E1B4B;
+  --blood-bg-tertiary: #312E81;
+  --blood-text-primary: #E2E8F0;
+  --blood-text-secondary: #94A3B8;
+  --blood-text-muted: #64748B;
+  --blood-accent-primary: #E11D48;
+  --blood-accent-secondary: #DC2626;
+  --blood-accent-gold: #F59E0B;
+  --blood-border: rgba(255, 255, 255, 0.1);
+  --blood-shadow: rgba(0, 0, 0, 0.5);
+  
+  /* 混躺模式 - 亮色主题 */
+  --mix-bg-primary: #F8FAFC;
+  --mix-bg-secondary: #FFFFFF;
+  --mix-bg-tertiary: #F1F5F9;
+  --mix-text-primary: #0F172A;
+  --mix-text-secondary: #334155;
+  --mix-text-muted: #64748B;
+  --mix-accent-primary: #D97706;
+  --mix-accent-secondary: #2563EB;
+  --mix-accent-amber: #F59E0B;
+  --mix-border: #E2E8F0;
+  --mix-shadow: rgba(0, 0, 0, 0.08);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-/* 默认样式（无主题时） */
 body {
   font-family: 'Chakra Petch', sans-serif;
 }
 
-/* 血怒模式主题 - 使用!important覆盖globals.css */
+/* ============================================
+   血怒模式主题 - 深色
+   ============================================ */
+
 body[data-theme="blood"] {
-  background-color: #0F0F23 !important;
-  color: #E2E8F0 !important;
+  background-color: var(--blood-bg-primary) !important;
+  color: var(--blood-text-primary) !important;
 }
 
-/* 混躺模式主题 - 使用!important覆盖globals.css */
+/* 血怒模式滚动条 */
+body[data-theme="blood"]::-webkit-scrollbar-track {
+  background: var(--blood-bg-primary);
+}
+
+body[data-theme="blood"]::-webkit-scrollbar-thumb {
+  background: var(--blood-bg-secondary);
+}
+
+body[data-theme="blood"]::-webkit-scrollbar-thumb:hover {
+  background: var(--blood-accent-primary);
+}
+
+/* ============================================
+   混躺模式主题 - 亮色
+   ============================================ */
+
 body[data-theme="mix"] {
-  background-color: #FEF3C7 !important;
-  color: #78350F !important;
+  background-color: var(--mix-bg-primary) !important;
+  color: var(--mix-text-primary) !important;
 }
 
-/* CRT扫描线效果 */
-.crt-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.03;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.15) 1px,
-    transparent 1px,
-    transparent 2px
-  );
+/* 混躺模式滚动条 */
+body[data-theme="mix"]::-webkit-scrollbar-track {
+  background: var(--mix-bg-tertiary);
 }
 
-/* 霓虹发光效果 */
-.neon-glow-red {
-  text-shadow: 
-    0 0 5px #E11D48,
-    0 0 10px #E11D48,
-    0 0 20px #E11D48,
-    0 0 40px #E11D48;
+body[data-theme="mix"]::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
 }
 
-.neon-glow-gold {
-  text-shadow: 
-    0 0 5px #F59E0B,
-    0 0 10px #F59E0B,
-    0 0 20px #F59E0B,
-    0 0 40px #F59E0B;
+body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
+  background: var(--mix-accent-primary);
 }
 
-.neon-border-red {
-  box-shadow: 
-    0 0 5px #E11D48,
-    0 0 10px #E11D48,
-    inset 0 0 5px rgba(225, 29, 72, 0.2);
-}
+/* ============================================
+   全局滚动条样式
+   ============================================ */
 
-.neon-border-gold {
-  box-shadow: 
-    0 0 5px #F59E0B,
-    0 0 10px #F59E0B,
-    inset 0 0 5px rgba(245, 158, 11, 0.2);
-}
-
-/* 故障效果 */
-@keyframes glitch {
-  0% {
-    transform: translate(0);
-  }
-  20% {
-    transform: translate(-2px, 2px);
-  }
-  40% {
-    transform: translate(-2px, -2px);
-  }
-  60% {
-    transform: translate(2px, 2px);
-  }
-  80% {
-    transform: translate(2px, -2px);
-  }
-  100% {
-    transform: translate(0);
-  }
-}
-
-.glitch-effect {
-  animation: glitch 0.3s ease-in-out;
-}
-
-/* 浮动粒子背景 */
-@keyframes float-particle {
-  0%, 100% {
-    transform: translateY(0) translateX(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100vh) translateX(20px);
-    opacity: 0;
-  }
-}
-
-.floating-particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: var(--color-blood-primary);
-  border-radius: 50%;
-  animation: float-particle 8s linear infinite;
-}
-
-/* 血怒模式 */
-.theme-blood {
-  --primary-color: #E11D48;
-  --secondary-color: #DC2626;
-  --accent-color: #F59E0B;
-}
-
-/* 混躺模式 */
-.theme-mix {
-  --primary-color: #F59E0B;
-  --secondary-color: #3B82F6;
-  --accent-color: #E11D48;
-}
-
-/* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-bg-dark);
+/* ============================================
+   血怒模式组件样式
+   ============================================ */
+
+.theme-blood {
+  --primary-color: var(--blood-accent-primary);
+  --secondary-color: var(--blood-accent-secondary);
+  --accent-color: var(--blood-accent-gold);
+  --bg-color: var(--blood-bg-primary);
+  --text-color: var(--blood-text-primary);
 }
 
-::-webkit-scrollbar-thumb {
-  background: var(--color-bg-surface);
-  border-radius: 4px;
+/* 血怒模式卡片 */
+.card-blood {
+  background: rgba(30, 27, 75, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-blood-primary);
+.card-blood:hover {
+  border-color: rgba(225, 29, 72, 0.5);
+  box-shadow: 0 10px 30px rgba(225, 29, 72, 0.2);
 }
 
-/* 动画关键帧 */
+/* 血怒模式按钮 */
+.btn-blood {
+  background: linear-gradient(135deg, #E11D48 0%, #DC2626 100%);
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+}
+
+.btn-blood:hover {
+  box-shadow: 0 6px 25px rgba(225, 29, 72, 0.6);
+  transform: translateY(-2px);
+}
+
+/* 血怒模式标签 */
+.tag-blood {
+  background: rgba(225, 29, 72, 0.2);
+  color: #E11D48;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+}
+
+/* ============================================
+   混躺模式组件样式 - 亮色主题
+   ============================================ */
+
+.theme-mix {
+  --primary-color: var(--mix-accent-primary);
+  --secondary-color: var(--mix-accent-secondary);
+  --accent-color: var(--mix-accent-amber);
+  --bg-color: var(--mix-bg-primary);
+  --text-color: var(--mix-text-primary);
+}
+
+/* 混躺模式卡片 - 白色背景 */
+.card-mix {
+  background: #FFFFFF;
+  border: 1px solid var(--mix-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.card-mix:hover {
+  border-color: #FCD34D;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
+  transform: translateY(-4px);
+}
+
+/* 混躺模式按钮 - 琥珀色 */
+.btn-mix {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+  color: #FFFFFF;
+}
+
+.btn-mix:hover {
+  box-shadow: 0 6px 25px rgba(217, 119, 6, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 混躺模式次级按钮 - 蓝色 */
+.btn-mix-secondary {
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  color: #FFFFFF;
+}
+
+.btn-mix-secondary:hover {
+  box-shadow: 0 6px 25px rgba(37, 99, 235, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 混躺模式标签 - 分类颜色 */
+.tag-mix-skill {
+  background: #DBEAFE;
+  color: #1E40AF;
+  border: 1px solid #BFDBFE;
+}
+
+.tag-mix-philosophy {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+}
+
+.tag-mix-classic {
+  background: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.tag-mix-blood {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* 混躺模式输入框 */
+.input-mix {
+  background: #F8FAFC;
+  border: 2px solid #E2E8F0;
+  color: #0F172A;
+}
+
+.input-mix:focus {
+  border-color: #FCD34D;
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.2);
+}
+
+.input-mix::placeholder {
+  color: #94A3B8;
+}
+
+/* ============================================
+   文字渐变效果
+   ============================================ */
+
+.text-gradient-blood {
+  background: linear-gradient(135deg, #E11D48 0%, #F59E0B 50%, #E11D48 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-mix {
+  background: linear-gradient(135deg, #D97706 0%, #2563EB 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   边框发光效果
+   ============================================ */
+
+.border-glow-blood {
+  box-shadow: 0 0 20px rgba(225, 29, 72, 0.3),
+              inset 0 0 20px rgba(225, 29, 72, 0.1);
+}
+
+.border-glow-mix {
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.2),
+              inset 0 0 20px rgba(217, 119, 6, 0.05);
+}
+
+/* ============================================
+   动画关键帧
+   ============================================ */
+
 @keyframes bloodRage {
   0%, 100% {
     box-shadow: 0 0 20px rgba(225, 29, 72, 0.5);
@@ -189,11 +281,11 @@ body[data-theme="mix"] {
 
 @keyframes pulseGlow {
   0%, 100% {
-    opacity: 0.5;
+    opacity: 0.15;
     transform: scale(1);
   }
   50% {
-    opacity: 1;
+    opacity: 0.25;
     transform: scale(1.05);
   }
 }
@@ -227,7 +319,10 @@ body[data-theme="mix"] {
   }
 }
 
-/* 工具类 */
+/* ============================================
+   动画工具类
+   ============================================ */
+
 .animate-blood-rage {
   animation: bloodRage 2s ease-in-out infinite;
 }
@@ -244,33 +339,10 @@ body[data-theme="mix"] {
   animation: border-glow 2s ease-in-out infinite;
 }
 
-/* 文字渐变 */
-.text-gradient-blood {
-  background: linear-gradient(135deg, #E11D48 0%, #F59E0B 50%, #E11D48 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* ============================================
+   工具类
+   ============================================ */
 
-.text-gradient-mix {
-  background: linear-gradient(135deg, #F59E0B 0%, #3B82F6 50%, #F59E0B 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* 边框发光效果 */
-.border-glow-blood {
-  box-shadow: 0 0 20px rgba(225, 29, 72, 0.3),
-              inset 0 0 20px rgba(225, 29, 72, 0.1);
-}
-
-.border-glow-mix {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.3),
-              inset 0 0 20px rgba(245, 158, 11, 0.1);
-}
-
-/* 卡片悬停效果 */
 .card-hover {
   transition: all 0.3s ease;
 }
@@ -280,64 +352,20 @@ body[data-theme="mix"] {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* Bento Grid卡片 */
-.bento-card {
-  background: rgba(30, 27, 75, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.5rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.bento-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: rgba(225, 29, 72, 0.5);
-  box-shadow: 0 10px 30px rgba(225, 29, 72, 0.2);
-}
-
-/* 按钮样式 */
-.btn-blood {
-  background: linear-gradient(135deg, #E11D48 0%, #DC2626 100%);
-  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
-  transition: all 0.3s ease;
-}
-
-.btn-blood:hover {
-  box-shadow: 0 6px 25px rgba(225, 29, 72, 0.6);
-  transform: translateY(-2px);
-}
-
-.btn-mix {
-  background: linear-gradient(135deg, #F59E0B 0%, #3B82F6 100%);
-  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-  transition: all 0.3s ease;
-}
-
-.btn-mix:hover {
-  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6);
-  transform: translateY(-2px);
-}
-
-/* 标签样式 */
-.tag-blood {
-  background: rgba(225, 29, 72, 0.2);
-  color: #E11D48;
-  border: 1px solid rgba(225, 29, 72, 0.3);
-}
-
-.tag-mix {
-  background: rgba(245, 158, 11, 0.2);
-  color: #F59E0B;
-  border: 1px solid rgba(245, 158, 11, 0.3);
-}
-
-/* 毛玻璃效果 */
-.glass {
+/* 毛玻璃效果 - 血怒模式 */
+.glass-blood {
   background: rgba(30, 27, 75, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 毛玻璃效果 - 混躺模式 */
+.glass-mix {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
 /* 头像发光边框 */
@@ -355,7 +383,10 @@ body[data-theme="mix"] {
   animation: bloodRage 3s ease-in-out infinite;
 }
 
-/* 响应式设计 */
+/* ============================================
+   响应式设计
+   ============================================ */
+
 @media (max-width: 768px) {
   .text-6xl {
     font-size: 3rem;
@@ -374,7 +405,10 @@ body[data-theme="mix"] {
   }
 }
 
-/* 减少动画偏好 */
+/* ============================================
+   减少动画偏好
+   ============================================ */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -386,7 +420,10 @@ body[data-theme="mix"] {
   }
 }
 
-/* 深色模式适配 */
+/* ============================================
+   深色模式适配
+   ============================================ */
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;

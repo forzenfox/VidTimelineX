@@ -56,36 +56,36 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
   const themeColors = {
     background: isBlood
       ? "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)"
-      : "linear-gradient(180deg, #FEF3C7 0%, #FDE68A 100%)",
+      : "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
     cardBg: isBlood
       ? "rgba(30, 27, 75, 0.8)"
-      : "rgba(254, 243, 199, 0.8)",
+      : "#FFFFFF",
     smallCardBg: isBlood
       ? "rgba(30, 27, 75, 0.5)"
-      : "rgba(254, 243, 199, 0.5)",
-    textSecondary: isBlood ? "#94A3B8" : "#92400E",
-    textMuted: isBlood ? "#64748B" : "#B45309",
+      : "#FFFFFF",
+    textSecondary: isBlood ? "#94A3B8" : "#334155",
+    textMuted: isBlood ? "#64748B" : "#64748B",
   };
 
   return (
     <section
       id="titles"
-      className="py-16 px-4"
+      className="py-16 px-4 sm:px-6 lg:px-8"
       style={{
         background: themeColors.background,
       }}
     >
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Section Title */}
         <div className="text-center mb-10">
           <h2
             className="text-3xl md:text-4xl font-black mb-3"
             style={{
               fontFamily: "Russo One, sans-serif",
-              color: isBlood ? "#E11D48" : "#F59E0B",
+              color: isBlood ? "#E11D48" : "#D97706",
               textShadow: isBlood
                 ? "0 0 30px rgba(225, 29, 72, 0.5)"
-                : "0 0 30px rgba(245, 158, 11, 0.5)",
+                : "0 0 30px rgba(217, 119, 6, 0.3)",
             }}
           >
             称号殿堂

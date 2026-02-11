@@ -57,11 +57,11 @@ const YuxiaocPage = () => {
     };
   }, [theme]);
 
-  // 主题配色方案
+  // 主题配色方案 - 双主题系统
   const themeColors = useMemo(() => {
     if (theme === "blood") {
       return {
-        // 血怒模式 - 暗色主题
+        // 血怒模式 - 深色主题
         background: "#0F0F23",
         backgroundGradient: "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)",
         textPrimary: "#E2E8F0",
@@ -73,15 +73,15 @@ const YuxiaocPage = () => {
       };
     } else {
       return {
-        // 混躺模式 - 明亮主题
-        background: "#FEF3C7",
-        backgroundGradient: "linear-gradient(180deg, #FEF3C7 0%, #FEF9C3 100%)",
-        textPrimary: "#78350F",
-        textSecondary: "#92400E",
-        accent: "#B45309",
-        accentSecondary: "#F59E0B",
-        border: "rgba(245, 158, 11, 0.3)",
-        decorativeLine: "#F59E0B",
+        // 混躺模式 - 亮色主题
+        background: "#F8FAFC",
+        backgroundGradient: "linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)",
+        textPrimary: "#0F172A",
+        textSecondary: "#334155",
+        accent: "#D97706",
+        accentSecondary: "#2563EB",
+        border: "rgba(226, 232, 240, 0.8)",
+        decorativeLine: "#D97706",
       };
     }
   }, [theme]);
@@ -162,7 +162,7 @@ const YuxiaocPage = () => {
                 style={{ backgroundColor: themeColors.accentSecondary }}
               />
               <span className="text-xs" style={{ color: themeColors.textSecondary }}>
-                斗鱼直播间 123456
+                斗鱼直播间 1126960
               </span>
             </div>
           </footer>

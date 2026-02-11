@@ -3,22 +3,17 @@ import { render, waitFor } from "@testing-library/react";
 import { HorizontalDanmaku } from "@/features/yuxiaoc/components/HorizontalDanmaku";
 import "@testing-library/jest-dom";
 
-// 模拟danmaku.json数据 - 新数据结构
+// 模拟danmaku.json数据 - 简化后的数据结构
 jest.mock("@/features/yuxiaoc/data/danmaku.json", () => ({
-  bloodDanmaku: [
-    { text: "血怒测试弹幕1", color: "#FF0000", speed: "normal", size: "medium" },
-    { text: "血怒测试弹幕2", color: "#FF0000", speed: "fast", size: "large" },
-    { text: "血怒测试弹幕3", color: "#FF0000", speed: "slow", size: "small" },
-  ],
-  mixDanmaku: [
-    { text: "混躺测试弹幕1", color: "#00FF00", speed: "normal", size: "medium" },
-    { text: "混躺测试弹幕2", color: "#00FF00", speed: "fast", size: "large" },
-    { text: "混躺测试弹幕3", color: "#00FF00", speed: "slow", size: "small" },
-  ],
-  commonDanmaku: [
-    { text: "公共弹幕1", color: "#F59E0B", speed: "fast", size: "small" },
-    { text: "公共弹幕2", color: "#3B82F6", speed: "normal", size: "medium" },
-  ],
+  bloodDanmaku: ["血怒测试弹幕1", "血怒测试弹幕2", "血怒测试弹幕3"],
+  mixDanmaku: ["混躺测试弹幕1", "混躺测试弹幕2", "混躺测试弹幕3"],
+  commonDanmaku: ["公共弹幕1", "公共弹幕2"],
+}));
+
+// 模拟danmakuColors.ts
+jest.mock("@/features/yuxiaoc/data/danmakuColors", () => ({
+  getDanmakuColor: jest.fn(() => "#E11D48"),
+  getCommonDanmakuColor: jest.fn(() => "#6B7280"),
 }));
 
 describe("HorizontalDanmaku组件测试", () => {
@@ -144,10 +139,10 @@ describe("HorizontalDanmaku组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-008: 新数据结构适配测试 - 血怒弹幕
-   * 测试目标：验证新数据结构bloodDanmaku正确加载
+   * 测试用例 TC-008: 简化数据结构适配测试 - 血怒弹幕
+   * 测试目标：验证简化后的bloodDanmaku数据结构正确加载
    */
-  test("TC-008: 新数据结构适配测试 - 血怒弹幕", async () => {
+  test("TC-008: 简化数据结构适配测试 - 血怒弹幕", async () => {
     const { container } = render(<HorizontalDanmaku theme="blood" isVisible={true} />);
 
     // 等待组件挂载
@@ -161,10 +156,10 @@ describe("HorizontalDanmaku组件测试", () => {
   });
 
   /**
-   * 测试用例 TC-009: 新数据结构适配测试 - 混躺弹幕
-   * 测试目标：验证新数据结构mixDanmaku正确加载
+   * 测试用例 TC-009: 简化数据结构适配测试 - 混躺弹幕
+   * 测试目标：验证简化后的mixDanmaku数据结构正确加载
    */
-  test("TC-009: 新数据结构适配测试 - 混躺弹幕", async () => {
+  test("TC-009: 简化数据结构适配测试 - 混躺弹幕", async () => {
     const { container } = render(<HorizontalDanmaku theme="mix" isVisible={true} />);
 
     // 等待组件挂载

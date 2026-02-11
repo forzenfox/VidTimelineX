@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import type { Theme } from "../data/types";
 import danmakuData from "../data/danmaku.json";
+import { getDanmakuColor, getCommonDanmakuColor } from "../data/danmakuColors";
 
 interface HorizontalDanmakuProps {
   theme: Theme;
@@ -14,7 +15,8 @@ interface DanmakuItem {
   top: number;
   delay: number;
   duration: number;
-  speed: "slow" | "normal" | "fast" | "large";
+  fontSize: number;
+  fontWeight: number;
 }
 
 // 预生成的随机数数组，避免在 render 中使用 Math.random
@@ -38,7 +40,7 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
   const danmakuList = useMemo(() => {
     if (!isVisible || !mounted) return [];
 
-    // 获取当前主题的弹幕数据（新数据结构：主题专属 + 公共弹幕）
+    // 获取当前主题的弹幕数据（主题专属 + 公共弹幕）
     const themeDanmaku = theme === "blood" ? danmakuData.bloodDanmaku : danmakuData.mixDanmaku;
     const commonDanmaku = danmakuData.commonDanmaku || [];
     // 合并主题专属弹幕和公共弹幕
@@ -47,27 +49,37 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
     if (pool.length === 0) return [];
 
     const items: DanmakuItem[] = [];
-    const trackCount = 8; // 弹幕轨道数量，参考lvjiang实现
+    const trackCount = 8; // 弹幕轨道数量
 
     for (let i = 0; i < 30; i++) {
-      const danmaku = pool[i % pool.length];
-      const speed = (danmaku.speed as "slow" | "normal" | "fast" | "large") || "normal";
-      let duration = 10;
-      if (speed === "fast") duration = 6;
-      if (speed === "slow") duration = 14;
+      const text = pool[i % pool.length];
+      
+      // 根据主题统一分配颜色
+      const isCommon = i >= themeDanmaku.length;
+      const color = isCommon 
+        ? getCommonDanmakuColor() 
+        : getDanmakuColor(theme);
+
+      // 随机分配速度 (6-14秒)
+      const randomDuration = RANDOM_SEEDS[i % RANDOM_SEEDS.length];
+      const duration = 6 + randomDuration * 8;
+
+      // 随机字体大小 (14-20px)
+      const fontSize = 14 + Math.floor(randomDuration * 6);
+      const fontWeight = randomDuration > 0.7 ? 800 : 600;
 
       // 使用预生成的随机种子
-      const randomDelay = RANDOM_SEEDS[i] || 0;
-      const randomDuration = RANDOM_SEEDS[i + 30] || 0;
+      const randomDelay = RANDOM_SEEDS[(i + 30) % RANDOM_SEEDS.length];
 
       items.push({
         id: `danmaku-${theme}-${i}`,
-        text: danmaku.text,
-        color: danmaku.color,
-        top: 10 + (i % trackCount) * 10, // 8条轨道均匀分布：10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%
+        text,
+        color,
+        top: 10 + (i % trackCount) * 10, // 8条轨道均匀分布
         delay: i * 0.3 + randomDelay * 2, // 随机延迟，避免同时出现
-        duration: duration + randomDuration * 3,
-        speed: speed,
+        duration,
+        fontSize,
+        fontWeight,
       });
     }
     return items;
@@ -105,12 +117,14 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
             transform: "translateX(100vw)",
             opacity: 1,
             animation: `yuxiao-danmaku-scroll ${item.duration}s linear ${item.delay}s forwards`,
-            fontSize: item.speed === "large" ? "18px" : "14px",
+            fontSize: `${item.fontSize}px`,
             color: item.color,
             background: `${item.color}15`,
             border: `1px solid ${item.color}40`,
-            textShadow: `0 0 10px ${item.color}60, 0 0 20px ${item.color}40`,
-            fontWeight: item.speed === "large" ? 800 : 600,
+            textShadow: theme === "blood"
+              ? `0 0 10px ${item.color}80, 0 0 20px ${item.color}40, 2px 2px 4px rgba(0,0,0,0.8)`
+              : `0 0 8px ${item.color}60, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff`,
+            fontWeight: item.fontWeight,
             letterSpacing: "0.5px",
             willChange: "transform, opacity",
             backfaceVisibility: "hidden",
