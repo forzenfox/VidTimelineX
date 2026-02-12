@@ -128,7 +128,7 @@ describe("HeroSection组件测试", () => {
     render(<HeroSection theme="blood" />);
 
     const liveLink = screen.getByText("进入直播间").closest("a");
-    expect(liveLink).toHaveAttribute("href", "https://www.douyu.com/123456");
+    expect(liveLink).toHaveAttribute("href", "https://www.douyu.com/1126960");
     expect(liveLink).toHaveAttribute("target", "_blank");
     expect(liveLink).toHaveAttribute("rel", "noopener noreferrer");
   });

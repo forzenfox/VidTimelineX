@@ -258,7 +258,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
         {/* CTA Buttons - 2x2 Grid Layout */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 justify-center max-w-md mx-auto">
           <a
-            href="https://www.douyu.com/123456"
+            href="https://www.douyu.com/1126960"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105"
@@ -296,7 +296,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
           </button>
 
           <a
-            href="https://yuba.douyu.com/group/123456"
+            href="https://yuba.douyu.com/discussion/11431/posts"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105"

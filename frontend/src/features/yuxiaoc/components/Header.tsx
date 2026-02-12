@@ -60,13 +60,21 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
       setIsScrolled(scrollY > 50);
       setShowScrollTop(scrollY > 500);
 
-      const sections = navItems.map((item) => document.getElementById(item.id));
+      // 过滤掉不存在的section，只遍历存在的section
+      const existingSections = navItems
+        .map((item) => {
+          const element = document.getElementById(item.id);
+          return element ? { id: item.id, element } : null;
+        })
+        .filter((item): item is { id: string; element: HTMLElement } => item !== null);
+
       const scrollPosition = scrollY + 100;
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section && section.offsetTop <= scrollPosition) {
-          setActiveSection(navItems[i].id);
+      // 从下往上遍历各个section
+      for (let i = existingSections.length - 1; i >= 0; i--) {
+        const { id, element } = existingSections[i];
+        if (element.offsetTop <= scrollPosition) {
+          setActiveSection(id);
           break;
         }
       }
@@ -77,6 +85,10 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
   }, []);
 
   const scrollToSection = (id: string) => {
+    // 立即更新activeSection状态
+    setActiveSection(id);
+    
+    // 滚动到对应的section
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
