@@ -18,7 +18,7 @@ if (typeof window !== "undefined") {
 }
 
 import { createRoot } from "react-dom/client";
-import { HashRouter } from "react-router-dom";
+import { HashRouter, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppRoutes from "./routes";
 import "../styles/globals.css";
@@ -62,21 +62,41 @@ function registerServiceWorker() {
 
 registerServiceWorker();
 
+// 支持移动端访问的路由白名单
+const MOBILE_SUPPORTED_ROUTES = ["/yuxiaoc"];
+
+/**
+ * 检查当前路由是否支持移动端访问
+ * @param pathname - 当前路径
+ * @returns 是否支持移动端
+ */
+function isMobileSupportedRoute(pathname: string): boolean {
+  return MOBILE_SUPPORTED_ROUTES.some(route => pathname.startsWith(route));
+}
+
 const MainApp: React.FC = () => {
   const isMobile = useIsMobile();
+  const location = useLocation();
 
-  if (isMobile) {
+  // 如果是移动端且当前路由不支持移动端访问，显示不支持提示
+  if (isMobile && !isMobileSupportedRoute(location.pathname)) {
     return <MobileNotSupported />;
   }
 
   return (
     <QueryClientProvider client={queryClient}>
       <PerformanceMonitor />
-      <HashRouter>
-        <AppRoutes />
-      </HashRouter>
+      <AppRoutes />
     </QueryClientProvider>
   );
 };
 
-createRoot(document.getElementById("root")!).render(<MainApp />);
+const RootApp: React.FC = () => {
+  return (
+    <HashRouter>
+      <MainApp />
+    </HashRouter>
+  );
+};
+
+createRoot(document.getElementById("root")!).render(<RootApp />);

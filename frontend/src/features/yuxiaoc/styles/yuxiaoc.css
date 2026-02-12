@@ -1,0 +1,429 @@
+@import "tailwindcss";
+
+/* 余小C粉丝站全局样式 - 双主题版本 */
+
+/* 引入自定义字体 */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Russo+One&display=swap');
+
+/* ============================================
+   CSS变量定义 - 双主题系统
+   ============================================ */
+
+:root {
+  /* 血怒模式 - 深色主题 */
+  --blood-bg-primary: #0F0F23;
+  --blood-bg-secondary: #1E1B4B;
+  --blood-bg-tertiary: #312E81;
+  --blood-text-primary: #E2E8F0;
+  --blood-text-secondary: #94A3B8;
+  --blood-text-muted: #64748B;
+  --blood-accent-primary: #E11D48;
+  --blood-accent-secondary: #DC2626;
+  --blood-accent-gold: #F59E0B;
+  --blood-border: rgba(255, 255, 255, 0.1);
+  --blood-shadow: rgba(0, 0, 0, 0.5);
+  
+  /* 混躺模式 - 亮色主题 */
+  --mix-bg-primary: #F8FAFC;
+  --mix-bg-secondary: #FFFFFF;
+  --mix-bg-tertiary: #F1F5F9;
+  --mix-text-primary: #0F172A;
+  --mix-text-secondary: #334155;
+  --mix-text-muted: #64748B;
+  --mix-accent-primary: #D97706;
+  --mix-accent-secondary: #2563EB;
+  --mix-accent-amber: #F59E0B;
+  --mix-border: #E2E8F0;
+  --mix-shadow: rgba(0, 0, 0, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Chakra Petch', sans-serif;
+}
+
+/* ============================================
+   血怒模式主题 - 深色
+   ============================================ */
+
+body[data-theme="blood"] {
+  background-color: var(--blood-bg-primary) !important;
+  color: var(--blood-text-primary) !important;
+}
+
+/* 血怒模式滚动条 */
+body[data-theme="blood"]::-webkit-scrollbar-track {
+  background: var(--blood-bg-primary);
+}
+
+body[data-theme="blood"]::-webkit-scrollbar-thumb {
+  background: var(--blood-bg-secondary);
+}
+
+body[data-theme="blood"]::-webkit-scrollbar-thumb:hover {
+  background: var(--blood-accent-primary);
+}
+
+/* ============================================
+   混躺模式主题 - 亮色
+   ============================================ */
+
+body[data-theme="mix"] {
+  background-color: var(--mix-bg-primary) !important;
+  color: var(--mix-text-primary) !important;
+}
+
+/* 混躺模式滚动条 */
+body[data-theme="mix"]::-webkit-scrollbar-track {
+  background: var(--mix-bg-tertiary);
+}
+
+body[data-theme="mix"]::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
+  background: var(--mix-accent-primary);
+}
+
+/* ============================================
+   全局滚动条样式
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* ============================================
+   血怒模式组件样式
+   ============================================ */
+
+.theme-blood {
+  --primary-color: var(--blood-accent-primary);
+  --secondary-color: var(--blood-accent-secondary);
+  --accent-color: var(--blood-accent-gold);
+  --bg-color: var(--blood-bg-primary);
+  --text-color: var(--blood-text-primary);
+}
+
+/* 血怒模式卡片 */
+.card-blood {
+  background: rgba(30, 27, 75, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.card-blood:hover {
+  border-color: rgba(225, 29, 72, 0.5);
+  box-shadow: 0 10px 30px rgba(225, 29, 72, 0.2);
+}
+
+/* 血怒模式按钮 */
+.btn-blood {
+  background: linear-gradient(135deg, #E11D48 0%, #DC2626 100%);
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
+}
+
+.btn-blood:hover {
+  box-shadow: 0 6px 25px rgba(225, 29, 72, 0.6);
+  transform: translateY(-2px);
+}
+
+/* 血怒模式标签 */
+.tag-blood {
+  background: rgba(225, 29, 72, 0.2);
+  color: #E11D48;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+}
+
+/* ============================================
+   混躺模式组件样式 - 亮色主题
+   ============================================ */
+
+.theme-mix {
+  --primary-color: var(--mix-accent-primary);
+  --secondary-color: var(--mix-accent-secondary);
+  --accent-color: var(--mix-accent-amber);
+  --bg-color: var(--mix-bg-primary);
+  --text-color: var(--mix-text-primary);
+}
+
+/* 混躺模式卡片 - 白色背景 */
+.card-mix {
+  background: #FFFFFF;
+  border: 1px solid var(--mix-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.card-mix:hover {
+  border-color: #FCD34D;
+  box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
+  transform: translateY(-4px);
+}
+
+/* 混躺模式按钮 - 琥珀色 */
+.btn-mix {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+  color: #FFFFFF;
+}
+
+.btn-mix:hover {
+  box-shadow: 0 6px 25px rgba(217, 119, 6, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 混躺模式次级按钮 - 蓝色 */
+.btn-mix-secondary {
+  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+  color: #FFFFFF;
+}
+
+.btn-mix-secondary:hover {
+  box-shadow: 0 6px 25px rgba(37, 99, 235, 0.4);
+  transform: translateY(-2px);
+}
+
+/* 混躺模式标签 - 分类颜色 */
+.tag-mix-skill {
+  background: #DBEAFE;
+  color: #1E40AF;
+  border: 1px solid #BFDBFE;
+}
+
+.tag-mix-philosophy {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+}
+
+.tag-mix-classic {
+  background: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.tag-mix-blood {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* 混躺模式输入框 */
+.input-mix {
+  background: #F8FAFC;
+  border: 2px solid #E2E8F0;
+  color: #0F172A;
+}
+
+.input-mix:focus {
+  border-color: #FCD34D;
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.2);
+}
+
+.input-mix::placeholder {
+  color: #94A3B8;
+}
+
+/* ============================================
+   文字渐变效果
+   ============================================ */
+
+.text-gradient-blood {
+  background: linear-gradient(135deg, #E11D48 0%, #F59E0B 50%, #E11D48 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-mix {
+  background: linear-gradient(135deg, #D97706 0%, #2563EB 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   边框发光效果
+   ============================================ */
+
+.border-glow-blood {
+  box-shadow: 0 0 20px rgba(225, 29, 72, 0.3),
+              inset 0 0 20px rgba(225, 29, 72, 0.1);
+}
+
+.border-glow-mix {
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.2),
+              inset 0 0 20px rgba(217, 119, 6, 0.05);
+}
+
+/* ============================================
+   动画关键帧
+   ============================================ */
+
+@keyframes bloodRage {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(225, 29, 72, 0.8);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.15;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes border-glow {
+  0%, 100% {
+    border-color: rgba(225, 29, 72, 0.5);
+    box-shadow: 0 0 10px rgba(225, 29, 72, 0.3);
+  }
+  50% {
+    border-color: rgba(225, 29, 72, 1);
+    box-shadow: 0 0 20px rgba(225, 29, 72, 0.6);
+  }
+}
+
+/* ============================================
+   动画工具类
+   ============================================ */
+
+.animate-blood-rage {
+  animation: bloodRage 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-border-glow {
+  animation: border-glow 2s ease-in-out infinite;
+}
+
+/* ============================================
+   工具类
+   ============================================ */
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 毛玻璃效果 - 血怒模式 */
+.glass-blood {
+  background: rgba(30, 27, 75, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 毛玻璃效果 - 混躺模式 */
+.glass-mix {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* 头像发光边框 */
+.avatar-glow {
+  position: relative;
+}
+
+.avatar-glow::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E11D48, #F59E0B, #E11D48);
+  z-index: -1;
+  animation: bloodRage 3s ease-in-out infinite;
+}
+
+/* ============================================
+   响应式设计
+   ============================================ */
+
+@media (max-width: 768px) {
+  .text-6xl {
+    font-size: 3rem;
+  }
+
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+
+  .text-4xl {
+    font-size: 2rem;
+  }
+
+  .text-3xl {
+    font-size: 1.75rem;
+  }
+}
+
+/* ============================================
+   减少动画偏好
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================
+   深色模式适配
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+  }
+}

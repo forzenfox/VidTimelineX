@@ -39,6 +39,18 @@
   --shadow-blur: 10px;
   --shadow-spread: 0px;
 
+  /* ========== 首页主题色 (Homepage Theme) ========== */
+  --home-primary: #ec4899;
+  --home-secondary: #f97316;
+  --home-accent: #8b5cf6;
+  --home-background-start: #fdf2f8;
+  --home-background-end: #fff7ed;
+  --home-text-primary: #1f2937;
+  --home-text-secondary: #6b7280;
+  --home-glass-bg: rgba(255, 255, 255, 0.7);
+  --home-glass-border: rgba(255, 255, 255, 0.5);
+  --home-glass-shadow: rgba(0, 0, 0, 0.1);
+
   /* ========== 侧边栏变量 ========== */
   --sidebar-width: 280px;
   --sidebar-width-icon: 60px;
@@ -84,4 +96,26 @@
   --border: var(--sweet-border);
   --shadow-color: var(--sweet-shadow-color);
   --card-rgb: var(--sweet-card-rgb);
+}
+
+/* ========== C皇驾到 - 血怒模式 (Blood Mode) ========== */
+[data-theme="blood"] {
+  --yuxiaoc-background: #0f0f23;
+  --yuxiaoc-foreground: #e2e8f0;
+  --yuxiaoc-primary: #e11d48;
+  --yuxiaoc-secondary: #f59e0b;
+  --yuxiaoc-accent: #e11d48;
+  --yuxiaoc-muted: #94a3b8;
+  --yuxiaoc-border: rgba(225, 29, 72, 0.3);
+}
+
+/* ========== C皇驾到 - 混躺模式 (Mix Mode) ========== */
+[data-theme="mix"] {
+  --yuxiaoc-background: #fef3c7;
+  --yuxiaoc-foreground: #78350f;
+  --yuxiaoc-primary: #b45309;
+  --yuxiaoc-secondary: #f59e0b;
+  --yuxiaoc-accent: #b45309;
+  --yuxiaoc-muted: #92400e;
+  --yuxiaoc-border: rgba(245, 158, 11, 0.3);
 }
