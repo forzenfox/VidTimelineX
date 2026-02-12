@@ -314,7 +314,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
           </a>
 
           <a
-            href="https://space.bilibili.com/xxx"
+            href="https://space.bilibili.com/8985997"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105"

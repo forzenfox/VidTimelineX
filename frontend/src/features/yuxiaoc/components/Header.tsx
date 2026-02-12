@@ -38,7 +38,7 @@ const externalLinks = [
     id: "bilibili",
     label: "B站合集",
     icon: PlayCircle,
-    url: "https://space.bilibili.com/xxx",
+    url: "https://space.bilibili.com/8985997",
   },
   {
     id: "yuba",
@@ -110,8 +110,9 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:pl-8 lg:pr-[336px]">
           <div className="flex items-center justify-between h-16">
-            {/* Logo and Title */}
+            {/* Logo and Live Stream Button */}
             <div className="flex items-center gap-3">
+              {/* Logo - Home button */}
               <div
                 className="relative w-10 h-10 rounded-full flex items-center justify-center overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-110"
                 onClick={() => scrollToSection("hero")}
@@ -126,23 +127,43 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
               >
                 <Crown className="w-6 h-6 text-white mx-auto" />
               </div>
-              <div>
-                <h1
-                  className="text-lg font-black leading-tight cursor-pointer transition-colors duration-300"
-                  onClick={() => scrollToSection("hero")}
-                  style={{
-                    fontFamily: "Russo One, sans-serif",
-                    color: isBlood ? "#E11D48" : "#F59E0B",
-                  }}
-                >
-                  C皇驾到
-                </h1>
-              </div>
+              
+              {/* Live Stream Button */}
+              <a
+                href="https://www.douyu.com/1126960"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200"
+                style={{
+                  color: isBlood ? "#E2E8F0" : "#0F172A",
+                  background: isBlood
+                    ? "linear-gradient(135deg, #E11D48 0%, #DC2626 100%)"
+                    : "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
+                  boxShadow: isBlood
+                    ? "0 2px 8px rgba(225, 29, 72, 0.4)"
+                    : "0 2px 8px rgba(245, 158, 11, 0.4)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                  e.currentTarget.style.boxShadow = isBlood
+                    ? "0 4px 12px rgba(225, 29, 72, 0.6)"
+                    : "0 4px 12px rgba(245, 158, 11, 0.6)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = isBlood
+                    ? "0 2px 8px rgba(225, 29, 72, 0.4)"
+                    : "0 2px 8px rgba(245, 158, 11, 0.4)";
+                }}
+              >
+                <Radio className="w-4 h-4 text-white" />
+                <span>斗鱼直播间</span>
+              </a>
             </div>
 
             {/* Navigation - Desktop */}
             <nav className="hidden lg:flex items-center gap-1">
-              {navItems.map((item) => {
+              {navItems.filter(item => item.id !== "danmaku").map((item) => {
                 const Icon = item.icon;
                 const isActive = activeSection === item.id;
                 return (
@@ -186,55 +207,13 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
               })}
             </nav>
 
-            {/* External Links - Middle Section */}
-            <div className="hidden lg:flex items-center gap-3">
-              {externalLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200"
-                    style={{
-                      color: isBlood ? "#E2E8F0" : "#0F172A",
-                      background: isBlood ? "rgba(30, 27, 75, 0.5)" : "rgba(255, 255, 255, 0.8)",
-                      border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(245, 158, 11, 0.3)"}`,
-                      boxShadow: isBlood
-                        ? "0 2px 8px rgba(225, 29, 72, 0.1)"
-                        : "0 2px 8px rgba(245, 158, 11, 0.1)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = isBlood
-                        ? "rgba(225, 29, 72, 0.2)"
-                        : "rgba(245, 158, 11, 0.15)";
-                      e.currentTarget.style.borderColor = isBlood
-                        ? "rgba(225, 29, 72, 0.5)"
-                        : "rgba(245, 158, 11, 0.5)";
-                      e.currentTarget.style.transform = "translateY(-1px)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = isBlood
-                        ? "rgba(30, 27, 75, 0.5)"
-                        : "rgba(255, 255, 255, 0.8)";
-                      e.currentTarget.style.borderColor = isBlood
-                        ? "rgba(225, 29, 72, 0.3)"
-                        : "rgba(245, 158, 11, 0.3)";
-                      e.currentTarget.style.transform = "translateY(0)";
-                    }}
-                  >
-                    <Icon className="w-4 h-4" style={{ color: isBlood ? "#E11D48" : "#F59E0B" }} />
-                    <span className="hidden xl:inline">{link.label}</span>
-                  </a>
-                );
-              })}
-            </div>
+            {/* External Links - Middle Section - Removed */}
+            {/* B站和鱼吧链接已从导航栏中移除 */}
 
             {/* Right Section - Theme Toggle & Quick Actions */}
             <div className="flex items-center gap-2">
               {/* Quick Action Buttons */}
-              <div className="flex items-center gap-1 mr-2">
+              <div className="flex items-center gap-1 mr-2 lg:hidden">
                 {navItems.slice(1, 4).map((item) => {
                   const Icon = item.icon;
                   const isActive = activeSection === item.id;
