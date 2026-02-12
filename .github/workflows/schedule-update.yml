@@ -108,6 +108,22 @@ jobs:
             *此 PR 由 schedule-update 工作流自动创建*"
           fi
 
+      - name: 自动合并 PR
+        if: steps.check-changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          # 检查是否已存在从auto-deploy到master的PR
+          EXISTING_PR=$(gh pr list --head auto-deploy --base master --json number --jq '.[0].number')
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "自动合并 PR #$EXISTING_PR"
+            # 使用 GitHub CLI 合并 PR，设置为 squash 模式
+            gh pr merge $EXISTING_PR --squash --delete-branch --body "自动合并时间线数据更新"
+          else
+            echo "未找到 PR，跳过合并步骤"
+          fi
+
       - name: 无变动时输出信息
         if: steps.check-changes.outputs.has_changes == 'false'
         run: echo "未检测到文件变动，跳过提交"
