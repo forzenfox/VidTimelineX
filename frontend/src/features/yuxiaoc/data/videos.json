@@ -1,0 +1,64 @@
+[
+  {
+    "id": "1",
+    "bvid": "BV1xx411c7mD",
+    "title": "【余小C】无情铁手！这波操作你打几分？",
+    "cover": "/thumbs/BV1xx411c7mD.webp",
+    "duration": "05:23",
+    "category": "hardcore",
+    "tags": ["血怒", "高光", "诺手"],
+    "description": "C皇血怒时刻，无情铁手拿下五杀"
+  },
+  {
+    "id": "2",
+    "bvid": "BV1yy411c7mE",
+    "title": "【余小C】这波啊，这波是下饭操作",
+    "cover": "/thumbs/BV1yy411c7mE.webp",
+    "duration": "03:45",
+    "category": "main",
+    "subCategory": "fried",
+    "tags": ["下饭", "炒饭", "混"],
+    "description": "经典下饭操作，观众直呼吃饱了"
+  },
+  {
+    "id": "3",
+    "bvid": "BV1zz411c7mF",
+    "title": "【余小C】A就完事了！",
+    "cover": "/thumbs/BV1zz411c7mF.webp",
+    "duration": "02:18",
+    "category": "hardcore",
+    "tags": ["A就完事了", "经典", "血C"],
+    "description": "C皇经典语录时刻"
+  },
+  {
+    "id": "4",
+    "bvid": "BV1aa411c7mG",
+    "title": "【余小C】混与躺轮回不止",
+    "cover": "/thumbs/BV1aa411c7mG.webp",
+    "duration": "08:12",
+    "category": "soup",
+    "tags": ["哲学", "混躺", "名言"],
+    "description": "C皇哲学时刻，混与躺的辩证关系"
+  },
+  {
+    "id": "5",
+    "bvid": "BV1bb411c7mH",
+    "title": "【余小C】致残打击！",
+    "cover": "/thumbs/BV1bb411c7mH.webp",
+    "duration": "04:33",
+    "category": "hardcore",
+    "tags": ["致残打击", "技能", "血怒"],
+    "description": "致残打击精准命中"
+  },
+  {
+    "id": "6",
+    "bvid": "BV1cc411c7mI",
+    "title": "【余小C】这把混，下把躺",
+    "cover": "/thumbs/BV1cc411c7mI.webp",
+    "duration": "06:47",
+    "category": "main",
+    "subCategory": "mixed",
+    "tags": ["混", "躺", "哲学"],
+    "description": "C皇混躺哲学经典演绎"
+  }
+]

@@ -9,6 +9,11 @@
       "favorites_url": "https://space.bilibili.com/57320454/favlist?fid=3869352154&ftype=create&ctype=21",
       "backend_timeline_file": "data/tiantong/videos.json",
       "frontend_timeline_file": "../frontend/src/features/tiantong/data/videos.json"
+    },
+    "yuxiaoc": {
+      "favorites_url": "https://space.bilibili.com/57320454/favlist?fid=3878580154&ftype=create",
+      "backend_timeline_file": "data/yuxiaoc/videos.json",
+      "frontend_timeline_file": "../frontend/src/features/yuxiaoc/data/videos.json"
     }
   },
   "crawler": {
