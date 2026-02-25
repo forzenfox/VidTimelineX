@@ -117,3 +117,6 @@ dmypy.json
 
 # Backend test data
 backend/data/test/
+
+# Danmaku processed files
+danmaku-processed.json
