@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import { Play, Calendar, Clock, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { videos, type Video } from "../data/data";
-import { VideoCover } from "../../../components/figma/ImageWithFallback";
+import VideoCard from "../../../components/video/VideoCard";
 
 interface VideoTimelineProps {
   theme: "tiger" | "sweet";
@@ -9,7 +9,7 @@ interface VideoTimelineProps {
   onVideoClick: (video: Video) => void;
 }
 
-// 单个视频项组件 - 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
+// 单个视频项组件 - 使用统一的 VideoCard 组件
 const VideoItem: React.FC<{
   video: Video;
   index: number;
@@ -19,7 +19,6 @@ const VideoItem: React.FC<{
   // 为缺少的属性提供默认值
   const safeVideo = {
     ...video,
-    category: video.category || "other",
     views: video.views || "0",
     icon: video.icon || "Heart",
   };
@@ -35,36 +34,6 @@ const VideoItem: React.FC<{
       border: theme === "tiger" ? "4px solid #FFFDF9" : "4px solid #FFFDF9",
       boxShadow:
         theme === "tiger" ? "0 0 20px rgba(255, 149, 0, 0.6)" : "0 0 20px rgba(255, 140, 160, 0.6)",
-    }),
-    [theme]
-  );
-
-  const cardStyle = useMemo(
-    () => ({
-      background:
-        theme === "tiger"
-          ? "linear-gradient(135deg, #FFFDF9, #FFF5F0)"
-          : "linear-gradient(135deg, #FFF5F8, #FFE6F0)",
-      borderRadius: "20px",
-      border: theme === "tiger" ? "2px solid #FF9500" : "2px solid #FF8CA0",
-      boxShadow:
-        theme === "tiger"
-          ? "0 8px 24px rgba(255, 149, 0, 0.3)"
-          : "0 8px 24px rgba(255, 140, 160, 0.3)",
-    }),
-    [theme]
-  );
-
-  const overlayStyle = useMemo(
-    () => ({
-      background: theme === "tiger" ? "rgba(255, 149, 0, 0.5)" : "rgba(255, 140, 160, 0.5)",
-    }),
-    [theme]
-  );
-
-  const playButtonStyle = useMemo(
-    () => ({
-      background: theme === "tiger" ? "rgba(255, 149, 0, 0.8)" : "rgba(255, 140, 160, 0.8)",
     }),
     [theme]
   );
@@ -85,99 +54,14 @@ const VideoItem: React.FC<{
 
       {/* 视频卡片 */}
       <div className={`w-5/12 ${isLeft ? "pr-16" : "pl-16"}`}>
-        <div
-          data-testid="video-card"
-          className="hover:scale-105 cursor-pointer overflow-hidden transition-all duration-300"
-          style={cardStyle}
-          onClick={() => onVideoClick(safeVideo)}
-        >
-          {/* 封面图 */}
-          <div className="relative aspect-video overflow-hidden">
-            <VideoCover
-              cover_url={safeVideo.cover_url}
-              cover={safeVideo.cover}
-              alt={safeVideo.title}
-              className="w-full h-full object-cover"
-              index={index}
-            />
-
-            {/* 播放按钮遮罩 */}
-            <div
-              className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300"
-              style={overlayStyle}
-            >
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={playButtonStyle}
-              >
-                <Play size={32} fill="#fff" color="#fff" />
-              </div>
-            </div>
-
-            {/* 时长标签 */}
-            <div
-              className="absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-bold"
-              style={{
-                background: "rgba(0, 0, 0, 0.8)",
-                color: "#fff",
-              }}
-            >
-              {safeVideo.duration}
-            </div>
-          </div>
-
-          {/* 信息区 */}
-          <div className="p-4">
-            <h3
-              className="font-bold text-lg mb-2 line-clamp-2"
-              style={{
-                color: theme === "tiger" ? "#5D4037" : "#6A1B9A",
-              }}
-            >
-              {safeVideo.title}
-            </h3>
-
-            <div className="flex flex-wrap items-center gap-3 mb-3 text-sm">
-              <div
-                className="flex items-center gap-1"
-                style={{
-                  color: theme === "tiger" ? "#8D6E63" : "#9C27B0",
-                }}
-              >
-                <Calendar size={14} />
-                <span>{safeVideo.date}</span>
-              </div>
-              <div
-                className="flex items-center gap-1"
-                style={{
-                  color: theme === "tiger" ? "#8D6E63" : "#9C27B0",
-                }}
-              >
-                <Clock size={14} />
-                <span>{safeVideo.duration}</span>
-              </div>
-            </div>
-
-            {/* 标签 */}
-            <div className="flex flex-wrap gap-2">
-              {(safeVideo.tags || []).slice(0, 2).map(tag => (
-                <span
-                  key={tag}
-                  className="px-2 py-1 text-xs font-medium"
-                  style={{
-                    background:
-                      theme === "tiger" ? "rgba(255, 149, 0, 0.2)" : "rgba(255, 140, 160, 0.2)",
-                    border: theme === "tiger" ? "1px solid #FF9500" : "1px solid #FF8CA0",
-                    borderRadius: "8px",
-                    color: theme === "tiger" ? "#5D4037" : "#6A1B9A",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        <VideoCard
+          video={safeVideo}
+          onClick={onVideoClick}
+          theme={theme}
+          index={index}
+          size="medium"
+          layout="vertical"
+        />
       </div>
     </div>
   );

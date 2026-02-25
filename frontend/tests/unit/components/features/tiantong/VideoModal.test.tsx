@@ -15,7 +15,6 @@ describe("VideoModal组件测试（甜筒）", () => {
   const mockVideo: Video = {
     id: "1",
     title: "测试视频",
-    category: "sing",
     tags: ["测试"],
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",

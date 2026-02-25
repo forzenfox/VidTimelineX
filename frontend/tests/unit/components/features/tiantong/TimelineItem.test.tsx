@@ -16,7 +16,6 @@ describe("TimelineItem组件测试", () => {
     {
       id: "1",
       title: "测试视频1",
-      category: "sing",
       tags: ["测试"],
       cover: "https://example.com/cover1.jpg",
       date: "2024-01-01",
@@ -29,7 +28,6 @@ describe("TimelineItem组件测试", () => {
     {
       id: "2",
       title: "测试视频2",
-      category: "sing",
       tags: ["测试"],
       cover: "https://example.com/cover2.jpg",
       date: "2024-01-01",

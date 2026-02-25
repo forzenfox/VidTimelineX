@@ -10,7 +10,6 @@ export interface Video {
   cover_url?: string; // B站CDN封面图URL（前端优先加载）
   tags: string[];
   duration: string;
-  category?: string;
   views?: string;
   icon?: string;
   author?: string; // 视频作者（UP主）

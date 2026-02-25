@@ -139,6 +139,14 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme = "tiger"
                 color: theme === "tiger" ? "#E5E5E5" : "#666666",
               }}
             >
+              👤 {video.author || "未知作者"}
+            </div>
+            <div
+              className="text-sm"
+              style={{
+                color: theme === "tiger" ? "#E5E5E5" : "#666666",
+              }}
+            >
               📅 {video.date || "2024-01-01"}
             </div>
             <div

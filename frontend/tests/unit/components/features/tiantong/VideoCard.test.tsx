@@ -15,7 +15,6 @@ describe("VideoCard组件测试（甜筒）", () => {
   const mockVideo: Video = {
     id: "1",
     title: "测试视频",
-    category: "sing",
     tags: ["测试"],
     cover: "https://example.com/cover.jpg",
     date: "2024-01-01",
@@ -51,9 +50,6 @@ describe("VideoCard组件测试（甜筒）", () => {
 
     // 验证视频播放量
     expect(screen.getByText("10万")).toBeInTheDocument();
-
-    // 验证分类标签
-    expect(screen.getByText("甜筒天籁")).toBeInTheDocument();
   });
 
   /**

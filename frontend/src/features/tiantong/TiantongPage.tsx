@@ -6,6 +6,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
+import VideoModal from "../../components/video/VideoModal";
 
 // 导入甜筒模块样式
 import "./styles/tiantong.css";
@@ -30,7 +31,6 @@ function throttle<T extends (...args: unknown[]) => unknown>(
 }
 */
 
-const VideoModal = React.lazy(() => import("./components/VideoModal"));
 const DesktopSidebarDanmu = React.lazy(() => import("./components/SidebarDanmu"));
 
 const queryClient = new QueryClient({
@@ -186,7 +186,6 @@ const TiantongPage = () => {
     if (!searchQuery.trim()) {
       return videos.map(video => ({
         ...video,
-        category: video.tags?.[0] || "other",
         views: "10万",
         icon: "Heart",
       }));
@@ -219,7 +218,6 @@ const TiantongPage = () => {
       .sort((a, b) => b.score - a.score)
       .map(({ video }) => ({
         ...video,
-        category: video.tags?.[0] || "other",
         views: "10万",
         icon: "Heart",
       }));

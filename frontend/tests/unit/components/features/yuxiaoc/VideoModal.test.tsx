@@ -79,7 +79,10 @@ describe("VideoModal组件测试", () => {
 
     const iframe = screen.getByTitle("血怒时刻：无情铁手");
     expect(iframe).toBeInTheDocument();
-    expect(iframe).toHaveAttribute("src", "https://player.bilibili.com/player.html?bvid=BV1xx411c7mD&page=1&high_quality=1&danmaku=1");
+    expect(iframe).toHaveAttribute(
+      "src",
+      "https://player.bilibili.com/player.html?bvid=BV1xx411c7mD&page=1&high_quality=1&danmaku=1"
+    );
     expect(iframe).toHaveAttribute("allowFullScreen");
   });
 

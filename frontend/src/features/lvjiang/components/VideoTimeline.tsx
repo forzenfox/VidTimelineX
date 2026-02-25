@@ -1,15 +1,14 @@
 import React, { useMemo } from "react";
-import { Play, Calendar, Clock } from "lucide-react";
 import { videos } from "../data";
 import type { Video } from "../data";
-import { VideoCover } from "../../../components/figma/ImageWithFallback";
+import VideoCard from "../../../components/video/VideoCard";
 
 interface VideoTimelineProps {
   theme: "dongzhu" | "kaige";
   onVideoClick: (video: Video) => void;
 }
 
-// 单个视频项组件 - 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
+// 单个视频项组件 - 使用统一的 VideoCard 组件
 const VideoItem: React.FC<{
   video: Video;
   index: number;
@@ -34,36 +33,6 @@ const VideoItem: React.FC<{
     [theme]
   );
 
-  const cardStyle = useMemo(
-    () => ({
-      background:
-        theme === "dongzhu"
-          ? "linear-gradient(135deg, #FFF9E6, #FFFEF7)"
-          : "linear-gradient(135deg, #16213E, #1A1A2E)",
-      borderRadius: theme === "dongzhu" ? "20px" : "8px",
-      border: theme === "dongzhu" ? "2px solid #AED6F1" : "2px solid #E74C3C",
-      boxShadow:
-        theme === "dongzhu"
-          ? "0 8px 24px rgba(93, 173, 226, 0.3)"
-          : "0 8px 24px rgba(231, 76, 60, 0.3)",
-    }),
-    [theme]
-  );
-
-  const overlayStyle = useMemo(
-    () => ({
-      background: theme === "dongzhu" ? "rgba(93, 173, 226, 0.5)" : "rgba(0, 0, 0, 0.7)",
-    }),
-    [theme]
-  );
-
-  const playButtonStyle = useMemo(
-    () => ({
-      background: theme === "dongzhu" ? "rgba(93, 173, 226, 0.8)" : "rgba(231, 76, 60, 0.9)",
-    }),
-    [theme]
-  );
-
   return (
     <div
       key={video.id}
@@ -78,91 +47,14 @@ const VideoItem: React.FC<{
       </div>
 
       <div className={`w-5/12 ${isLeft ? "pr-16" : "pl-16"}`}>
-        <div
-          className="theme-transition hover:scale-105 cursor-pointer overflow-hidden"
-          style={cardStyle}
-          onClick={() => onVideoClick(video)}
-        >
-          <div className="relative aspect-video overflow-hidden">
-            <VideoCover
-              cover_url={video.cover_url}
-              cover={video.cover}
-              alt={video.title}
-              className="w-full h-full object-cover"
-              index={index}
-            />
-            <div
-              className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 theme-transition"
-              style={overlayStyle}
-            >
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={playButtonStyle}
-              >
-                <Play size={32} fill="#fff" color="#fff" />
-              </div>
-            </div>
-            <div
-              className="absolute bottom-2 right-2 px-2 py-1 rounded text-xs font-bold"
-              style={{
-                background: "rgba(0, 0, 0, 0.8)",
-                color: "#fff",
-              }}
-            >
-              {video.duration}
-            </div>
-          </div>
-
-          <div className="p-4">
-            <h3
-              className="font-bold text-lg mb-2 line-clamp-2"
-              style={{
-                color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
-              }}
-            >
-              {video.title}
-            </h3>
-
-            <div className="flex items-center gap-3 mb-3 text-sm">
-              <div
-                className="flex items-center gap-1"
-                style={{
-                  color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
-                }}
-              >
-                <Calendar size={14} />
-                <span>{video.date}</span>
-              </div>
-              <div
-                className="flex items-center gap-1"
-                style={{
-                  color: theme === "dongzhu" ? "#85929E" : "#BDC3C7",
-                }}
-              >
-                <Clock size={14} />
-                <span>{video.duration}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {video.tags.slice(0, 2).map(tag => (
-                <span
-                  key={tag}
-                  className="px-2 py-1 text-xs font-medium"
-                  style={{
-                    background:
-                      theme === "dongzhu" ? "rgba(93, 173, 226, 0.2)" : "rgba(231, 76, 60, 0.3)",
-                    border: theme === "dongzhu" ? "1px solid #AED6F1" : "1px solid #E74C3C",
-                    borderRadius: theme === "dongzhu" ? "8px" : "4px",
-                    color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        <VideoCard
+          video={video}
+          onClick={onVideoClick}
+          theme={theme}
+          index={index}
+          size="medium"
+          layout="vertical"
+        />
       </div>
     </div>
   );

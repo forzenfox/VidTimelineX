@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from "react";
 import type { Theme, Video } from "../data/types";
 import { videos, canteenCategories } from "../data/videos";
-import { Sword, Utensils, Soup, Play, Clock, Tag, Search, X } from "lucide-react";
-import { VideoCover } from "../../../components/figma/ImageWithFallback";
+import { Sword, Utensils, Soup, Search, X } from "lucide-react";
+import VideoCard from "../../../components/video/VideoCard";
 
 interface CanteenHallProps {
   theme: Theme;
@@ -215,97 +215,15 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
         {/* Videos Grid - 响应式网格布局：移动端2列，平板端3列，桌面端4列 */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredVideos.map((video, index) => (
-            <div
+            <VideoCard
               key={video.id}
-              onClick={() => onVideoClick(video)}
-              className="group relative rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03]"
-              style={{
-                background: themeColors.cardBg,
-                border: `1px solid ${themeColors.borderColor}`,
-                animationDelay: `${index * 0.05}s`,
-                boxShadow: isBlood ? "none" : "0 1px 3px rgba(0, 0, 0, 0.1)",
-              }}
-            >
-              {/* Thumbnail */}
-              <div className="relative aspect-video overflow-hidden">
-                <VideoCover
-                  cover={video.cover}
-                  cover_url={video.cover_url}
-                  alt={video.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  index={index}
-                />
-                {/* Overlay */}
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-                  style={{
-                    background: "rgba(0, 0, 0, 0.6)",
-                  }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                    style={{
-                      background: isBlood ? "linear-gradient(135deg, #E11D48, #DC2626)" : "#D97706",
-                      boxShadow: isBlood
-                        ? "0 0 20px rgba(225, 29, 72, 0.6)"
-                        : "0 0 20px rgba(217, 119, 6, 0.5)",
-                    }}
-                  >
-                    <Play className="w-5 h-5 text-white ml-0.5" />
-                  </div>
-                </div>
-                {/* Duration Badge */}
-                <div
-                  className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded text-xs font-bold flex items-center gap-0.5"
-                  style={{
-                    background: "rgba(0, 0, 0, 0.8)",
-                    color: "white",
-                  }}
-                >
-                  <Clock className="w-3 h-3" />
-                  {video.duration}
-                </div>
-              </div>
-
-              {/* Info */}
-              <div className="p-2.5">
-                <h3
-                  className="font-bold mb-1.5 line-clamp-2 text-xs group-hover:line-clamp-none transition-all leading-tight"
-                  style={{
-                    fontFamily: "Chakra Petch, sans-serif",
-                    color: themeColors.textPrimary,
-                  }}
-                >
-                  {video.title}
-                </h3>
-                <div className="flex flex-wrap gap-1">
-                  {video.tags.slice(0, 2).map((tag, idx) => (
-                    <span
-                      key={idx}
-                      className="px-1.5 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-0.5"
-                      style={{
-                        background: isBlood ? "rgba(225, 29, 72, 0.15)" : "rgba(217, 119, 6, 0.1)",
-                        color: themeColors.accentColor,
-                        border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(217, 119, 6, 0.2)"}`,
-                      }}
-                    >
-                      <Tag className="w-2.5 h-2.5" />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Hover Border Glow */}
-              <div
-                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                style={{
-                  boxShadow: isBlood
-                    ? "inset 0 0 20px rgba(225, 29, 72, 0.2), 0 0 20px rgba(225, 29, 72, 0.3)"
-                    : "inset 0 0 20px rgba(217, 119, 6, 0.1), 0 0 20px rgba(217, 119, 6, 0.15)",
-                }}
-              />
-            </div>
+              video={video}
+              onClick={onVideoClick}
+              theme={theme}
+              index={index}
+              size="small"
+              layout="vertical"
+            />
           ))}
         </div>
 

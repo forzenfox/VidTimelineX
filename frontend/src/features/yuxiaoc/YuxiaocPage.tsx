@@ -8,9 +8,9 @@ import {
   CanteenHall,
   CVoiceArchive,
   DanmakuTower,
-  VideoModal,
   HorizontalDanmaku,
 } from "./components";
+import VideoModal from "../../components/video/VideoModal";
 import "./styles/yuxiaoc.css";
 
 const YuxiaocPage = () => {
