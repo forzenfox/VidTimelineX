@@ -16,6 +16,7 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick }) => {
+  // 分类相关状态 - 暂时屏蔽，等数据支持后恢复
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const isBlood = theme === "blood";
@@ -32,7 +33,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
     searchBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "#F8FAFC",
   };
 
-  // 根据主题调整分类顺序
+  // 根据主题调整分类顺序 - 暂时屏蔽，等数据支持后恢复
   const sortedCategories = useMemo(() => {
     if (isBlood) {
       // 血怒模式：硬核区优先
@@ -55,10 +56,12 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
   const filteredVideos = useMemo(() => {
     let result = videos;
 
-    // 按分类过滤
+    // 按分类过滤 - 暂时禁用，等数据支持后恢复
+    /*
     if (activeCategory !== "all") {
       result = result.filter(v => v.category === activeCategory);
     }
+    */
 
     // 按搜索词过滤
     if (searchQuery.trim()) {
@@ -71,11 +74,13 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
     }
 
     return result;
-  }, [activeCategory, searchQuery]);
+  }, [searchQuery]); // 移除 activeCategory 依赖
 
   // 清空搜索
   const clearSearch = () => {
     setSearchQuery("");
+    // 重置分类 - 暂时屏蔽，等数据支持后恢复
+    // setActiveCategory("all");
   };
 
   return (
@@ -143,7 +148,8 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
           </div>
         </div>
 
-        {/* Category Tabs */}
+        {/* Category Tabs - 暂时屏蔽，等数据支持后恢复 */}
+        {/*
         <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button
             onClick={() => setActiveCategory("all")}
@@ -198,6 +204,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             </button>
           ))}
         </div>
+        */}
 
         {/* Video Count */}
         <div className="text-center mb-4">
@@ -213,7 +220,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
         </div>
 
         {/* Videos Grid - 响应式网格布局：移动端2列，平板端3列，桌面端4列 */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {filteredVideos.map((video, index) => (
             <VideoCard
               key={video.id}
@@ -244,12 +251,13 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             <button
               onClick={() => {
                 setSearchQuery("");
-                setActiveCategory("all");
+                // 重置分类 - 暂时屏蔽，等数据支持后恢复
+                // setActiveCategory("all");
               }}
               className="text-sm underline"
               style={{ color: themeColors.accentColor }}
             >
-              清除筛选条件
+              清除搜索
             </button>
           </div>
         )}

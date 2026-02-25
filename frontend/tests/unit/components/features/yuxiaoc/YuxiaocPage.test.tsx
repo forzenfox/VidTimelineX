@@ -60,8 +60,9 @@ jest.mock("@/features/yuxiaoc/components/HorizontalDanmaku", () => ({
   ),
 }));
 
-jest.mock("@/features/yuxiaoc/components/VideoModal", () => ({
-  VideoModal: ({ video, theme, onClose }: { video: any; theme: string; onClose: () => void }) => {
+jest.mock("@/components/video/VideoModal", () => ({
+  __esModule: true,
+  default: ({ video, theme, onClose }: { video: any; theme: string; onClose: () => void }) => {
     if (!video) return null;
     return (
       <div data-testid="video-modal">

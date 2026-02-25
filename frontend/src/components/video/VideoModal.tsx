@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { X, ExternalLink } from "lucide-react";
-import type { VideoModalProps, Theme, Video } from "./types";
+import type { VideoModalProps, Theme } from "./types";
 
 /**
  * 统一视频弹窗组件
  * 支持主题样式定制
  * 统一视频信息的展示字段和顺序
+ * 展示字段：标题、作者、日期、时长、BV号、标签
+ * BV号直接从video.bv字段读取
  */
 const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme, className = "" }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -126,28 +128,14 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme, classNam
     setIsLoading(false);
   };
 
-  // 智能提取视频ID，支持av和BV格式
-  const getVideoPlayerUrl = (videoUrl: string) => {
-    if (!videoUrl) {
+  const getVideoPlayerUrl = (bv: string) => {
+    if (!bv) {
       return "https://player.bilibili.com/player.html";
     }
-    const lastPart = videoUrl.split("/").pop() || "";
-
-    // 检测是否为av格式
-    if (lastPart.startsWith("av")) {
-      const aid = lastPart.replace("av", "");
-      return `https://player.bilibili.com/player.html?aid=${aid}&page=1&high_quality=1&danmaku=1`;
-    }
-    // 检测是否为BV格式
-    else if (lastPart.startsWith("BV")) {
-      const bvid = lastPart;
-      return `https://player.bilibili.com/player.html?bvid=${bvid}&page=1&high_quality=1&danmaku=1`;
-    }
-    // 默认返回原始链接
-    return `https://player.bilibili.com/player.html?bvid=${lastPart}&page=1&high_quality=1&danmaku=1`;
+    return `https://player.bilibili.com/player.html?bvid=${bv}&page=1&high_quality=1&danmaku=1`;
   };
 
-  const videoId = video.videoUrl ? video.videoUrl.split("/").pop() || "" : "";
+  const videoId = video.bv || "";
 
   return (
     <div
@@ -211,7 +199,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ video, onClose, theme, classNam
             </div>
           )}
           <iframe
-            src={getVideoPlayerUrl(video.videoUrl)}
+            src={getVideoPlayerUrl(video.bv || "")}
             className="w-full h-full border-0"
             allowFullScreen
             allow="autoplay; fullscreen"

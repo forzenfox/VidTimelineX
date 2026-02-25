@@ -424,7 +424,7 @@ button::after,
 a::after,
 [role="button"]::after,
 [role="link"]::after,
-[tabindex="0"]::after {
+[tabindex="0"]:not([role="article"])::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -448,7 +448,7 @@ button:hover::after,
 a:hover::after,
 [role="button"]:hover::after,
 [role="link"]:hover::after,
-[tabindex="0"]:hover::after {
+[tabindex="0"]:not([role="article"]):hover::after {
   opacity: 1;
   transform: scale(1);
 }

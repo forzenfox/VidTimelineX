@@ -64,8 +64,9 @@ jest.mock("@/features/yuxiaoc/components/HorizontalDanmaku", () => ({
   HorizontalDanmaku: () => <div data-testid="horizontal-danmaku" />,
 }));
 
-jest.mock("@/features/yuxiaoc/components/VideoModal", () => ({
-  VideoModal: () => null,
+jest.mock("@/components/video/VideoModal", () => ({
+  __esModule: true,
+  default: () => null,
 }));
 
 describe("混躺模式明亮主题测试", () => {

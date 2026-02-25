@@ -15,15 +15,6 @@ export interface Video {
   tags: string[];
   duration: string;
   author?: string; // 视频作者（UP主）
-  bvid?: string; // 兼容旧字段
-  views?: string; // 观看次数
-  icon?: string; // 图标
-
-  // yuxiaoc 模块特有字段
-  category?: "hardcore" | "main" | "soup";
-  subCategory?: "fried" | "mixed" | "covered";
-  description?: string;
-  createdAt?: string;
 }
 
 // 视频卡片属性接口

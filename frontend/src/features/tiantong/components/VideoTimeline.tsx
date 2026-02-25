@@ -9,22 +9,18 @@ interface VideoTimelineProps {
   onVideoClick: (video: Video) => void;
 }
 
-// 单个视频项组件 - 使用统一的 VideoCard 组件
+/**
+ * 单个视频项组件 - 桌面端时光轴布局
+ * 移动端使用垂直列表布局
+ */
 const VideoItem: React.FC<{
   video: Video;
   index: number;
   theme: "tiger" | "sweet";
   onVideoClick: (video: Video) => void;
 }> = React.memo(({ video, index, theme, onVideoClick }) => {
-  // 为缺少的属性提供默认值
-  const safeVideo = {
-    ...video,
-    views: video.views || "0",
-    icon: video.icon || "Heart",
-  };
   const isLeft = index % 2 === 0;
 
-  // 缓存主题相关样式，避免重复计算
   const nodeStyle = useMemo(
     () => ({
       background:
@@ -40,22 +36,24 @@ const VideoItem: React.FC<{
 
   return (
     <div
-      key={safeVideo.id}
-      className={`relative flex items-center mb-16 ${isLeft ? "justify-start" : "justify-end"}`}
+      key={video.id}
+      className={`relative mb-8 sm:mb-16 flex items-center ${isLeft ? "sm:justify-start" : "sm:justify-end"} justify-center`}
     >
-      {/* 节点图标 */}
+      {/* 节点图标 - 桌面端显示在中心，移动端隐藏 */}
       <div
-        className="absolute left-1/2 -ml-8 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer hover:scale-125 z-10 transition-all duration-300"
+        className="hidden sm:flex absolute left-1/2 -ml-8 w-16 h-16 rounded-full items-center justify-center cursor-pointer hover:scale-125 z-10 transition-all duration-300"
         style={nodeStyle}
-        onClick={() => onVideoClick(safeVideo)}
+        onClick={() => onVideoClick(video)}
       >
         <div className="text-3xl">{theme === "tiger" ? "🐯" : "🍦"}</div>
       </div>
 
-      {/* 视频卡片 */}
-      <div className={`w-5/12 ${isLeft ? "pr-16" : "pl-16"}`}>
+      {/* 视频卡片 - 移动端全宽，桌面端固定宽度 */}
+      <div
+        className={`w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-16" : "sm:pl-16"} px-4 sm:px-0`}
+      >
         <VideoCard
-          video={safeVideo}
+          video={video}
           onClick={onVideoClick}
           theme={theme}
           index={index}
@@ -67,13 +65,14 @@ const VideoItem: React.FC<{
   );
 });
 
-// 使用React.memo优化组件，避免不必要的重新渲染
+/**
+ * 视频时光轴组件
+ * 响应式布局：移动端垂直列表，桌面端时光轴左右交替
+ */
 export const VideoTimeline = React.memo(
   ({ theme, videos: propVideos, onVideoClick }: VideoTimelineProps) => {
-    // 使用传入的视频列表或默认视频列表
     const displayVideos = propVideos || videos;
 
-    // 使用useMemo缓存主题相关样式
     const centerLineStyle = useMemo(
       () => ({
         background:
@@ -88,7 +87,6 @@ export const VideoTimeline = React.memo(
       [theme]
     );
 
-    // 使用useMemo缓存视频列表，避免每次渲染都重新处理
     const videoItems = useMemo(() => {
       return displayVideos.map((video, index) => (
         <VideoItem
@@ -102,14 +100,14 @@ export const VideoTimeline = React.memo(
     }, [displayVideos, theme, onVideoClick]);
 
     return (
-      <div className="w-full max-w-5xl mx-auto px-6 py-8">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {/* 时光轴标题 */}
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-black mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-4xl font-black mb-4">
             {theme === "tiger" ? "🐯 甜筒时光集" : "🍦 甜筒时光集"}
           </h2>
           <p
-            className="text-lg"
+            className="text-base sm:text-lg"
             style={{
               color: theme === "tiger" ? "rgb(255, 95, 0)" : "rgb(255, 140, 180)",
             }}
@@ -153,9 +151,9 @@ export const VideoTimeline = React.memo(
         {/* 时光轴 */}
         {displayVideos.length > 0 && (
           <div className="relative">
-            {/* 中心线 */}
+            {/* 中心线 - 仅桌面端显示 */}
             <div
-              className="absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 transition-all duration-300"
+              className="hidden sm:block absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 transition-all duration-300"
               style={centerLineStyle}
             />
 

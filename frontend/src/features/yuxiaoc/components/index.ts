@@ -5,5 +5,4 @@ export { TitleHall } from "./TitleHall";
 export { CanteenHall } from "./CanteenHall";
 export { CVoiceArchive } from "./CVoiceArchive";
 export { DanmakuTower } from "./DanmakuTower";
-export { VideoModal } from "./VideoModal";
 export { HorizontalDanmaku } from "./HorizontalDanmaku";
