@@ -17,12 +17,10 @@ describe("HeroSection 动画和布局测试", () => {
     expect(gradientOrbs.length).toBeGreaterThanOrEqual(2);
 
     // 验证每个渐变球都有较低的透明度类
-    gradientOrbs.forEach((orb) => {
+    gradientOrbs.forEach(orb => {
       const classList = Array.from(orb.classList);
       // 验证存在 opacity-10 类（透明度 0.1）
-      const hasLowOpacity = classList.some((cls) =>
-        cls.match(/opacity-(10|15|20|25|30)/)
-      );
+      const hasLowOpacity = classList.some(cls => cls.match(/opacity-(10|15|20|25|30)/));
       expect(hasLowOpacity).toBe(true);
     });
   });
@@ -52,7 +50,7 @@ describe("HeroSection 动画和布局测试", () => {
     // 获取渐变球元素
     const gradientOrbs = container.querySelectorAll(".animate-pulse-glow");
 
-    gradientOrbs.forEach((orb) => {
+    gradientOrbs.forEach(orb => {
       const style = (orb as HTMLElement).style;
       // 验证渐变球有合适的定位
       expect(style.zIndex === "0" || style.zIndex === "").toBe(true);
@@ -75,12 +73,8 @@ describe("HeroSection 动画和布局测试", () => {
 
     // 验证透明度类一致
     bloodOrbs.forEach((orb, index) => {
-      const bloodClasses = Array.from(orb.classList).filter((cls) =>
-        cls.match(/opacity-/)
-      );
-      const mixClasses = Array.from(mixOrbs[index].classList).filter((cls) =>
-        cls.match(/opacity-/)
-      );
+      const bloodClasses = Array.from(orb.classList).filter(cls => cls.match(/opacity-/));
+      const mixClasses = Array.from(mixOrbs[index].classList).filter(cls => cls.match(/opacity-/));
       expect(bloodClasses).toEqual(mixClasses);
     });
   });
@@ -123,7 +117,7 @@ describe("HeroSection 动画和布局测试", () => {
 
     const gradientOrbs = container.querySelectorAll(".animate-pulse-glow");
 
-    gradientOrbs.forEach((orb) => {
+    gradientOrbs.forEach(orb => {
       const htmlOrb = orb as HTMLElement;
       // 验证有背景样式
       expect(htmlOrb.style.background).toBeTruthy();
@@ -182,7 +176,7 @@ describe("HeroSection CSS 动画关键帧测试", () => {
 
     const gradientOrbs = container.querySelectorAll(".animate-pulse-glow");
 
-    gradientOrbs.forEach((orb) => {
+    gradientOrbs.forEach(orb => {
       const classList = Array.from(orb.classList);
       // 验证有 blur-3xl 类
       expect(classList).toContain("blur-3xl");
@@ -198,7 +192,7 @@ describe("HeroSection CSS 动画关键帧测试", () => {
 
     const gradientOrbs = container.querySelectorAll(".animate-pulse-glow");
 
-    gradientOrbs.forEach((orb) => {
+    gradientOrbs.forEach(orb => {
       const classList = Array.from(orb.classList);
       // 验证有 rounded-full 类
       expect(classList).toContain("rounded-full");

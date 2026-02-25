@@ -33,7 +33,7 @@ describe("DanmakuTower组件测试", () => {
     // 验证侧边栏存在（使用CSS类选择器）
     const sidebar = document.querySelector(".danmaku-sidebar");
     expect(sidebar).toBeInTheDocument();
-    
+
     // 验证移动端按钮存在
     const mobileButton = document.querySelector(".danmaku-mobile-button");
     expect(mobileButton).toBeInTheDocument();
@@ -206,7 +206,7 @@ describe("DanmakuTower组件测试", () => {
     // 验证时间戳格式（HH:MM:SS）
     const timeRegex = /\d{2}:\d{2}:\d{2}/;
     const allElements = screen.getAllByText(/.*/);
-    const timestamps = allElements.filter((el) => timeRegex.test(el.textContent || ""));
+    const timestamps = allElements.filter(el => timeRegex.test(el.textContent || ""));
     expect(timestamps.length).toBeGreaterThan(0);
   });
 

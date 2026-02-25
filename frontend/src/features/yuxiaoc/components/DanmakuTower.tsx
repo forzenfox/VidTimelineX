@@ -162,10 +162,6 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
         <MessageSquare className="w-5 h-5" />
         <div className="flex-1">
           <div className="text-sm">弹幕聊天室</div>
-          <div className="text-xs opacity-70 flex items-center gap-1">
-            <Users className="w-3 h-3" />
-            {usersList.length} 人在线
-          </div>
         </div>
         <div className="flex items-center gap-1">
           <span

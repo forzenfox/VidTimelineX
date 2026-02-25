@@ -400,7 +400,7 @@ describe("CanteenHall组件测试", () => {
 
     // 混躺模式下主食区应该排在前面
     const buttons = screen.getAllByRole("button");
-    const buttonTexts = buttons.map((btn) => btn.textContent);
+    const buttonTexts = buttons.map(btn => btn.textContent);
 
     expect(buttonTexts).toContain("全部");
     expect(buttonTexts).toContain("主食区");

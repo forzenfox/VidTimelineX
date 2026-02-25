@@ -53,12 +53,10 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
 
     for (let i = 0; i < 30; i++) {
       const text = pool[i % pool.length];
-      
+
       // 根据主题统一分配颜色
       const isCommon = i >= themeDanmaku.length;
-      const color = isCommon 
-        ? getCommonDanmakuColor() 
-        : getDanmakuColor(theme);
+      const color = isCommon ? getCommonDanmakuColor() : getDanmakuColor(theme);
 
       // 随机分配速度 (6-14秒)
       const randomDuration = RANDOM_SEEDS[i % RANDOM_SEEDS.length];
@@ -121,9 +119,10 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
             color: item.color,
             background: `${item.color}15`,
             border: `1px solid ${item.color}40`,
-            textShadow: theme === "blood"
-              ? `0 0 10px ${item.color}80, 0 0 20px ${item.color}40, 2px 2px 4px rgba(0,0,0,0.8)`
-              : `0 0 8px ${item.color}60, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff`,
+            textShadow:
+              theme === "blood"
+                ? `0 0 10px ${item.color}80, 0 0 20px ${item.color}40, 2px 2px 4px rgba(0,0,0,0.8)`
+                : `0 0 8px ${item.color}60, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff`,
             fontWeight: item.fontWeight,
             letterSpacing: "0.5px",
             willChange: "transform, opacity",

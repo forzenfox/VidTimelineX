@@ -189,7 +189,7 @@ describe("Header组件测试", () => {
     // 验证导航栏中只显示斗鱼直播间按钮，不显示其他外部链接
     const externalLinks = screen.getAllByRole("link");
     const externalLinkTexts = externalLinks.map(link => link.textContent);
-    
+
     // 应该包含"斗鱼直播间"
     expect(externalLinkTexts.some(text => text?.includes("斗鱼直播间"))).toBe(true);
     // 不应该包含"B站合集"和"鱼吧链接"

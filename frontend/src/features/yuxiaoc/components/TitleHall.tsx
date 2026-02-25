@@ -41,6 +41,32 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 };
 
 /**
+ * 根据特色称号数量计算最佳网格列数
+ * @param count 特色称号数量
+ * @returns Tailwind网格类名
+ */
+const getFeaturedGridCols = (count: number): string => {
+  if (count <= 1) return "grid grid-cols-1 gap-3 max-w-xs mx-auto";
+  if (count === 2) return "grid grid-cols-2 gap-3 max-w-xl mx-auto";
+  if (count === 3) return "grid grid-cols-3 gap-3 max-w-2xl mx-auto";
+  return "grid grid-cols-2 md:grid-cols-4 gap-3";
+};
+
+/**
+ * 根据普通称号数量计算最佳网格列数
+ * @param count 普通称号数量
+ * @returns Tailwind网格类名
+ */
+const getRegularGridCols = (count: number): string => {
+  if (count <= 3) return "grid grid-cols-3 gap-2 max-w-lg mx-auto";
+  if (count === 4) return "grid grid-cols-2 sm:grid-cols-4 gap-2 max-w-xl mx-auto";
+  if (count === 5) return "grid grid-cols-3 sm:grid-cols-5 gap-2 max-w-2xl mx-auto";
+  if (count === 6) return "grid grid-cols-3 sm:grid-cols-6 gap-2 max-w-3xl mx-auto";
+  if (count === 7) return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2";
+  return "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-2";
+};
+
+/**
  * 称号殿堂组件
  * 从 JSON 配置文件加载称号数据，根据主题显示不同的称号
  */
@@ -52,17 +78,22 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
     return titlesData[theme] || { featured: [], regular: [] };
   }, [theme]);
 
+  // 根据称号数量计算网格布局
+  const featuredGridCols = useMemo(() => {
+    return getFeaturedGridCols(titles.featured?.length || 0);
+  }, [titles.featured]);
+
+  const regularGridCols = useMemo(() => {
+    return getRegularGridCols(titles.regular?.length || 0);
+  }, [titles.regular]);
+
   // 主题配色
   const themeColors = {
     background: isBlood
       ? "linear-gradient(180deg, #0F0F23 0%, #1E1B4B 100%)"
       : "linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%)",
-    cardBg: isBlood
-      ? "rgba(30, 27, 75, 0.8)"
-      : "#FFFFFF",
-    smallCardBg: isBlood
-      ? "rgba(30, 27, 75, 0.5)"
-      : "#FFFFFF",
+    cardBg: isBlood ? "rgba(30, 27, 75, 0.8)" : "#FFFFFF",
+    smallCardBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "#FFFFFF",
     textSecondary: isBlood ? "#94A3B8" : "#334155",
     textMuted: isBlood ? "#64748B" : "#64748B",
   };
@@ -95,8 +126,8 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
           </p>
         </div>
 
-        {/* Featured Titles - Large Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+        {/* Featured Titles - Large Cards - 自适应列数 */}
+        <div className={featuredGridCols}>
           {titles.featured.map(title => {
             const IconComponent = iconMap[title.icon] || Crown;
             return (
@@ -131,7 +162,9 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                   <h3 className="text-lg font-bold mb-1" style={{ color: title.color }}>
                     {title.name}
                   </h3>
-                  <p className="text-xs" style={{ color: themeColors.textSecondary }}>{title.description}</p>
+                  <p className="text-xs" style={{ color: themeColors.textSecondary }}>
+                    {title.description}
+                  </p>
                 </div>
 
                 {/* Border Glow on Hover */}
@@ -146,8 +179,8 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
           })}
         </div>
 
-        {/* Regular Titles - Smaller Cards */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
+        {/* Regular Titles - Smaller Cards - 自适应列数 */}
+        <div className={regularGridCols}>
           {titles.regular.map(title => {
             const IconComponent = iconMap[title.icon] || Crown;
             return (
@@ -173,7 +206,9 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                   <h3 className="text-xs font-bold mb-0.5" style={{ color: title.color }}>
                     {title.name}
                   </h3>
-                  <p className="text-[10px]" style={{ color: themeColors.textMuted }}>{title.description}</p>
+                  <p className="text-[10px]" style={{ color: themeColors.textMuted }}>
+                    {title.description}
+                  </p>
                 </div>
 
                 {/* Hover Glow */}

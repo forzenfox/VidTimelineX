@@ -22,7 +22,9 @@ jest.mock("@/features/yuxiaoc/components/Header", () => ({
 }));
 
 jest.mock("@/features/yuxiaoc/components/HeroSection", () => ({
-  HeroSection: ({ theme }: { theme: string }) => <section data-testid="hero-section">{theme}</section>,
+  HeroSection: ({ theme }: { theme: string }) => (
+    <section data-testid="hero-section">{theme}</section>
+  ),
 }));
 
 jest.mock("@/features/yuxiaoc/components/TitleHall", () => ({
@@ -39,11 +41,15 @@ jest.mock("@/features/yuxiaoc/components/CanteenHall", () => ({
 }));
 
 jest.mock("@/features/yuxiaoc/components/CVoiceArchive", () => ({
-  CVoiceArchive: ({ theme }: { theme: string }) => <section data-testid="cvoice-archive">{theme}</section>,
+  CVoiceArchive: ({ theme }: { theme: string }) => (
+    <section data-testid="cvoice-archive">{theme}</section>
+  ),
 }));
 
 jest.mock("@/features/yuxiaoc/components/DanmakuTower", () => ({
-  DanmakuTower: ({ theme }: { theme: string }) => <aside data-testid="danmaku-tower">{theme}</aside>,
+  DanmakuTower: ({ theme }: { theme: string }) => (
+    <aside data-testid="danmaku-tower">{theme}</aside>
+  ),
 }));
 
 jest.mock("@/features/yuxiaoc/components/HorizontalDanmaku", () => ({
@@ -410,11 +416,11 @@ describe("YuxiaocPage集成测试", () => {
       // 验证主内容区域存在
       const mainContent = container.querySelector(".main-content");
       expect(mainContent).toBeInTheDocument();
-      
+
       // 验证不再有hidden md:block的容器
       const hiddenMdBlock = container.querySelector(".hidden.md\\:block");
       expect(hiddenMdBlock).not.toBeInTheDocument();
-      
+
       // 验证不再有md:hidden的容器
       const mdHidden = container.querySelector(".md\\:hidden");
       expect(mdHidden).not.toBeInTheDocument();

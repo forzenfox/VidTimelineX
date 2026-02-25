@@ -110,7 +110,7 @@ const YuxiaocPage = () => {
         }}
       >
         {/* 主内容区域 - 使用CSS媒体查询控制padding */}
-        <div 
+        <div
           className="main-content"
           style={{
             // 默认移动端无padding

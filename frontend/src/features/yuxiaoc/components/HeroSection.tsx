@@ -1,6 +1,14 @@
 import React from "react";
 import type { Theme } from "../data/types";
-import { Crown, Gamepad2, ExternalLink, Sword, Shield, MessageCircle, PlayCircle } from "lucide-react";
+import {
+  Crown,
+  Gamepad2,
+  ExternalLink,
+  Sword,
+  Shield,
+  MessageCircle,
+  PlayCircle,
+} from "lucide-react";
 
 interface HeroSectionProps {
   theme: Theme;
@@ -228,7 +236,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
         {/* Rage/Mix Indicator */}
         <div className="w-full max-w-md mx-auto mb-8">
           <div className="flex justify-between mb-2">
-            <span className="font-bold flex items-center gap-2" style={{ color: content.textPrimary }}>
+            <span
+              className="font-bold flex items-center gap-2"
+              style={{ color: content.textPrimary }}
+            >
               <IconComponent className="w-4 h-4" />
               {content.rageLabel}
             </span>

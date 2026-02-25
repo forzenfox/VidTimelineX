@@ -28,20 +28,12 @@ jest.mock("@/features/yuxiaoc/data/videos", () => ({
 // Mock titles data
 jest.mock("@/features/yuxiaoc/data/titles.json", () => ({
   blood: {
-    featured: [
-      { id: "1", name: "C皇", icon: "crown", description: "核心尊称" },
-    ],
-    regular: [
-      { id: "2", name: "血怒战神", icon: "sword", description: "血怒模式专属" },
-    ],
+    featured: [{ id: "1", name: "C皇", icon: "crown", description: "核心尊称" }],
+    regular: [{ id: "2", name: "血怒战神", icon: "sword", description: "血怒模式专属" }],
   },
   mix: {
-    featured: [
-      { id: "1", name: "C皇", icon: "crown", description: "核心尊称" },
-    ],
-    regular: [
-      { id: "2", name: "峡谷第一混", icon: "fish", description: "混学宗师" },
-    ],
+    featured: [{ id: "1", name: "C皇", icon: "crown", description: "核心尊称" }],
+    regular: [{ id: "2", name: "峡谷第一混", icon: "fish", description: "混学宗师" }],
   },
 }));
 
@@ -207,10 +199,14 @@ describe("主题样式测试", () => {
      * 测试目标：验证血怒和混躺模式背景色不同
      */
     test("TC-013: 主题背景色对比测试", () => {
-      const { container: bloodContainer } = render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
+      const { container: bloodContainer } = render(
+        <Header theme="blood" onThemeToggle={mockOnThemeToggle} />
+      );
       const bloodHeader = bloodContainer.querySelector("header");
 
-      const { container: mixContainer } = render(<Header theme="mix" onThemeToggle={mockOnThemeToggle} />);
+      const { container: mixContainer } = render(
+        <Header theme="mix" onThemeToggle={mockOnThemeToggle} />
+      );
       const mixHeader = mixContainer.querySelector("header");
 
       expect(bloodHeader).toHaveStyle({ background: "rgba(15, 15, 35, 0.85)" });
@@ -238,7 +234,9 @@ describe("主题样式测试", () => {
      * 测试目标：验证主题切换后样式正确更新
      */
     test("TC-015: 主题切换后样式更新测试", () => {
-      const { rerender, container } = render(<Header theme="blood" onThemeToggle={mockOnThemeToggle} />);
+      const { rerender, container } = render(
+        <Header theme="blood" onThemeToggle={mockOnThemeToggle} />
+      );
 
       let header = container.querySelector("header");
       expect(header).toHaveStyle({ background: "rgba(15, 15, 35, 0.85)" });

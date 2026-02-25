@@ -99,7 +99,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-002: 混躺模式主色调测试", async () => {
     const { container } = render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -118,7 +118,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-003: 混躺模式文字颜色测试", async () => {
     render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -161,7 +161,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-005: 混躺模式边框颜色测试", async () => {
     const { container } = render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -173,7 +173,7 @@ describe("混躺模式明亮主题测试", () => {
     const footer = container.querySelector("footer");
     expect(footer).toBeInTheDocument();
     expect(footer).toHaveStyle({
-  borderTop: "1px solid rgba(245, 158, 11, 0.3)",
+      borderTop: "1px solid rgba(245, 158, 11, 0.3)",
     });
   });
 
@@ -189,7 +189,7 @@ describe("混躺模式明亮主题测试", () => {
     // 等待加载完成
     await waitFor(() => {
       expect(screen.queryByTestId("loading-animation")).not.toBeInTheDocument();
-});
+    });
 
     const mixMainContainer = mixContainer.querySelector(".min-h-screen");
     expect(mixMainContainer).toBeInTheDocument();
@@ -207,7 +207,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-007: 混躺模式装饰线颜色测试", async () => {
     const { container } = render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -229,7 +229,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-008: 混躺模式直播指示器测试", async () => {
     const { container } = render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -251,7 +251,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-009: 混躺模式所有子组件接收正确主题测试", async () => {
     render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -274,7 +274,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-010: 混躺模式文字对比度测试", async () => {
     render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -295,7 +295,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-011: body data-theme属性测试", async () => {
     render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -314,7 +314,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-012: body背景色随主题变化测试", async () => {
     render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -333,7 +333,7 @@ describe("混躺模式明亮主题测试", () => {
    */
   test("TC-013: body实际计算背景色测试", async () => {
     render(<YuxiaocPage />);
-    
+
     screen.getByText("完成加载").click();
 
     // 等待加载完成
@@ -343,7 +343,7 @@ describe("混躺模式明亮主题测试", () => {
 
     // 验证body的data-theme属性为mix
     expect(document.body.getAttribute("data-theme")).toBe("mix");
-    
+
     // 注意：在Jest环境中，getComputedStyle可能返回默认值
     // 实际背景色验证需要在真实浏览器中进行
     // 这里主要验证data-theme属性已正确设置

@@ -43,6 +43,20 @@ const categoryLabelMap: Record<string, string> = {
 };
 
 /**
+ * 根据语录数量计算最佳网格列数
+ * @param count 语录数量
+ * @returns Tailwind网格类名
+ */
+const getVoiceGridCols = (count: number): string => {
+  if (count <= 3) return "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mx-auto";
+  if (count === 4) return "grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto";
+  if (count === 5) return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 max-w-3xl mx-auto";
+  if (count === 6) return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 max-w-4xl mx-auto";
+  if (count <= 12) return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3";
+  return "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3";
+};
+
+/**
  * C言C语典藏馆组件
  * 从 JSON 配置文件加载语录数据，根据主题显示不同的语录
  */
@@ -77,7 +91,9 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
 
   // 从 JSON 获取当前主题的语录数据
   const voices = useMemo(() => {
-    return voicesData[theme] || { featured: { text: "", author: "", category: "classic" }, list: [] };
+    return (
+      voicesData[theme] || { featured: { text: "", author: "", category: "classic" }, list: [] }
+    );
   }, [theme]);
 
   // 获取当前主题的分类颜色映射
@@ -88,6 +104,11 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
     const category = voices.featured?.category || "classic";
     return categoryColorMap[category]?.text || "#94A3B8";
   }, [voices, categoryColorMap]);
+
+  // 根据语录数量计算网格布局
+  const gridColsClass = useMemo(() => {
+    return getVoiceGridCols(voices.list?.length || 0);
+  }, [voices.list]);
 
   return (
     <section
@@ -146,10 +167,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               }}
             >
               <Sparkles className="w-4 h-4" style={{ color: themeColors.accentColor }} />
-              <span
-                className="text-sm font-bold"
-                style={{ color: themeColors.accentColor }}
-              >
+              <span className="text-sm font-bold" style={{ color: themeColors.accentColor }}>
                 {isBlood ? "血怒长廊" : "哲学长廊"}
               </span>
             </div>
@@ -159,9 +177,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               style={{
                 fontFamily: "Chakra Petch, sans-serif",
                 color: themeColors.textPrimary,
-                textShadow: isBlood
-                  ? "0 0 20px rgba(225, 29, 72, 0.3)"
-                  : "none",
+                textShadow: isBlood ? "0 0 20px rgba(225, 29, 72, 0.3)" : "none",
               }}
             >
               &ldquo;{voices.featured?.text || "混与躺轮回不止，这把混，下把躺"}&rdquo;
@@ -185,10 +201,13 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
           </div>
         </div>
 
-        {/* Voices Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {/* Voices Grid - 自适应列数 */}
+        <div className={gridColsClass}>
           {voices.list?.map(voice => {
-            const categoryColors = categoryColorMap[voice.category] || { bg: "#F1F5F9", text: "#64748B" };
+            const categoryColors = categoryColorMap[voice.category] || {
+              bg: "#F1F5F9",
+              text: "#64748B",
+            };
             const IconComponent = categoryIconMap[voice.category] || Volume2;
             const categoryLabel = categoryLabelMap[voice.category] || "其他";
 
@@ -226,7 +245,10 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
 
                 {/* Quote */}
                 <div className="relative">
-                  <Quote className="absolute -top-1 -left-1 w-3 h-3 opacity-20" style={{ color: categoryColors.text }} />
+                  <Quote
+                    className="absolute -top-1 -left-1 w-3 h-3 opacity-20"
+                    style={{ color: categoryColors.text }}
+                  />
                   <p
                     className="text-sm font-bold pl-4 leading-tight"
                     style={{ color: themeColors.textPrimary }}
@@ -239,7 +261,9 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
                 <div
                   className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    boxShadow: isBlood ? `0 0 20px ${categoryColors.text}25` : `0 4px 12px rgba(0, 0, 0, 0.1)`,
+                    boxShadow: isBlood
+                      ? `0 0 20px ${categoryColors.text}25`
+                      : `0 4px 12px rgba(0, 0, 0, 0.1)`,
                   }}
                 />
               </div>

@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import type { Theme, Video } from "../data/types";
 import { videos, canteenCategories } from "../data/videos";
 import { Sword, Utensils, Soup, Play, Clock, Tag, Search, X } from "lucide-react";
+import { VideoCover } from "../../../components/figma/ImageWithFallback";
 
 interface CanteenHallProps {
   theme: Theme;
@@ -21,9 +22,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
 
   // 主题配色
   const themeColors = {
-    background: isBlood
-      ? "linear-gradient(180deg, #1E1B4B 0%, #0F0F23 100%)"
-      : "#FFFFFF",
+    background: isBlood ? "linear-gradient(180deg, #1E1B4B 0%, #0F0F23 100%)" : "#FFFFFF",
     cardBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "#FFFFFF",
     textPrimary: isBlood ? "#E2E8F0" : "#0F172A",
     textSecondary: isBlood ? "#94A3B8" : "#334155",
@@ -180,10 +179,18 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
               onClick={() => setActiveCategory(cat.id)}
               className="px-4 py-2 rounded-full font-bold transition-all duration-300 flex items-center gap-1.5 text-sm"
               style={{
-                background: activeCategory === cat.id ? (isBlood ? cat.color : "#D97706") : themeColors.cardBg,
+                background:
+                  activeCategory === cat.id
+                    ? isBlood
+                      ? cat.color
+                      : "#D97706"
+                    : themeColors.cardBg,
                 color: activeCategory === cat.id ? "white" : themeColors.textSecondary,
                 border: `2px solid ${activeCategory === cat.id ? (isBlood ? cat.color : "#D97706") : themeColors.borderColor}`,
-                boxShadow: activeCategory === cat.id ? `0 0 15px ${isBlood ? cat.color : "rgba(217, 119, 6, 0.3)"}` : "none",
+                boxShadow:
+                  activeCategory === cat.id
+                    ? `0 0 15px ${isBlood ? cat.color : "rgba(217, 119, 6, 0.3)"}`
+                    : "none",
               }}
             >
               {iconMap[cat.icon]}
@@ -195,8 +202,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
         {/* Video Count */}
         <div className="text-center mb-4">
           <span className="text-sm" style={{ color: themeColors.textMuted }}>
-            共{" "}
-            <span style={{ color: themeColors.accentColor }}>{filteredVideos.length}</span>{" "}
+            共 <span style={{ color: themeColors.accentColor }}>{filteredVideos.length}</span>{" "}
             个视频
             {searchQuery && (
               <span className="ml-2">
@@ -222,10 +228,12 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             >
               {/* Thumbnail */}
               <div className="relative aspect-video overflow-hidden">
-                <img
-                  src={video.cover}
+                <VideoCover
+                  cover={video.cover}
+                  cover_url={video.cover_url}
                   alt={video.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  index={index}
                 />
                 {/* Overlay */}
                 <div
@@ -237,9 +245,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                   <div
                     className="w-10 h-10 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
                     style={{
-                      background: isBlood
-                        ? "linear-gradient(135deg, #E11D48, #DC2626)"
-                        : "#D97706",
+                      background: isBlood ? "linear-gradient(135deg, #E11D48, #DC2626)" : "#D97706",
                       boxShadow: isBlood
                         ? "0 0 20px rgba(225, 29, 72, 0.6)"
                         : "0 0 20px rgba(217, 119, 6, 0.5)",
@@ -278,9 +284,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
                       key={idx}
                       className="px-1.5 py-0.5 rounded-full text-[10px] font-medium flex items-center gap-0.5"
                       style={{
-                        background: isBlood
-                          ? "rgba(225, 29, 72, 0.15)"
-                          : "rgba(217, 119, 6, 0.1)",
+                        background: isBlood ? "rgba(225, 29, 72, 0.15)" : "rgba(217, 119, 6, 0.1)",
                         color: themeColors.accentColor,
                         border: `1px solid ${isBlood ? "rgba(225, 29, 72, 0.3)" : "rgba(217, 119, 6, 0.2)"}`,
                       }}
@@ -316,7 +320,9 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             >
               <Search className="w-8 h-8" style={{ color: themeColors.accentColor }} />
             </div>
-            <p className="mb-2" style={{ color: themeColors.textSecondary }}>没有找到匹配的视频</p>
+            <p className="mb-2" style={{ color: themeColors.textSecondary }}>
+              没有找到匹配的视频
+            </p>
             <button
               onClick={() => {
                 setSearchQuery("");

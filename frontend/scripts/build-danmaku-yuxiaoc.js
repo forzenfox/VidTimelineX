@@ -106,9 +106,9 @@ function processDanmakuData() {
 
     // 合并所有弹幕
     const allDanmaku = [
-      ...danmakuData.bloodDanmaku.map((text) => ({ text, theme: "blood" })),
-      ...danmakuData.mixDanmaku.map((text) => ({ text, theme: "mix" })),
-      ...danmakuData.commonDanmaku.map((text) => ({ text, theme: "common" })),
+      ...danmakuData.bloodDanmaku.map(text => ({ text, theme: "blood" })),
+      ...danmakuData.mixDanmaku.map(text => ({ text, theme: "mix" })),
+      ...danmakuData.commonDanmaku.map(text => ({ text, theme: "common" })),
     ];
 
     console.log(`Found ${allDanmaku.length} danmaku items`);
@@ -159,9 +159,9 @@ function processDanmakuData() {
     console.log(`Output saved to: ${outputPath}`);
 
     // 统计信息
-    const bloodCount = processedDanmaku.filter((d) => d.theme === "blood").length;
-    const mixCount = processedDanmaku.filter((d) => d.theme === "mix").length;
-    const commonCount = processedDanmaku.filter((d) => d.theme === "common").length;
+    const bloodCount = processedDanmaku.filter(d => d.theme === "blood").length;
+    const mixCount = processedDanmaku.filter(d => d.theme === "mix").length;
+    const commonCount = processedDanmaku.filter(d => d.theme === "common").length;
     console.log(`\nTheme distribution:`);
     console.log(`  - Blood: ${bloodCount}`);
     console.log(`  - Mix: ${mixCount}`);

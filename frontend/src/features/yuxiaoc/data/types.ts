@@ -9,9 +9,14 @@ export type Theme = "blood" | "mix";
 export interface Video {
   id: string;
   bvid: string;
+  bv: string;
   title: string;
   cover: string;
+  cover_url: string;
+  videoUrl: string;
   duration: string;
+  date: string;
+  author: string;
   category: "hardcore" | "main" | "soup";
   subCategory?: "fried" | "mixed" | "covered";
   tags: string[];
