@@ -5,9 +5,21 @@ import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { SideDanmaku } from "./components/SideDanmaku";
 import VideoModal from "../../components/video/VideoModal";
-import type { Video } from "./data";
 import { videos } from "./data";
+import type { Video } from "./data";
+import { useViewPreferences } from "@/hooks/useViewPreferences";
+import { useVideoFilter } from "@/hooks/useVideoFilter";
+import type { Video as VideoType } from "@/components/video/types";
+import VideoGrid from "@/components/video-view/VideoGrid";
+import VideoList from "@/components/video-view/VideoList";
+import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
+import EmptyState from "@/components/video-view/EmptyState";
 import "./styles/index.css";
+
+const convertToVideoType = (video: Video): VideoType => ({
+  ...video,
+  views: 0,
+});
 
 // 生成随机装饰位置（仅执行一次）
 const generateFootprintDecorations = (() => {
@@ -47,7 +59,12 @@ const Lvjiang = () => {
   const [theme, setTheme] = useState<"dongzhu" | "kaige">("dongzhu");
   const [isLoading, setIsLoading] = useState(true);
   const [showDanmaku, setShowDanmaku] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
+
+  const { viewMode, setViewMode } = useViewPreferences();
+  const { filter, setFilter, resetFilter, filteredVideos } = useVideoFilter<VideoType>(
+    videos as unknown as VideoType[]
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -63,7 +80,7 @@ const Lvjiang = () => {
     setTheme(prev => (prev === "dongzhu" ? "kaige" : "dongzhu"));
   }, []);
 
-  const handleVideoClick = useCallback((video: Video) => {
+  const handleVideoClick = useCallback((video: VideoType) => {
     setSelectedVideo(video);
   }, []);
 
@@ -129,7 +146,26 @@ const Lvjiang = () => {
           </div>
 
           <div className="relative z-10">
-            <VideoTimeline theme={theme} onVideoClick={handleVideoClick} />
+            <div className="max-w-5xl mx-auto px-4 sm:px-6">
+              <VideoViewToolbar
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+                filter={filter}
+                onFilterChange={setFilter}
+              />
+              {filteredVideos.length === 0 ? (
+                <EmptyState onClearFilter={resetFilter} />
+              ) : viewMode === "timeline" ? (
+                <VideoTimeline
+                  theme={theme}
+                  onVideoClick={video => handleVideoClick(convertToVideoType(video))}
+                />
+              ) : viewMode === "grid" ? (
+                <VideoGrid videos={filteredVideos} onVideoClick={handleVideoClick} theme={theme} />
+              ) : (
+                <VideoList videos={filteredVideos} onVideoClick={handleVideoClick} theme={theme} />
+              )}
+            </div>
           </div>
 
           <div className="max-w-5xl mx-auto px-6 py-12 text-center">

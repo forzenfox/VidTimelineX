@@ -7,6 +7,23 @@ import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
 import VideoModal from "../../components/video/VideoModal";
+import { useViewPreferences } from "@/hooks/useViewPreferences";
+import { useVideoFilter } from "@/hooks/useVideoFilter";
+import type { Video as VideoType } from "@/components/video/types";
+import VideoGrid from "@/components/video-view/VideoGrid";
+import VideoList from "@/components/video-view/VideoList";
+import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
+import EmptyState from "@/components/video-view/EmptyState";
+
+const convertToVideoType = (video: Video): VideoType => ({
+  ...video,
+  views: typeof video.views === "string" ? parseInt(video.views, 10) || 0 : video.views,
+});
+
+const convertFromVideoType = (video: VideoType): Video => ({
+  ...video,
+  views: String(video.views || 0),
+});
 
 // 导入甜筒模块样式
 import "./styles/tiantong.css";
@@ -68,13 +85,51 @@ const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
 
 const TiantongPage = () => {
   const [theme, setTheme] = useState<"tiger" | "sweet">("tiger");
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [headerBgOpacity, setHeaderBgOpacity] = useState(0.9);
   const headerRef = React.useRef<HTMLElement>(null);
+
+  // 优化搜索算法，考虑标题和标签，实现搜索结果排序
+  const filteredBySearch = React.useMemo(() => {
+    if (!searchQuery.trim()) {
+      return videos;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+
+    return videos
+      .map(video => {
+        let score = 0;
+
+        if (video.title.toLowerCase().includes(query)) {
+          score += 10;
+          if (video.title.toLowerCase() === query) {
+            score += 10;
+          }
+        }
+
+        if (video.tags && video.tags.some(tag => tag.toLowerCase().includes(query))) {
+          score += 5;
+        }
+
+        return { video, score };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ video }) => video);
+  }, [searchQuery]);
+
+  const { viewMode, setViewMode } = useViewPreferences();
+  const {
+    filter,
+    setFilter,
+    resetFilter,
+    filteredVideos: filteredByFilter,
+  } = useVideoFilter<VideoType>(searchQuery ? filteredBySearch : videos);
 
   React.useEffect(() => {
     // 初始化主题data属性
@@ -180,40 +235,6 @@ const TiantongPage = () => {
     setSearchQuery(item);
     setShowSuggestions(false);
   }, []);
-
-  // 优化搜索算法，考虑标题和标签，实现搜索结果排序
-  const filteredVideos = React.useMemo(() => {
-    if (!searchQuery.trim()) {
-      return videos;
-    }
-
-    const query = searchQuery.toLowerCase().trim();
-
-    return videos
-      .map(video => {
-        // 计算匹配分数
-        let score = 0;
-
-        // 标题匹配
-        if (video.title.toLowerCase().includes(query)) {
-          score += 10;
-          // 完全匹配得分更高
-          if (video.title.toLowerCase() === query) {
-            score += 10;
-          }
-        }
-
-        // 标签匹配
-        if (video.tags && video.tags.some(tag => tag.toLowerCase().includes(query))) {
-          score += 5;
-        }
-
-        return { video, score };
-      })
-      .filter(({ score }) => score > 0)
-      .sort((a, b) => b.score - a.score)
-      .map(({ video }) => video);
-  }, [searchQuery]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -428,14 +449,42 @@ const TiantongPage = () => {
               role="main"
             >
               <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
-                <VideoTimeline
-                  theme={theme}
-                  videos={filteredVideos}
-                  onVideoClick={video => {
-                    console.log("Video click passed to TiantongPage:", video.title);
-                    setSelectedVideo(video);
-                  }}
+                <VideoViewToolbar
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  filter={filter}
+                  onFilterChange={setFilter}
                 />
+                {filteredByFilter.length === 0 ? (
+                  <EmptyState onClearFilter={resetFilter} />
+                ) : viewMode === "timeline" ? (
+                  <VideoTimeline
+                    theme={theme}
+                    videos={filteredByFilter.map(convertFromVideoType)}
+                    onVideoClick={video => {
+                      console.log("Video click passed to TiantongPage:", video.title);
+                      setSelectedVideo(convertToVideoType(video));
+                    }}
+                  />
+                ) : viewMode === "grid" ? (
+                  <VideoGrid
+                    videos={filteredByFilter}
+                    onVideoClick={video => {
+                      console.log("Video click passed to TiantongPage:", video.title);
+                      setSelectedVideo(video);
+                    }}
+                    theme={theme}
+                  />
+                ) : (
+                  <VideoList
+                    videos={filteredByFilter}
+                    onVideoClick={video => {
+                      console.log("Video click passed to TiantongPage:", video.title);
+                      setSelectedVideo(video);
+                    }}
+                    theme={theme}
+                  />
+                )}
               </section>
 
               <aside
