@@ -3,7 +3,7 @@
 /* 余小C粉丝站全局样式 - 双主题版本 */
 
 /* 引入自定义字体 */
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Russo+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Russo+One&display=swap");
 
 /* ============================================
    CSS变量定义 - 双主题系统
@@ -11,29 +11,29 @@
 
 :root {
   /* 血怒模式 - 深色主题 */
-  --blood-bg-primary: #0F0F23;
-  --blood-bg-secondary: #1E1B4B;
-  --blood-bg-tertiary: #312E81;
-  --blood-text-primary: #E2E8F0;
-  --blood-text-secondary: #94A3B8;
-  --blood-text-muted: #64748B;
-  --blood-accent-primary: #E11D48;
-  --blood-accent-secondary: #DC2626;
-  --blood-accent-gold: #F59E0B;
+  --blood-bg-primary: #0f0f23;
+  --blood-bg-secondary: #1e1b4b;
+  --blood-bg-tertiary: #312e81;
+  --blood-text-primary: #e2e8f0;
+  --blood-text-secondary: #94a3b8;
+  --blood-text-muted: #64748b;
+  --blood-accent-primary: #e11d48;
+  --blood-accent-secondary: #dc2626;
+  --blood-accent-gold: #f59e0b;
   --blood-border: rgba(255, 255, 255, 0.1);
   --blood-shadow: rgba(0, 0, 0, 0.5);
-  
+
   /* 混躺模式 - 亮色主题 */
-  --mix-bg-primary: #F8FAFC;
-  --mix-bg-secondary: #FFFFFF;
-  --mix-bg-tertiary: #F1F5F9;
-  --mix-text-primary: #0F172A;
+  --mix-bg-primary: #f8fafc;
+  --mix-bg-secondary: #ffffff;
+  --mix-bg-tertiary: #f1f5f9;
+  --mix-text-primary: #0f172a;
   --mix-text-secondary: #334155;
-  --mix-text-muted: #64748B;
-  --mix-accent-primary: #D97706;
-  --mix-accent-secondary: #2563EB;
-  --mix-accent-amber: #F59E0B;
-  --mix-border: #E2E8F0;
+  --mix-text-muted: #64748b;
+  --mix-accent-primary: #d97706;
+  --mix-accent-secondary: #2563eb;
+  --mix-accent-amber: #f59e0b;
+  --mix-border: #e2e8f0;
   --mix-shadow: rgba(0, 0, 0, 0.08);
 }
 
@@ -42,7 +42,7 @@ html {
 }
 
 body {
-  font-family: 'Chakra Petch', sans-serif;
+  font-family: "Chakra Petch", sans-serif;
 }
 
 /* ============================================
@@ -82,7 +82,7 @@ body[data-theme="mix"]::-webkit-scrollbar-track {
 }
 
 body[data-theme="mix"]::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 
@@ -125,7 +125,7 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 
 /* 血怒模式按钮 */
 .btn-blood {
-  background: linear-gradient(135deg, #E11D48 0%, #DC2626 100%);
+  background: linear-gradient(135deg, #e11d48 0%, #dc2626 100%);
   box-shadow: 0 4px 15px rgba(225, 29, 72, 0.4);
 }
 
@@ -137,7 +137,7 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 /* 血怒模式标签 */
 .tag-blood {
   background: rgba(225, 29, 72, 0.2);
-  color: #E11D48;
+  color: #e11d48;
   border: 1px solid rgba(225, 29, 72, 0.3);
 }
 
@@ -155,23 +155,23 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 
 /* 混躺模式卡片 - 白色背景 */
 .card-mix {
-  background: #FFFFFF;
+  background: #ffffff;
   border: 1px solid var(--mix-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
 
 .card-mix:hover {
-  border-color: #FCD34D;
+  border-color: #fcd34d;
   box-shadow: 0 8px 24px rgba(217, 119, 6, 0.15);
   transform: translateY(-4px);
 }
 
 /* 混躺模式按钮 - 琥珀色 */
 .btn-mix {
-  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
   box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .btn-mix:hover {
@@ -181,9 +181,9 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 
 /* 混躺模式次级按钮 - 蓝色 */
 .btn-mix-secondary {
-  background: linear-gradient(135deg, #2563EB 0%, #3B82F6 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
   box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .btn-mix-secondary:hover {
@@ -193,43 +193,43 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 
 /* 混躺模式标签 - 分类颜色 */
 .tag-mix-skill {
-  background: #DBEAFE;
-  color: #1E40AF;
-  border: 1px solid #BFDBFE;
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
 }
 
 .tag-mix-philosophy {
-  background: #FEF3C7;
-  color: #92400E;
-  border: 1px solid #FCD34D;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
 }
 
 .tag-mix-classic {
-  background: #D1FAE5;
-  color: #065F46;
-  border: 1px solid #A7F3D0;
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
 }
 
 .tag-mix-blood {
-  background: #FEE2E2;
-  color: #991B1B;
-  border: 1px solid #FECACA;
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
 }
 
 /* 混躺模式输入框 */
 .input-mix {
-  background: #F8FAFC;
-  border: 2px solid #E2E8F0;
-  color: #0F172A;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  color: #0f172a;
 }
 
 .input-mix:focus {
-  border-color: #FCD34D;
+  border-color: #fcd34d;
   box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.2);
 }
 
 .input-mix::placeholder {
-  color: #94A3B8;
+  color: #94a3b8;
 }
 
 /* ============================================
@@ -237,14 +237,14 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
    ============================================ */
 
 .text-gradient-blood {
-  background: linear-gradient(135deg, #E11D48 0%, #F59E0B 50%, #E11D48 100%);
+  background: linear-gradient(135deg, #e11d48 0%, #f59e0b 50%, #e11d48 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-gradient-mix {
-  background: linear-gradient(135deg, #D97706 0%, #2563EB 50%, #D97706 100%);
+  background: linear-gradient(135deg, #d97706 0%, #2563eb 50%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -255,13 +255,15 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
    ============================================ */
 
 .border-glow-blood {
-  box-shadow: 0 0 20px rgba(225, 29, 72, 0.3),
-              inset 0 0 20px rgba(225, 29, 72, 0.1);
+  box-shadow:
+    0 0 20px rgba(225, 29, 72, 0.3),
+    inset 0 0 20px rgba(225, 29, 72, 0.1);
 }
 
 .border-glow-mix {
-  box-shadow: 0 0 20px rgba(217, 119, 6, 0.2),
-              inset 0 0 20px rgba(217, 119, 6, 0.05);
+  box-shadow:
+    0 0 20px rgba(217, 119, 6, 0.2),
+    inset 0 0 20px rgba(217, 119, 6, 0.05);
 }
 
 /* ============================================
@@ -269,7 +271,8 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
    ============================================ */
 
 @keyframes bloodRage {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(225, 29, 72, 0.5);
   }
   50% {
@@ -278,7 +281,8 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 }
 
 @keyframes pulseGlow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.15;
     transform: scale(1);
   }
@@ -289,7 +293,8 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -307,7 +312,8 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 }
 
 @keyframes border-glow {
-  0%, 100% {
+  0%,
+  100% {
     border-color: rgba(225, 29, 72, 0.5);
     box-shadow: 0 0 10px rgba(225, 29, 72, 0.3);
   }
@@ -372,11 +378,11 @@ body[data-theme="mix"]::-webkit-scrollbar-thumb:hover {
 }
 
 .avatar-glow::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -4px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #E11D48, #F59E0B, #E11D48);
+  background: linear-gradient(135deg, #e11d48, #f59e0b, #e11d48);
   z-index: -1;
   animation: bloodRage 3s ease-in-out infinite;
 }

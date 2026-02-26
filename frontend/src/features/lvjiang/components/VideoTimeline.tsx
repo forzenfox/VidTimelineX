@@ -50,9 +50,7 @@ const VideoItem: React.FC<{
       </div>
 
       {/* 视频卡片 - 移动端全宽，桌面端固定宽度 */}
-      <div
-        className={`w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-16" : "sm:pl-16"} px-4 sm:px-0`}
-      >
+      <div className={`w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-16" : "sm:pl-16"} px-4 sm:px-0`}>
         <VideoCard
           video={video}
           onClick={onVideoClick}

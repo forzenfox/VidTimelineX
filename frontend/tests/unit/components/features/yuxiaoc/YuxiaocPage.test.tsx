@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import YuxiaocPage from "@/features/yuxiaoc/YuxiaocPage";
+import type { Video } from "@/features/yuxiaoc/data/types";
 import "@testing-library/jest-dom";
 
 // 模拟子组件
@@ -62,7 +63,15 @@ jest.mock("@/features/yuxiaoc/components/HorizontalDanmaku", () => ({
 
 jest.mock("@/components/video/VideoModal", () => ({
   __esModule: true,
-  default: ({ video, theme, onClose }: { video: any; theme: string; onClose: () => void }) => {
+  default: ({
+    video,
+    theme,
+    onClose,
+  }: {
+    video: Video | null;
+    theme: string;
+    onClose: () => void;
+  }) => {
     if (!video) return null;
     return (
       <div data-testid="video-modal">

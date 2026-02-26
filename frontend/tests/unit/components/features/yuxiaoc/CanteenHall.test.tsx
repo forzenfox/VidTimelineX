@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { CanteenHall } from "@/features/yuxiaoc/components/CanteenHall";
-import type { Video } from "@/features/yuxiaoc/data/types";
 import "@testing-library/jest-dom";
 
 // 模拟视频数据
