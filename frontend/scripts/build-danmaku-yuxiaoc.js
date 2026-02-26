@@ -68,9 +68,10 @@ function getDanmakuColor(theme, type = "normal") {
       return colors.super;
     case "highlight":
       return colors.highlight;
-    default:
+    default: {
       const normalColors = [colors.primary, colors.secondary, colors.accent];
       return normalColors[Math.floor(Math.random() * normalColors.length)];
+    }
   }
 }
 

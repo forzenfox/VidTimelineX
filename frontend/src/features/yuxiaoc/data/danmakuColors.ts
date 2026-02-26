@@ -60,10 +60,11 @@ export const getDanmakuColor = (theme: Theme, type: DanmakuType = "normal"): str
       return colors.super;
     case "highlight":
       return colors.highlight;
-    default:
+    default: {
       // normal 类型随机返回主要颜色
       const normalColors = [colors.primary, colors.secondary, colors.accent];
       return normalColors[Math.floor(Math.random() * normalColors.length)];
+    }
   }
 };
 

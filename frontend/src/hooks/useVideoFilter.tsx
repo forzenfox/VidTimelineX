@@ -105,8 +105,16 @@ function sortVideos<T extends Video>(videos: T[], sortBy: SortOption): T[] {
       });
     case "popular":
       return sorted.sort((a, b) => {
-        const viewsA = a.views ? (typeof a.views === "number" ? a.views : parseInt(a.views as string, 10) || 0) : 0;
-        const viewsB = b.views ? (typeof b.views === "number" ? b.views : parseInt(b.views as string, 10) || 0) : 0;
+        const viewsA = a.views
+          ? typeof a.views === "number"
+            ? a.views
+            : parseInt(a.views as string, 10) || 0
+          : 0;
+        const viewsB = b.views
+          ? typeof b.views === "number"
+            ? b.views
+            : parseInt(b.views as string, 10) || 0
+          : 0;
         return viewsB - viewsA;
       });
     default:
@@ -130,7 +138,11 @@ export function useVideoFilter<T extends Video>(
   });
 
   React.useEffect(() => {
-    if (options.duration !== undefined || options.timeRange !== undefined || options.sortBy !== undefined) {
+    if (
+      options.duration !== undefined ||
+      options.timeRange !== undefined ||
+      options.sortBy !== undefined
+    ) {
       setFilterState(prev => ({
         duration: options.duration ?? prev.duration,
         timeRange: options.timeRange ?? prev.timeRange,

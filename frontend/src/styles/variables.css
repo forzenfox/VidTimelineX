@@ -138,38 +138,38 @@
 
 /* ========== 驴酱 - 洞主主题 (Dongzhu Mode) ========== */
 [data-theme="dongzhu"] {
-  --background: #FFFEF7;
-  --foreground: #5D6D7E;
-  --primary: #5DADE2;
+  --background: #fffef7;
+  --foreground: #5d6d7e;
+  --primary: #5dade2;
   --primary-foreground: #fff;
-  --secondary: #AED6F1;
-  --secondary-foreground: #5D6D7E;
-  --accent: #3498DB;
+  --secondary: #aed6f1;
+  --secondary-foreground: #5d6d7e;
+  --accent: #3498db;
   --accent-foreground: #fff;
   --card: rgba(255, 254, 247, 0.9);
-  --card-foreground: #5D6D7E;
-  --muted: #F0F8FF;
-  --muted-foreground: #85929E;
-  --border: #AED6F1;
+  --card-foreground: #5d6d7e;
+  --muted: #f0f8ff;
+  --muted-foreground: #85929e;
+  --border: #aed6f1;
   --shadow-color: rgba(93, 173, 226, 0.3);
   --card-rgb: 255, 254, 247;
 }
 
 /* ========== 驴酱 - 凯哥主题 (Kaige Mode) ========== */
 [data-theme="kaige"] {
-  --background: #1A1A2E;
-  --foreground: #ECF0F1;
-  --primary: #E74C3C;
+  --background: #1a1a2e;
+  --foreground: #ecf0f1;
+  --primary: #e74c3c;
   --primary-foreground: #fff;
-  --secondary: #C0392B;
+  --secondary: #c0392b;
   --secondary-foreground: #fff;
-  --accent: #E74C3C;
+  --accent: #e74c3c;
   --accent-foreground: #fff;
   --card: rgba(26, 26, 46, 0.9);
-  --card-foreground: #ECF0F1;
-  --muted: #16213E;
-  --muted-foreground: #BDC3C7;
-  --border: #E74C3C;
+  --card-foreground: #ecf0f1;
+  --muted: #16213e;
+  --muted-foreground: #bdc3c7;
+  --border: #e74c3c;
   --shadow-color: rgba(231, 76, 60, 0.3);
   --card-rgb: 26, 26, 46;
 }
