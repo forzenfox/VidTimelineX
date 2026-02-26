@@ -11,7 +11,7 @@ export interface Video {
   tags: string[];
   duration: string;
   author?: string; // 视频作者（UP主）
-  views?: string; // 观看次数
+  views?: number | string; // 观看次数（兼容 number 和 string 类型）
 }
 
 export interface Danmu {

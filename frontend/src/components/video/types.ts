@@ -15,7 +15,7 @@ export interface Video {
   tags: string[];
   duration: string;
   author?: string; // 视频作者（UP主）
-  views?: number; // 播放量
+  views?: number | string; // 播放量（兼容 number 和 string 类型）
 }
 
 // 视频卡片属性接口

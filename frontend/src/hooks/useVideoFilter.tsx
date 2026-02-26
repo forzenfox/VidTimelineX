@@ -129,6 +129,16 @@ export function useVideoFilter<T extends Video>(
     sortBy: options.sortBy ?? "newest",
   });
 
+  React.useEffect(() => {
+    if (options.duration !== undefined || options.timeRange !== undefined || options.sortBy !== undefined) {
+      setFilterState(prev => ({
+        duration: options.duration ?? prev.duration,
+        timeRange: options.timeRange ?? prev.timeRange,
+        sortBy: options.sortBy ?? prev.sortBy,
+      }));
+    }
+  }, [options.duration, options.timeRange, options.sortBy]);
+
   const { duration, timeRange, sortBy } = filterState;
 
   const filteredVideos = React.useMemo(() => {
