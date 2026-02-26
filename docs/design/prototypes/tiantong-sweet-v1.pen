@@ -1,0 +1,513 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "ophcv",
+      "x": 0,
+      "y": 0,
+      "name": "甜筒时光机 - 甜美主题",
+      "width": 1440,
+      "height": 1200,
+      "fill": "rgb(255,248,220)",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "QTnjz",
+          "name": "danmakuBar",
+          "width": "fill_container",
+          "height": 40,
+          "fill": "rgba(255,140,180,0.2)",
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "TBe5p",
+              "name": "danmakuText",
+              "fill": "rgb(255,140,180)",
+              "content": "◀ 弹幕飘屏区域 ▶",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wseMg",
+          "name": "header",
+          "width": "fill_container",
+          "height": 100,
+          "fill": "rgba(255,255,255,0.9)",
+          "gap": 24,
+          "padding": [
+            24,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "TPua2",
+              "name": "avatarSection",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "46tGa",
+                  "name": "avatar",
+                  "width": 80,
+                  "height": 80,
+                  "fill": "rgb(255,140,180)",
+                  "cornerRadius": 40,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XhK8P",
+                      "name": "avatarText",
+                      "content": "🍦",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 40,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "seXUY",
+                  "name": "liveBadge",
+                  "fill": "#E74C3C",
+                  "cornerRadius": 12,
+                  "padding": [
+                    4,
+                    12
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "x2Vh6",
+                      "name": "liveText",
+                      "fill": "#FFFFFF",
+                      "content": "LIVE",
+                      "fontFamily": "Inter",
+                      "fontSize": 10,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "f6Ifw",
+              "name": "titleSection",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "lDcF1",
+                  "name": "mainTitle",
+                  "fill": "rgb(60,60,60)",
+                  "content": "亿口甜筒",
+                  "fontFamily": "Inter",
+                  "fontSize": 32,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "frame",
+                  "id": "kd5oG",
+                  "name": "subTitle",
+                  "fill": "linear-gradient(135deg, rgb(255,140,180), rgb(255,192,203))",
+                  "cornerRadius": 20,
+                  "padding": [
+                    8,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "7RRo3",
+                      "name": "subTitleText",
+                      "fill": "#FFFFFF",
+                      "content": "🍦 软萌小甜筒",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "bold"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "P26zw",
+                  "name": "roomId",
+                  "fill": "rgb(150,130,130)",
+                  "content": "12195609",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g2pm9",
+              "name": "controls",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "DEy7i",
+                  "name": "searchBox",
+                  "width": 280,
+                  "height": 48,
+                  "fill": "rgb(255,250,240)",
+                  "cornerRadius": 24,
+                  "padding": [
+                    12,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kjnJa",
+                      "name": "searchText",
+                      "fill": "rgb(150,130,130)",
+                      "content": "🔍 搜索视频...",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rv0y7",
+                  "name": "themeToggle",
+                  "fill": "rgb(255,140,180)",
+                  "cornerRadius": 20,
+                  "padding": [
+                    12,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fzA4l",
+                      "name": "toggleText",
+                      "fill": "#FFFFFF",
+                      "content": "切换到老虎",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vwmSX",
+          "name": "mainContent",
+          "width": "fill_container",
+          "gap": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "ovGPP",
+              "name": "leftSection",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "XBHJx",
+                  "name": "timelineTitle",
+                  "fill": "rgb(60,60,60)",
+                  "content": "📹 视频时间线",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "frame",
+                  "id": "VlOX9",
+                  "name": "videoList",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "DghHi",
+                      "name": "video1",
+                      "width": "fill_container",
+                      "height": 140,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "gap": 20,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "dOGOU",
+                          "name": "thumb1",
+                          "width": 200,
+                          "height": 100,
+                          "fill": "rgb(255,250,240)",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "eCDhJ",
+                              "name": "thumb1Text",
+                              "content": "🎵",
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 40,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "71p3I",
+                          "name": "info1",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "WUB6s",
+                              "name": "title1",
+                              "fill": "rgb(60,60,60)",
+                              "content": "甜筒歌声精选 #1",
+                              "fontFamily": "Inter",
+                              "fontSize": 18,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "KUy9L",
+                              "name": "desc1",
+                              "fill": "rgb(150,130,130)",
+                              "content": "甜美歌声合集",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "HmKyY",
+                      "name": "video2",
+                      "width": "fill_container",
+                      "height": 140,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "gap": 20,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "KQ2aq",
+                          "name": "thumb2",
+                          "width": 200,
+                          "height": 100,
+                          "fill": "rgb(255,250,240)",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "0vSQB",
+                              "name": "thumb2Text",
+                              "content": "💃",
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 40,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "UhfDu",
+                          "name": "info2",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "gMfSb",
+                              "name": "title2",
+                              "fill": "rgb(60,60,60)",
+                              "content": "甜筒舞蹈时刻",
+                              "fontFamily": "Inter",
+                              "fontSize": 18,
+                              "fontWeight": "bold"
+                            },
+                            {
+                              "type": "text",
+                              "id": "uZ6If",
+                              "name": "desc2",
+                              "fill": "rgb(150,130,130)",
+                              "content": "精彩舞蹈集锦",
+                              "fontFamily": "Inter",
+                              "fontSize": 14,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y61Rh",
+              "name": "rightSection",
+              "width": 320,
+              "height": 600,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "m8eUo",
+                  "name": "sidebarTitle",
+                  "fill": "rgb(60,60,60)",
+                  "content": "💬 实时弹幕",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "frame",
+                  "id": "fXAde",
+                  "name": "danmaku1",
+                  "width": "fill_container",
+                  "fill": "rgba(255,140,180,0.2)",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "o1DH6",
+                      "name": "danmaku1Text",
+                      "fill": "rgb(255,140,180)",
+                      "content": "🍦 太甜了！",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uYLYG",
+                  "name": "danmaku2",
+                  "width": "fill_container",
+                  "fill": "rgba(255,140,180,0.2)",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "y2j2L",
+                      "name": "danmaku2Text",
+                      "fill": "rgb(255,140,180)",
+                      "content": "🎵 歌声好甜~",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "eBPlF",
+                  "name": "danmaku3",
+                  "width": "fill_container",
+                  "fill": "rgba(255,140,180,0.2)",
+                  "cornerRadius": 12,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lXEjD",
+                      "name": "danmaku3Text",
+                      "fill": "rgb(255,140,180)",
+                      "content": "👏 太棒了！",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "CUMW8",
+          "name": "footer",
+          "width": "fill_container",
+          "fill": "rgba(255,140,180,0.1)",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "iiTrw",
+              "name": "footerText1",
+              "fill": "rgb(150,130,130)",
+              "content": "© 2026 亿口甜筒 · 亿口时光",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "IRM4x",
+              "name": "footerText2",
+              "fill": "rgb(150,130,130)",
+              "content": "甜筒的粉丝快乐窝",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
