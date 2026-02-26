@@ -127,6 +127,8 @@ describe("FilterDropdown 组件测试", () => {
     expect(content).toHaveClass(/w-\[280px\]/);
     expect(content).toHaveClass(/rounded-xl/);
     expect(content).toHaveClass(/shadow-xl/);
+    expect(content).toHaveClass(/backdrop-blur-md/);
+    expect(content).toHaveClass(/bg-card\/95/);
   });
 
   test("TC-010: 面板具有最大高度并可滚动", () => {

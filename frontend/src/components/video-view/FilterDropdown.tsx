@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Filter, ChevronDown, Check } from "lucide-react";
+import { Filter, ChevronDown } from "lucide-react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { cn } from "@/components/ui/utils";
 import type { FilterState, DurationFilter, TimeRangeFilter } from "@/hooks/types";
@@ -77,11 +77,12 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
         <button
           type="button"
           className={cn(
-            "inline-flex items-center gap-1.5 h-9 px-3 py-1.5 text-sm font-medium",
-            "rounded-lg border border-gray-300 bg-transparent text-gray-700",
-            "transition-all duration-150",
-            "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
-            "hover:bg-gray-100",
+            "inline-flex items-center gap-1.5 h-10 px-3.5 py-2 text-sm font-medium cursor-pointer",
+            "rounded-lg border backdrop-blur-md",
+            "bg-card/60 border-border text-foreground",
+            "transition-all duration-200 ease-out",
+            "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "hover:bg-muted/50",
             className
           )}
         >
@@ -105,16 +106,18 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
           align="start"
           sideOffset={8}
           className={cn(
-            "w-[280px] rounded-xl shadow-xl bg-white border border-gray-200",
+            "w-[280px] rounded-xl shadow-xl border backdrop-blur-md",
+            "bg-card/95 border-border/50",
             "max-h-[400px] overflow-y-auto",
             "animate-in fade-in zoom-in-95 duration-200",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-            "data-[side=bottom]:slide-in-from-top-2"
+            "data-[side=bottom]:slide-in-from-top-2",
+            "z-[1000]"
           )}
         >
           <div className="p-4 space-y-4">
             <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700">时长</span>
+              <span className="text-sm font-medium text-foreground">时长</span>
               <div className="flex flex-wrap gap-2">
                 {durationOptions.map(option => (
                   <button
@@ -122,11 +125,11 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
                     type="button"
                     onClick={() => handleDurationChange(option.value)}
                     className={cn(
-                      "px-3 py-1.5 text-sm rounded-lg border transition-all duration-150",
-                      "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
+                      "px-3 py-1.5 text-sm rounded-lg border transition-all duration-200 cursor-pointer",
+                      "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                       localFilter.duration === option.value
-                        ? "bg-primary border-primary text-white"
-                        : "bg-transparent border-gray-300 text-gray-700 hover:bg-gray-100"
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-transparent border-border text-foreground hover:bg-muted/50"
                     )}
                   >
                     {option.label}
@@ -136,7 +139,7 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
             </div>
 
             <div className="space-y-2">
-              <span className="text-sm font-medium text-gray-700">发布时间</span>
+              <span className="text-sm font-medium text-foreground">发布时间</span>
               <div className="flex flex-wrap gap-2">
                 {timeRangeOptions.map(option => (
                   <button
@@ -144,11 +147,11 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
                     type="button"
                     onClick={() => handleTimeRangeChange(option.value)}
                     className={cn(
-                      "px-3 py-1.5 text-sm rounded-lg border transition-all duration-150",
-                      "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
+                      "px-3 py-1.5 text-sm rounded-lg border transition-all duration-200 cursor-pointer",
+                      "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                       localFilter.timeRange === option.value
-                        ? "bg-primary border-primary text-white"
-                        : "bg-transparent border-gray-300 text-gray-700 hover:bg-gray-100"
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-transparent border-border text-foreground hover:bg-muted/50"
                     )}
                   >
                     {option.label}
@@ -157,16 +160,16 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
               </div>
             </div>
 
-            <div className="flex gap-2 pt-2 border-t border-gray-200">
+            <div className="flex gap-2 pt-2 border-t border-border/50">
               <button
                 type="button"
                 onClick={handleReset}
                 className={cn(
-                  "flex-1 h-9 px-3 py-1.5 text-sm font-medium rounded-lg border",
-                  "border-gray-300 text-gray-700 bg-transparent",
-                  "transition-all duration-150",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
-                  "hover:bg-gray-100"
+                  "flex-1 h-10 px-3 py-2 text-sm font-medium rounded-lg border cursor-pointer",
+                  "border-border text-foreground bg-transparent",
+                  "transition-all duration-200",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                  "hover:bg-muted/50"
                 )}
               >
                 重置
@@ -175,10 +178,10 @@ export function FilterDropdown({ filter, onFilterChange, className }: FilterDrop
                 type="button"
                 onClick={handleApply}
                 className={cn(
-                  "flex-1 h-9 px-3 py-1.5 text-sm font-medium rounded-lg",
-                  "bg-primary border border-primary text-white",
-                  "transition-all duration-150",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
+                  "flex-1 h-10 px-3 py-2 text-sm font-medium rounded-lg cursor-pointer",
+                  "bg-primary border border-primary text-primary-foreground",
+                  "transition-all duration-200",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   "hover:bg-primary/90"
                 )}
               >

@@ -4,6 +4,78 @@ import { VideoCover } from "../figma/ImageWithFallback";
 import type { VideoCardProps, Theme } from "./types";
 
 /**
+ * 根据主题获取颜色配置
+ * @param theme 主题名称
+ */
+const getThemeColors = (theme: Theme) => {
+  switch (theme) {
+    case "tiger":
+      return {
+        primary: "#FF5F00",
+        primaryForeground: "#fff",
+        background: "#FFFDF9",
+        border: "#FF9500",
+        text: "#5D6D7E",
+        textSecondary: "#85929E",
+      };
+    case "sweet":
+      return {
+        primary: "#FF8C78",
+        primaryForeground: "#fff",
+        background: "#FFF5F8",
+        border: "#FF8CA0",
+        text: "#6A1B9A",
+        textSecondary: "#9C27B0",
+      };
+    case "blood":
+      return {
+        primary: "#E11D48",
+        primaryForeground: "#fff",
+        background: "#1E1B4B",
+        border: "rgba(225, 29, 72, 0.5)",
+        text: "#E2E8F0",
+        textSecondary: "#9CA3AF",
+      };
+    case "mix":
+      return {
+        primary: "#F59E0B",
+        primaryForeground: "#fff",
+        background: "#FEF3C7",
+        border: "rgba(245, 158, 11, 0.5)",
+        text: "#78350F",
+        textSecondary: "#92400E",
+      };
+    case "dongzhu":
+      return {
+        primary: "#5DADE2",
+        primaryForeground: "#fff",
+        background: "#FFF9E6",
+        border: "#AED6F1",
+        text: "#5D6D7E",
+        textSecondary: "#85929E",
+      };
+    case "kaige":
+      return {
+        primary: "#E74C3C",
+        primaryForeground: "#fff",
+        background: "#16213E",
+        border: "#E74C3C",
+        text: "#ECF0F1",
+        textSecondary: "#BDC3C7",
+      };
+    default:
+      return {
+        primary: "#6366F1",
+        primaryForeground: "#fff",
+        background: "#f9fafb",
+        border: "#e5e7eb",
+        text: "#111827",
+        textSecondary: "#6b7280",
+      };
+  }
+};
+
+/**
  * 统一视频卡片组件
  * 使用React.memo优化性能，避免不必要的重新渲染
  * 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
@@ -31,93 +103,31 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(
       }
     };
 
-    const getThemeColors = (theme: Theme) => {
-      switch (theme) {
-        case "tiger":
-          return {
-            primary: "#FF5F00",
-            primaryForeground: "#fff",
-            background: "#FFFDF9",
-            border: "#FF9500",
-            text: "#5D6D7E",
-            textSecondary: "#85929E",
-          };
-        case "sweet":
-          return {
-            primary: "#FF8C78",
-            primaryForeground: "#fff",
-            background: "#FFF5F8",
-            border: "#FF8CA0",
-            text: "#6A1B9A",
-            textSecondary: "#9C27B0",
-          };
-        case "blood":
-          return {
-            primary: "#E11D48",
-            primaryForeground: "#fff",
-            background: "#1E1B4B",
-            border: "rgba(225, 29, 72, 0.5)",
-            text: "#E2E8F0",
-            textSecondary: "#9CA3AF",
-          };
-        case "mix":
-          return {
-            primary: "#F59E0B",
-            primaryForeground: "#fff",
-            background: "#FEF3C7",
-            border: "rgba(245, 158, 11, 0.5)",
-            text: "#78350F",
-            textSecondary: "#92400E",
-          };
-        case "dongzhu":
-          return {
-            primary: "#5DADE2",
-            primaryForeground: "#fff",
-            background: "#FFF9E6",
-            border: "#AED6F1",
-            text: "#5D6D7E",
-            textSecondary: "#85929E",
-          };
-        case "kaige":
-          return {
-            primary: "#E74C3C",
-            primaryForeground: "#fff",
-            background: "#16213E",
-            border: "#E74C3C",
-            text: "#ECF0F1",
-            textSecondary: "#BDC3C7",
-          };
-        default:
-          return {
-            primary: "#6366F1",
-            primaryForeground: "#fff",
-            background: "#f9fafb",
-            border: "#e5e7eb",
-            text: "#111827",
-            textSecondary: "#6b7280",
-          };
-      }
-    };
-
     const colors = getThemeColors(theme);
 
     const getSizeStyles = (size: string) => {
       switch (size) {
         case "small":
           return {
-            card: "w-full sm:w-72 md:w-80",
+            card: "w-full",
             title: "text-sm",
             info: "text-xs",
           };
         case "large":
           return {
-            card: "w-full sm:w-80 md:w-96",
+            card: "w-full",
             title: "text-lg",
             info: "text-sm",
           };
+        case "compact":
+          return {
+            card: "w-full",
+            title: "text-sm",
+            info: "text-xs",
+          };
         default:
           return {
-            card: "w-full sm:w-76 md:w-88",
+            card: "w-full",
             title: "text-base",
             info: "text-xs sm:text-sm",
           };
@@ -158,7 +168,9 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
-        <div className="relative aspect-video overflow-hidden flex-shrink-0 p-0 m-0">
+        <div
+          className={`relative overflow-hidden flex-shrink-0 p-0 m-0 ${size === "compact" ? "w-32 h-48 sm:w-36 sm:h-54 flex-shrink-0" : "aspect-video"}`}
+        >
           <VideoCover
             cover_url={video.cover_url}
             cover={video.cover}

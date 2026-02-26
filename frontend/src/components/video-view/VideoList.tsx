@@ -18,6 +18,8 @@ const VideoList: React.FC<VideoListProps> = React.memo(({ videos, onVideoClick, 
 
   const containerClass = useMemo(() => "flex flex-col gap-2 sm:gap-3", []);
 
+  const cardSize = useMemo(() => "compact" as const, []);
+
   return (
     <div data-testid="video-list" className={containerClass}>
       {videos.map((video, index) => (
@@ -27,7 +29,7 @@ const VideoList: React.FC<VideoListProps> = React.memo(({ videos, onVideoClick, 
           onClick={cardClickHandler}
           theme={theme}
           index={index}
-          size="medium"
+          size={cardSize}
           layout="horizontal"
           className="w-full"
         />

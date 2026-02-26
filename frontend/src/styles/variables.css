@@ -100,22 +100,76 @@
 
 /* ========== C皇驾到 - 血怒模式 (Blood Mode) ========== */
 [data-theme="blood"] {
-  --yuxiaoc-background: #0f0f23;
-  --yuxiaoc-foreground: #e2e8f0;
-  --yuxiaoc-primary: #e11d48;
-  --yuxiaoc-secondary: #f59e0b;
-  --yuxiaoc-accent: #e11d48;
-  --yuxiaoc-muted: #94a3b8;
-  --yuxiaoc-border: rgba(225, 29, 72, 0.3);
+  --background: #0f0f23;
+  --foreground: #e2e8f0;
+  --primary: #e11d48;
+  --primary-foreground: #fff;
+  --secondary: #f59e0b;
+  --secondary-foreground: #0f172a;
+  --accent: #e11d48;
+  --accent-foreground: #fff;
+  --card: #1e1b4b;
+  --card-foreground: #e2e8f0;
+  --muted: #0f0f23;
+  --muted-foreground: #94a3b8;
+  --border: rgba(225, 29, 72, 0.5);
+  --shadow-color: rgba(225, 29, 72, 0.3);
+  --card-rgb: 30, 27, 75;
 }
 
 /* ========== C皇驾到 - 混躺模式 (Mix Mode) ========== */
 [data-theme="mix"] {
-  --yuxiaoc-background: #fef3c7;
-  --yuxiaoc-foreground: #78350f;
-  --yuxiaoc-primary: #b45309;
-  --yuxiaoc-secondary: #f59e0b;
-  --yuxiaoc-accent: #b45309;
-  --yuxiaoc-muted: #92400e;
-  --yuxiaoc-border: rgba(245, 158, 11, 0.3);
+  --background: #fef3c7;
+  --foreground: #78350f;
+  --primary: #f59e0b;
+  --primary-foreground: #fff;
+  --secondary: #b45309;
+  --secondary-foreground: #78350f;
+  --accent: #b45309;
+  --accent-foreground: #fff;
+  --card: #fffbeb;
+  --card-foreground: #78350f;
+  --muted: #fef3c7;
+  --muted-foreground: #92400e;
+  --border: rgba(245, 158, 11, 0.5);
+  --shadow-color: rgba(245, 158, 11, 0.3);
+  --card-rgb: 255, 251, 235;
+}
+
+/* ========== 驴酱 - 洞主主题 (Dongzhu Mode) ========== */
+[data-theme="dongzhu"] {
+  --background: #FFFEF7;
+  --foreground: #5D6D7E;
+  --primary: #5DADE2;
+  --primary-foreground: #fff;
+  --secondary: #AED6F1;
+  --secondary-foreground: #5D6D7E;
+  --accent: #3498DB;
+  --accent-foreground: #fff;
+  --card: rgba(255, 254, 247, 0.9);
+  --card-foreground: #5D6D7E;
+  --muted: #F0F8FF;
+  --muted-foreground: #85929E;
+  --border: #AED6F1;
+  --shadow-color: rgba(93, 173, 226, 0.3);
+  --card-rgb: 255, 254, 247;
+}
+
+/* ========== 驴酱 - 凯哥主题 (Kaige Mode) ========== */
+[data-theme="kaige"] {
+  --background: #1A1A2E;
+  --foreground: #ECF0F1;
+  --primary: #E74C3C;
+  --primary-foreground: #fff;
+  --secondary: #C0392B;
+  --secondary-foreground: #fff;
+  --accent: #E74C3C;
+  --accent-foreground: #fff;
+  --card: rgba(26, 26, 46, 0.9);
+  --card-foreground: #ECF0F1;
+  --muted: #16213E;
+  --muted-foreground: #BDC3C7;
+  --border: #E74C3C;
+  --shadow-color: rgba(231, 76, 60, 0.3);
+  --card-rgb: 26, 26, 46;
 }

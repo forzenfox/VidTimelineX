@@ -247,4 +247,79 @@ describe("VideoCard组件测试", () => {
       expect(overlay).toHaveClass("duration-300");
     });
   });
+
+  describe("TC-014: 尺寸样式测试", () => {
+    test("medium尺寸不应该有固定响应式宽度类", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="medium" />
+      );
+      const card = container.querySelector("[data-testid='video-card']");
+      expect(card).toBeInTheDocument();
+      expect(card?.className).toContain("w-full");
+      expect(card?.className).not.toContain("sm:w-76");
+      expect(card?.className).not.toContain("md:w-88");
+    });
+
+    test("large尺寸不应该有固定响应式宽度类", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="large" />
+      );
+      const card = container.querySelector("[data-testid='video-card']");
+      expect(card).toBeInTheDocument();
+      expect(card?.className).toContain("w-full");
+    });
+
+    test("small尺寸不应该有固定响应式宽度类", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="small" />
+      );
+      const card = container.querySelector("[data-testid='video-card']");
+      expect(card).toBeInTheDocument();
+      expect(card?.className).toContain("w-full");
+    });
+
+    test("compact尺寸应该有正确的封面容器尺寸类", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="compact" />
+      );
+      const coverContainer = container.querySelector(".relative.overflow-hidden.flex-shrink-0");
+      expect(coverContainer).toBeInTheDocument();
+      expect(coverContainer?.className).toContain("w-32");
+      expect(coverContainer?.className).toContain("h-48");
+      expect(coverContainer?.className).toContain("sm:w-36");
+      expect(coverContainer?.className).toContain("sm:h-54");
+      expect(coverContainer?.className).toContain("flex-shrink-0");
+    });
+  });
+
+  describe("TC-015: 主题兼容性测试", () => {
+    const themes: Array<{
+      theme: "tiger" | "sweet" | "blood" | "mix" | "dongzhu" | "kaige";
+    }> = [
+      { theme: "tiger" },
+      { theme: "sweet" },
+      { theme: "blood" },
+      { theme: "mix" },
+      { theme: "dongzhu" },
+      { theme: "kaige" },
+    ];
+
+    themes.forEach(({ theme }) => {
+      test(`${theme}主题应该使用CSS变量而非硬编码颜色`, () => {
+        const { container } = render(
+          <VideoCard video={mockVideo} onClick={mockOnClick} theme={theme} />
+        );
+        const card = container.querySelector("[data-testid='video-card']");
+        expect(card).toBeInTheDocument();
+        const style = card?.getAttribute("style");
+
+        if (style) {
+          expect(style).not.toContain("#FFFDF9");
+          expect(style).not.toContain("#FFF5F8");
+          expect(style).not.toContain("#1E1B4B");
+          expect(style).not.toContain("#FEF3C7");
+        }
+      });
+    });
+  });
 });

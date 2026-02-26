@@ -40,8 +40,7 @@ describe("ViewSwitcher 组件测试", () => {
     const listButton = screen.getByRole("button", { name: /列表/i });
 
     expect(gridButton).toHaveClass(/bg-primary/);
-    expect(gridButton).toHaveClass(/border-primary/);
-    expect(gridButton).toHaveClass(/text-white/);
+    expect(gridButton).toHaveClass(/text-primary-foreground/);
 
     expect(timelineButton).not.toHaveClass(/bg-primary/);
     expect(listButton).not.toHaveClass(/bg-primary/);
@@ -53,10 +52,11 @@ describe("ViewSwitcher 组件测试", () => {
     const buttons = screen.getAllByRole("button");
 
     buttons.forEach(button => {
-      expect(button).toHaveClass(/h-9/);
+      expect(button).toHaveClass(/h-10/);
       expect(button).toHaveClass(/rounded-lg/);
-      expect(button).toHaveClass(/min-w-\[64px\]/);
-      expect(button).toHaveClass(/transition-all/);
+      expect(button).toHaveClass(/min-w-\[72px\]/);
+      expect(button).toHaveClass(/transition-colors/);
+      expect(button).toHaveClass(/cursor-pointer/);
     });
   });
 
@@ -66,9 +66,8 @@ describe("ViewSwitcher 组件测试", () => {
     const gridButton = screen.getByRole("button", { name: /网格/i });
     gridButton.focus();
 
-    expect(gridButton).toHaveClass(/outline/);
     expect(gridButton).toHaveClass(/ring-2/);
-    expect(gridButton).toHaveClass(/ring-primary/);
+    expect(gridButton).toHaveClass(/ring-ring/);
   });
 
   test("TC-006: 正确处理不同的 viewMode 状态", () => {

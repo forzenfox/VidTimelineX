@@ -78,7 +78,7 @@ describe("SortDropdown 组件测试", () => {
     const popularButton = Array.from(buttons || []).find(btn =>
       btn.textContent?.includes("最多播放")
     );
-    expect(popularButton).toHaveClass("bg-gray-100");
+    expect(popularButton).toHaveClass(/bg-muted\/50/);
   });
 
   test("TC-007: 触发器显示当前排序选项", () => {
@@ -119,8 +119,10 @@ describe("SortDropdown 组件测试", () => {
 
     const content = document.querySelector('[data-state="open"][role="dialog"]');
     expect(content).toHaveClass(/w-\[160px\]/);
-    expect(content).toHaveClass(/rounded-12px/);
+    expect(content).toHaveClass(/rounded-xl/);
     expect(content).toHaveClass(/shadow-xl/);
+    expect(content).toHaveClass(/backdrop-blur-md/);
+    expect(content).toHaveClass(/bg-card\/95/);
   });
 
   test("TC-010: 自定义 className 正确应用", () => {

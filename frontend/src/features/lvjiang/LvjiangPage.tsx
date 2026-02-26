@@ -146,12 +146,13 @@ const Lvjiang = () => {
           </div>
 
           <div className="relative z-10">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 md:pt-8">
               <VideoViewToolbar
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
                 filter={filter}
                 onFilterChange={setFilter}
+                theme={theme}
               />
               {filteredVideos.length === 0 ? (
                 <EmptyState onClearFilter={resetFilter} />

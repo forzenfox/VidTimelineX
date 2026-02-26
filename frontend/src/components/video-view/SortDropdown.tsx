@@ -38,11 +38,12 @@ export function SortDropdown({ sortBy, onSortChange, className }: SortDropdownPr
         <button
           type="button"
           className={cn(
-            "inline-flex items-center gap-1.5 h-9 px-3 py-1.5 text-sm font-medium",
-            "rounded-lg border border-gray-300 bg-transparent text-gray-700",
-            "transition-all duration-150",
-            "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
-            "hover:bg-gray-100",
+            "inline-flex items-center gap-1.5 h-10 px-3.5 py-2 text-sm font-medium cursor-pointer",
+            "rounded-lg border backdrop-blur-md",
+            "bg-card/60 border-border text-foreground",
+            "transition-all duration-200 ease-out",
+            "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "hover:bg-muted/50",
             className
           )}
         >
@@ -60,10 +61,12 @@ export function SortDropdown({ sortBy, onSortChange, className }: SortDropdownPr
           align="start"
           sideOffset={8}
           className={cn(
-            "w-[160px] rounded-12px shadow-xl bg-white border border-gray-200",
+            "w-[160px] rounded-xl shadow-xl border backdrop-blur-md",
+            "bg-card/95 border-border/50",
             "animate-in fade-in zoom-in-95 duration-150",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
-            "data-[side=bottom]:slide-in-from-top-2"
+            "data-[side=bottom]:slide-in-from-top-2",
+            "z-[1000]"
           )}
         >
           <div className="p-1">
@@ -73,15 +76,15 @@ export function SortDropdown({ sortBy, onSortChange, className }: SortDropdownPr
                 type="button"
                 onClick={() => handleSortChange(option.value)}
                 className={cn(
-                  "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg",
-                  "transition-all duration-150",
-                  "outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline",
+                  "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-lg cursor-pointer",
+                  "transition-all duration-200",
+                  "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   sortBy === option.value
-                    ? "bg-gray-100 text-gray-900"
-                    : "text-gray-700 hover:bg-gray-50"
+                    ? "bg-muted/50 text-foreground"
+                    : "text-foreground hover:bg-muted/30"
                 )}
               >
-                {sortBy === option.value && <span className="w-2 h-2 rounded-full bg-green-500" />}
+                {sortBy === option.value && <span className="w-2 h-2 rounded-full bg-primary" />}
                 {sortBy !== option.value && <span className="w-2 h-2" />}
                 {option.label}
               </button>

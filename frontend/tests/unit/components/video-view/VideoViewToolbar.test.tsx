@@ -105,8 +105,9 @@ describe("VideoViewToolbar 组件测试", () => {
     );
 
     const toolbar = container.firstChild as HTMLElement;
-    expect(toolbar).toHaveClass(/bg-white/);
-    expect(toolbar).toHaveClass(/shadow/);
+    expect(toolbar).toHaveClass(/bg-card\/70/);
+    expect(toolbar).toHaveClass(/backdrop-blur-md/);
+    expect(toolbar).toHaveClass(/shadow-lg/);
   });
 
   test("TC-007: 工具栏具有正确的内边距", () => {
@@ -121,6 +122,7 @@ describe("VideoViewToolbar 组件测试", () => {
 
     const toolbar = container.firstChild as HTMLElement;
     expect(toolbar).toHaveClass(/p-4/);
+    expect(toolbar).toHaveClass(/md:p-5/);
   });
 
   test("TC-008: 桌面端水平布局", () => {

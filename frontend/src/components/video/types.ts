@@ -26,7 +26,7 @@ export interface VideoCardProps {
   /** 卡片索引，用于首屏图片优化 */
   index?: number;
   /** 卡片尺寸，默认 medium */
-  size?: "small" | "medium" | "large";
+  size?: "small" | "medium" | "large" | "compact";
   /** 卡片布局，默认 horizontal */
   layout?: "horizontal" | "vertical";
   /** 自定义样式 */
