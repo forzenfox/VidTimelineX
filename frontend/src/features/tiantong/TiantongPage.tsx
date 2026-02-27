@@ -1,6 +1,5 @@
 import React, { useState, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { videos, Video } from "./data";
 import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
@@ -12,6 +11,7 @@ import { useVideoFilter } from "@/hooks/useVideoFilter";
 import type { Video as VideoType } from "@/components/video/types";
 import VideoGrid from "@/components/video-view/VideoGrid";
 import VideoList from "@/components/video-view/VideoList";
+import { IconToolbar } from "@/components/video-view/IconToolbar";
 import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
 import EmptyState from "@/components/video-view/EmptyState";
 
@@ -27,26 +27,6 @@ const convertFromVideoType = (video: VideoType): Video => ({
 
 // 导入甜筒模块样式
 import "./styles/tiantong.css";
-
-/**
- * 节流工具函数 - 防止频繁调用
- */
-// 暂时注释掉未使用的throttle函数
-/*
-function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  limit: number
-): (...args: Parameters<T>) => void {
-  let inThrottle: boolean;
-  return (...args: Parameters<T>) => {
-    if (!inThrottle) {
-      func(...args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  };
-}
-*/
 
 const DesktopSidebarDanmu = React.lazy(() => import("./components/SidebarDanmu"));
 
@@ -88,7 +68,6 @@ const TiantongPage = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [headerBgOpacity, setHeaderBgOpacity] = useState(0.9);
   const headerRef = React.useRef<HTMLElement>(null);
@@ -174,23 +153,6 @@ const TiantongPage = () => {
     toggleTheme(nextTheme);
   };
 
-  const handleSearch = React.useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (searchQuery.trim()) {
-        setSearchHistory(prev => {
-          const newHistory = [
-            searchQuery.trim(),
-            ...prev.filter(item => item !== searchQuery.trim()),
-          ].slice(0, 5);
-          return newHistory;
-        });
-        setShowSuggestions(false);
-      }
-    },
-    [searchQuery]
-  );
-
   // 使用useRef存储timeoutId，避免违反不可变性规则
   const timeoutIdRef = React.useRef<number | null>(null);
 
@@ -212,28 +174,22 @@ const TiantongPage = () => {
     }, 300);
   }, []);
 
-  const handleSearchChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setSearchQuery(value);
-      debouncedSearch(value);
-      setShowSuggestions(true);
-    },
-    [debouncedSearch]
-  );
-
-  const selectSuggestion = React.useCallback((suggestion: string) => {
-    setSearchQuery(suggestion);
-    setShowSuggestions(false);
+  // 处理搜索 - 由 IconToolbar 的 SearchButton 触发
+  const handleSearch = React.useCallback((query: string) => {
+    setSearchQuery(query);
+    if (query.trim()) {
+      setSearchHistory(prev => {
+        const newHistory = [
+          query.trim(),
+          ...prev.filter(item => item !== query.trim()),
+        ].slice(0, 5);
+        return newHistory;
+      });
+    }
   }, []);
 
   const clearSearchHistory = React.useCallback(() => {
     setSearchHistory([]);
-  }, []);
-
-  const selectFromHistory = React.useCallback((item: string) => {
-    setSearchQuery(item);
-    setShowSuggestions(false);
   }, []);
 
   return (
@@ -353,91 +309,9 @@ const TiantongPage = () => {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 sm:gap-5 lg:gap-8 flex-shrink-0">
-                      <div className="relative group flex-shrink-0">
-                        <form onSubmit={handleSearch} className="relative" role="search">
-                          <label htmlFor="search" className="sr-only">
-                            搜索视频
-                          </label>
-                          <input
-                            type="text"
-                            id="search"
-                            placeholder="搜索视频..."
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            onFocus={() => setShowSuggestions(true)}
-                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-                            className="pl-10 pr-4 py-2.5 sm:py-3 rounded-full border-2 border-border bg-muted/50 focus:bg-background focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 w-44 sm:w-52 lg:w-64 transition-all duration-300 text-sm sm:text-base"
-                            aria-label="搜索视频"
-                            aria-expanded={showSuggestions}
-                            aria-haspopup="listbox"
-                          />
-                          <Search
-                            className="absolute left-3.5 top-1/2 transform -translate-y-1/2 text-muted-foreground transition-colors duration-300 w-4.5 h-4.5 sm:w-[19px] sm:h-[19px]"
-                            aria-hidden="true"
-                          />
-
-                          {showSuggestions &&
-                            searchQuery.trim() &&
-                            (suggestions.length > 0 || searchHistory.length > 0) && (
-                              <div
-                                className="absolute left-0 right-0 mt-2 bg-white border border-border rounded-xl shadow-lg py-2 z-50 transition-all duration-300 ease-in-out animate-in fade-in slide-in-from-top-2"
-                                role="listbox"
-                                aria-labelledby="search"
-                              >
-                                {suggestions.length > 0 && (
-                                  <div className="search-suggestions">
-                                    <div className="px-4 py-2 text-xs font-medium text-muted-foreground border-b border-border bg-primary/5">
-                                      搜索建议
-                                    </div>
-                                    {suggestions.map((suggestion, index) => (
-                                      <div
-                                        key={index}
-                                        className="px-4 py-2.5 hover:bg-primary/10 cursor-pointer text-sm transition-all duration-200"
-                                        onClick={() => selectSuggestion(suggestion)}
-                                        role="option"
-                                        aria-selected="false"
-                                      >
-                                        {suggestion}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-
-                                {searchHistory.length > 0 && suggestions.length === 0 && (
-                                  <div className="search-history">
-                                    <div className="px-4 py-2 text-xs font-medium text-muted-foreground border-b border-border flex items-center justify-between bg-secondary/5">
-                                      <span>搜索历史</span>
-                                      <button
-                                        type="button"
-                                        onClick={clearSearchHistory}
-                                        className="text-xs text-primary hover:underline transition-colors duration-200"
-                                        aria-label="清除搜索历史"
-                                      >
-                                        清除
-                                      </button>
-                                    </div>
-                                    {searchHistory.map((item, index) => (
-                                      <div
-                                        key={index}
-                                        className="px-4 py-2.5 hover:bg-secondary/10 cursor-pointer text-sm transition-all duration-200"
-                                        onClick={() => selectFromHistory(item)}
-                                        role="option"
-                                        aria-selected="false"
-                                      >
-                                        {item}
-                                      </div>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                        </form>
-                      </div>
-
-                      <div className="flex items-center flex-shrink-0">
-                        <ThemeToggle currentTheme={theme} onToggle={handleToggleTheme} />
-                      </div>
+                    {/* Header 右侧：仅保留主题切换 */}
+                    <div className="flex items-center flex-shrink-0">
+                      <ThemeToggle currentTheme={theme} onToggle={handleToggleTheme} />
                     </div>
                   </div>
                 </div>
@@ -449,12 +323,35 @@ const TiantongPage = () => {
               role="main"
             >
               <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
-                <VideoViewToolbar
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                  filter={filter}
-                  onFilterChange={setFilter}
-                />
+                {/* 移动端显示 IconToolbar（纯图标） */}
+                <div className="sm:hidden">
+                  <IconToolbar
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                    filter={filter}
+                    onFilterChange={setFilter}
+                    onSearch={handleSearch}
+                    theme={theme}
+                    searchSuggestions={suggestions}
+                    searchHistory={searchHistory}
+                    onClearHistory={clearSearchHistory}
+                  />
+                </div>
+
+                {/* PC端显示 VideoViewToolbar（图标+文字） */}
+                <div className="hidden sm:block">
+                  <VideoViewToolbar
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                    filter={filter}
+                    onFilterChange={setFilter}
+                    theme={theme}
+                    onSearch={handleSearch}
+                    searchSuggestions={suggestions}
+                    searchHistory={searchHistory}
+                    onClearHistory={clearSearchHistory}
+                  />
+                </div>
                 {filteredByFilter.length === 0 ? (
                   <EmptyState onClearFilter={resetFilter} />
                 ) : viewMode === "timeline" ? (

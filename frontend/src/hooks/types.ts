@@ -12,7 +12,13 @@ export interface FilterState {
   sortBy: SortOption;
 }
 
+export interface PaginationConfig {
+  currentPage: number;
+  pageSize: number;
+}
+
 export interface UserPreferences {
   viewMode: ViewMode;
   filter: FilterState;
+  pagination: PaginationConfig;
 }

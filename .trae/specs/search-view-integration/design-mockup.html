@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>搜索与视图切换整合优化 - 图标化设计稿</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', system-ui, sans-serif; }
+    .font-mono { font-family: 'Fira Code', monospace; }
+    
+    /* Tiger Theme */
+    .theme-tiger {
+      --bg-primary: #2c3e50;
+      --bg-secondary: #34495e;
+      --accent: #e67e22;
+      --accent-secondary: #f39c12;
+      --text-primary: #bdc3c7;
+      --text-secondary: #7f8c8d;
+      --border: #e67e22;
+      --card-bg: rgba(52, 73, 94, 0.9);
+    }
+    
+    /* Sweet Theme */
+    .theme-sweet {
+      --bg-primary: #fff8dc;
+      --bg-secondary: #ffffff;
+      --accent: #ff8cb4;
+      --accent-secondary: #ffd700;
+      --text-primary: #3c3c3c;
+      --text-secondary: #968282;
+      --border: #ffe696;
+      --card-bg: rgba(255, 255, 255, 0.95);
+    }
+    
+    /* Dongzhu Theme */
+    .theme-dongzhu {
+      --bg-primary: #fffef7;
+      --bg-secondary: rgba(255, 254, 247, 0.9);
+      --accent: #5dade2;
+      --accent-secondary: #aed6f1;
+      --text-primary: #5d6d7e;
+      --text-secondary: #85929e;
+      --border: #aed6f1;
+      --card-bg: rgba(255, 254, 247, 0.95);
+    }
+    
+    /* Kaige Theme */
+    .theme-kaige {
+      --bg-primary: #1a1a2e;
+      --bg-secondary: rgba(26, 26, 46, 0.9);
+      --accent: #e74c3c;
+      --accent-secondary: #c0392b;
+      --text-primary: #ecf0f1;
+      --text-secondary: #bdc3c7;
+      --border: #e74c3c;
+      --card-bg: rgba(26, 26, 46, 0.95);
+    }
+
+    .mockup-container {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .mockup-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+    }
+
+    .mockup-accent {
+      background: var(--accent);
+      color: white;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    .icon-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .search-box {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      color: var(--text-primary);
+      border-radius: 9999px;
+      padding: 8px 16px 8px 36px;
+      font-size: 14px;
+      width: 0;
+      opacity: 0;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .search-box.expanded {
+      width: 180px;
+      opacity: 1;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.2);
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .tab-btn:not(.active):hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .tooltip {
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+
+    .has-tooltip:hover .tooltip {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+  <!-- Header -->
+  <header class="bg-gray-800 border-b border-gray-700 py-4 px-6">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold">搜索与视图切换整合优化</h1>
+        <p class="text-gray-400 text-sm mt-1">图标化设计 · 高保真原型</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="switchTheme('tiger')" class="tab-btn theme-tiger" id="btn-tiger">Tiger</button>
+        <button onclick="switchTheme('sweet')" class="tab-btn theme-sweet" id="btn-sweet">Sweet</button>
+        <button onclick="switchTheme('dongzhu')" class="tab-btn theme-dongzhu" id="btn-dongzhu">Dongzhu</button>
+        <button onclick="switchTheme('kaige')" class="tab-btn theme-kaige" id="btn-kaige">Kaige</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- 设计说明 -->
+    <section class="mb-12 bg-gray-800 rounded-xl p-6">
+      <h2 class="text-lg font-semibold mb-4">设计变更说明</h2>
+      <div class="grid md:grid-cols-2 gap-6 text-sm">
+        <div>
+          <h3 class="font-medium text-gray-300 mb-2">图标化设计原则</h3>
+          <ul class="space-y-1 text-gray-400">
+            <li>• 使用纯图标替代图标+文字组合</li>
+            <li>• 搜索按钮点击后展开搜索框</li>
+            <li>• 视图切换使用单个按钮循环切换</li>
+            <li>• 按钮始终显示当前状态的图标</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="font-medium text-gray-300 mb-2">交互说明</h3>
+          <ul class="space-y-1 text-gray-400">
+            <li>• 点击 🔍 展开/收起搜索框</li>
+            <li>• 点击视图按钮循环切换: 时间线 → 网格 → 列表</li>
+            <li>• Hover显示功能提示(Tooltip)</li>
+            <li>• 响应式适配各屏幕尺寸</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 甜筒页面部分 -->
+    <section class="mb-16">
+      <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-sm">甜</span>
+        甜筒页面 (TiantongPage)
+      </h2>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- 修改前 -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-300">修改前 (Before)</h3>
+            <span class="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded">分散布局</span>
+          </div>
+          <div class="mockup-container theme-tiger rounded-xl p-6 min-h-[400px]" id="tiantong-before">
+            <!-- Header with Search -->
+            <div class="mockup-card rounded-lg p-4 mb-6">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-lg">🐯</div>
+                  <div>
+                    <div class="font-bold">亿口甜筒</div>
+                    <div class="text-xs opacity-60">12195609</div>
+                  </div>
+                </div>
+                <!-- 独立搜索框 -->
+                <div class="relative">
+                  <input type="text" placeholder="搜索视频..." class="search-box expanded" style="width: 160px;">
+                  <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 视图切换工具栏 -->
+            <div class="mockup-card rounded-lg p-4 mb-6">
+              <div class="flex items-center justify-between">
+                <div class="flex gap-2">
+                  <button class="icon-btn active">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                  </button>
+                  <button class="icon-btn">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                  </button>
+                  <button class="icon-btn">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                  </button>
+                </div>
+                <div class="flex gap-2">
+                  <button class="icon-btn has-tooltip">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    <span class="tooltip">筛选</span>
+                  </button>
+                  <button class="icon-btn has-tooltip">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+                    <span class="tooltip">排序</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 视频卡片占位 -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="mockup-card rounded-lg p-3">
+                <div class="aspect-video bg-black/30 rounded mb-2"></div>
+                <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                <div class="h-3 bg-white/10 rounded w-1/2"></div>
+              </div>
+              <div class="mockup-card rounded-lg p-3">
+                <div class="aspect-video bg-black/30 rounded mb-2"></div>
+                <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                <div class="h-3 bg-white/10 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-sm text-gray-400 space-y-1">
+            <p class="flex items-center gap-2">
+              <span class="text-red-400">✗</span>
+              搜索框位于Header，与工具栏分离
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-red-400">✗</span>
+              三个视图按钮占用空间
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-red-400">✗</span>
+              视觉焦点分散
+            </p>
+          </div>
+        </div>
+
+        <!-- 修改后 -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-300">修改后 (After)</h3>
+            <span class="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">图标化整合</span>
+          </div>
+          <div class="mockup-container theme-tiger rounded-xl p-6 min-h-[400px]" id="tiantong-after">
+            <!-- Header without Search -->
+            <div class="mockup-card rounded-lg p-4 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center text-lg">🐯</div>
+                <div>
+                  <div class="font-bold">亿口甜筒</div>
+                  <div class="text-xs opacity-60">12195609</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 图标化工具栏 -->
+            <div class="mockup-card rounded-xl p-3 mb-6">
+              <div class="flex items-center gap-2 flex-wrap">
+                <!-- 搜索按钮 -->
+                <div class="flex items-center gap-1">
+                  <button class="icon-btn active has-tooltip" onclick="toggleSearch(this)">
+                    <svg class="w-5 h-5 search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <svg class="w-5 h-5 close-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    <span class="tooltip">搜索</span>
+                  </button>
+                  <input type="text" placeholder="搜索视频..." class="search-box" id="searchInput">
+                </div>
+                
+                <div class="w-px h-6 bg-white/20 mx-1"></div>
+                
+                <!-- 排序按钮 -->
+                <button class="icon-btn has-tooltip">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span class="tooltip">排序</span>
+                </button>
+                
+                <!-- 筛选按钮 -->
+                <button class="icon-btn has-tooltip relative">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                  <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                  <span class="tooltip">筛选</span>
+                </button>
+                
+                <div class="w-px h-6 bg-white/20 mx-1"></div>
+                
+                <!-- 视图切换按钮 (循环) -->
+                <button class="icon-btn has-tooltip" onclick="cycleView(this)" data-view="timeline">
+                  <!-- 时间线图标 -->
+                  <svg class="w-4 h-4 view-timeline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    <circle cx="8" cy="10" r="2" fill="currentColor"></circle>
+                    <circle cx="16" cy="14" r="2" fill="currentColor"></circle>
+                  </svg>
+                  <!-- 网格图标 -->
+                  <svg class="w-4 h-4 view-grid hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                  </svg>
+                  <!-- 列表图标 -->
+                  <svg class="w-4 h-4 view-list hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                  </svg>
+                  <span class="tooltip">切换视图</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- 视频卡片占位 -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="mockup-card rounded-lg p-3">
+                <div class="aspect-video bg-black/30 rounded mb-2"></div>
+                <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                <div class="h-3 bg-white/10 rounded w-1/2"></div>
+              </div>
+              <div class="mockup-card rounded-lg p-3">
+                <div class="aspect-video bg-black/30 rounded mb-2"></div>
+                <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                <div class="h-3 bg-white/10 rounded w-1/2"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-sm text-gray-400 space-y-1">
+            <p class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              搜索按钮点击展开，节省空间
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              单个视图按钮循环切换
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              图标化设计简洁统一
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 驴酱页面部分 -->
+    <section class="mb-16">
+      <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+        <span class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-sm">驴</span>
+        驴酱页面 (LvjiangPage)
+      </h2>
+      
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- 修改前 -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-300">修改前 (Before)</h3>
+            <span class="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded">缺失搜索</span>
+          </div>
+          <div class="mockup-container theme-dongzhu rounded-xl p-6 min-h-[400px]" id="lvjiang-before">
+            <!-- Header -->
+            <div class="mockup-card rounded-lg p-4 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-lg">🐾</div>
+                <div>
+                  <div class="font-bold">洞主凯哥</div>
+                  <div class="text-xs opacity-60">驴酱时光</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 视图切换工具栏 - 无搜索 -->
+            <div class="mockup-card rounded-lg p-4 mb-6">
+              <div class="flex items-center justify-between">
+                <div class="flex gap-2">
+                  <button class="icon-btn active">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                  </button>
+                  <button class="icon-btn">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                  </button>
+                  <button class="icon-btn">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                  </button>
+                </div>
+                <div class="flex gap-2">
+                  <button class="icon-btn has-tooltip">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    <span class="tooltip">筛选</span>
+                  </button>
+                  <button class="icon-btn has-tooltip">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+                    <span class="tooltip">排序</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 视频卡片占位 -->
+            <div class="space-y-3">
+              <div class="mockup-card rounded-lg p-3 flex gap-3">
+                <div class="w-32 h-20 bg-black/30 rounded flex-shrink-0"></div>
+                <div class="flex-1">
+                  <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                  <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                </div>
+              </div>
+              <div class="mockup-card rounded-lg p-3 flex gap-3">
+                <div class="w-32 h-20 bg-black/30 rounded flex-shrink-0"></div>
+                <div class="flex-1">
+                  <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                  <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-sm text-gray-400 space-y-1">
+            <p class="flex items-center gap-2">
+              <span class="text-red-400">✗</span>
+              完全缺失搜索功能
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-red-400">✗</span>
+              用户无法快速定位视频
+            </p>
+          </div>
+        </div>
+
+        <!-- 修改后 -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium text-gray-300">修改后 (After)</h3>
+            <span class="text-xs px-2 py-1 bg-green-500/20 text-green-400 rounded">新增搜索</span>
+          </div>
+          <div class="mockup-container theme-dongzhu rounded-xl p-6 min-h-[400px]" id="lvjiang-after">
+            <!-- Header -->
+            <div class="mockup-card rounded-lg p-4 mb-6">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-lg">🐾</div>
+                <div>
+                  <div class="font-bold">洞主凯哥</div>
+                  <div class="text-xs opacity-60">驴酱时光</div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 图标化工具栏 - 带搜索 -->
+            <div class="mockup-card rounded-xl p-3 mb-6">
+              <div class="flex items-center gap-2 flex-wrap">
+                <!-- 搜索按钮 -->
+                <div class="flex items-center gap-1">
+                  <button class="icon-btn active has-tooltip" onclick="toggleSearch2(this)">
+                    <svg class="w-5 h-5 search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <svg class="w-5 h-5 close-icon hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    <span class="tooltip">搜索</span>
+                  </button>
+                  <input type="text" placeholder="搜索视频..." class="search-box" id="searchInput2">
+                </div>
+                
+                <div class="w-px h-6 bg-white/20 mx-1"></div>
+                
+                <!-- 排序按钮 -->
+                <button class="icon-btn has-tooltip">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span class="tooltip">排序</span>
+                </button>
+                
+                <!-- 筛选按钮 -->
+                <button class="icon-btn has-tooltip relative">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                  <span class="tooltip">筛选</span>
+                </button>
+                
+                <div class="w-px h-6 bg-white/20 mx-1"></div>
+                
+                <!-- 视图切换按钮 (循环) -->
+                <button class="icon-btn has-tooltip" onclick="cycleView2(this)" data-view="timeline">
+                  <svg class="w-4 h-4 view-timeline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    <circle cx="8" cy="10" r="2" fill="currentColor"></circle>
+                    <circle cx="16" cy="14" r="2" fill="currentColor"></circle>
+                  </svg>
+                  <svg class="w-4 h-4 view-grid hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                  </svg>
+                  <svg class="w-4 h-4 view-list hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                  </svg>
+                  <span class="tooltip">切换视图</span>
+                </button>
+              </div>
+            </div>
+            
+            <!-- 视频卡片占位 -->
+            <div class="space-y-3">
+              <div class="mockup-card rounded-lg p-3 flex gap-3">
+                <div class="w-32 h-20 bg-black/30 rounded flex-shrink-0"></div>
+                <div class="flex-1">
+                  <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                  <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                </div>
+              </div>
+              <div class="mockup-card rounded-lg p-3 flex gap-3">
+                <div class="w-32 h-20 bg-black/30 rounded flex-shrink-0"></div>
+                <div class="flex-1">
+                  <div class="h-4 bg-white/10 rounded w-3/4 mb-2"></div>
+                  <div class="h-3 bg-white/10 rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-sm text-gray-400 space-y-1">
+            <p class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              新增搜索功能，与甜筒页面统一
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              图标化设计简洁一致
+            </p>
+            <p class="flex items-center gap-2">
+              <span class="text-green-400">✓</span>
+              用户可快速搜索定位视频
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 响应式布局展示 -->
+    <section class="mb-16">
+      <h2 class="text-xl font-semibold mb-6">响应式布局</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- 桌面端 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium">桌面端</h3>
+            <span class="text-xs px-2 py-1 bg-blue-500/20 text-blue-400 rounded">&gt;1024px</span>
+          </div>
+          <div class="mockup-container theme-tiger rounded-lg p-4">
+            <div class="mockup-card rounded-xl p-3">
+              <div class="flex items-center gap-2">
+                <button class="icon-btn active">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+                <input type="text" placeholder="搜索..." class="search-box expanded" style="width: 120px; opacity: 1;">
+                <div class="w-px h-6 bg-white/20"></div>
+                <button class="icon-btn">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+                <button class="icon-btn">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                </button>
+                <div class="w-px h-6 bg-white/20"></div>
+                <button class="icon-btn">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    <circle cx="8" cy="10" r="2" fill="currentColor"></circle>
+                    <circle cx="16" cy="14" r="2" fill="currentColor"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 平板端 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium">平板端</h3>
+            <span class="text-xs px-2 py-1 bg-yellow-500/20 text-yellow-400 rounded">640-1024px</span>
+          </div>
+          <div class="mockup-container theme-tiger rounded-lg p-4">
+            <div class="mockup-card rounded-xl p-3 space-y-2">
+              <div class="flex items-center gap-2">
+                <button class="icon-btn">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+                <button class="icon-btn">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+                <button class="icon-btn">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                </button>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="icon-btn active">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    <circle cx="8" cy="10" r="2" fill="currentColor"></circle>
+                    <circle cx="16" cy="14" r="2" fill="currentColor"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 移动端 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium">移动端</h3>
+            <span class="text-xs px-2 py-1 bg-red-500/20 text-red-400 rounded">&lt;640px</span>
+          </div>
+          <div class="mockup-container theme-tiger rounded-lg p-4">
+            <div class="mockup-card rounded-xl p-2">
+              <div class="flex items-center justify-between gap-1">
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </button>
+                <button class="icon-btn" style="width: 32px; height: 32px;">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                </button>
+                <button class="icon-btn active" style="width: 32px; height: 32px;">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                    <circle cx="8" cy="10" r="2" fill="currentColor"></circle>
+                    <circle cx="16" cy="14" r="2" fill="currentColor"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 交互状态展示 -->
+    <section class="mb-16">
+      <h2 class="text-xl font-semibold mb-6">交互状态</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- 搜索按钮状态 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4">搜索按钮状态</h3>
+          <div class="mockup-container theme-tiger rounded-lg p-4 space-y-4">
+            <div>
+              <div class="text-xs opacity-60 mb-2">默认状态</div>
+              <button class="icon-btn">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+            </div>
+            <div>
+              <div class="text-xs opacity-60 mb-2">悬停状态</div>
+              <button class="icon-btn" style="background: rgba(255,255,255,0.15);">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+            </div>
+            <div>
+              <div class="text-xs opacity-60 mb-2">展开状态</div>
+              <div class="flex items-center gap-1">
+                <button class="icon-btn active">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+                <input type="text" placeholder="搜索..." class="search-box expanded" style="width: 140px; opacity: 1;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 视图切换状态 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4">视图切换状态</h3>
+          <div class="mockup-container theme-tiger rounded-lg p-4 space-y-4">
+            <div>
+              <div class="text-xs opacity-60 mb-2">时间线视图</div>
+              <button class="icon-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                  <circle cx="8" cy="10" r="2" fill="currentColor"></circle>
+                  <circle cx="16" cy="14" r="2" fill="currentColor"></circle>
+                </svg>
+              </button>
+            </div>
+            <div>
+              <div class="text-xs opacity-60 mb-2">网格视图</div>
+              <button class="icon-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                </svg>
+              </button>
+            </div>
+            <div>
+              <div class="text-xs opacity-60 mb-2">列表视图</div>
+              <button class="icon-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 按钮反馈 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4">按钮反馈</h3>
+          <div class="mockup-container theme-tiger rounded-lg p-4 space-y-4">
+            <div>
+              <div class="text-xs opacity-60 mb-2">默认</div>
+              <button class="icon-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                </svg>
+              </button>
+            </div>
+            <div>
+              <div class="text-xs opacity-60 mb-2">悬停</div>
+              <button class="icon-btn" style="background: rgba(255,255,255,0.15);">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                </svg>
+              </button>
+            </div>
+            <div>
+              <div class="text-xs opacity-60 mb-2">按下 (激活)</div>
+              <button class="icon-btn active">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 设计规范摘要 -->
+    <section>
+      <h2 class="text-xl font-semibold mb-6">设计规范摘要</h2>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- 色彩 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+            色彩规范
+          </h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded" style="background: #e67e22;"></div>
+              <span>Tiger: #e67e22</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded" style="background: #ff8cb4;"></div>
+              <span>Sweet: #ff8cb4</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded" style="background: #5dade2;"></div>
+              <span>Dongzhu: #5dade2</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded" style="background: #e74c3c;"></div>
+              <span>Kaige: #e74c3c</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 图标 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            图标规范
+          </h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>搜索:</strong> 放大镜图标</p>
+            <p><strong>排序:</strong> 时钟/箭头图标</p>
+            <p><strong>筛选:</strong> 漏斗图标</p>
+            <p><strong>视图:</strong> 根据当前状态变化</p>
+          </div>
+        </div>
+
+        <!-- 尺寸 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+            尺寸规范
+          </h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>按钮尺寸:</strong> 36×36px</p>
+            <p><strong>图标尺寸:</strong> 20×20px</p>
+            <p><strong>按钮间距:</strong> 8px</p>
+            <p><strong>圆角:</strong> 8px</p>
+          </div>
+        </div>
+
+        <!-- 交互 -->
+        <div class="bg-gray-800 rounded-xl p-6">
+          <h3 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+            交互规范
+          </h3>
+          <div class="space-y-2 text-sm">
+            <p><strong>搜索:</strong> 点击展开/收起</p>
+            <p><strong>视图:</strong> 循环切换</p>
+            <p><strong>过渡:</strong> 150-200ms</p>
+            <p><strong>提示:</strong> Tooltip</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let currentTheme = 'tiger';
+    
+    function switchTheme(theme) {
+      currentTheme = theme;
+      
+      // Update active button
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById('btn-' + theme).classList.add('active');
+      
+      // Update all mockup containers
+      const containers = document.querySelectorAll('.mockup-container');
+      containers.forEach(container => {
+        container.className = container.className.replace(/theme-\w+/, 'theme-' + theme);
+      });
+    }
+
+    // Toggle search box
+    function toggleSearch(btn) {
+      const input = document.getElementById('searchInput');
+      const searchIcon = btn.querySelector('.search-icon');
+      const closeIcon = btn.querySelector('.close-icon');
+      
+      if (input.classList.contains('expanded')) {
+        input.classList.remove('expanded');
+        searchIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        btn.classList.remove('active');
+      } else {
+        input.classList.add('expanded');
+        searchIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        btn.classList.add('active');
+        input.focus();
+      }
+    }
+
+    function toggleSearch2(btn) {
+      const input = document.getElementById('searchInput2');
+      const searchIcon = btn.querySelector('.search-icon');
+      const closeIcon = btn.querySelector('.close-icon');
+      
+      if (input.classList.contains('expanded')) {
+        input.classList.remove('expanded');
+        searchIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        btn.classList.remove('active');
+      } else {
+        input.classList.add('expanded');
+        searchIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        btn.classList.add('active');
+        input.focus();
+      }
+    }
+
+    // Cycle view
+    const views = ['timeline', 'grid', 'list'];
+    
+    function cycleView(btn) {
+      let currentView = btn.getAttribute('data-view');
+      let currentIndex = views.indexOf(currentView);
+      let nextIndex = (currentIndex + 1) % views.length;
+      let nextView = views[nextIndex];
+      
+      btn.setAttribute('data-view', nextView);
+      
+      // Hide all icons
+      btn.querySelectorAll('svg').forEach(svg => svg.classList.add('hidden'));
+      // Show next icon
+      btn.querySelector('.view-' + nextView).classList.remove('hidden');
+    }
+
+    function cycleView2(btn) {
+      let currentView = btn.getAttribute('data-view');
+      let currentIndex = views.indexOf(currentView);
+      let nextIndex = (currentIndex + 1) % views.length;
+      let nextView = views[nextIndex];
+      
+      btn.setAttribute('data-view', nextView);
+      
+      // Hide all icons
+      btn.querySelectorAll('svg').forEach(svg => svg.classList.add('hidden'));
+      // Show next icon
+      btn.querySelector('.view-' + nextView).classList.remove('hidden');
+    }
+    
+    // Initialize
+    switchTheme('tiger');
+  </script>
+</body>
+</html>

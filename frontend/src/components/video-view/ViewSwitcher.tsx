@@ -2,11 +2,14 @@ import React from "react";
 import { Calendar, LayoutGrid, List } from "lucide-react";
 import type { ViewMode } from "@/hooks/types";
 import { cn } from "@/components/ui/utils";
+import { CycleViewButton } from "./CycleViewButton";
 
 interface ViewSwitcherProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   className?: string;
+  theme?: string;
+  variant?: "icon" | "default";
 }
 
 const viewModes: { mode: ViewMode; label: string; icon: React.ElementType }[] = [
@@ -15,14 +18,26 @@ const viewModes: { mode: ViewMode; label: string; icon: React.ElementType }[] = 
   { mode: "list", label: "列表", icon: List },
 ];
 
-interface ViewSwitcherProps {
-  viewMode: ViewMode;
-  onViewModeChange: (mode: ViewMode) => void;
-  className?: string;
-  theme?: string;
-}
+export function ViewSwitcher({
+  viewMode,
+  onViewModeChange,
+  className,
+  theme,
+  variant = "default",
+}: ViewSwitcherProps) {
+  // icon 模式：使用 CycleViewButton 单个循环按钮
+  if (variant === "icon") {
+    return (
+      <CycleViewButton
+        viewMode={viewMode}
+        onViewModeChange={onViewModeChange}
+        className={className}
+        theme={theme}
+      />
+    );
+  }
 
-export function ViewSwitcher({ viewMode, onViewModeChange, className, theme }: ViewSwitcherProps) {
+  // default 模式：使用三个独立按钮（图标+文字）
   return (
     <div
       role="group"

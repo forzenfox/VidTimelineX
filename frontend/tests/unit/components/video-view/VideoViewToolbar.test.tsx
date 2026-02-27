@@ -35,7 +35,7 @@ describe("VideoViewToolbar 组件测试", () => {
     expect(screen.getByRole("button", { name: /列表/i })).toBeInTheDocument();
   });
 
-  test("TC-002: 渲染 FilterDropdown 组件", () => {
+  test("TC-002: 渲染 FilterDropdown 按钮", () => {
     render(
       <VideoViewToolbar
         viewMode="grid"
@@ -45,10 +45,12 @@ describe("VideoViewToolbar 组件测试", () => {
       />
     );
 
-    expect(screen.getByRole("button", { name: /筛选/i })).toBeInTheDocument();
+    // FilterDropdown 使用 data-testid 来查找
+    expect(screen.getByTestId("filter-trigger-button")).toBeInTheDocument();
+    expect(screen.getByTestId("filter-icon")).toBeInTheDocument();
   });
 
-  test("TC-003: 渲染 SortDropdown 组件", () => {
+  test("TC-003: 渲染 SortDropdown 按钮", () => {
     render(
       <VideoViewToolbar
         viewMode="grid"
@@ -58,7 +60,8 @@ describe("VideoViewToolbar 组件测试", () => {
       />
     );
 
-    expect(screen.getByRole("button", { name: /排序/i })).toBeInTheDocument();
+    // SortDropdown 使用 data-testid 来查找
+    expect(screen.getByTestId("sort-trigger-button")).toBeInTheDocument();
   });
 
   test("TC-004: 正确传递 viewMode 和 onViewModeChange 到 ViewSwitcher", () => {
@@ -91,7 +94,8 @@ describe("VideoViewToolbar 组件测试", () => {
       />
     );
 
-    expect(screen.getAllByText("0-5分钟").length).toBeGreaterThan(0);
+    // 当有过滤器激活时，应该显示指示点
+    expect(screen.getByTestId("filter-indicator")).toBeInTheDocument();
   });
 
   test("TC-006: 工具栏具有正确的背景和阴影样式", () => {
@@ -122,17 +126,9 @@ describe("VideoViewToolbar 组件测试", () => {
 
     const toolbar = container.firstChild as HTMLElement;
     expect(toolbar).toHaveClass(/p-4/);
-    expect(toolbar).toHaveClass(/md:p-5/);
   });
 
   test("TC-008: 桌面端水平布局", () => {
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: 1024,
-    });
-    window.dispatchEvent(new Event("resize"));
-
     const { container } = render(
       <VideoViewToolbar
         viewMode="grid"
@@ -144,16 +140,11 @@ describe("VideoViewToolbar 组件测试", () => {
 
     const toolbar = container.firstChild as HTMLElement;
     expect(toolbar).toHaveClass(/flex-row/);
+    expect(toolbar).toHaveClass(/items-center/);
+    expect(toolbar).toHaveClass(/justify-between/);
   });
 
-  test("TC-009: 移动端两行布局", () => {
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: 375,
-    });
-    window.dispatchEvent(new Event("resize"));
-
+  test("TC-009: 移动端隐藏工具栏", () => {
     const { container } = render(
       <VideoViewToolbar
         viewMode="grid"
@@ -164,17 +155,12 @@ describe("VideoViewToolbar 组件测试", () => {
     );
 
     const toolbar = container.firstChild as HTMLElement;
-    expect(toolbar).toHaveClass(/flex-col/);
+    // 移动端隐藏 (hidden)，PC端显示 (sm:flex)
+    expect(toolbar).toHaveClass("hidden");
+    expect(toolbar).toHaveClass("sm:flex");
   });
 
   test("TC-010: 桌面端视图切换与筛选排序之间有间距", () => {
-    Object.defineProperty(window, "innerWidth", {
-      writable: true,
-      configurable: true,
-      value: 1024,
-    });
-    window.dispatchEvent(new Event("resize"));
-
     const { container } = render(
       <VideoViewToolbar
         viewMode="grid"
@@ -185,7 +171,7 @@ describe("VideoViewToolbar 组件测试", () => {
     );
 
     const toolbar = container.firstChild as HTMLElement;
-    expect(toolbar).toHaveClass(/gap-6/);
+    expect(toolbar).toHaveClass(/gap-4/);
   });
 
   test("TC-011: 自定义 className 正确应用", () => {
@@ -213,18 +199,37 @@ describe("VideoViewToolbar 组件测试", () => {
       />
     );
 
-    const buttons = screen.getAllByRole("button");
-    const viewModeButtons = buttons.filter(
-      btn =>
-        btn.textContent?.includes("时光轴") ||
-        btn.textContent?.includes("网格") ||
-        btn.textContent?.includes("列表")
-    );
-    const filterButton = buttons.find(btn => btn.textContent?.includes("筛选"));
-    const sortButton = buttons.find(btn => btn.textContent?.includes("排序"));
-
+    // ViewSwitcher: 3 个视图按钮
+    const viewModeButtons = screen.getAllByRole("button", { name: /时光轴|网格|列表/i });
     expect(viewModeButtons).toHaveLength(3);
-    expect(filterButton).toBeInTheDocument();
-    expect(sortButton).toBeInTheDocument();
+
+    // FilterDropdown
+    expect(screen.getByTestId("filter-trigger-button")).toBeInTheDocument();
+
+    // SortDropdown
+    expect(screen.getByTestId("sort-trigger-button")).toBeInTheDocument();
+  });
+
+  test("TC-013: FilterDropdown 和 SortDropdown 使用 default 模式", () => {
+    render(
+      <VideoViewToolbar
+        viewMode="grid"
+        onViewModeChange={mockOnViewModeChange}
+        filter={defaultFilter}
+        onFilterChange={mockOnFilterChange}
+      />
+    );
+
+    // 验证 FilterDropdown 按钮显示文字
+    const filterButton = screen.getByTestId("filter-trigger-button");
+    expect(filterButton.textContent).toContain("筛选");
+    // 高度为 40px (h-10)
+    expect(filterButton).toHaveClass("h-10");
+
+    // 验证 SortDropdown 按钮显示文字
+    const sortButton = screen.getByTestId("sort-trigger-button");
+    expect(sortButton.textContent).toContain("最新发布");
+    // 高度为 40px (h-10)
+    expect(sortButton).toHaveClass("h-10");
   });
 });

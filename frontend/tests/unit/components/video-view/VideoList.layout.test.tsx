@@ -61,7 +61,7 @@ describe("VideoList 容器排版测试", () => {
 
   describe("整体布局结构", () => {
     it("应该使用垂直flex布局", () => {
-      const { container } = render(
+      render(
         <VideoList
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -69,12 +69,12 @@ describe("VideoList 容器排版测试", () => {
         />
       );
 
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer).toHaveClass("flex", "flex-col");
     });
 
     it("列表项之间应该有16px间距", () => {
-      const { container } = render(
+      render(
         <VideoList
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -82,7 +82,7 @@ describe("VideoList 容器排版测试", () => {
         />
       );
 
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer).toHaveClass("gap-4");
     });
 
@@ -117,7 +117,7 @@ describe("VideoList 容器排版测试", () => {
     });
 
     it("列表项应该占满整个宽度", () => {
-      const { container } = render(
+      render(
         <VideoList
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -125,14 +125,14 @@ describe("VideoList 容器排版测试", () => {
         />
       );
 
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer).toHaveClass("w-full");
     });
   });
 
   describe("空列表状态", () => {
     it("空列表时应该不渲染任何内容", () => {
-      const { container } = render(
+      render(
         <VideoList
           videos={[]}
           onVideoClick={mockOnVideoClick}
@@ -147,7 +147,7 @@ describe("VideoList 容器排版测试", () => {
 
   describe("响应式排版", () => {
     it("容器应该在所有屏幕尺寸下保持垂直布局", () => {
-      const { container } = render(
+      render(
         <VideoList
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -155,7 +155,7 @@ describe("VideoList 容器排版测试", () => {
         />
       );
 
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       // 垂直布局不随屏幕尺寸变化
       expect(listContainer).toHaveClass("flex-col");
     });

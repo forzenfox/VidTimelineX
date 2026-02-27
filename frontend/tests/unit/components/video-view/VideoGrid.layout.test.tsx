@@ -73,7 +73,7 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("整体布局结构", () => {
     it("应该使用CSS Grid布局", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -81,12 +81,12 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const gridContainer = container.firstChild as HTMLElement;
+      const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("grid");
     });
 
     it("网格项之间应该有16px间距", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -94,7 +94,7 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const gridContainer = container.firstChild as HTMLElement;
+      const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("gap-4");
     });
 
@@ -114,7 +114,7 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("响应式列数排版", () => {
     it("移动端应该显示2列", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -122,12 +122,12 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const gridContainer = container.firstChild as HTMLElement;
+      const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("grid-cols-2");
     });
 
     it("平板端应该显示3列", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -135,12 +135,12 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const gridContainer = container.firstChild as HTMLElement;
+      const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("md:grid-cols-3");
     });
 
     it("桌面端应该显示4列", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -148,7 +148,7 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const gridContainer = container.firstChild as HTMLElement;
+      const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("lg:grid-cols-4");
     });
   });
@@ -170,7 +170,7 @@ describe("VideoGrid 容器排版测试", () => {
     });
 
     it("网格项应该占满整个高度", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -178,7 +178,7 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const videoCards = container.querySelectorAll("[data-testid='video-card']");
+      const videoCards = screen.getAllByTestId("video-card");
       videoCards.forEach((card) => {
         expect(card).toHaveClass("h-full");
       });
@@ -187,7 +187,7 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("空网格状态", () => {
     it("空网格时应该不渲染任何内容", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={[]}
           onVideoClick={mockOnVideoClick}
@@ -202,7 +202,7 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("容器宽度", () => {
     it("容器应该占满整个宽度", () => {
-      const { container } = render(
+      render(
         <VideoGrid
           videos={mockVideos}
           onVideoClick={mockOnVideoClick}
@@ -210,7 +210,7 @@ describe("VideoGrid 容器排版测试", () => {
         />
       );
 
-      const gridContainer = container.firstChild as HTMLElement;
+      const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("w-full");
     });
   });

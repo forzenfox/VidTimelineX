@@ -85,18 +85,18 @@ describe("VideoList组件测试", () => {
 
   describe("TC-003: 移动端布局正确（封面120px，紧凑）", () => {
     test("移动端应该使用响应式布局类", () => {
-      const { container } = render(
+      render(
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer.className).toContain("gap-4");
     });
 
     test("应该包含w-full类占满宽度", () => {
-      const { container } = render(
+      render(
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer.className).toContain("w-full");
     });
   });
@@ -202,18 +202,18 @@ describe("VideoList组件测试", () => {
 
   describe("TC-010: 列表容器样式验证", () => {
     test("应该使用Flexbox布局", () => {
-      const { container } = render(
+      render(
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer.className).toContain("flex");
     });
 
     test("应该包含正确的间距类", () => {
-      const { container } = render(
+      render(
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
-      const listContainer = container.firstChild as HTMLElement;
+      const listContainer = screen.getByTestId("video-list");
       expect(listContainer.className).toContain("gap-4");
     });
   });
