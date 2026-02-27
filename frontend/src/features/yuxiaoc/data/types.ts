@@ -8,7 +8,7 @@ export type Theme = "blood" | "mix";
 // 视频类型
 export interface Video {
   id: string;
-  bvid: string;
+  bvid?: string;
   bv: string;
   title: string;
   cover: string;
@@ -17,7 +17,7 @@ export interface Video {
   duration: string;
   date: string;
   author: string;
-  category: "hardcore" | "main" | "soup";
+  category?: "hardcore" | "main" | "soup";
   subCategory?: "fried" | "mixed" | "covered";
   tags: string[];
   description?: string;

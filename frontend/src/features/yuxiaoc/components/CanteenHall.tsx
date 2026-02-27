@@ -1,25 +1,206 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import type { Theme, Video } from "../data/types";
-import { videos, canteenCategories } from "../data/videos";
-import { Sword, Utensils, Soup, Search, X } from "lucide-react";
+import { videos } from "../data/videos";
+import { Search } from "lucide-react";
 import VideoCard from "../../../components/video/VideoCard";
+import { VideoViewToolbar } from "../../../components/video-view/VideoViewToolbar";
+import { IconToolbar } from "../../../components/video-view/IconToolbar";
+import { useVideoView } from "../hooks/useVideoView";
 
 interface CanteenHallProps {
   theme: Theme;
   onVideoClick: (video: Video) => void;
 }
 
-const iconMap: Record<string, React.ReactNode> = {
-  sword: <Sword className="w-4 h-4" />,
-  utensils: <Utensils className="w-4 h-4" />,
-  soup: <Soup className="w-4 h-4" />,
-};
+/**
+ * 时光轴节点组件
+ * 64px圆形节点，带主题图标和发光效果
+ */
+const TimelineNode: React.FC<{
+  index: number;
+  theme: Theme;
+  onClick: () => void;
+}> = React.memo(({ index, theme, onClick }) => {
+  const isBlood = theme === "blood";
+
+  const nodeStyle = useMemo(
+    () => ({
+      background: isBlood
+        ? "linear-gradient(135deg, #E11D48, #9F1239)"
+        : "linear-gradient(135deg, #D97706, #B45309)",
+      border: `4px solid ${isBlood ? "#1E1B4B" : "#FFFFFF"}`,
+      boxShadow: isBlood
+        ? "0 0 20px rgba(225, 29, 72, 0.6), 0 0 40px rgba(225, 29, 72, 0.3)"
+        : "0 0 20px rgba(217, 119, 6, 0.6), 0 0 40px rgba(217, 119, 6, 0.3)",
+    }),
+    [isBlood]
+  );
+
+  // 主题图标：血怒用火焰，混躺用面条
+  const nodeIcon = isBlood ? "🔥" : "🍜";
+
+  return (
+    <div
+      className="hidden sm:flex absolute left-1/2 -ml-8 w-16 h-16 rounded-full items-center justify-center cursor-pointer hover:scale-125 z-20 transition-all duration-300"
+      style={nodeStyle}
+      onClick={onClick}
+      data-testid={`timeline-node-${index}`}
+    >
+      <span className="text-2xl select-none">{nodeIcon}</span>
+    </div>
+  );
+});
+
+/**
+ * 时光轴连接线组件
+ * 连接节点和卡片的水平线
+ */
+const TimelineConnector: React.FC<{
+  isLeft: boolean;
+  theme: Theme;
+}> = React.memo(({ isLeft, theme }) => {
+  const isBlood = theme === "blood";
+
+  const connectorStyle = useMemo(
+    () => ({
+      background: isBlood
+        ? isLeft
+          ? "linear-gradient(to left, rgba(225, 29, 72, 0.5), transparent)"
+          : "linear-gradient(to right, rgba(225, 29, 72, 0.5), transparent)"
+        : isLeft
+          ? "linear-gradient(to left, rgba(217, 119, 6, 0.5), transparent)"
+          : "linear-gradient(to right, rgba(217, 119, 6, 0.5), transparent)",
+      boxShadow: isBlood ? "0 0 10px rgba(225, 29, 72, 0.3)" : "0 0 10px rgba(217, 119, 6, 0.3)",
+    }),
+    [isBlood, isLeft]
+  );
+
+  return (
+    <div
+      className={`hidden sm:block absolute top-1/2 -mt-px h-0.5 w-12 ${isLeft ? "right-0" : "left-0"}`}
+      style={connectorStyle}
+    />
+  );
+});
+
+/**
+ * 单个视频项组件 - 桌面端时光轴布局
+ * 移动端使用垂直列表布局
+ */
+const TimelineVideoItem: React.FC<{
+  video: Video;
+  index: number;
+  theme: Theme;
+  onVideoClick: (video: Video) => void;
+}> = React.memo(({ video, index, theme, onVideoClick }) => {
+  const isLeft = index % 2 === 0;
+
+  return (
+    <div
+      key={video.id}
+      className={`relative mb-8 sm:mb-16 flex items-center ${isLeft ? "sm:justify-start" : "sm:justify-end"} justify-center`}
+      data-testid={`timeline-item-${index}`}
+    >
+      {/* 时间节点 - 桌面端显示在中心 */}
+      <TimelineNode index={index} theme={theme} onClick={() => onVideoClick(video)} />
+
+      {/* 视频卡片容器 */}
+      <div
+        className={`relative w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-20" : "sm:pl-20"} px-4 sm:px-0`}
+      >
+        {/* 连接线 - 桌面端显示 */}
+        <TimelineConnector isLeft={isLeft} theme={theme} />
+
+        {/* 视频卡片 */}
+        <VideoCard
+          video={video}
+          onClick={onVideoClick}
+          theme={theme}
+          index={index}
+          size="medium"
+          layout="vertical"
+        />
+      </div>
+    </div>
+  );
+});
+
+/**
+ * 时光轴视图组件
+ * 包含时间轴线、节点、连接线和视频卡片
+ */
+const TimelineView: React.FC<{
+  videos: Video[];
+  theme: Theme;
+  onVideoClick: (video: Video) => void;
+}> = React.memo(({ videos, theme, onVideoClick }) => {
+  const isBlood = theme === "blood";
+
+  const centerLineStyle = useMemo(
+    () => ({
+      background: isBlood
+        ? "linear-gradient(to bottom, #E11D48, #9F1239, #E11D48)"
+        : "linear-gradient(to bottom, #D97706, #B45309, #D97706)",
+      boxShadow: isBlood
+        ? "0 0 20px rgba(225, 29, 72, 0.5), 0 0 40px rgba(225, 29, 72, 0.2)"
+        : "0 0 20px rgba(217, 119, 6, 0.5), 0 0 40px rgba(217, 119, 6, 0.2)",
+    }),
+    [isBlood]
+  );
+
+  const videoItems = useMemo(() => {
+    return videos.map((video, index) => (
+      <TimelineVideoItem
+        key={video.id}
+        video={video}
+        index={index}
+        theme={theme}
+        onVideoClick={onVideoClick}
+      />
+    ));
+  }, [videos, theme, onVideoClick]);
+
+  return (
+    <div className="relative py-4">
+      {/* 中心时间轴线 - 桌面端显示 */}
+      <div
+        className="hidden sm:block absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 rounded-full"
+        style={centerLineStyle}
+        data-testid="timeline-center-line"
+      />
+
+      {/* 移动端简化时间轴线 */}
+      <div
+        className="sm:hidden absolute left-6 top-0 bottom-0 w-0.5 rounded-full"
+        style={{
+          background: isBlood
+            ? "linear-gradient(to bottom, #E11D48, #9F1239)"
+            : "linear-gradient(to bottom, #D97706, #B45309)",
+          opacity: 0.5,
+        }}
+        data-testid="timeline-mobile-line"
+      />
+
+      {/* 视频节点列表 */}
+      <div className="relative space-y-6 sm:space-y-0">{videoItems}</div>
+    </div>
+  );
+});
 
 export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick }) => {
-  // 分类相关状态 - 暂时屏蔽，等数据支持后恢复
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const isBlood = theme === "blood";
+
+  // 使用useVideoView hook管理视频视图状态
+  const {
+    viewMode,
+    setViewMode,
+    filter,
+    setFilter,
+    searchQuery,
+    setSearchQuery,
+    filteredVideos,
+    resetFilters,
+  } = useVideoView(videos);
 
   // 主题配色
   const themeColors = {
@@ -33,54 +214,76 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
     searchBg: isBlood ? "rgba(30, 27, 75, 0.5)" : "#F8FAFC",
   };
 
-  // 根据主题调整分类顺序 - 暂时屏蔽，等数据支持后恢复
-  const sortedCategories = useMemo(() => {
-    if (isBlood) {
-      // 血怒模式：硬核区优先
-      return [...canteenCategories].sort((a, b) => {
-        if (a.id === "hardcore") return -1;
-        if (b.id === "hardcore") return 1;
-        return 0;
-      });
-    } else {
-      // 混躺模式：主食区优先
-      return [...canteenCategories].sort((a, b) => {
-        if (a.id === "main") return -1;
-        if (b.id === "main") return 1;
-        return 0;
-      });
-    }
-  }, [isBlood]);
+  // 处理搜索
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
 
-  // 过滤视频
-  const filteredVideos = useMemo(() => {
-    let result = videos;
-
-    // 按分类过滤 - 暂时禁用，等数据支持后恢复
-    /*
-    if (activeCategory !== "all") {
-      result = result.filter(v => v.category === activeCategory);
-    }
-    */
-
-    // 按搜索词过滤
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(
-        v =>
-          v.title.toLowerCase().includes(query) ||
-          v.tags.some(tag => tag.toLowerCase().includes(query))
+  // 渲染视频列表
+  const renderVideoContent = () => {
+    if (filteredVideos.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <div
+            className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
+            style={{
+              background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(217, 119, 6, 0.1)",
+            }}
+          >
+            <Search className="w-8 h-8" style={{ color: themeColors.accentColor }} />
+          </div>
+          <p className="mb-2" style={{ color: themeColors.textSecondary }}>
+            没有找到匹配的视频
+          </p>
+          <button
+            onClick={resetFilters}
+            className="text-sm underline"
+            style={{ color: themeColors.accentColor }}
+          >
+            清除筛选
+          </button>
+        </div>
       );
     }
 
-    return result;
-  }, [searchQuery]); // 移除 activeCategory 依赖
-
-  // 清空搜索
-  const clearSearch = () => {
-    setSearchQuery("");
-    // 重置分类 - 暂时屏蔽，等数据支持后恢复
-    // setActiveCategory("all");
+    switch (viewMode) {
+      case "list":
+        return (
+          <div className="space-y-4">
+            {filteredVideos.map((video, index) => (
+              <VideoCard
+                key={video.id}
+                video={video}
+                onClick={onVideoClick}
+                theme={theme}
+                index={index}
+                size="medium"
+                layout="horizontal"
+              />
+            ))}
+          </div>
+        );
+      case "timeline":
+        // 时间轴视图 - 使用新的TimelineView组件
+        return <TimelineView videos={filteredVideos} theme={theme} onVideoClick={onVideoClick} />;
+      case "grid":
+      default:
+        return (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {filteredVideos.map((video, index) => (
+              <VideoCard
+                key={video.id}
+                video={video}
+                onClick={onVideoClick}
+                theme={theme}
+                index={index}
+                size="small"
+                layout="vertical"
+              />
+            ))}
+          </div>
+        );
+    }
   };
 
   return (
@@ -111,100 +314,30 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
           </p>
         </div>
 
-        {/* Search Bar */}
-        <div className="max-w-xl mx-auto mb-6">
-          <div
-            className="relative flex items-center"
-            style={{
-              background: themeColors.searchBg,
-              border: `1px solid ${themeColors.borderColor}`,
-              borderRadius: "9999px",
-            }}
-          >
-            <Search
-              className="absolute left-4 w-5 h-5"
-              style={{ color: themeColors.accentColor }}
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              placeholder="搜索视频标题或标签..."
-              className="w-full pl-12 pr-10 py-3 bg-transparent focus:outline-none rounded-full"
-              style={{
-                fontFamily: "Chakra Petch, sans-serif",
-                color: themeColors.textPrimary,
-              }}
-              placeholder-color={themeColors.textMuted}
-            />
-            {searchQuery && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-4 p-1 rounded-full hover:bg-black/5 transition-colors"
-              >
-                <X className="w-4 h-4" style={{ color: themeColors.textMuted }} />
-              </button>
-            )}
-          </div>
+        {/* Video View Toolbar - 桌面端 */}
+        <div className="hidden sm:block mb-6">
+          <VideoViewToolbar
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            filter={filter}
+            onFilterChange={setFilter}
+            onSearch={handleSearch}
+            searchQuery={searchQuery}
+            theme={theme}
+          />
         </div>
 
-        {/* Category Tabs - 暂时屏蔽，等数据支持后恢复 */}
-        {/*
-        <div className="flex flex-wrap justify-center gap-2 mb-6">
-          <button
-            onClick={() => setActiveCategory("all")}
-            className="px-4 py-2 rounded-full font-bold transition-all duration-300 flex items-center gap-1.5 text-sm"
-            style={{
-              background:
-                activeCategory === "all"
-                  ? isBlood
-                    ? "linear-gradient(135deg, #E11D48, #DC2626)"
-                    : "#D97706"
-                  : themeColors.cardBg,
-              color: activeCategory === "all" ? "white" : themeColors.textSecondary,
-              border: `2px solid ${
-                activeCategory === "all"
-                  ? isBlood
-                    ? "#E11D48"
-                    : "#D97706"
-                  : themeColors.borderColor
-              }`,
-              boxShadow:
-                activeCategory === "all"
-                  ? isBlood
-                    ? "0 0 15px rgba(225, 29, 72, 0.4)"
-                    : "0 0 15px rgba(217, 119, 6, 0.3)"
-                  : "none",
-            }}
-          >
-            全部
-          </button>
-          {sortedCategories.map(cat => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className="px-4 py-2 rounded-full font-bold transition-all duration-300 flex items-center gap-1.5 text-sm"
-              style={{
-                background:
-                  activeCategory === cat.id
-                    ? isBlood
-                      ? cat.color
-                      : "#D97706"
-                    : themeColors.cardBg,
-                color: activeCategory === cat.id ? "white" : themeColors.textSecondary,
-                border: `2px solid ${activeCategory === cat.id ? (isBlood ? cat.color : "#D97706") : themeColors.borderColor}`,
-                boxShadow:
-                  activeCategory === cat.id
-                    ? `0 0 15px ${isBlood ? cat.color : "rgba(217, 119, 6, 0.3)"}`
-                    : "none",
-              }}
-            >
-              {iconMap[cat.icon]}
-              {cat.name}
-            </button>
-          ))}
+        {/* Icon Toolbar - 移动端 */}
+        <div className="sm:hidden mb-6">
+          <IconToolbar
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            filter={filter}
+            onFilterChange={setFilter}
+            onSearch={handleSearch}
+            theme={theme}
+          />
         </div>
-        */}
 
         {/* Video Count */}
         <div className="text-center mb-4">
@@ -213,54 +346,15 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             个视频
             {searchQuery && (
               <span className="ml-2">
-                搜索: <span style={{ color: themeColors.textSecondary }}>"{searchQuery}"</span>
+                搜索:{" "}
+                <span style={{ color: themeColors.textSecondary }}>&quot;{searchQuery}&quot;</span>
               </span>
             )}
           </span>
         </div>
 
-        {/* Videos Grid - 响应式网格布局：移动端2列，平板端3列，桌面端4列 */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {filteredVideos.map((video, index) => (
-            <VideoCard
-              key={video.id}
-              video={video}
-              onClick={onVideoClick}
-              theme={theme}
-              index={index}
-              size="small"
-              layout="vertical"
-            />
-          ))}
-        </div>
-
-        {/* Empty State */}
-        {filteredVideos.length === 0 && (
-          <div className="text-center py-12">
-            <div
-              className="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center"
-              style={{
-                background: isBlood ? "rgba(225, 29, 72, 0.1)" : "rgba(217, 119, 6, 0.1)",
-              }}
-            >
-              <Search className="w-8 h-8" style={{ color: themeColors.accentColor }} />
-            </div>
-            <p className="mb-2" style={{ color: themeColors.textSecondary }}>
-              没有找到匹配的视频
-            </p>
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                // 重置分类 - 暂时屏蔽，等数据支持后恢复
-                // setActiveCategory("all");
-              }}
-              className="text-sm underline"
-              style={{ color: themeColors.accentColor }}
-            >
-              清除搜索
-            </button>
-          </div>
-        )}
+        {/* Videos Content */}
+        {renderVideoContent()}
       </div>
     </section>
   );

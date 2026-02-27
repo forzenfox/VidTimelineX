@@ -13,6 +13,7 @@ interface VideoViewToolbarProps {
   onFilterChange: (filter: FilterState) => void;
   // 新增搜索相关 props
   onSearch?: (query: string) => void;
+  searchQuery?: string;
   searchSuggestions?: string[];
   searchHistory?: string[];
   onClearHistory?: () => void;
@@ -26,6 +27,7 @@ export function VideoViewToolbar({
   filter,
   onFilterChange,
   onSearch,
+  searchQuery,
   searchSuggestions,
   searchHistory,
   onClearHistory,
