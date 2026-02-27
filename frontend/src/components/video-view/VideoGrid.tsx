@@ -25,20 +25,16 @@ const VideoGrid: React.FC<VideoGridProps> = React.memo(({ videos, onVideoClick, 
   );
 
   // 使用分页Hook
-  const {
-    currentPage,
-    pageSize,
-    totalPages,
-    totalItems,
-    paginatedItems,
-    setPage,
-    setPageSize,
-  } = usePagination(videos);
+  const { currentPage, pageSize, totalPages, totalItems, paginatedItems, setPage, setPageSize } =
+    usePagination(videos);
 
   return (
     <div className="flex flex-col gap-6" data-testid="video-grid-container">
-      <div data-testid="video-grid" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-        {paginatedItems.map((video) => (
+      <div
+        data-testid="video-grid"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full"
+      >
+        {paginatedItems.map(video => (
           <VideoCard
             key={video.id}
             video={video}

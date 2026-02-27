@@ -235,7 +235,7 @@ describe("CanteenHall组件测试", () => {
    * 测试用例 TC-012: 清除筛选按钮UI测试
    * 测试目标：验证清除筛选按钮UI存在
    */
-  test("TC-012: 清除筛选按钮UI测试", () => {
+  test("TC-012: 清除筛选按钮UI测试", async () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
 
     // 点击搜索按钮展开弹窗（使用 data-testid 获取 VideoViewToolbar 中的搜索按钮）
@@ -249,9 +249,11 @@ describe("CanteenHall组件测试", () => {
     // 输入搜索词
     fireEvent.change(searchInput, { target: { value: "测试" } });
 
-    // 验证清空按钮出现
-    const clearButton = screen.getByLabelText("清空");
-    expect(clearButton).toBeInTheDocument();
+    // 验证清空按钮出现（使用 waitFor 等待状态更新）
+    await waitFor(() => {
+      const clearButton = screen.getByLabelText("清空");
+      expect(clearButton).toBeInTheDocument();
+    });
   });
 
   /**

@@ -63,9 +63,7 @@ export function IconToolbar({
           <div className="w-full flex items-center justify-between px-1">
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">搜索:</span>
-              <span className="text-sm font-medium text-foreground truncate">
-                {searchQuery}
-              </span>
+              <span className="text-sm font-medium text-foreground truncate">{searchQuery}</span>
             </div>
             {onClearSearch && (
               <button
@@ -101,11 +99,7 @@ export function IconToolbar({
               currentQuery={searchQuery}
               onClear={onClearSearch}
             />
-            <FilterDropdown
-              filter={filter}
-              onFilterChange={onFilterChange}
-              variant="icon"
-            />
+            <FilterDropdown filter={filter} onFilterChange={onFilterChange} variant="icon" />
             <SortDropdown
               sortBy={filter.sortBy}
               onSortChange={sortBy => onFilterChange({ ...filter, sortBy })}
@@ -169,11 +163,7 @@ export function IconToolbar({
             currentQuery={searchQuery}
             onClear={onClearSearch}
           />
-          <FilterDropdown
-            filter={filter}
-            onFilterChange={onFilterChange}
-            variant="default"
-          />
+          <FilterDropdown filter={filter} onFilterChange={onFilterChange} variant="default" />
           <SortDropdown
             sortBy={filter.sortBy}
             onSortChange={sortBy => onFilterChange({ ...filter, sortBy })}

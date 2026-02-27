@@ -21,11 +21,11 @@ function getSortLabel(value: SortOption): string {
   return sortOptions.find(opt => opt.value === value)?.label || "最新发布";
 }
 
-export function SortDropdown({ 
-  sortBy, 
-  onSortChange, 
+export function SortDropdown({
+  sortBy,
+  onSortChange,
   className,
-  variant = "default"
+  variant = "default",
 }: SortDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -69,7 +69,10 @@ export function SortDropdown({
                 {!isIconMode && <span>{getSortLabel(sortBy)}</span>}
                 {!isIconMode && (
                   <ChevronDown
-                    className={cn("w-4 h-4 transition-transform duration-200", isOpen && "rotate-180")}
+                    className={cn(
+                      "w-4 h-4 transition-transform duration-200",
+                      isOpen && "rotate-180"
+                    )}
                   />
                 )}
               </button>

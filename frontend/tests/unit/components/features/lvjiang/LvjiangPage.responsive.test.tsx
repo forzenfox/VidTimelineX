@@ -22,7 +22,13 @@ jest.mock("@/features/lvjiang/components/Header", () => ({
 }));
 
 jest.mock("@/features/lvjiang/components/VideoTimeline", () => ({
-  VideoTimeline: ({ theme, onVideoClick }: { theme: string; onVideoClick: (video: any) => void }) => (
+  VideoTimeline: ({
+    theme,
+    onVideoClick,
+  }: {
+    theme: string;
+    onVideoClick: (video: any) => void;
+  }) => (
     <div data-testid="video-timeline">
       <span>{theme}</span>
       <button onClick={() => onVideoClick({ id: "1", title: "测试视频" })}>点击视频</button>
@@ -44,15 +50,7 @@ jest.mock("@/features/lvjiang/components/SideDanmaku", () => ({
 
 jest.mock("@/components/video/VideoModal", () => ({
   __esModule: true,
-  default: ({
-    video,
-    theme,
-    onClose,
-  }: {
-    video: any;
-    theme: string;
-    onClose: () => void;
-  }) => {
+  default: ({ video, theme, onClose }: { video: any; theme: string; onClose: () => void }) => {
     if (!video) return null;
     return (
       <div data-testid="video-modal">
@@ -199,8 +197,20 @@ jest.mock("@/hooks/useVideoFilter", () => ({
 // 模拟视频数据
 jest.mock("@/features/lvjiang/data", () => ({
   videos: [
-    { id: "1", title: "洞主精彩操作", tags: ["精彩", "操作"], date: "2024-01-01", duration: "10:00" },
-    { id: "2", title: "凯哥搞笑时刻", tags: ["搞笑", "娱乐"], date: "2024-01-02", duration: "15:00" },
+    {
+      id: "1",
+      title: "洞主精彩操作",
+      tags: ["精彩", "操作"],
+      date: "2024-01-01",
+      duration: "10:00",
+    },
+    {
+      id: "2",
+      title: "凯哥搞笑时刻",
+      tags: ["搞笑", "娱乐"],
+      date: "2024-01-02",
+      duration: "15:00",
+    },
     { id: "3", title: "驴酱日常", tags: ["日常", "直播"], date: "2024-01-03", duration: "20:00" },
   ],
 }));

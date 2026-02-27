@@ -9,7 +9,9 @@ jest.mock("@radix-ui/react-dropdown-menu", () => ({
   Root: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Trigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Portal: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  Content: ({ children }: { children: React.ReactNode }) => <div data-testid="dropdown-content">{children}</div>,
+  Content: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="dropdown-content">{children}</div>
+  ),
 }));
 
 const mockOnVideoClick = jest.fn();

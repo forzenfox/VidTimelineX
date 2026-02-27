@@ -24,20 +24,13 @@ const VideoList: React.FC<VideoListProps> = React.memo(({ videos, onVideoClick, 
   );
 
   // 使用分页Hook
-  const {
-    currentPage,
-    pageSize,
-    totalPages,
-    totalItems,
-    paginatedItems,
-    setPage,
-    setPageSize,
-  } = usePagination(videos);
+  const { currentPage, pageSize, totalPages, totalItems, paginatedItems, setPage, setPageSize } =
+    usePagination(videos);
 
   return (
     <div className="flex flex-col gap-6" data-testid="video-list-container">
       <div data-testid="video-list" className="flex flex-col gap-4 w-full">
-        {paginatedItems.map((video) => (
+        {paginatedItems.map(video => (
           <VideoCard
             key={video.id}
             video={video}

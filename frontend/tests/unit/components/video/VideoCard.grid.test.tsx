@@ -32,12 +32,7 @@ describe("VideoCard 网格模式排版测试", () => {
   describe("整体布局结构", () => {
     it("应该使用垂直flex布局", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const cardElement = container.firstChild as HTMLElement;
@@ -46,12 +41,7 @@ describe("VideoCard 网格模式排版测试", () => {
 
     it("封面和信息区应该有8px间距", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const cardElement = container.firstChild as HTMLElement;
@@ -62,12 +52,7 @@ describe("VideoCard 网格模式排版测试", () => {
   describe("封面图区域排版", () => {
     it("封面图应该占满整个宽度", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const coverWrapper = container.querySelector("[data-testid='video-cover']")?.parentElement;
@@ -76,12 +61,7 @@ describe("VideoCard 网格模式排版测试", () => {
 
     it("封面图应该保持16:9比例", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const coverWrapper = container.querySelector("[data-testid='video-cover']")?.parentElement;
@@ -90,12 +70,7 @@ describe("VideoCard 网格模式排版测试", () => {
 
     it("封面图应该有8px圆角", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const coverWrapper = container.querySelector("[data-testid='video-cover']")?.parentElement;
@@ -103,14 +78,7 @@ describe("VideoCard 网格模式排版测试", () => {
     });
 
     it("时长标签应该显示在右上角", () => {
-      render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
-      );
+      render(<VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />);
 
       const durationElement = screen.getByText("10:30");
       expect(durationElement).toHaveClass("absolute", "top-2", "right-2");
@@ -120,12 +88,7 @@ describe("VideoCard 网格模式排版测试", () => {
   describe("信息区域排版", () => {
     it("信息区域应该有适当的水平内边距", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const infoContainer = container.querySelector("[data-testid='video-card']")?.children[1];
@@ -135,42 +98,21 @@ describe("VideoCard 网格模式排版测试", () => {
 
   describe("标题排版", () => {
     it("标题应该使用14px字体大小", () => {
-      render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
-      );
+      render(<VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />);
 
       const titleElement = screen.getByText("测试视频标题");
       expect(titleElement).toHaveClass("text-sm");
     });
 
     it("标题应该使用medium字重", () => {
-      render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
-      );
+      render(<VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />);
 
       const titleElement = screen.getByText("测试视频标题");
       expect(titleElement).toHaveClass("font-medium");
     });
 
     it("标题应该最多显示2行", () => {
-      render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
-      );
+      render(<VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />);
 
       const titleElement = screen.getByText("测试视频标题");
       expect(titleElement).toHaveClass("line-clamp-2");
@@ -180,12 +122,7 @@ describe("VideoCard 网格模式排版测试", () => {
   describe("元信息排版", () => {
     it("元信息应该使用水平flex布局", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const infoContainer = container.querySelector("[data-testid='video-card']")?.children[1];
@@ -195,12 +132,7 @@ describe("VideoCard 网格模式排版测试", () => {
 
     it("元信息应该使用12px字体大小", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const infoContainer = container.querySelector("[data-testid='video-card']")?.children[1];
@@ -210,12 +142,7 @@ describe("VideoCard 网格模式排版测试", () => {
 
     it("元信息元素之间应该有8px间距", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const infoContainer = container.querySelector("[data-testid='video-card']")?.children[1];
@@ -225,12 +152,7 @@ describe("VideoCard 网格模式排版测试", () => {
 
     it("元信息应该与标题有适当间距", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const infoContainer = container.querySelector("[data-testid='video-card']")?.children[1];
@@ -242,12 +164,7 @@ describe("VideoCard 网格模式排版测试", () => {
   describe("交互效果排版", () => {
     it("卡片应该有过渡动画", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
 
       const cardElement = container.firstChild as HTMLElement;
@@ -255,14 +172,7 @@ describe("VideoCard 网格模式排版测试", () => {
     });
 
     it("标题应该有悬停颜色变化", () => {
-      render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          layout="vertical"
-        />
-      );
+      render(<VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />);
 
       const titleElement = screen.getByText("测试视频标题");
       expect(titleElement).toHaveClass("group-hover:text-primary", "transition-colors");

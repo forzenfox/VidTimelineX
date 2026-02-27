@@ -108,9 +108,7 @@ describe("usePagination Hook 测试", () => {
     });
 
     test("goToPrevPage 上一页", () => {
-      const { result } = renderHook(() =>
-        usePagination(mockItems, { initialPage: 3 })
-      );
+      const { result } = renderHook(() => usePagination(mockItems, { initialPage: 3 }));
 
       act(() => {
         result.current.goToPrevPage();
@@ -130,9 +128,7 @@ describe("usePagination Hook 测试", () => {
     });
 
     test("goToFirstPage 回到首页", () => {
-      const { result } = renderHook(() =>
-        usePagination(mockItems, { initialPage: 5 })
-      );
+      const { result } = renderHook(() => usePagination(mockItems, { initialPage: 5 }));
 
       act(() => {
         result.current.goToFirstPage();
@@ -166,9 +162,7 @@ describe("usePagination Hook 测试", () => {
     });
 
     test("变更每页数量后重置到第一页", () => {
-      const { result } = renderHook(() =>
-        usePagination(mockItems, { initialPage: 5 })
-      );
+      const { result } = renderHook(() => usePagination(mockItems, { initialPage: 5 }));
 
       act(() => {
         result.current.setPageSize(48);
@@ -206,9 +200,7 @@ describe("usePagination Hook 测试", () => {
 
     test("恰好整除 - 无多余数据", () => {
       const exactItems = mockItems.slice(0, 24);
-      const { result } = renderHook(() =>
-        usePagination(exactItems, { initialPageSize: 12 })
-      );
+      const { result } = renderHook(() => usePagination(exactItems, { initialPageSize: 12 }));
 
       expect(result.current.totalPages).toBe(2);
 
@@ -231,12 +223,9 @@ describe("usePagination Hook 测试", () => {
     });
 
     test("数据变更后重新计算", () => {
-      const { result, rerender } = renderHook(
-        ({ items }) => usePagination(items),
-        {
-          initialProps: { items: mockItems },
-        }
-      );
+      const { result, rerender } = renderHook(({ items }) => usePagination(items), {
+        initialProps: { items: mockItems },
+      });
 
       expect(result.current.totalItems).toBe(100);
 
@@ -257,9 +246,7 @@ describe("usePagination Hook 测试", () => {
     });
 
     test("中间页数据正确", () => {
-      const { result } = renderHook(() =>
-        usePagination(mockItems, { initialPage: 3 })
-      );
+      const { result } = renderHook(() => usePagination(mockItems, { initialPage: 3 }));
 
       expect(result.current.paginatedItems[0].id).toBe("25");
       expect(result.current.paginatedItems[11].id).toBe("36");

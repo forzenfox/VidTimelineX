@@ -197,9 +197,7 @@ describe("VideoCard组件测试", () => {
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" />
       );
       // B站风格：播放按钮使用主题色背景，尺寸为w-10 h-10（列表模式）或w-12 h-12（网格模式）
-      const playButtonContainer = container.querySelector(
-        '[class*="rounded-full"]'
-      );
+      const playButtonContainer = container.querySelector('[class*="rounded-full"]');
       expect(playButtonContainer).toBeInTheDocument();
       expect(playButtonContainer?.className).toContain("rounded-full");
     });
@@ -266,10 +264,17 @@ describe("VideoCard组件测试", () => {
   describe("TC-014: 尺寸样式测试", () => {
     test("medium尺寸应该有响应式封面宽度", () => {
       const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="medium" layout="horizontal" />
+        <VideoCard
+          video={mockVideo}
+          onClick={mockOnClick}
+          theme="tiger"
+          size="medium"
+          layout="horizontal"
+        />
       );
       // B站风格：封面宽度响应式 140px/160px/180px
-      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement
+        ?.parentElement;
       expect(coverContainer).toBeInTheDocument();
       expect(coverContainer?.className).toContain("w-[140px]");
       expect(coverContainer?.className).toContain("sm:w-[160px]");
@@ -278,27 +283,48 @@ describe("VideoCard组件测试", () => {
 
     test("large尺寸应该有响应式封面宽度", () => {
       const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="large" layout="horizontal" />
+        <VideoCard
+          video={mockVideo}
+          onClick={mockOnClick}
+          theme="tiger"
+          size="large"
+          layout="horizontal"
+        />
       );
-      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement
+        ?.parentElement;
       expect(coverContainer).toBeInTheDocument();
       expect(coverContainer?.className).toMatch(/w-\[\d+px\]/);
     });
 
     test("small尺寸应该有响应式封面宽度", () => {
       const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="small" layout="horizontal" />
+        <VideoCard
+          video={mockVideo}
+          onClick={mockOnClick}
+          theme="tiger"
+          size="small"
+          layout="horizontal"
+        />
       );
-      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement
+        ?.parentElement;
       expect(coverContainer).toBeInTheDocument();
       expect(coverContainer?.className).toMatch(/w-\[\d+px\]/);
     });
 
     test("compact尺寸应该有响应式封面宽度", () => {
       const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="compact" layout="horizontal" />
+        <VideoCard
+          video={mockVideo}
+          onClick={mockOnClick}
+          theme="tiger"
+          size="compact"
+          layout="horizontal"
+        />
       );
-      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement
+        ?.parentElement;
       expect(coverContainer).toBeInTheDocument();
       expect(coverContainer?.className).toContain("shrink-0");
     });

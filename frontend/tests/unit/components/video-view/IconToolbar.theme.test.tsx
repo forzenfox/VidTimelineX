@@ -85,7 +85,7 @@ describe("IconToolbar 主题支持测试", () => {
     );
 
     // 移动端工具栏应该有sm:hidden类
-    const mobileToolbar = container.querySelector('.sm\\:hidden');
+    const mobileToolbar = container.querySelector(".sm\\:hidden");
     expect(mobileToolbar).toBeInTheDocument();
   });
 
@@ -102,7 +102,7 @@ describe("IconToolbar 主题支持测试", () => {
     );
 
     // PC端工具栏应该有hidden sm:flex类
-    const pcToolbar = container.querySelector('.hidden.sm\\:flex');
+    const pcToolbar = container.querySelector(".hidden.sm\\:flex");
     expect(pcToolbar).toBeInTheDocument();
   });
 

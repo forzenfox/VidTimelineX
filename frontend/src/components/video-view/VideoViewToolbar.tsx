@@ -69,6 +69,7 @@ export function VideoViewToolbar({
             onClearHistory={onClearHistory}
             currentQuery={searchQuery}
             onClear={onClearSearch}
+            onQueryChange={onSearch}
             data-testid="search-button"
           />
         </div>

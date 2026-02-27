@@ -119,9 +119,7 @@ describe("VideoGrid组件测试", () => {
 
   describe("TC-002: 网格布局使用CSS Grid", () => {
     test("应该使用CSS Grid布局", () => {
-      render(
-        <VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />);
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("grid");
     });
@@ -129,9 +127,7 @@ describe("VideoGrid组件测试", () => {
 
   describe("TC-003: 响应式列数正确", () => {
     test("应该包含正确的响应式列类", () => {
-      render(
-        <VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />);
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer.className).toContain("grid-cols-2");
       expect(gridContainer.className).toContain("md:grid-cols-3");
@@ -222,9 +218,7 @@ describe("VideoGrid组件测试", () => {
 
   describe("TC-009: 卡片间距验证", () => {
     test("应该包含正确的间距类", () => {
-      render(
-        <VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />);
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer.className).toContain("gap-4");
     });

@@ -201,7 +201,7 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
       render(<TiantongPage />);
       const pcToolbar = screen.getByTestId("video-view-toolbar");
       expect(pcToolbar).toBeInTheDocument();
-      
+
       // 验证搜索容器存在，说明 onSearch 被传递
       const searchContainer = screen.getByTestId("pc-search-container");
       expect(searchContainer).toBeInTheDocument();
@@ -241,10 +241,10 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
       render(<TiantongPage />);
       const searchBtn = screen.getByTestId("pc-toolbar-search-btn");
       expect(searchBtn).toBeInTheDocument();
-      
+
       // 点击搜索按钮
       fireEvent.click(searchBtn);
-      
+
       // 验证按钮仍然存在（搜索功能被调用）
       expect(searchBtn).toBeInTheDocument();
     });
@@ -261,10 +261,10 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
       render(<TiantongPage />);
       const clearHistoryBtn = screen.getByTestId("pc-toolbar-clear-history");
       expect(clearHistoryBtn).toBeInTheDocument();
-      
+
       // 点击清空历史按钮
       fireEvent.click(clearHistoryBtn);
-      
+
       // 验证按钮仍然存在（清空历史功能被调用）
       expect(clearHistoryBtn).toBeInTheDocument();
     });
@@ -295,10 +295,10 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
       render(<TiantongPage />);
       const mobileSearchBtn = screen.getByTestId("toolbar-search-btn");
       expect(mobileSearchBtn).toBeInTheDocument();
-      
+
       // 点击搜索按钮
       fireEvent.click(mobileSearchBtn);
-      
+
       // 验证按钮仍然存在
       expect(mobileSearchBtn).toBeInTheDocument();
     });
@@ -321,7 +321,7 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
       render(<TiantongPage />);
       const mobileClearBtn = screen.getByTestId("toolbar-clear-history");
       expect(mobileClearBtn).toBeInTheDocument();
-      
+
       fireEvent.click(mobileClearBtn);
       expect(mobileClearBtn).toBeInTheDocument();
     });
@@ -330,21 +330,21 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
   describe("TC-Search-006: 两端搜索功能共存", () => {
     test("PC端和移动端工具栏应该同时存在", () => {
       render(<TiantongPage />);
-      
+
       // PC端工具栏
       expect(screen.getByTestId("video-view-toolbar")).toBeInTheDocument();
-      
+
       // 移动端工具栏
       expect(screen.getByTestId("icon-toolbar")).toBeInTheDocument();
     });
 
     test("PC端和移动端都应该有搜索按钮", () => {
       render(<TiantongPage />);
-      
+
       // PC端搜索按钮
       const pcSearchBtn = screen.getByTestId("pc-toolbar-search-btn");
       expect(pcSearchBtn).toBeInTheDocument();
-      
+
       // 移动端搜索按钮
       const mobileSearchBtn = screen.getByTestId("toolbar-search-btn");
       expect(mobileSearchBtn).toBeInTheDocument();
@@ -352,11 +352,11 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
 
     test("PC端和移动端都应该有搜索历史和建议容器", () => {
       render(<TiantongPage />);
-      
+
       // PC端
       expect(screen.getByTestId("pc-toolbar-suggestions")).toBeInTheDocument();
       expect(screen.getByTestId("pc-toolbar-history")).toBeInTheDocument();
-      
+
       // 移动端
       expect(screen.getByTestId("toolbar-suggestions")).toBeInTheDocument();
       expect(screen.getByTestId("toolbar-history")).toBeInTheDocument();
@@ -364,10 +364,10 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
 
     test("PC端和移动端都应该有清空历史按钮", () => {
       render(<TiantongPage />);
-      
+
       // PC端
       expect(screen.getByTestId("pc-toolbar-clear-history")).toBeInTheDocument();
-      
+
       // 移动端
       expect(screen.getByTestId("toolbar-clear-history")).toBeInTheDocument();
     });
@@ -381,18 +381,18 @@ describe("TiantongPage PC端 VideoViewToolbar 搜索功能测试", () => {
 
     test("主题切换后 PC端搜索功能仍然可用", () => {
       render(<TiantongPage />);
-      
+
       // 切换主题
       const toggleButton = screen.getByTestId("toggle-button");
       fireEvent.click(toggleButton);
-      
+
       // 验证主题已更新
       expect(screen.getByTestId("pc-toolbar-theme")).toHaveTextContent("sweet");
-      
+
       // 验证搜索按钮仍然可用
       const searchBtn = screen.getByTestId("pc-toolbar-search-btn");
       expect(searchBtn).toBeInTheDocument();
-      
+
       // 点击搜索按钮
       fireEvent.click(searchBtn);
       expect(searchBtn).toBeInTheDocument();

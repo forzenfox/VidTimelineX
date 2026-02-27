@@ -50,10 +50,7 @@ export function CycleViewButton({
         className
       )}
     >
-      <span
-        data-icon-container
-        className="transition-transform duration-200 ease-out"
-      >
+      <span data-icon-container className="transition-transform duration-200 ease-out">
         <Icon className="w-[18px] h-[18px]" />
       </span>
     </button>

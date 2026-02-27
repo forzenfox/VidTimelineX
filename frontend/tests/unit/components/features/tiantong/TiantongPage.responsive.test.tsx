@@ -98,13 +98,7 @@ jest.mock("@/components/video-view/IconToolbar", () => ({
 
 // Mock VideoViewToolbar - PC端工具栏
 jest.mock("@/components/video-view/VideoViewToolbar", () => ({
-  VideoViewToolbar: ({
-    viewMode,
-    onViewModeChange,
-    filter,
-    onFilterChange,
-    theme,
-  }: any) => (
+  VideoViewToolbar: ({ viewMode, onViewModeChange, filter, onFilterChange, theme }: any) => (
     <div data-testid="video-view-toolbar" role="toolbar" className="video-view-toolbar-pc">
       <span data-testid="pc-toolbar-view-mode">{viewMode}</span>
       <span data-testid="pc-toolbar-theme">{theme}</span>
@@ -309,7 +303,7 @@ describe("TiantongPage 响应式工具栏测试", () => {
 
     test("主题切换后两个工具栏都应该更新主题", () => {
       render(<TiantongPage />);
-      
+
       // 初始主题为 tiger
       expect(screen.getByTestId("toolbar-theme")).toHaveTextContent("tiger");
       expect(screen.getByTestId("pc-toolbar-theme")).toHaveTextContent("tiger");
@@ -327,11 +321,11 @@ describe("TiantongPage 响应式工具栏测试", () => {
   describe("TC-Responsive-007: 响应式布局结构", () => {
     test("应该同时包含移动端和 PC 端工具栏容器", () => {
       const { container } = render(<TiantongPage />);
-      
+
       // 验证移动端容器存在
       const mobileContainer = container.querySelector(".sm\\:hidden");
       expect(mobileContainer).toBeInTheDocument();
-      
+
       // 验证 PC 端容器存在
       const pcContainer = container.querySelector(".hidden.sm\\:block");
       expect(pcContainer).toBeInTheDocument();
@@ -341,7 +335,7 @@ describe("TiantongPage 响应式工具栏测试", () => {
       const { container } = render(<TiantongPage />);
       const mobileContainer = container.querySelector(".sm\\:hidden");
       const iconToolbar = screen.getByTestId("icon-toolbar");
-      
+
       // 验证 IconToolbar 在移动端容器内
       expect(mobileContainer?.contains(iconToolbar)).toBe(true);
     });
@@ -350,7 +344,7 @@ describe("TiantongPage 响应式工具栏测试", () => {
       const { container } = render(<TiantongPage />);
       const pcContainer = container.querySelector(".hidden.sm\\:block");
       const videoViewToolbar = screen.getByTestId("video-view-toolbar");
-      
+
       // 验证 VideoViewToolbar 在 PC 端容器内
       expect(pcContainer?.contains(videoViewToolbar)).toBe(true);
     });

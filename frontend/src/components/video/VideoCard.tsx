@@ -94,15 +94,7 @@ const formatViews = (views: number | string | undefined): string => {
  * 网格模式：垂直布局，封面在上，信息在下
  */
 const VideoCard: React.FC<VideoCardProps> = React.memo(
-  ({
-    video,
-    onClick,
-    theme,
-    index = 0,
-    size = "medium",
-    layout = "horizontal",
-    className = "",
-  }) => {
+  ({ video, onClick, theme, index = 0, layout = "horizontal", className = "" }) => {
     const handleClick = (e: React.MouseEvent) => {
       e.stopPropagation();
       onClick(video);
@@ -147,9 +139,7 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(
               )}
 
               {/* 悬停播放按钮 */}
-              <div
-                className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40"
-              >
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40">
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center"
                   style={{ background: colors.primary }}
@@ -232,9 +222,7 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(
           )}
 
           {/* 悬停播放按钮 */}
-          <div
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40"
-          >
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center"
               style={{ background: colors.primary }}

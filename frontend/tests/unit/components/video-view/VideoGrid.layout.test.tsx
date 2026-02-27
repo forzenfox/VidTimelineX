@@ -73,39 +73,21 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("整体布局结构", () => {
     it("应该使用CSS Grid布局", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("grid");
     });
 
     it("网格项之间应该有16px间距", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("gap-4");
     });
 
     it("应该渲染正确数量的视频卡片", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.getAllByTestId("video-card");
       expect(videoCards).toHaveLength(4);
@@ -114,39 +96,21 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("响应式列数排版", () => {
     it("移动端应该显示2列", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("grid-cols-2");
     });
 
     it("平板端应该显示3列", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("md:grid-cols-3");
     });
 
     it("桌面端应该显示4列", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("lg:grid-cols-4");
@@ -155,31 +119,19 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("网格项排版", () => {
     it("每个网格项应该使用垂直布局", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.getAllByTestId("video-card");
-      videoCards.forEach((card) => {
+      videoCards.forEach(card => {
         expect(card).toHaveAttribute("data-layout", "vertical");
       });
     });
 
     it("网格项应该占满整个高度", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.getAllByTestId("video-card");
-      videoCards.forEach((card) => {
+      videoCards.forEach(card => {
         expect(card).toHaveClass("h-full");
       });
     });
@@ -187,13 +139,7 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("空网格状态", () => {
     it("空网格时应该不渲染任何内容", () => {
-      render(
-        <VideoGrid
-          videos={[]}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={[]} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.queryAllByTestId("video-card");
       expect(videoCards).toHaveLength(0);
@@ -202,13 +148,7 @@ describe("VideoGrid 容器排版测试", () => {
 
   describe("容器宽度", () => {
     it("容器应该占满整个宽度", () => {
-      render(
-        <VideoGrid
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoGrid videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const gridContainer = screen.getByTestId("video-grid");
       expect(gridContainer).toHaveClass("w-full");

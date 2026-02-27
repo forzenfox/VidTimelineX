@@ -161,7 +161,7 @@ const TiantongPage = () => {
   };
 
   // 使用useRef存储timeoutId，避免违反不可变性规则
-  const timeoutIdRef = React.useRef<number | null>(null);
+  const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 使用useCallback创建防抖搜索函数
   const debouncedSearch = React.useCallback((query: string) => {

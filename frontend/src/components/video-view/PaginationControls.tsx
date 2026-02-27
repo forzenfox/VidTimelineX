@@ -44,15 +44,16 @@ export function PaginationControls({
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   className,
 }: PaginationControlsProps) {
-  // 如果只有一页或没有数据，不显示分页控件
-  if (totalPages <= 1) {
-    return null;
-  }
-
+  // useMemo 必须在条件返回之前调用，遵循 React Hooks 规则
   const pageNumbers = useMemo(
     () => generatePageNumbers(currentPage, totalPages),
     [currentPage, totalPages]
   );
+
+  // 如果只有一页或没有数据，不显示分页控件
+  if (totalPages <= 1) {
+    return null;
+  }
 
   // 计算当前显示的范围
   const startItem = (currentPage - 1) * pageSize + 1;

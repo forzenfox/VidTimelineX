@@ -43,7 +43,7 @@ describe("useVideoFilter 搜索功能测试（TDD）", () => {
     // 测试1：传入所有视频
     const { result: result1 } = renderHook(() => useVideoFilter(mockVideos));
     expect(result1.current.filteredVideos).toHaveLength(4);
-    
+
     // 测试2：传入搜索过滤后的视频
     const filteredVideos = mockVideos.filter(v => v.title.includes("甜筒"));
     const { result: result2 } = renderHook(() => useVideoFilter(filteredVideos));
@@ -58,7 +58,7 @@ describe("甜筒页面搜索逻辑测试", () => {
    */
   test("TC-TDD-003: 搜索过滤逻辑应该能正确过滤视频", () => {
     const searchQuery = "甜筒";
-    
+
     // 模拟甜筒页面的搜索过滤逻辑
     const filteredBySearch = (() => {
       if (!searchQuery.trim()) {
@@ -88,7 +88,7 @@ describe("甜筒页面搜索逻辑测试", () => {
         .sort((a, b) => b.score - a.score)
         .map(({ video }) => video);
     })();
-    
+
     // 验证过滤结果
     expect(filteredBySearch).toHaveLength(2);
     expect(filteredBySearch[0].title).toContain("甜筒");

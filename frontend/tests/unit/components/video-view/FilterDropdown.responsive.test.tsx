@@ -20,11 +20,7 @@ describe("FilterDropdown 响应式测试", () => {
   describe("variant='icon' 模式", () => {
     test("TC-001: 渲染纯图标按钮（无文字）", () => {
       render(
-        <FilterDropdown
-          filter={defaultFilter}
-          onFilterChange={mockOnFilterChange}
-          variant="icon"
-        />
+        <FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />
       );
 
       const button = screen.getByTestId("filter-trigger-button");
@@ -35,11 +31,7 @@ describe("FilterDropdown 响应式测试", () => {
 
     test("TC-002: 按钮尺寸为 36x36px (w-9 h-9)", () => {
       render(
-        <FilterDropdown
-          filter={defaultFilter}
-          onFilterChange={mockOnFilterChange}
-          variant="icon"
-        />
+        <FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />
       );
 
       const button = screen.getByTestId("filter-trigger-button");
@@ -55,11 +47,7 @@ describe("FilterDropdown 响应式测试", () => {
       };
 
       render(
-        <FilterDropdown
-          filter={activeFilter}
-          onFilterChange={mockOnFilterChange}
-          variant="icon"
-        />
+        <FilterDropdown filter={activeFilter} onFilterChange={mockOnFilterChange} variant="icon" />
       );
 
       expect(screen.getByTestId("filter-indicator")).toBeInTheDocument();
@@ -67,11 +55,7 @@ describe("FilterDropdown 响应式测试", () => {
 
     test("TC-004: 点击按钮展开下拉面板", () => {
       render(
-        <FilterDropdown
-          filter={defaultFilter}
-          onFilterChange={mockOnFilterChange}
-          variant="icon"
-        />
+        <FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />
       );
 
       const button = screen.getByTestId("filter-trigger-button");
@@ -153,12 +137,7 @@ describe("FilterDropdown 响应式测试", () => {
 
   describe("默认行为", () => {
     test("TC-009: 不传入 variant 时默认使用 default 模式", () => {
-      render(
-        <FilterDropdown
-          filter={defaultFilter}
-          onFilterChange={mockOnFilterChange}
-        />
-      );
+      render(<FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} />);
 
       // 应该渲染图标+文字按钮
       const button = screen.getByRole("button", { name: /筛选/i });
@@ -170,11 +149,7 @@ describe("FilterDropdown 响应式测试", () => {
   describe("功能一致性", () => {
     test("TC-010: icon 模式下筛选功能正常工作", () => {
       render(
-        <FilterDropdown
-          filter={defaultFilter}
-          onFilterChange={mockOnFilterChange}
-          variant="icon"
-        />
+        <FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />
       );
 
       const button = screen.getByTestId("filter-trigger-button");
@@ -222,11 +197,7 @@ describe("FilterDropdown 响应式测试", () => {
       };
 
       const { rerender } = render(
-        <FilterDropdown
-          filter={activeFilter}
-          onFilterChange={mockOnFilterChange}
-          variant="icon"
-        />
+        <FilterDropdown filter={activeFilter} onFilterChange={mockOnFilterChange} variant="icon" />
       );
 
       let button = screen.getByTestId("filter-trigger-button");

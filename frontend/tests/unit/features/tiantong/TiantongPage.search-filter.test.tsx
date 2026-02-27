@@ -125,11 +125,7 @@ describe("TiantongPage 搜索过滤功能测试（TDD）", () => {
   test("TC-TDD-001: 搜索功能应该能正确过滤视频", () => {
     render(<TiantongPage />);
 
-    // 点击搜索按钮展开弹窗
-    const searchButton = screen.getByRole("button", { name: /搜索/i });
-    fireEvent.click(searchButton);
-
-    // 找到搜索输入框（在弹窗中）
+    // 在 expanded 模式下，搜索框直接显示，不需要点击按钮
     const searchInput = screen.getByPlaceholderText("搜索视频...");
     expect(searchInput).toBeInTheDocument();
 

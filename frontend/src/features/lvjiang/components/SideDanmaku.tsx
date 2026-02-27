@@ -318,7 +318,8 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
               <div
                 className="w-12 h-1 rounded-full"
                 style={{
-                  backgroundColor: theme === "dongzhu" ? "rgba(93, 173, 226, 0.5)" : "rgba(231, 76, 60, 0.5)",
+                  backgroundColor:
+                    theme === "dongzhu" ? "rgba(93, 173, 226, 0.5)" : "rgba(231, 76, 60, 0.5)",
                 }}
               />
             </div>

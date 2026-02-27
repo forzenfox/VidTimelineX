@@ -14,12 +14,17 @@ interface SearchButtonProps {
   "data-testid"?: string;
   /**
    * 当前搜索关键词（用于显示搜索状态）
+   * 如果提供，组件将作为受控组件使用此值
    */
   currentQuery?: string;
   /**
    * 清除搜索回调
    */
   onClear?: () => void;
+  /**
+   * 输入变化回调（用于受控模式下实时更新）
+   */
+  onQueryChange?: (query: string) => void;
 }
 
 export function SearchButton({
@@ -34,18 +39,18 @@ export function SearchButton({
   "data-testid": dataTestId,
   currentQuery,
   onClear,
+  onQueryChange,
 }: SearchButtonProps) {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState(currentQuery || "");
+  // 内部状态，仅在非受控模式下使用
+  const [internalQuery, setInternalQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const isExpanded = variant === "expanded";
 
-  // 同步 currentQuery 到 query
-  useEffect(() => {
-    setQuery(currentQuery || "");
-  }, [currentQuery]);
+  // 受控模式：如果提供了 currentQuery，使用它；否则使用内部状态
+  const query = currentQuery !== undefined ? currentQuery : internalQuery;
 
   // 处理点击外部关闭下拉框
   useEffect(() => {
@@ -73,7 +78,10 @@ export function SearchButton({
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    setQuery(suggestion);
+    // 非受控模式下更新内部状态
+    if (currentQuery === undefined) {
+      setInternalQuery(suggestion);
+    }
     onSearch(suggestion);
     setOpen(false);
   };
@@ -83,10 +91,23 @@ export function SearchButton({
   };
 
   const handleReset = () => {
-    setQuery("");
+    // 非受控模式下更新内部状态
+    if (currentQuery === undefined) {
+      setInternalQuery("");
+    }
     onClear?.();
     setOpen(false);
     inputRef.current?.focus();
+  };
+
+  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    // 非受控模式下更新内部状态
+    if (currentQuery === undefined) {
+      setInternalQuery(newValue);
+    }
+    // 如果提供了 onQueryChange，调用它通知父组件
+    onQueryChange?.(newValue);
   };
 
   const handleFocus = () => {
@@ -106,7 +127,7 @@ export function SearchButton({
           type="text"
           role="textbox"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={handleQueryChange}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           placeholder={placeholder}
@@ -253,7 +274,7 @@ export function SearchButton({
                 type="text"
                 role="textbox"
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={handleQueryChange}
                 onKeyDown={handleKeyDown}
                 onFocus={() => setOpen(true)}
                 placeholder={placeholder}
@@ -292,6 +313,34 @@ export function SearchButton({
                 </button>
               )}
             </div>
+
+            {/* 搜索建议 - 只在有建议时显示 */}
+            {suggestions && suggestions.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-1.5 px-1">
+                  <Search className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">搜索建议</span>
+                </div>
+                <div className="space-y-0.5">
+                  {suggestions.map((item, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSuggestionClick(item)}
+                      className={cn(
+                        "w-full flex items-center gap-2 px-2 py-1.5 rounded-md",
+                        "text-sm text-foreground hover:bg-muted",
+                        "transition-colors duration-200",
+                        "cursor-pointer text-left"
+                      )}
+                    >
+                      <Search className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate">{item}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* 搜索历史 - 只在有历史时显示 */}
             {searchHistory.length > 0 && (

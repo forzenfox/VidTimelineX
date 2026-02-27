@@ -61,39 +61,21 @@ describe("VideoList 容器排版测试", () => {
 
   describe("整体布局结构", () => {
     it("应该使用垂直flex布局", () => {
-      render(
-        <VideoList
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const listContainer = screen.getByTestId("video-list");
       expect(listContainer).toHaveClass("flex", "flex-col");
     });
 
     it("列表项之间应该有16px间距", () => {
-      render(
-        <VideoList
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const listContainer = screen.getByTestId("video-list");
       expect(listContainer).toHaveClass("gap-4");
     });
 
     it("应该渲染正确数量的视频卡片", () => {
-      render(
-        <VideoList
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.getAllByTestId("video-card");
       expect(videoCards).toHaveLength(3);
@@ -102,28 +84,16 @@ describe("VideoList 容器排版测试", () => {
 
   describe("列表项排版", () => {
     it("每个列表项应该使用水平布局", () => {
-      render(
-        <VideoList
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.getAllByTestId("video-card");
-      videoCards.forEach((card) => {
+      videoCards.forEach(card => {
         expect(card).toHaveAttribute("data-layout", "horizontal");
       });
     });
 
     it("列表项应该占满整个宽度", () => {
-      render(
-        <VideoList
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const listContainer = screen.getByTestId("video-list");
       expect(listContainer).toHaveClass("w-full");
@@ -132,13 +102,7 @@ describe("VideoList 容器排版测试", () => {
 
   describe("空列表状态", () => {
     it("空列表时应该不渲染任何内容", () => {
-      render(
-        <VideoList
-          videos={[]}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={[]} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const videoCards = screen.queryAllByTestId("video-card");
       expect(videoCards).toHaveLength(0);
@@ -147,13 +111,7 @@ describe("VideoList 容器排版测试", () => {
 
   describe("响应式排版", () => {
     it("容器应该在所有屏幕尺寸下保持垂直布局", () => {
-      render(
-        <VideoList
-          videos={mockVideos}
-          onVideoClick={mockOnVideoClick}
-          theme="tiger"
-        />
-      );
+      render(<VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme="tiger" />);
 
       const listContainer = screen.getByTestId("video-list");
       // 垂直布局不随屏幕尺寸变化

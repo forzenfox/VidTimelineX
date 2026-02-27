@@ -121,7 +121,10 @@ export function FilterDropdown({
                 className
               )}
             >
-              <Filter className={cn(isIconMode ? "w-4 h-4" : "w-4 h-4")} data-testid="filter-icon" />
+              <Filter
+                className={cn(isIconMode ? "w-4 h-4" : "w-4 h-4")}
+                data-testid="filter-icon"
+              />
               {!isIconMode && <span>筛选</span>}
               {!isIconMode && hasActiveFilter && (
                 <span className="text-xs text-primary">
@@ -132,7 +135,10 @@ export function FilterDropdown({
               )}
               {!isIconMode && (
                 <ChevronDown
-                  className={cn("w-4 h-4 transition-transform duration-200", isOpen && "rotate-180")}
+                  className={cn(
+                    "w-4 h-4 transition-transform duration-200",
+                    isOpen && "rotate-180"
+                  )}
                 />
               )}
               {hasActiveFilter && (
@@ -239,9 +245,7 @@ export function FilterDropdown({
           </PopoverPrimitive.Content>
         </PopoverPrimitive.Portal>
       </PopoverPrimitive.Root>
-      <TooltipContent data-testid="filter-tooltip-content">
-        {tooltipText}
-      </TooltipContent>
+      <TooltipContent data-testid="filter-tooltip-content">{tooltipText}</TooltipContent>
     </Tooltip>
   );
 }

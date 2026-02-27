@@ -62,10 +62,10 @@ describe("SearchButton 组件测试", () => {
     render(<SearchButton onSearch={mockOnSearch} variant="expanded" />);
 
     const input = screen.getByRole("textbox");
-    
+
     // 初始状态不应该显示叉叉图标
     expect(screen.queryByRole("button", { name: /清空/i })).not.toBeInTheDocument();
-    
+
     // 输入内容后应该显示叉叉图标
     fireEvent.change(input, { target: { value: "测试搜索" } });
     expect(screen.getByRole("button", { name: /清空/i })).toBeInTheDocument();
@@ -76,11 +76,11 @@ describe("SearchButton 组件测试", () => {
 
     const input = screen.getByRole("textbox");
     fireEvent.change(input, { target: { value: "测试搜索" } });
-    
+
     // 点击叉叉图标
     const clearButton = screen.getByRole("button", { name: /清空/i });
     fireEvent.click(clearButton);
-    
+
     // 搜索内容应该被清空
     expect(input).toHaveValue("");
   });
@@ -88,9 +88,9 @@ describe("SearchButton 组件测试", () => {
   test("TC-009: 点击叉叉图标触发onClear回调", () => {
     const mockOnClear = jest.fn();
     render(
-      <SearchButton 
-        onSearch={mockOnSearch} 
-        variant="expanded" 
+      <SearchButton
+        onSearch={mockOnSearch}
+        variant="expanded"
         currentQuery="测试查询"
         onClear={mockOnClear}
       />
@@ -99,7 +99,7 @@ describe("SearchButton 组件测试", () => {
     // 点击叉叉图标
     const clearButton = screen.getByRole("button", { name: /清空/i });
     fireEvent.click(clearButton);
-    
+
     // onClear应该被调用
     expect(mockOnClear).toHaveBeenCalled();
   });
@@ -189,7 +189,9 @@ describe("SearchButton 组件测试", () => {
     const themes = ["tiger", "sweet", "dongzhu", "kaige"];
 
     themes.forEach((theme, index) => {
-      const { unmount } = render(<SearchButton onSearch={mockOnSearch} variant="expanded" theme={theme} />);
+      const { unmount } = render(
+        <SearchButton onSearch={mockOnSearch} variant="expanded" theme={theme} />
+      );
       const input = screen.getByRole("textbox");
       expect(input).toHaveAttribute("data-theme", theme);
       unmount();

@@ -8,7 +8,13 @@ import "@testing-library/jest-dom";
 jest.mock("@/components/ui/tooltip", () => ({
   Tooltip: ({ children }: { children: React.ReactNode }) => <>{children}</>,
   TooltipTrigger: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-  TooltipContent: ({ children, ...props }: { children: React.ReactNode; [key: string]: unknown }) => (
+  TooltipContent: ({
+    children,
+    ...props
+  }: {
+    children: React.ReactNode;
+    [key: string]: unknown;
+  }) => (
     <div data-testid="filter-tooltip-content" {...props}>
       {children}
     </div>
@@ -54,7 +60,9 @@ describe("FilterDropdown 组件测试", () => {
 
   describe("图标模式 (variant='icon')", () => {
     test("TC-004: 渲染为纯图标按钮（36×36px）", () => {
-      render(<FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />);
+      render(
+        <FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />
+      );
 
       const triggerButton = screen.getByTestId("filter-trigger-button");
       expect(triggerButton).toBeInTheDocument();
@@ -63,7 +71,9 @@ describe("FilterDropdown 组件测试", () => {
     });
 
     test("TC-005: 图标按钮不显示文字", () => {
-      render(<FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />);
+      render(
+        <FilterDropdown filter={defaultFilter} onFilterChange={mockOnFilterChange} variant="icon" />
+      );
 
       const triggerButton = screen.getByTestId("filter-trigger-button");
       expect(triggerButton.textContent).not.toContain("筛选");
