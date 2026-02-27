@@ -218,6 +218,7 @@ export function SearchButton({
         aria-label="搜索"
         data-theme={theme}
         data-testid={dataTestId}
+        data-active={open}
         onClick={() => setOpen(!open)}
         className={cn(
           "w-9 h-9 rounded-lg flex items-center justify-center",
@@ -226,7 +227,6 @@ export function SearchButton({
           "bg-card/60 border border-border/50 hover:bg-muted/50 hover:border-border",
           "text-muted-foreground hover:text-foreground",
           "cursor-pointer",
-          open && "bg-muted border-border text-foreground",
           className
         )}
       >

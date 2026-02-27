@@ -14,11 +14,7 @@ describe("ViewSwitcher 响应式测试", () => {
   describe("variant='icon' 模式", () => {
     test("TC-001: 渲染 CycleViewButton（单个循环按钮）", () => {
       render(
-        <ViewSwitcher
-          viewMode="timeline"
-          onViewModeChange={mockOnViewModeChange}
-          variant="icon"
-        />
+        <ViewSwitcher viewMode="timeline" onViewModeChange={mockOnViewModeChange} variant="icon" />
       );
 
       // 应该只有一个按钮（循环按钮）
@@ -31,11 +27,7 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-002: 按钮尺寸为 36x36px (w-9 h-9)", () => {
       render(
-        <ViewSwitcher
-          viewMode="timeline"
-          onViewModeChange={mockOnViewModeChange}
-          variant="icon"
-        />
+        <ViewSwitcher viewMode="timeline" onViewModeChange={mockOnViewModeChange} variant="icon" />
       );
 
       const button = screen.getByRole("button", { name: /切换视图/i });
@@ -45,11 +37,7 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-003: 不显示三个独立按钮的文字", () => {
       render(
-        <ViewSwitcher
-          viewMode="timeline"
-          onViewModeChange={mockOnViewModeChange}
-          variant="icon"
-        />
+        <ViewSwitcher viewMode="timeline" onViewModeChange={mockOnViewModeChange} variant="icon" />
       );
 
       // 不应该有"时光轴"、"网格"、"列表"文字按钮
@@ -60,11 +48,7 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-004: 点击按钮循环切换视图 timeline -> grid", () => {
       render(
-        <ViewSwitcher
-          viewMode="timeline"
-          onViewModeChange={mockOnViewModeChange}
-          variant="icon"
-        />
+        <ViewSwitcher viewMode="timeline" onViewModeChange={mockOnViewModeChange} variant="icon" />
       );
 
       const button = screen.getByRole("button", { name: /切换视图/i });
@@ -75,11 +59,7 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-005: 点击按钮循环切换视图 grid -> list", () => {
       render(
-        <ViewSwitcher
-          viewMode="grid"
-          onViewModeChange={mockOnViewModeChange}
-          variant="icon"
-        />
+        <ViewSwitcher viewMode="grid" onViewModeChange={mockOnViewModeChange} variant="icon" />
       );
 
       const button = screen.getByRole("button", { name: /切换视图/i });
@@ -90,11 +70,7 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-006: 点击按钮循环切换视图 list -> timeline", () => {
       render(
-        <ViewSwitcher
-          viewMode="list"
-          onViewModeChange={mockOnViewModeChange}
-          variant="icon"
-        />
+        <ViewSwitcher viewMode="list" onViewModeChange={mockOnViewModeChange} variant="icon" />
       );
 
       const button = screen.getByRole("button", { name: /切换视图/i });
@@ -137,11 +113,7 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-009: 点击时光轴按钮切换到 timeline 视图", () => {
       render(
-        <ViewSwitcher
-          viewMode="grid"
-          onViewModeChange={mockOnViewModeChange}
-          variant="default"
-        />
+        <ViewSwitcher viewMode="grid" onViewModeChange={mockOnViewModeChange} variant="default" />
       );
 
       fireEvent.click(screen.getByRole("button", { name: /时光轴/i }));
@@ -176,29 +148,20 @@ describe("ViewSwitcher 响应式测试", () => {
 
     test("TC-012: 正确显示激活状态", () => {
       render(
-        <ViewSwitcher
-          viewMode="grid"
-          onViewModeChange={mockOnViewModeChange}
-          variant="default"
-        />
+        <ViewSwitcher viewMode="grid" onViewModeChange={mockOnViewModeChange} variant="default" />
       );
 
       const gridButton = screen.getByRole("button", { name: /网格/i });
-      expect(gridButton).toHaveClass(/bg-primary/);
+      expect(gridButton).toHaveAttribute("aria-pressed", "true");
 
       const timelineButton = screen.getByRole("button", { name: /时光轴/i });
-      expect(timelineButton).not.toHaveClass(/bg-primary/);
+      expect(timelineButton).toHaveAttribute("aria-pressed", "false");
     });
   });
 
   describe("默认行为", () => {
     test("TC-013: 不传入 variant 时默认使用 default 模式", () => {
-      render(
-        <ViewSwitcher
-          viewMode="timeline"
-          onViewModeChange={mockOnViewModeChange}
-        />
-      );
+      render(<ViewSwitcher viewMode="timeline" onViewModeChange={mockOnViewModeChange} />);
 
       // 应该渲染三个独立按钮
       expect(screen.getByRole("button", { name: /时光轴/i })).toBeInTheDocument();
@@ -222,11 +185,7 @@ describe("ViewSwitcher 响应式测试", () => {
       viewModes.forEach(mode => {
         mockOnViewModeChange.mockClear();
         const { unmount } = render(
-          <ViewSwitcher
-            viewMode={mode}
-            onViewModeChange={mockOnViewModeChange}
-            variant="icon"
-          />
+          <ViewSwitcher viewMode={mode} onViewModeChange={mockOnViewModeChange} variant="icon" />
         );
 
         const button = screen.getByRole("button", { name: /切换视图/i });
@@ -250,7 +209,12 @@ describe("ViewSwitcher 响应式测试", () => {
           />
         );
 
-        const button = screen.getByRole("button", { name: new RegExp(targetMode === "timeline" ? "时光轴" : targetMode === "grid" ? "网格" : "列表", "i") });
+        const button = screen.getByRole("button", {
+          name: new RegExp(
+            targetMode === "timeline" ? "时光轴" : targetMode === "grid" ? "网格" : "列表",
+            "i"
+          ),
+        });
         fireEvent.click(button);
 
         expect(mockOnViewModeChange).toHaveBeenCalledWith(targetMode);
@@ -281,9 +245,9 @@ describe("ViewSwitcher 响应式测试", () => {
         />
       );
 
-      // default 模式下激活按钮应该有 kaige 主题样式
+      // default 模式下激活按钮应该有 aria-pressed 属性
       const timelineButton = screen.getByRole("button", { name: /时光轴/i });
-      expect(timelineButton).toHaveClass(/bg-\[#E74C3C\]/);
+      expect(timelineButton).toHaveAttribute("aria-pressed", "true");
     });
 
     test("TC-017: 两种模式都支持 className 属性", () => {

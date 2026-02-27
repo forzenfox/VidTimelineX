@@ -39,11 +39,12 @@ describe("ViewSwitcher 组件测试", () => {
     const gridButton = screen.getByRole("button", { name: /网格/i });
     const listButton = screen.getByRole("button", { name: /列表/i });
 
-    expect(gridButton).toHaveClass(/bg-primary/);
-    expect(gridButton).toHaveClass(/text-primary-foreground/);
+    // 使用 aria-pressed 属性检查激活状态
+    expect(gridButton).toHaveAttribute("aria-pressed", "true");
+    expect(gridButton).toHaveClass("shadow-md");
 
-    expect(timelineButton).not.toHaveClass(/bg-primary/);
-    expect(listButton).not.toHaveClass(/bg-primary/);
+    expect(timelineButton).toHaveAttribute("aria-pressed", "false");
+    expect(listButton).toHaveAttribute("aria-pressed", "false");
   });
 
   test("TC-004: 按钮具有正确的样式类名", () => {
@@ -76,15 +77,15 @@ describe("ViewSwitcher 组件测试", () => {
     );
 
     let timelineButton = screen.getByRole("button", { name: /时光轴/i });
-    expect(timelineButton).toHaveClass(/bg-primary/);
+    expect(timelineButton).toHaveAttribute("aria-pressed", "true");
 
     rerender(<ViewSwitcher viewMode="list" onViewModeChange={mockOnViewModeChange} />);
 
     timelineButton = screen.getByRole("button", { name: /时光轴/i });
     const listButton = screen.getByRole("button", { name: /列表/i });
 
-    expect(timelineButton).not.toHaveClass(/bg-primary/);
-    expect(listButton).toHaveClass(/bg-primary/);
+    expect(timelineButton).toHaveAttribute("aria-pressed", "false");
+    expect(listButton).toHaveAttribute("aria-pressed", "true");
   });
 
   test("TC-007: 按钮显示正确的图标", () => {

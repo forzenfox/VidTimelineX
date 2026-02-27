@@ -58,6 +58,14 @@
   --sidebar-accent: var(--accent);
   --sidebar-background: var(--card);
   --sidebar-foreground: var(--card-foreground);
+
+  /* ========== 选中状态变量 ========== */
+  --selected-bg: var(--primary);
+  --selected-foreground: var(--primary-foreground);
+  --selected-border: var(--primary);
+  --selected-shadow-color: rgba(230, 126, 34, 0.2);
+  --selected-ring: var(--primary);
+  --selected-indicator: var(--primary);
 }
 
 /* ========== 默认主题（Tiger） ========== */
@@ -77,6 +85,12 @@
   --border: var(--tiger-border);
   --shadow-color: var(--tiger-shadow-color);
   --card-rgb: var(--tiger-card-rgb);
+
+  /* Tiger主题选中状态 */
+  --selected-bg: var(--tiger-primary);
+  --selected-foreground: #fff;
+  --selected-border: var(--tiger-primary);
+  --selected-shadow-color: rgba(230, 126, 34, 0.2);
 }
 
 /* ========== 甜筒时刻 (Sweet Mode) ========== */
@@ -96,6 +110,12 @@
   --border: var(--sweet-border);
   --shadow-color: var(--sweet-shadow-color);
   --card-rgb: var(--sweet-card-rgb);
+
+  /* Sweet主题选中状态 */
+  --selected-bg: var(--sweet-primary);
+  --selected-foreground: #fff;
+  --selected-border: var(--sweet-primary);
+  --selected-shadow-color: rgba(255, 140, 180, 0.2);
 }
 
 /* ========== C皇驾到 - 血怒模式 (Blood Mode) ========== */
@@ -115,6 +135,12 @@
   --border: rgba(225, 29, 72, 0.5);
   --shadow-color: rgba(225, 29, 72, 0.3);
   --card-rgb: 30, 27, 75;
+
+  /* Blood主题选中状态 */
+  --selected-bg: #e11d48;
+  --selected-foreground: #fff;
+  --selected-border: #e11d48;
+  --selected-shadow-color: rgba(225, 29, 72, 0.2);
 }
 
 /* ========== C皇驾到 - 混躺模式 (Mix Mode) ========== */
@@ -134,6 +160,12 @@
   --border: rgba(245, 158, 11, 0.5);
   --shadow-color: rgba(245, 158, 11, 0.3);
   --card-rgb: 255, 251, 235;
+
+  /* Mix主题选中状态 */
+  --selected-bg: #f59e0b;
+  --selected-foreground: #fff;
+  --selected-border: #f59e0b;
+  --selected-shadow-color: rgba(245, 158, 11, 0.2);
 }
 
 /* ========== 驴酱 - 洞主主题 (Dongzhu Mode) ========== */
@@ -153,6 +185,12 @@
   --border: #aed6f1;
   --shadow-color: rgba(93, 173, 226, 0.3);
   --card-rgb: 255, 254, 247;
+
+  /* Dongzhu主题选中状态 */
+  --selected-bg: #5dade2;
+  --selected-foreground: #fff;
+  --selected-border: #5dade2;
+  --selected-shadow-color: rgba(93, 173, 226, 0.2);
 }
 
 /* ========== 驴酱 - 凯哥主题 (Kaige Mode) ========== */
@@ -172,4 +210,10 @@
   --border: #e74c3c;
   --shadow-color: rgba(231, 76, 60, 0.3);
   --card-rgb: 26, 26, 46;
+
+  /* Kaige主题选中状态 */
+  --selected-bg: #e74c3c;
+  --selected-foreground: #fff;
+  --selected-border: #e74c3c;
+  --selected-shadow-color: rgba(231, 76, 60, 0.2);
 }

@@ -263,7 +263,7 @@ describe("VideoViewToolbar 响应式测试", () => {
       expect(listButton).toBeInTheDocument();
 
       // list 应该是激活状态
-      expect(listButton).toHaveClass(/bg-primary|bg-\[#E74C3C\]/);
+      expect(listButton).toHaveAttribute("aria-pressed", "true");
     });
 
     test("TC-016: FilterDropdown 正确渲染并传递 props", () => {

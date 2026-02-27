@@ -63,9 +63,7 @@ export function ViewSwitcher({
               "transition-colors duration-200 ease-out",
               "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
               isActive
-                ? theme === "kaige"
-                  ? "bg-[#E74C3C] text-white shadow-md shadow-[#E74C3C]/20"
-                  : "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                ? "shadow-md"
                 : "bg-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"
             )}
           >

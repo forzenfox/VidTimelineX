@@ -24,11 +24,7 @@ function generatePageNumbers(currentPage: number, totalPages: number): (number |
   const delta = 2;
 
   for (let i = 1; i <= totalPages; i++) {
-    if (
-      i === 1 ||
-      i === totalPages ||
-      (i >= currentPage - delta && i <= currentPage + delta)
-    ) {
+    if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
       pages.push(i);
     } else if (pages[pages.length - 1] !== "...") {
       pages.push("...");
@@ -84,22 +80,20 @@ export function PaginationControls({
         <select
           id="page-size"
           value={pageSize}
-          onChange={(e) => onPageSizeChange(Number(e.target.value))}
+          onChange={e => onPageSizeChange(Number(e.target.value))}
           className={cn(
             "h-8 px-2 rounded-md border bg-background",
             "text-sm focus:outline-none focus:ring-2 focus:ring-primary/20",
             "border-border hover:border-primary/50 transition-colors cursor-pointer"
           )}
         >
-          {pageSizeOptions.map((size) => (
+          {pageSizeOptions.map(size => (
             <option key={size} value={size}>
               {size} 条
             </option>
           ))}
         </select>
-        <span className="whitespace-nowrap">
-          共 {totalItems} 条
-        </span>
+        <span className="whitespace-nowrap">共 {totalItems} 条</span>
       </div>
 
       {/* 中间：分页导航 */}
@@ -126,10 +120,7 @@ export function PaginationControls({
         <div className="flex items-center gap-1">
           {pageNumbers.map((page, index) =>
             page === "..." ? (
-              <span
-                key={`ellipsis-${index}`}
-                className="px-2 py-2 text-muted-foreground"
-              >
+              <span key={`ellipsis-${index}`} className="px-2 py-2 text-muted-foreground">
                 ...
               </span>
             ) : (
@@ -142,8 +133,8 @@ export function PaginationControls({
                   "min-w-[36px] h-9 px-3 rounded-lg text-sm font-medium",
                   "transition-all duration-200",
                   currentPage === page
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "hover:bg-muted/50 text-foreground cursor-pointer"
+                    ? "shadow-md"
+                    : "bg-transparent hover:bg-muted/50 text-foreground cursor-pointer"
                 )}
                 aria-label={`第 ${page} 页`}
                 aria-current={currentPage === page ? "page" : undefined}
@@ -175,7 +166,9 @@ export function PaginationControls({
 
       {/* 右侧：当前范围信息 */}
       <div className="text-sm text-muted-foreground whitespace-nowrap">
-        <span className="font-medium text-foreground">{startItem}-{endItem}</span>
+        <span className="font-medium text-foreground">
+          {startItem}-{endItem}
+        </span>
         <span> / </span>
         <span>{totalItems}</span>
       </div>
