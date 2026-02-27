@@ -141,7 +141,6 @@ describe("VideoViewToolbar 组件测试", () => {
     const toolbar = container.firstChild as HTMLElement;
     expect(toolbar).toHaveClass(/flex-row/);
     expect(toolbar).toHaveClass(/items-center/);
-    expect(toolbar).toHaveClass(/justify-between/);
   });
 
   test("TC-009: 移动端隐藏工具栏", () => {

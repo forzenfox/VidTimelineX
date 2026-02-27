@@ -137,7 +137,6 @@ describe("IconToolbar 组件测试", () => {
     const desktopToolbar = container.querySelector(".hidden.sm\\:flex");
     expect(desktopToolbar).toHaveClass(/flex/);
     expect(desktopToolbar).toHaveClass(/items-center/);
-    expect(desktopToolbar).toHaveClass(/justify-between/);
   });
 
   test("TC-008: 工具栏具有正确的背景和边框样式", () => {

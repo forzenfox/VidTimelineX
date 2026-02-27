@@ -102,13 +102,20 @@ const TiantongPage = () => {
       .map(({ video }) => video);
   }, [searchQuery]);
 
+  // 将搜索结果转换为 VideoType 类型
+  const filteredBySearchWithType = React.useMemo(() => {
+    return filteredBySearch.map(convertToVideoType);
+  }, [filteredBySearch]);
+
   const { viewMode, setViewMode } = useViewPreferences();
   const {
     filter,
     setFilter,
     resetFilter,
     filteredVideos: filteredByFilter,
-  } = useVideoFilter<VideoType>(searchQuery ? filteredBySearch : videos);
+  } = useVideoFilter<VideoType>(
+    searchQuery ? filteredBySearchWithType : videos.map(convertToVideoType)
+  );
 
   React.useEffect(() => {
     // 初始化主题data属性
@@ -179,13 +186,19 @@ const TiantongPage = () => {
     setSearchQuery(query);
     if (query.trim()) {
       setSearchHistory(prev => {
-        const newHistory = [
-          query.trim(),
-          ...prev.filter(item => item !== query.trim()),
-        ].slice(0, 5);
+        const newHistory = [query.trim(), ...prev.filter(item => item !== query.trim())].slice(
+          0,
+          5
+        );
         return newHistory;
       });
     }
+  }, []);
+
+  // 清除搜索
+  const handleClearSearch = React.useCallback(() => {
+    setSearchQuery("");
+    setSuggestions([]);
   }, []);
 
   const clearSearchHistory = React.useCallback(() => {
@@ -335,6 +348,8 @@ const TiantongPage = () => {
                     searchSuggestions={suggestions}
                     searchHistory={searchHistory}
                     onClearHistory={clearSearchHistory}
+                    searchQuery={searchQuery}
+                    onClearSearch={handleClearSearch}
                   />
                 </div>
 
@@ -347,9 +362,11 @@ const TiantongPage = () => {
                     onFilterChange={setFilter}
                     theme={theme}
                     onSearch={handleSearch}
+                    searchQuery={searchQuery}
                     searchSuggestions={suggestions}
                     searchHistory={searchHistory}
                     onClearHistory={clearSearchHistory}
+                    onClearSearch={handleClearSearch}
                   />
                 </div>
                 {filteredByFilter.length === 0 ? (

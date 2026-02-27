@@ -1,11 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Clock, X, Sparkles } from "lucide-react";
+import { Search, Clock, X } from "lucide-react";
 import { cn } from "@/components/ui/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 interface SearchButtonProps {
   onSearch: (query: string) => void;
@@ -17,6 +12,14 @@ interface SearchButtonProps {
   onClearHistory?: () => void;
   variant?: "icon" | "expanded";
   "data-testid"?: string;
+  /**
+   * 当前搜索关键词（用于显示搜索状态）
+   */
+  currentQuery?: string;
+  /**
+   * 清除搜索回调
+   */
+  onClear?: () => void;
 }
 
 export function SearchButton({
@@ -29,28 +32,37 @@ export function SearchButton({
   onClearHistory,
   variant = "icon",
   "data-testid": dataTestId,
+  currentQuery,
+  onClear,
 }: SearchButtonProps) {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(currentQuery || "");
   const inputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const isExpanded = variant === "expanded";
 
+  // 同步 currentQuery 到 query
   useEffect(() => {
-    if ((open || isExpanded) && inputRef.current) {
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 100);
-    }
-  }, [open, isExpanded]);
+    setQuery(currentQuery || "");
+  }, [currentQuery]);
+
+  // 处理点击外部关闭下拉框
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSearch = () => {
     if (query.trim()) {
       onSearch(query.trim());
-      if (!isExpanded) {
-        setOpen(false);
-      }
-      setQuery("");
+      setOpen(false);
     }
   };
 
@@ -61,28 +73,34 @@ export function SearchButton({
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    setQuery(suggestion);
     onSearch(suggestion);
-    if (!isExpanded) {
-      setOpen(false);
-    }
-    setQuery("");
+    setOpen(false);
   };
 
   const handleClearHistory = () => {
     onClearHistory?.();
   };
 
-  const handleClearInput = () => {
+  const handleReset = () => {
     setQuery("");
+    onClear?.();
+    setOpen(false);
     inputRef.current?.focus();
   };
 
-  // 搜索内容区域（输入框、建议、历史）
-  const renderSearchContent = () => (
-    <div className="p-3">
-      {/* 搜索输入框 */}
+  const handleFocus = () => {
+    setOpen(true);
+  };
+
+  // 判断是否有搜索内容
+  const hasQuery = query.trim().length > 0;
+
+  // 渲染搜索框（直接在工具栏上）
+  const renderSearchInput = () => (
+    <div ref={containerRef} className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -90,164 +108,240 @@ export function SearchButton({
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
           placeholder={placeholder}
+          data-theme={theme}
+          data-testid={dataTestId}
           className={cn(
-            "w-full h-10 pl-9 pr-9 rounded-lg",
-            "bg-muted/50 border border-border/50",
+            "w-full h-10 pl-10 pr-10 rounded-lg",
+            "bg-card/60 border border-border/50",
             "text-sm text-foreground placeholder:text-muted-foreground",
-            "outline-none focus:ring-2 focus:ring-ring focus:border-transparent",
-            "transition-all duration-200"
+            "outline-none focus:border-ring focus:bg-card",
+            "transition-colors duration-200",
+            "cursor-text",
+            className
           )}
         />
-        {query && (
+        {/* 叉叉图标 - 有内容时显示 */}
+        {hasQuery && (
           <button
             type="button"
             aria-label="清空"
-            onClick={handleClearInput}
+            onClick={handleReset}
+            style={{
+              position: "absolute",
+              right: "12px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 10,
+            }}
             className={cn(
-              "absolute right-3 top-1/2 -translate-y-1/2",
-              "w-4 h-4 flex items-center justify-center",
-              "text-muted-foreground hover:text-foreground",
-              "transition-colors duration-200"
+              "w-5 h-5 flex items-center justify-center rounded-full",
+              "text-muted-foreground hover:text-foreground hover:bg-muted",
+              "active:scale-95 active:bg-muted-foreground/20",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              "transition-all duration-200",
+              "cursor-pointer"
             )}
           >
-            <X className="w-3 h-3" />
+            <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      {/* 搜索建议 */}
-      {suggestions.length > 0 && (
-        <div className="mt-3">
-          <div className="flex items-center gap-1.5 px-1 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-xs font-medium text-muted-foreground">
-              搜索建议
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {suggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => handleSuggestionClick(suggestion)}
-                className={cn(
-                  "px-2.5 py-1 rounded-md text-xs",
-                  "bg-secondary/50 hover:bg-secondary",
-                  "text-secondary-foreground",
-                  "transition-colors duration-200",
-                  "cursor-pointer"
+      {/* 下拉框内容 - 只显示搜索历史，且只在有历史时显示 */}
+      {open && searchHistory.length > 0 && (
+        <div
+          className={cn(
+            "absolute top-full left-0 mt-2 w-80 rounded-xl shadow-xl border backdrop-blur-md",
+            "bg-card/95 border-border/50",
+            "max-h-[500px] overflow-y-auto",
+            "animate-in fade-in zoom-in-95 duration-200",
+            "z-[1000]"
+          )}
+        >
+          <div className="p-4">
+            {/* 搜索历史 */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between px-1">
+                <div className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground">搜索历史</span>
+                </div>
+                {onClearHistory && (
+                  <button
+                    type="button"
+                    role="button"
+                    aria-label="清空历史"
+                    onClick={handleClearHistory}
+                    className={cn(
+                      "text-xs text-muted-foreground hover:text-foreground",
+                      "transition-colors duration-200",
+                      "cursor-pointer"
+                    )}
+                  >
+                    清空
+                  </button>
                 )}
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 搜索历史 */}
-      {searchHistory.length > 0 && (
-        <div className="mt-3 pt-3 border-t border-border/50">
-          <div className="flex items-center justify-between px-1 mb-2">
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
-                搜索历史
-              </span>
+              </div>
+              <div className="space-y-0.5">
+                {searchHistory.map((item, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => handleSuggestionClick(item)}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-2 py-1.5 rounded-md",
+                      "text-sm text-foreground hover:bg-muted",
+                      "transition-colors duration-200",
+                      "cursor-pointer text-left"
+                    )}
+                  >
+                    <Clock className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                    <span className="truncate">{item}</span>
+                  </button>
+                ))}
+              </div>
             </div>
-            {onClearHistory && (
-              <button
-                type="button"
-                role="button"
-                aria-label="清空历史"
-                onClick={handleClearHistory}
-                className={cn(
-                  "text-xs text-muted-foreground hover:text-foreground",
-                  "transition-colors duration-200",
-                  "cursor-pointer"
-                )}
-              >
-                清空
-              </button>
-            )}
-          </div>
-          <div className="space-y-0.5">
-            {searchHistory.map((item, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => handleSuggestionClick(item)}
-                className={cn(
-                  "w-full flex items-center gap-2 px-2 py-1.5 rounded-md",
-                  "text-sm text-foreground hover:bg-muted",
-                  "transition-colors duration-200",
-                  "cursor-pointer text-left"
-                )}
-              >
-                <Clock className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                <span className="truncate">{item}</span>
-              </button>
-            ))}
           </div>
         </div>
       )}
     </div>
   );
 
-  // expanded 模式：直接显示展开状态
-  if (isExpanded) {
-    return (
-      <div
+  // icon 模式：显示为图标按钮
+  const renderIconButton = () => (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        role="button"
+        aria-label="搜索"
         data-theme={theme}
         data-testid={dataTestId}
+        onClick={() => setOpen(!open)}
         className={cn(
-          "w-80 bg-popover rounded-xl shadow-lg",
+          "w-9 h-9 rounded-lg flex items-center justify-center",
+          "transition-all duration-200 ease-out",
+          "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "bg-card/60 border border-border/50 hover:bg-muted/50 hover:border-border",
+          "text-muted-foreground hover:text-foreground",
+          "cursor-pointer",
+          open && "bg-muted border-border text-foreground",
           className
         )}
       >
-        {renderSearchContent()}
-      </div>
-    );
-  }
+        <Search className="w-[18px] h-[18px]" />
+      </button>
 
-  // icon 模式：使用 Popover，点击展开
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          role="button"
-          aria-label="搜索"
-          data-theme={theme}
+      {/* 下拉框内容 - 包含输入框和搜索历史 */}
+      {open && (
+        <div
           className={cn(
-            "w-9 h-9 rounded-lg flex items-center justify-center",
-            "transition-all duration-200 ease-out",
-            "outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-            "bg-card/60 border border-border/50 hover:bg-muted/50 hover:border-border",
-            "text-muted-foreground hover:text-foreground",
-            "cursor-pointer",
-            open && "bg-muted border-border text-foreground",
-            className
+            "absolute top-full right-0 mt-2 w-80 rounded-xl shadow-xl border backdrop-blur-md",
+            "bg-card/95 border-border/50",
+            "max-h-[500px] overflow-y-auto",
+            "animate-in fade-in zoom-in-95 duration-200",
+            "z-[1000]"
           )}
         >
-          <Search className="w-[18px] h-[18px]" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        role="dialog"
-        align="end"
-        sideOffset={8}
-        className={cn(
-          "w-80 p-0 bg-popover border-border rounded-xl shadow-lg",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out",
-          "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-          "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-          "data-[side=bottom]:slide-in-from-top-2"
-        )}
-      >
-        {renderSearchContent()}
-      </PopoverContent>
-    </Popover>
+          <div className="p-4 space-y-4">
+            {/* 搜索输入框 - 放大镜固定左侧，叉叉在右侧 */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <input
+                ref={inputRef}
+                type="text"
+                role="textbox"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onFocus={() => setOpen(true)}
+                placeholder={placeholder}
+                className={cn(
+                  "w-full h-10 pl-10 pr-10 rounded-lg",
+                  "bg-muted/50 border border-border/50",
+                  "text-sm text-foreground placeholder:text-muted-foreground",
+                  "outline-none focus:border-ring focus:bg-muted",
+                  "transition-colors duration-200"
+                )}
+                autoFocus
+              />
+              {/* 叉叉图标 - 有内容时显示 */}
+              {hasQuery && (
+                <button
+                  type="button"
+                  aria-label="清空"
+                  onClick={handleReset}
+                  style={{
+                    position: "absolute",
+                    right: "12px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 10,
+                  }}
+                  className={cn(
+                    "w-5 h-5 flex items-center justify-center rounded-full",
+                    "text-muted-foreground hover:text-foreground hover:bg-muted",
+                    "active:scale-95 active:bg-muted-foreground/20",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    "transition-all duration-200",
+                    "cursor-pointer"
+                  )}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* 搜索历史 - 只在有历史时显示 */}
+            {searchHistory.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                    <span className="text-xs font-medium text-muted-foreground">搜索历史</span>
+                  </div>
+                  {onClearHistory && (
+                    <button
+                      type="button"
+                      role="button"
+                      aria-label="清空历史"
+                      onClick={handleClearHistory}
+                      className={cn(
+                        "text-xs text-muted-foreground hover:text-foreground",
+                        "transition-colors duration-200",
+                        "cursor-pointer"
+                      )}
+                    >
+                      清空
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-0.5">
+                  {searchHistory.map((item, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSuggestionClick(item)}
+                      className={cn(
+                        "w-full flex items-center gap-2 px-2 py-1.5 rounded-md",
+                        "text-sm text-foreground hover:bg-muted",
+                        "transition-colors duration-200",
+                        "cursor-pointer text-left"
+                      )}
+                    >
+                      <Clock className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                      <span className="truncate">{item}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
+
+  return isExpanded ? renderSearchInput() : renderIconButton();
 }

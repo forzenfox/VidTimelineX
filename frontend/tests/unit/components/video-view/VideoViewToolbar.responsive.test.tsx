@@ -221,7 +221,6 @@ describe("VideoViewToolbar 响应式测试", () => {
 
       const toolbar = container.firstChild as HTMLElement;
       expect(toolbar).toHaveClass("items-center");
-      expect(toolbar).toHaveClass("justify-between");
     });
 
     test("TC-014: 工具栏有正确的样式类名", () => {

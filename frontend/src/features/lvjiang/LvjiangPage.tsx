@@ -131,7 +131,10 @@ const Lvjiang = () => {
     setSearchQuery(query);
     if (query.trim()) {
       setSearchHistory(prev => {
-        const newHistory = [query.trim(), ...prev.filter(item => item !== query.trim())].slice(0, 5);
+        const newHistory = [query.trim(), ...prev.filter(item => item !== query.trim())].slice(
+          0,
+          5
+        );
         return newHistory;
       });
     }
@@ -163,6 +166,12 @@ const Lvjiang = () => {
     },
     [debouncedSearch]
   );
+
+  // 清除搜索
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+    setSuggestions([]);
+  }, []);
 
   // 清除搜索历史
   const clearSearchHistory = useCallback(() => {
@@ -249,6 +258,8 @@ const Lvjiang = () => {
                   searchSuggestions={suggestions}
                   searchHistory={searchHistory}
                   onClearHistory={clearSearchHistory}
+                  searchQuery={searchQuery}
+                  onClearSearch={handleClearSearch}
                 />
               </div>
 
@@ -261,9 +272,11 @@ const Lvjiang = () => {
                   onFilterChange={setFilter}
                   theme={theme}
                   onSearch={handleSearch}
+                  searchQuery={searchQuery}
                   searchSuggestions={suggestions}
                   searchHistory={searchHistory}
                   onClearHistory={clearSearchHistory}
+                  onClearSearch={handleClearSearch}
                 />
               </div>
               {filteredVideos.length === 0 ? (

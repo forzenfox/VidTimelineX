@@ -219,6 +219,11 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
     setSearchQuery(query);
   };
 
+  // 清除搜索
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
   // 渲染视频列表
   const renderVideoContent = () => {
     if (filteredVideos.length === 0) {
@@ -323,6 +328,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             onFilterChange={setFilter}
             onSearch={handleSearch}
             searchQuery={searchQuery}
+            onClearSearch={handleClearSearch}
             theme={theme}
           />
         </div>
@@ -335,6 +341,8 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             filter={filter}
             onFilterChange={setFilter}
             onSearch={handleSearch}
+            searchQuery={searchQuery}
+            onClearSearch={handleClearSearch}
             theme={theme}
           />
         </div>

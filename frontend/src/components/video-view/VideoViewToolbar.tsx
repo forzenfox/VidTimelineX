@@ -17,6 +17,10 @@ interface VideoViewToolbarProps {
   searchSuggestions?: string[];
   searchHistory?: string[];
   onClearHistory?: () => void;
+  /**
+   * 清除搜索回调
+   */
+  onClearSearch?: () => void;
   className?: string;
   theme?: string;
 }
@@ -31,6 +35,7 @@ export function VideoViewToolbar({
   searchSuggestions,
   searchHistory,
   onClearHistory,
+  onClearSearch,
   className,
   theme,
 }: VideoViewToolbarProps) {
@@ -44,7 +49,7 @@ export function VideoViewToolbar({
         // 响应式显示：移动端隐藏，PC端显示
         "hidden sm:flex",
         // 布局
-        "flex-row items-center justify-between",
+        "flex-row items-center",
         "gap-4",
         // 样式
         "p-4 rounded-2xl border backdrop-blur-md",
@@ -55,31 +60,33 @@ export function VideoViewToolbar({
     >
       {/* 左侧：搜索框（如果有搜索功能） */}
       {hasSearchFeature && (
-        <SearchButton
-          onSearch={onSearch}
-          variant="expanded"
-          suggestions={searchSuggestions}
-          searchHistory={searchHistory}
-          onClearHistory={onClearHistory}
-          data-testid="search-button"
-        />
+        <div className="w-48 flex-shrink-0">
+          <SearchButton
+            onSearch={onSearch}
+            variant="expanded"
+            suggestions={searchSuggestions}
+            searchHistory={searchHistory}
+            onClearHistory={onClearHistory}
+            currentQuery={searchQuery}
+            onClear={onClearSearch}
+            data-testid="search-button"
+          />
+        </div>
       )}
 
       {/* 中间：视图切换按钮 */}
-      <ViewSwitcher
-        viewMode={viewMode}
-        onViewModeChange={onViewModeChange}
-        theme={theme}
-        variant="default"
-      />
-
-      {/* 右侧：筛选、排序按钮 */}
-      <div className="flex items-center gap-3">
-        <FilterDropdown
-          filter={filter}
-          onFilterChange={onFilterChange}
+      <div className="flex-1 flex justify-center">
+        <ViewSwitcher
+          viewMode={viewMode}
+          onViewModeChange={onViewModeChange}
+          theme={theme}
           variant="default"
         />
+      </div>
+
+      {/* 右侧：筛选、排序按钮 */}
+      <div className="flex items-center gap-3 flex-shrink-0">
+        <FilterDropdown filter={filter} onFilterChange={onFilterChange} variant="default" />
         <SortDropdown
           sortBy={filter.sortBy}
           onSortChange={sortBy => onFilterChange({ ...filter, sortBy })}

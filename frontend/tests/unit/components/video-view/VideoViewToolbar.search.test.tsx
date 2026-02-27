@@ -35,8 +35,8 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
-      // SearchButton 应该存在（通过 data-testid 查找）
-      expect(screen.getByTestId("search-button")).toBeInTheDocument();
+      // SearchButton 应该存在（直接是输入框）
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
     });
 
     test("TC-002: SearchButton 使用 variant='expanded' 模式", () => {
@@ -50,7 +50,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
-      // expanded 模式下应该显示搜索输入框
+      // expanded 模式下应该直接显示搜索输入框
       const searchInput = screen.getByPlaceholderText(/搜索/i);
       expect(searchInput).toBeInTheDocument();
     });
@@ -73,7 +73,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
       expect(mockOnSearch).toHaveBeenCalledWith("测试搜索");
     });
 
-    test("TC-004: SearchButton 接收 suggestions prop", () => {
+    test("TC-004: 搜索建议不应再显示", () => {
       const suggestions = ["建议1", "建议2", "建议3"];
 
       render(
@@ -87,12 +87,13 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
+      // 聚焦输入框
       const searchInput = screen.getByPlaceholderText(/搜索/i);
       fireEvent.focus(searchInput);
 
-      // 搜索建议应该显示
+      // 搜索建议不应该显示（功能已移除）
       suggestions.forEach(suggestion => {
-        expect(screen.getByText(suggestion)).toBeInTheDocument();
+        expect(screen.queryByText(suggestion)).not.toBeInTheDocument();
       });
     });
 
@@ -110,6 +111,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
+      // 聚焦输入框显示历史
       const searchInput = screen.getByPlaceholderText(/搜索/i);
       fireEvent.focus(searchInput);
 
@@ -135,6 +137,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
+      // 聚焦输入框显示历史
       const searchInput = screen.getByPlaceholderText(/搜索/i);
       fireEvent.focus(searchInput);
 
@@ -165,7 +168,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
       expect(mockOnSearch).toHaveBeenCalledWith("甜筒");
     });
 
-    test("TC-008: 点击搜索建议触发搜索", () => {
+    test("TC-008: 点击搜索建议不再触发搜索（功能已移除）", () => {
       const suggestions = ["甜筒直播", "甜筒集锦"];
 
       render(
@@ -179,13 +182,14 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
+      // 聚焦输入框
       const searchInput = screen.getByPlaceholderText(/搜索/i);
       fireEvent.focus(searchInput);
 
-      const suggestion = screen.getByText("甜筒直播");
-      fireEvent.click(suggestion);
-
-      expect(mockOnSearch).toHaveBeenCalledWith("甜筒直播");
+      // 搜索建议不应该显示
+      suggestions.forEach(suggestion => {
+        expect(screen.queryByText(suggestion)).not.toBeInTheDocument();
+      });
     });
 
     test("TC-009: 点击搜索历史触发搜索", () => {
@@ -202,6 +206,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
+      // 聚焦输入框显示历史
       const searchInput = screen.getByPlaceholderText(/搜索/i);
       fireEvent.focus(searchInput);
 
@@ -246,8 +251,10 @@ describe("VideoViewToolbar 搜索功能测试", () => {
       const toolbar = container.firstChild as HTMLElement;
       const children = toolbar.children;
 
-      // 第一个子元素应该是搜索框
-      expect(children[0]).toHaveAttribute("data-testid", "search-button");
+      // 第一个子元素应该是搜索框容器
+      expect(children[0]).toBeInTheDocument();
+      // 搜索框在容器内部
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
     });
 
     test("TC-012: 工具栏包含所有子组件", () => {
@@ -261,8 +268,8 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
-      // 搜索按钮
-      expect(screen.getByTestId("search-button")).toBeInTheDocument();
+      // 搜索输入框
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
       // 视图切换
       expect(screen.getByRole("group")).toBeInTheDocument();
       // 筛选按钮
@@ -283,8 +290,8 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
-      // 不应该渲染搜索按钮
-      expect(screen.queryByTestId("search-button")).not.toBeInTheDocument();
+      // 不应该渲染搜索输入框
+      expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     });
 
     test("TC-014: 仅传 onSearch 时渲染 SearchButton", () => {
@@ -298,7 +305,7 @@ describe("VideoViewToolbar 搜索功能测试", () => {
         />
       );
 
-      expect(screen.getByTestId("search-button")).toBeInTheDocument();
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
     });
   });
 });

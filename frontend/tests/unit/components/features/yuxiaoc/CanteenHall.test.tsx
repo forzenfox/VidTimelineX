@@ -59,7 +59,8 @@ describe("CanteenHall组件测试", () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
 
     expect(screen.getByText("血怒时刻")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("搜索视频...")).toBeInTheDocument();
+    // 搜索按钮应该存在（点击后才会显示输入框）
+    expect(screen.getByTestId("search-button")).toBeInTheDocument();
   });
 
   /**
@@ -93,7 +94,11 @@ describe("CanteenHall组件测试", () => {
   test("TC-004: 搜索框渲染测试", () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
 
-    // 验证搜索框存在
+    // 点击搜索按钮展开弹窗
+    const searchButton = screen.getByTestId("search-button");
+    fireEvent.click(searchButton);
+
+    // 验证搜索框存在（在弹窗中）
     const searchInput = screen.getByPlaceholderText("搜索视频...");
     expect(searchInput).toBeInTheDocument();
     expect(searchInput).toHaveAttribute("type", "text");
@@ -105,6 +110,10 @@ describe("CanteenHall组件测试", () => {
    */
   test("TC-005: 搜索功能UI测试", () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
+
+    // 点击搜索按钮展开弹窗
+    const searchButton = screen.getByTestId("search-button");
+    fireEvent.click(searchButton);
 
     const searchInput = screen.getByPlaceholderText("搜索视频...");
 
@@ -121,6 +130,10 @@ describe("CanteenHall组件测试", () => {
    */
   test("TC-006: 清除搜索UI测试", () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
+
+    // 点击搜索按钮展开弹窗
+    const searchButton = screen.getByTestId("search-button");
+    fireEvent.click(searchButton);
 
     const searchInput = screen.getByPlaceholderText("搜索视频...");
 
@@ -206,7 +219,11 @@ describe("CanteenHall组件测试", () => {
   test("TC-011: 空状态UI测试", () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
 
-    // 验证搜索框存在
+    // 点击搜索按钮展开弹窗（使用 data-testid 获取 VideoViewToolbar 中的搜索按钮）
+    const searchButton = screen.getByTestId("search-button");
+    fireEvent.click(searchButton);
+
+    // 验证搜索框存在（在弹窗中）
     const searchInput = screen.getByPlaceholderText("搜索视频...");
     expect(searchInput).toBeInTheDocument();
 
@@ -221,7 +238,11 @@ describe("CanteenHall组件测试", () => {
   test("TC-012: 清除筛选按钮UI测试", () => {
     render(<CanteenHall theme="blood" onVideoClick={mockOnVideoClick} />);
 
-    // 验证搜索框存在
+    // 点击搜索按钮展开弹窗（使用 data-testid 获取 VideoViewToolbar 中的搜索按钮）
+    const searchButton = screen.getByTestId("search-button");
+    fireEvent.click(searchButton);
+
+    // 验证搜索框存在（在弹窗中）
     const searchInput = screen.getByPlaceholderText("搜索视频...");
     expect(searchInput).toBeInTheDocument();
 
