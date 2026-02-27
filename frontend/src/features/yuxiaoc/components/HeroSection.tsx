@@ -8,6 +8,7 @@ import {
   Shield,
   MessageCircle,
   PlayCircle,
+  Video,
 } from "lucide-react";
 
 interface HeroSectionProps {
@@ -29,7 +30,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
       rageLabel: "当前血怒值",
       ragePercentage: "100%",
       primaryButton: "进入直播间",
-      secondaryButton: "观看血怒时刻",
+      secondaryButton: "高能集锦",
       gradient: "linear-gradient(135deg, #0F0F23 0%, #1E1B4B 50%, #0F0F23 100%)",
       orbColors: ["#E11D48", "#DC2626"],
       icon: Sword,
@@ -43,7 +44,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
       rageLabel: "当前混躺值",
       ragePercentage: "50%",
       primaryButton: "进入直播间",
-      secondaryButton: "浏览食堂",
+      secondaryButton: "下饭操作",
       gradient: "linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #E2E8F0 100%)",
       orbColors: ["#D97706", "#2563EB"],
       icon: Shield,
@@ -293,7 +294,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
                 canteenSection.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className="px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 hover:scale-105"
             style={{
               background: isBlood ? "rgba(30, 27, 75, 0.8)" : "#FFFFFF",
               color: isBlood ? "#E2E8F0" : "#0F172A",
@@ -303,7 +304,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
                 : "0 4px 15px rgba(0, 0, 0, 0.08)",
             }}
           >
-            {content.secondaryButton}
+            <Video className="w-5 h-5" />
+            <span>{content.secondaryButton}</span>
           </button>
 
           <a

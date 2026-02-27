@@ -13,7 +13,6 @@ interface SortDropdownProps {
 const sortOptions: { value: SortOption; label: string }[] = [
   { value: "newest", label: "最新发布" },
   { value: "oldest", label: "最早发布" },
-  { value: "popular", label: "最多播放" },
 ];
 
 function getSortLabel(value: SortOption): string {

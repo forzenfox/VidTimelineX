@@ -8,6 +8,10 @@ export interface VideoListProps {
   theme: Theme;
 }
 
+/**
+ * B站风格视频列表容器
+ * 垂直排列，列表项间距16px
+ */
 const VideoList: React.FC<VideoListProps> = React.memo(({ videos, onVideoClick, theme }) => {
   const cardClickHandler = useMemo(
     () => (video: Video) => {
@@ -16,20 +20,14 @@ const VideoList: React.FC<VideoListProps> = React.memo(({ videos, onVideoClick, 
     [onVideoClick]
   );
 
-  const containerClass = useMemo(() => "flex flex-col gap-2 sm:gap-3", []);
-
-  const cardSize = useMemo(() => "compact" as const, []);
-
   return (
-    <div data-testid="video-list" className={containerClass}>
-      {videos.map((video, index) => (
+    <div data-testid="video-list" className="flex flex-col gap-4 w-full">
+      {videos.map((video) => (
         <VideoCard
           key={video.id}
           video={video}
           onClick={cardClickHandler}
           theme={theme}
-          index={index}
-          size={cardSize}
           layout="horizontal"
           className="w-full"
         />

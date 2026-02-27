@@ -25,7 +25,6 @@ describe("SortDropdown 组件测试", () => {
     const menuContent = document.querySelector('[data-state="open"][role="dialog"]');
     expect(menuContent).toHaveTextContent("最新发布");
     expect(menuContent).toHaveTextContent("最早发布");
-    expect(menuContent).toHaveTextContent("最多播放");
   });
 
   test("TC-003: 再次点击触发器关闭排序菜单", () => {
@@ -52,7 +51,6 @@ describe("SortDropdown 组件测试", () => {
     const menuContent = document.querySelector('[data-state="open"][role="dialog"]');
     expect(menuContent).toHaveTextContent("最新发布");
     expect(menuContent).toHaveTextContent("最早发布");
-    expect(menuContent).toHaveTextContent("最多播放");
   });
 
   test("TC-005: 选择排序方式后立即触发 onSortChange", () => {
@@ -68,17 +66,17 @@ describe("SortDropdown 组件测试", () => {
   });
 
   test("TC-006: 当前选中的排序方式有高亮标识", () => {
-    render(<SortDropdown sortBy="popular" onSortChange={mockOnSortChange} />);
+    render(<SortDropdown sortBy="oldest" onSortChange={mockOnSortChange} />);
 
     const triggerButton = screen.getByRole("button", { name: /排序/i });
     fireEvent.click(triggerButton);
 
     const menuContent = document.querySelector('[data-state="open"][role="dialog"]');
     const buttons = menuContent?.querySelectorAll("button");
-    const popularButton = Array.from(buttons || []).find(btn =>
-      btn.textContent?.includes("最多播放")
+    const oldestButton = Array.from(buttons || []).find(btn =>
+      btn.textContent?.includes("最早发布")
     );
-    expect(popularButton).toHaveClass(/bg-muted\/50/);
+    expect(oldestButton).toHaveClass(/bg-muted\/50/);
   });
 
   test("TC-007: 触发器显示当前排序选项", () => {

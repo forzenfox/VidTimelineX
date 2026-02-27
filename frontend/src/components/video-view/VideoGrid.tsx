@@ -8,6 +8,11 @@ export interface VideoGridProps {
   theme: Theme;
 }
 
+/**
+ * B站风格视频网格容器
+ * 响应式网格布局：移动端2列，平板3列，桌面4列
+ * 网格间距16px
+ */
 const VideoGrid: React.FC<VideoGridProps> = React.memo(({ videos, onVideoClick, theme }) => {
   const cardClickHandler = useMemo(
     () => (video: Video) => {
@@ -16,23 +21,16 @@ const VideoGrid: React.FC<VideoGridProps> = React.memo(({ videos, onVideoClick, 
     [onVideoClick]
   );
 
-  const gridClass = useMemo(
-    () => "grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4",
-    []
-  );
-
   return (
-    <div data-testid="video-grid" className={gridClass}>
-      {videos.map((video, index) => (
+    <div data-testid="video-grid" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+      {videos.map((video) => (
         <VideoCard
           key={video.id}
           video={video}
           onClick={cardClickHandler}
           theme={theme}
-          index={index}
-          size="medium"
           layout="vertical"
-          className="rounded-xl overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl"
+          className="h-full"
         />
       ))}
     </div>

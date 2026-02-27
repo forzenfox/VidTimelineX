@@ -4,6 +4,13 @@ import VideoCard from "@/components/video/VideoCard";
 import type { Video } from "@/components/video/types";
 import "@testing-library/jest-dom";
 
+// Mock VideoCover component
+jest.mock("@/components/figma/ImageWithFallback", () => ({
+  VideoCover: ({ alt, className }: { alt: string; className?: string }) => (
+    <img alt={alt} data-testid="video-cover" className={className} />
+  ),
+}));
+
 const mockVideo: Video = {
   id: "1",
   title: "测试视频标题",
@@ -56,10 +63,11 @@ describe("VideoCard组件测试", () => {
   });
 
   describe("TC-004: 标签展示测试", () => {
-    test("应该展示视频标签", () => {
+    test("视频标签在B站风格中不直接展示", () => {
+      // B站风格列表UI中标签不直接显示在卡片上
       render(<VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" />);
-      expect(screen.getByText("测试")).toBeInTheDocument();
-      expect(screen.getByText("视频")).toBeInTheDocument();
+      // 标签可能通过其他方式展示，不在基础卡片上
+      expect(screen.getByText("测试视频标题")).toBeInTheDocument();
     });
   });
 
@@ -109,11 +117,12 @@ describe("VideoCard组件测试", () => {
   });
 
   describe("TC-008: 内边距测试", () => {
-    test("垂直布局内容区域应该有内边距", () => {
+    test("垂直布局内容区域应该有适当的内边距", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
-      const contentDiv = container.querySelector(".flex.flex-col.p-4");
+      // B站风格：信息区域有px-0.5内边距
+      const contentDiv = container.querySelector(".px-0\\.5");
       expect(contentDiv).toBeInTheDocument();
     });
 
@@ -121,7 +130,8 @@ describe("VideoCard组件测试", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="horizontal" />
       );
-      const contentDiv = container.querySelector(".flex.flex-col.ml-4.py-3");
+      // B站风格：信息区域有py-0.5内边距
+      const contentDiv = container.querySelector(".py-0\\.5");
       expect(contentDiv).toBeInTheDocument();
     });
   });
@@ -170,32 +180,35 @@ describe("VideoCard组件测试", () => {
       expect(coverContainer?.className).not.toMatch(/pt-\d+/);
     });
 
-    test("卡片容器应该无内边距", () => {
+    test("卡片容器应该有适当的内边距", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" layout="vertical" />
       );
       const card = container.querySelector("[data-testid='video-card']");
       expect(card).toBeInTheDocument();
-      expect(card?.className).toMatch(/!p-0|p-0/);
+      // B站风格：网格模式使用gap-2间距
+      expect(card?.className).toMatch(/gap-2/);
     });
   });
 
   describe("TC-011: 播放按钮样式测试", () => {
-    test("播放按钮容器应使用主题色半透明背景", () => {
+    test("播放按钮容器应使用主题色背景", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" />
       );
+      // B站风格：播放按钮使用主题色背景，尺寸为w-10 h-10（列表模式）或w-12 h-12（网格模式）
       const playButtonContainer = container.querySelector(
-        '[class*="w-14"][class*="rounded-full"][class*="scale-50"]'
+        '[class*="rounded-full"]'
       );
       expect(playButtonContainer).toBeInTheDocument();
       expect(playButtonContainer?.className).toContain("rounded-full");
     });
 
-    test("播放按钮容器不应使用白色背景类", () => {
+    test("播放按钮容器应使用主题色而非白色背景", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" />
       );
+      // B站风格：播放按钮使用主题色背景
       const playButtonContainer = container.querySelector(".bg-white\\/95");
       expect(playButtonContainer).not.toBeInTheDocument();
     });
@@ -230,11 +243,12 @@ describe("VideoCard组件测试", () => {
   });
 
   describe("TC-013: 悬停覆盖层样式测试", () => {
-    test("悬停覆盖层应存在", () => {
+    test("悬停播放按钮覆盖层应存在", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" />
       );
-      const overlay = container.querySelector('[class*="opacity-0"][class*="transition-all"]');
+      // B站风格：悬停时显示播放按钮遮罩
+      const overlay = container.querySelector('[class*="group-hover:opacity-100"]');
       expect(overlay).toBeInTheDocument();
     });
 
@@ -242,53 +256,51 @@ describe("VideoCard组件测试", () => {
       const { container } = render(
         <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" />
       );
-      const overlay = container.querySelector('[class*="opacity-0"][class*="transition-all"]');
-      expect(overlay).toHaveClass("transition-all");
-      expect(overlay).toHaveClass("duration-300");
+      // B站风格：使用transition-opacity实现淡入效果
+      const overlay = container.querySelector('[class*="transition-opacity"]');
+      expect(overlay).toHaveClass("transition-opacity");
+      expect(overlay).toHaveClass("duration-200");
     });
   });
 
   describe("TC-014: 尺寸样式测试", () => {
-    test("medium尺寸不应该有固定响应式宽度类", () => {
+    test("medium尺寸应该有响应式封面宽度", () => {
       const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="medium" />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="medium" layout="horizontal" />
       );
-      const card = container.querySelector("[data-testid='video-card']");
-      expect(card).toBeInTheDocument();
-      expect(card?.className).toContain("w-full");
-      expect(card?.className).not.toContain("sm:w-76");
-      expect(card?.className).not.toContain("md:w-88");
-    });
-
-    test("large尺寸不应该有固定响应式宽度类", () => {
-      const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="large" />
-      );
-      const card = container.querySelector("[data-testid='video-card']");
-      expect(card).toBeInTheDocument();
-      expect(card?.className).toContain("w-full");
-    });
-
-    test("small尺寸不应该有固定响应式宽度类", () => {
-      const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="small" />
-      );
-      const card = container.querySelector("[data-testid='video-card']");
-      expect(card).toBeInTheDocument();
-      expect(card?.className).toContain("w-full");
-    });
-
-    test("compact尺寸应该有正确的封面容器尺寸类", () => {
-      const { container } = render(
-        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="compact" />
-      );
-      const coverContainer = container.querySelector(".relative.overflow-hidden.flex-shrink-0");
+      // B站风格：封面宽度响应式 140px/160px/180px
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
       expect(coverContainer).toBeInTheDocument();
-      expect(coverContainer?.className).toContain("w-32");
-      expect(coverContainer?.className).toContain("h-48");
-      expect(coverContainer?.className).toContain("sm:w-36");
-      expect(coverContainer?.className).toContain("sm:h-54");
-      expect(coverContainer?.className).toContain("flex-shrink-0");
+      expect(coverContainer?.className).toContain("w-[140px]");
+      expect(coverContainer?.className).toContain("sm:w-[160px]");
+      expect(coverContainer?.className).toContain("lg:w-[180px]");
+    });
+
+    test("large尺寸应该有响应式封面宽度", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="large" layout="horizontal" />
+      );
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      expect(coverContainer).toBeInTheDocument();
+      expect(coverContainer?.className).toMatch(/w-\[\d+px\]/);
+    });
+
+    test("small尺寸应该有响应式封面宽度", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="small" layout="horizontal" />
+      );
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      expect(coverContainer).toBeInTheDocument();
+      expect(coverContainer?.className).toMatch(/w-\[\d+px\]/);
+    });
+
+    test("compact尺寸应该有响应式封面宽度", () => {
+      const { container } = render(
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" size="compact" layout="horizontal" />
+      );
+      const coverContainer = container.querySelector("[data-testid='video-cover']")?.parentElement?.parentElement;
+      expect(coverContainer).toBeInTheDocument();
+      expect(coverContainer?.className).toContain("shrink-0");
     });
   });
 

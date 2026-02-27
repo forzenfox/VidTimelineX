@@ -110,7 +110,7 @@ const Lvjiang = () => {
 
         <Header theme={theme} onThemeToggle={handleThemeToggle} />
 
-        <main className="relative">
+        <main className="relative main-content" style={{ paddingRight: "0" }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
             {theme === "dongzhu" ? (
               <div className="relative w-full h-full">
@@ -146,7 +146,7 @@ const Lvjiang = () => {
           </div>
 
           <div className="relative z-10">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 md:pt-8">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 md:pt-8 main-content-inner">
               <VideoViewToolbar
                 viewMode={viewMode}
                 onViewModeChange={setViewMode}
@@ -278,6 +278,23 @@ const Lvjiang = () => {
         <SideDanmaku theme={theme} />
 
         <VideoModal video={selectedVideo} theme={theme} onClose={handleCloseModal} />
+
+        {/* 响应式样式：为弹幕侧边栏预留空间 */}
+        <style>{`
+          /* 桌面端（>=1024px）：为主内容区添加padding-right避让侧边栏 */
+          @media (min-width: 1024px) {
+            .main-content {
+              padding-right: 320px !important;
+            }
+          }
+          
+          /* 移动端（<1024px）：移除padding */
+          @media (max-width: 1023px) {
+            .main-content {
+              padding-right: 0 !important;
+            }
+          }
+        `}</style>
       </div>
     </>
   );

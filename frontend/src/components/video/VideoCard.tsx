@@ -1,5 +1,5 @@
 import React from "react";
-import { Play, Calendar, User } from "lucide-react";
+import { Play, Calendar, User, Eye } from "lucide-react";
 import { VideoCover } from "../figma/ImageWithFallback";
 import type { VideoCardProps, Theme } from "./types";
 
@@ -76,11 +76,22 @@ const getThemeColors = (theme: Theme) => {
 };
 
 /**
- * 统一视频卡片组件
- * 使用React.memo优化性能，避免不必要的重新渲染
- * 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
- * 支持主题、尺寸和布局定制
- * 展示字段：标题、作者、日期、时长、标签
+ * 格式化播放量
+ * @param views 播放量
+ */
+const formatViews = (views: number | string | undefined): string => {
+  if (!views) return "";
+  const num = typeof views === "string" ? parseInt(views, 10) : views;
+  if (num >= 10000) {
+    return `${(num / 10000).toFixed(1)}万`;
+  }
+  return num.toString();
+};
+
+/**
+ * B站风格视频卡片组件
+ * 列表模式：左侧封面(16:9) + 右侧信息区(标题+元信息)
+ * 网格模式：垂直布局，封面在上，信息在下
  */
 const VideoCard: React.FC<VideoCardProps> = React.memo(
   ({
@@ -105,156 +116,158 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(
 
     const colors = getThemeColors(theme);
 
-    const getSizeStyles = (size: string) => {
-      switch (size) {
-        case "small":
-          return {
-            card: "w-full",
-            title: "text-sm",
-            info: "text-xs",
-          };
-        case "large":
-          return {
-            card: "w-full",
-            title: "text-lg",
-            info: "text-sm",
-          };
-        case "compact":
-          return {
-            card: "w-full",
-            title: "text-sm",
-            info: "text-xs",
-          };
-        default:
-          return {
-            card: "w-full",
-            title: "text-base",
-            info: "text-xs sm:text-sm",
-          };
-      }
-    };
+    // 列表模式布局 - B站风格
+    if (layout === "horizontal") {
+      return (
+        <div
+          data-testid="video-card"
+          onClick={handleClick}
+          className={`group flex gap-4 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-muted/30 ${className}`}
+          role="article"
+          aria-labelledby={`video-title-${video.id}`}
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+        >
+          {/* 封面区域 - 固定宽度，响应式 */}
+          <div className="w-[140px] sm:w-[160px] lg:w-[180px] shrink-0">
+            <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+              <VideoCover
+                cover_url={video.cover_url}
+                cover={video.cover}
+                alt={video.title}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                index={index}
+              />
 
-    const sizeStyles = getSizeStyles(size);
+              {/* 时长标签 - 右上角 */}
+              {video.duration && (
+                <div className="absolute top-2 right-2 bg-black/70 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+                  {video.duration}
+                </div>
+              )}
 
-    const getLayoutStyles = (layout: string) => {
-      switch (layout) {
-        case "vertical":
-          return {
-            container: "flex flex-col !p-0",
-            content: "flex flex-col p-4",
-          };
-        default:
-          return {
-            container: "flex !p-0",
-            content: "flex flex-col ml-4 py-3",
-          };
-      }
-    };
+              {/* 悬停播放按钮 */}
+              <div
+                className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40"
+              >
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center"
+                  style={{ background: colors.primary }}
+                >
+                  <Play
+                    className="ml-0.5"
+                    size={20}
+                    style={{ color: colors.primaryForeground, fill: colors.primaryForeground }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
-    const layoutStyles = getLayoutStyles(layout);
+          {/* 信息区域 - flex-1占满剩余空间 */}
+          <div className="flex-1 flex flex-col min-w-0 py-0.5">
+            {/* 标题 - 顶部 */}
+            <h3
+              id={`video-title-${video.id}`}
+              className="text-base font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors"
+            >
+              {video.title}
+            </h3>
 
+            {/* 元信息 - 底部 */}
+            <div
+              className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground"
+              aria-label="视频信息"
+            >
+              {video.author && (
+                <div className="flex items-center gap-1">
+                  <User size={12} className="flex-shrink-0" />
+                  <span className="truncate max-w-[80px] sm:max-w-[120px]">{video.author}</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-1">
+                <Calendar size={12} className="flex-shrink-0" />
+                <span>{video.date}</span>
+              </div>
+
+              {video.views !== undefined && video.views !== null && (
+                <div className="flex items-center gap-1">
+                  <Eye size={12} className="flex-shrink-0" />
+                  <span>{formatViews(video.views)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // 网格模式布局 - 垂直排列
     return (
       <div
         data-testid="video-card"
         onClick={handleClick}
-        className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl active:scale-[0.98] active:shadow-md sm:hover:-translate-y-2 sm:hover:shadow-2xl sm:active:scale-[0.99] ${sizeStyles.card} ${layoutStyles.container} ${className}`}
-        style={{
-          background: colors.background,
-          border: `2px solid ${colors.border}`,
-          boxShadow: `0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)`,
-        }}
+        className={`group flex flex-col gap-2 cursor-pointer ${className}`}
         role="article"
         aria-labelledby={`video-title-${video.id}`}
         tabIndex={0}
         onKeyDown={handleKeyDown}
       >
-        <div
-          className={`relative overflow-hidden flex-shrink-0 p-0 m-0 ${size === "compact" ? "w-32 h-48 sm:w-36 sm:h-54 flex-shrink-0" : "aspect-video"}`}
-        >
+        {/* 封面区域 */}
+        <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-muted">
           <VideoCover
             cover_url={video.cover_url}
             cover={video.cover}
             alt={video.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             index={index}
           />
 
-          {/* 时长显示在封面右上角 */}
+          {/* 时长标签 */}
           {video.duration && (
-            <div className="absolute top-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded-md">
+            <div className="absolute top-2 right-2 bg-black/70 text-white text-xs font-medium px-1.5 py-0.5 rounded">
               {video.duration}
             </div>
           )}
 
+          {/* 悬停播放按钮 */}
           <div
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
-            style={{ background: `${colors.primary}CC` }}
+            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/40"
           >
             <div
-              className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg transform scale-50 group-hover:scale-100 transition-transform duration-300"
+              className="w-12 h-12 rounded-full flex items-center justify-center"
               style={{ background: colors.primary }}
-              aria-hidden="true"
             >
               <Play
-                className="ml-1"
-                size={28}
+                className="ml-0.5"
+                size={24}
                 style={{ color: colors.primaryForeground, fill: colors.primaryForeground }}
               />
             </div>
           </div>
         </div>
 
-        <div className={layoutStyles.content}>
+        {/* 信息区域 */}
+        <div className="px-0.5">
           <h3
             id={`video-title-${video.id}`}
-            className={`font-bold line-clamp-2 min-h-[2.75rem] leading-[1.5] group-hover:text-primary transition-colors ${sizeStyles.title}`}
-            style={{
-              color: colors.text,
-            }}
+            className="text-sm font-medium text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors"
           >
             {video.title}
           </h3>
 
-          <div
-            className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 mt-3 ${sizeStyles.info}`}
-            aria-label="视频信息"
-            style={{
-              color: colors.textSecondary,
-            }}
-          >
-            {video.author && (
-              <div className="flex items-center gap-1">
-                <User size={12} className="flex-shrink-0" aria-hidden="true" />
-                <span>{video.author}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-1">
-              <Calendar size={12} className="flex-shrink-0" aria-hidden="true" />
-              <span>{video.date}</span>
-            </div>
+          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+            {video.author && <span className="truncate">{video.author}</span>}
+            <span className="text-muted-foreground/50">·</span>
+            <span>{video.date}</span>
           </div>
-
-          {video.tags && video.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {video.tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="px-2 py-0.5 text-xs font-medium rounded-full transition-all duration-300"
-                  style={{
-                    background: `${colors.primary}20`,
-                    border: `1px solid ${colors.primary}40`,
-                    color: colors.text,
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     );
   }
 );
+
+VideoCard.displayName = "VideoCard";
 
 export default VideoCard;

@@ -89,15 +89,15 @@ describe("VideoList组件测试", () => {
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
       const listContainer = container.firstChild as HTMLElement;
-      expect(listContainer.className).toContain("gap-2");
+      expect(listContainer.className).toContain("gap-4");
     });
 
-    test("应该包含sm断点的响应式间距", () => {
+    test("应该包含w-full类占满宽度", () => {
       const { container } = render(
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
       const listContainer = container.firstChild as HTMLElement;
-      expect(listContainer.className).toContain("sm:gap-3");
+      expect(listContainer.className).toContain("w-full");
     });
   });
 
@@ -214,7 +214,7 @@ describe("VideoList组件测试", () => {
         <VideoList videos={mockVideos} onVideoClick={mockOnVideoClick} theme={mockTheme} />
       );
       const listContainer = container.firstChild as HTMLElement;
-      expect(listContainer.className).toContain("gap-2");
+      expect(listContainer.className).toContain("gap-4");
     });
   });
 });

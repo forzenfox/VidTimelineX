@@ -66,7 +66,7 @@ describe("HeroSection组件测试", () => {
     render(<HeroSection theme="blood" />);
 
     expect(screen.getByText("进入直播间")).toBeInTheDocument();
-    expect(screen.getByText("观看血怒时刻")).toBeInTheDocument();
+    expect(screen.getByText("高能集锦")).toBeInTheDocument();
   });
 
   /**
@@ -77,7 +77,7 @@ describe("HeroSection组件测试", () => {
     render(<HeroSection theme="mix" />);
 
     expect(screen.getByText("进入直播间")).toBeInTheDocument();
-    expect(screen.getByText("浏览食堂")).toBeInTheDocument();
+    expect(screen.getByText("下饭操作")).toBeInTheDocument();
   });
 
   /**
