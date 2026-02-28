@@ -28,6 +28,7 @@ const RANDOM_SEEDS = Array.from({ length: 60 }, () => Math.random());
  */
 export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isVisible }) => {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // 使用 requestAnimationFrame 避免在 effect 中直接调用 setState
   useEffect(() => {
@@ -35,6 +36,16 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
       setMounted(true);
     });
     return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  // 检测移动端视口
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   const danmakuList = useMemo(() => {
@@ -49,21 +60,26 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
     if (pool.length === 0) return [];
 
     const items: DanmakuItem[] = [];
-    const trackCount = 8; // 弹幕轨道数量
+    // 移动端使用5条轨道，桌面端使用8条轨道
+    const trackCount = isMobile ? 5 : 8;
+    // 移动端弹幕数量减少
+    const danmakuCount = isMobile ? 20 : 30;
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < danmakuCount; i++) {
       const text = pool[i % pool.length];
 
       // 根据主题统一分配颜色
       const isCommon = i >= themeDanmaku.length;
       const color = isCommon ? getCommonDanmakuColor() : getDanmakuColor(theme);
 
-      // 随机分配速度 (6-14秒)
+      // 随机分配速度
       const randomDuration = RANDOM_SEEDS[i % RANDOM_SEEDS.length];
-      const duration = 6 + randomDuration * 8;
+      // 移动端：10-18秒（更慢），桌面端：6-14秒
+      const duration = isMobile ? 10 + randomDuration * 8 : 6 + randomDuration * 8;
 
-      // 随机字体大小 (14-20px)
-      const fontSize = 14 + Math.floor(randomDuration * 6);
+      // 随机字体大小
+      // 移动端：12px（固定最小值），桌面端：14-20px
+      const fontSize = isMobile ? 12 : 14 + Math.floor(randomDuration * 6);
       const fontWeight = randomDuration > 0.7 ? 800 : 600;
 
       // 使用预生成的随机种子
@@ -73,7 +89,7 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
         id: `danmaku-${theme}-${i}`,
         text,
         color,
-        top: 10 + (i % trackCount) * 10, // 8条轨道均匀分布
+        top: 10 + (i % trackCount) * (isMobile ? 16 : 10), // 移动端轨道间距更大
         delay: i * 0.3 + randomDelay * 2, // 随机延迟，避免同时出现
         duration,
         fontSize,
@@ -81,7 +97,7 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
       });
     }
     return items;
-  }, [theme, isVisible, mounted]);
+  }, [theme, isVisible, mounted, isMobile]);
 
   if (!isVisible || !mounted) return null;
 

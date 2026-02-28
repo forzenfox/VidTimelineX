@@ -140,12 +140,12 @@ export const Header: React.FC<HeaderProps> = ({ theme, onThemeToggle }) => {
                 <Crown className="w-6 h-6 text-white mx-auto" />
               </div>
 
-              {/* Live Stream Button */}
+              {/* Live Stream Button - 桌面端显示，移动端隐藏 */}
               <a
                 href="https://www.douyu.com/1126960"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200"
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-200"
                 style={{
                   color: isBlood ? "#E2E8F0" : "#0F172A",
                   background: isBlood

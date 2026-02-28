@@ -26,6 +26,10 @@ interface IconToolbarProps {
    * 清除搜索回调
    */
   onClearSearch?: () => void;
+  /**
+   * 是否为移动端
+   */
+  isMobile?: boolean;
 }
 
 export function IconToolbar({
@@ -41,6 +45,7 @@ export function IconToolbar({
   onClearHistory,
   searchQuery,
   onClearSearch,
+  isMobile = false,
 }: IconToolbarProps) {
   return (
     <>
@@ -98,6 +103,7 @@ export function IconToolbar({
               onClearHistory={onClearHistory}
               currentQuery={searchQuery}
               onClear={onClearSearch}
+              variant={isMobile ? "expanded" : "icon"}
             />
             <FilterDropdown filter={filter} onFilterChange={onFilterChange} variant="icon" />
             <SortDropdown

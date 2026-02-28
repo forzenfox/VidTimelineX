@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import type { Theme, Video } from "../data/types";
 import { videos } from "../data/videos";
 import { Search } from "lucide-react";
@@ -94,19 +94,30 @@ const TimelineVideoItem: React.FC<{
   onVideoClick: (video: Video) => void;
 }> = React.memo(({ video, index, theme, onVideoClick }) => {
   const isLeft = index % 2 === 0;
+  const isBlood = theme === "blood";
 
   return (
     <div
       key={video.id}
-      className={`relative mb-8 sm:mb-16 flex items-center ${isLeft ? "sm:justify-start" : "sm:justify-end"} justify-center`}
+      className={`relative mb-8 sm:mb-16 flex items-center ${isLeft ? "sm:justify-start" : "sm:justify-end"} justify-start pl-8 sm:pl-0`}
       data-testid={`timeline-item-${index}`}
     >
+      {/* 移动端简化节点 - 小圆点 */}
+      <div
+        className="sm:hidden absolute left-4 w-3 h-3 rounded-full -ml-1.5 z-10"
+        style={{
+          background: isBlood ? "#E11D48" : "#D97706",
+          border: `2px solid ${isBlood ? "#1E1B4B" : "#FFFFFF"}`,
+          top: "24px",
+        }}
+      />
+
       {/* 时间节点 - 桌面端显示在中心 */}
       <TimelineNode index={index} theme={theme} onClick={() => onVideoClick(video)} />
 
       {/* 视频卡片容器 */}
       <div
-        className={`relative w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-20" : "sm:pl-20"} px-4 sm:px-0`}
+        className={`relative w-full sm:max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-20" : "sm:pl-20"} sm:px-0`}
       >
         {/* 连接线 - 桌面端显示 */}
         <TimelineConnector isLeft={isLeft} theme={theme} />
@@ -169,9 +180,9 @@ const TimelineView: React.FC<{
         data-testid="timeline-center-line"
       />
 
-      {/* 移动端简化时间轴线 */}
+      {/* 移动端简化时间轴线 - 位置调整到left-4与节点对齐 */}
       <div
-        className="sm:hidden absolute left-6 top-0 bottom-0 w-0.5 rounded-full"
+        className="sm:hidden absolute left-4 top-0 bottom-0 w-0.5 rounded-full"
         style={{
           background: isBlood
             ? "linear-gradient(to bottom, #E11D48, #9F1239)"
@@ -189,6 +200,18 @@ const TimelineView: React.FC<{
 
 export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick }) => {
   const isBlood = theme === "blood";
+
+  // 检测移动端视口
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // 使用useVideoView hook管理视频视图状态
   const {
@@ -344,6 +367,7 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             searchQuery={searchQuery}
             onClearSearch={handleClearSearch}
             theme={theme}
+            isMobile={true}
           />
         </div>
 

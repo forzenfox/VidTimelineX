@@ -239,7 +239,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
               >
                 {message.userName}
               </span>
-              <span className="text-[10px] text-gray-500">{message.timestamp}</span>
+              <span className="text-xs text-gray-500">{message.timestamp}</span>
             </div>
 
             {/* Message Text */}
