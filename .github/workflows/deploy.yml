@@ -43,7 +43,11 @@ jobs:
       - name: Lint code
         run: npm run lint
         working-directory: frontend
-        
+
+      - name: Prebuild (generate danmaku data)
+        run: npm run prebuild
+        working-directory: frontend
+
       - name: Run tests
         run: npm run test:ci
         working-directory: frontend
