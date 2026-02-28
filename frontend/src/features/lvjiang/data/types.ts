@@ -10,7 +10,6 @@ export interface Video {
   tags: string[];
   duration: string;
   author?: string; // 视频作者（UP主）
-  bvid?: string; // 兼容旧字段
 }
 
 export type Theme = "dongzhu" | "kaige";

@@ -1,0 +1,523 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "z0a8b",
+      "x": 0,
+      "y": 0,
+      "name": "C皇荣耀殿 - 混躺主题",
+      "width": 1440,
+      "height": 1400,
+      "fill": "#F8FAFC",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "LX7eo",
+          "name": "danmakuBar",
+          "width": "fill_container",
+          "height": 40,
+          "fill": "rgba(217,119,6,0.2)",
+          "padding": [
+            0,
+            24
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Cw7kp",
+              "name": "danmakuText",
+              "fill": "#D97706",
+              "content": "◀ 弹幕飘屏区域 ▶",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "saKKt",
+          "name": "header",
+          "width": "fill_container",
+          "height": 80,
+          "gap": 24,
+          "padding": [
+            24,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "gNbKV",
+              "name": "logo",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "ckZl8",
+                  "name": "logoIcon",
+                  "width": 48,
+                  "height": 48,
+                  "fill": "#D97706",
+                  "cornerRadius": 24,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Li8I8",
+                      "name": "logoText",
+                      "content": "👑",
+                      "textAlign": "center",
+                      "fontFamily": "Inter",
+                      "fontSize": 24,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "92jRK",
+                  "name": "logoTitle",
+                  "fill": "#0F172A",
+                  "content": "C皇荣耀殿",
+                  "fontFamily": "Inter",
+                  "fontSize": 24,
+                  "fontWeight": "bold"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F6VEb",
+              "name": "themeToggle",
+              "fill": "#D97706",
+              "cornerRadius": 20,
+              "padding": [
+                12,
+                24
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "5zyBC",
+                  "name": "toggleText",
+                  "fill": "#FFFFFF",
+                  "content": "切换到血怒",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JcGjO",
+          "name": "main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 32,
+          "children": [
+            {
+              "type": "frame",
+              "id": "nAWuO",
+              "name": "hero",
+              "width": "fill_container",
+              "height": 280,
+              "fill": "linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%)",
+              "cornerRadius": 24,
+              "layout": "vertical",
+              "gap": 24,
+              "padding": 48,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "gcAh8",
+                  "name": "heroTitle",
+                  "fill": "#0F172A",
+                  "content": "C皇驾到 · 混与躺的艺术哲学",
+                  "fontFamily": "Inter",
+                  "fontSize": 40,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "text",
+                  "id": "8pBZq",
+                  "name": "heroSubtitle",
+                  "fill": "#334155",
+                  "content": "余小C专属粉丝站 | 斗鱼直播间 1126960",
+                  "fontFamily": "Inter",
+                  "fontSize": 18,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "57SGJ",
+                  "name": "crownIcon",
+                  "content": "😴",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 80,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "b7dWs",
+              "name": "decoLine",
+              "width": 200,
+              "height": 2,
+              "fill": "linear-gradient(90deg, transparent, #D97706, transparent)"
+            },
+            {
+              "type": "frame",
+              "id": "UU478",
+              "name": "titleHall",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "22AtG",
+                  "name": "hallTitle",
+                  "fill": "#0F172A",
+                  "content": "🏆 称号殿堂",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "frame",
+                  "id": "p612Z",
+                  "name": "titlesGrid",
+                  "width": "fill_container",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "bnaNe",
+                      "name": "title1",
+                      "fill": "rgba(217,119,6,0.2)",
+                      "cornerRadius": 20,
+                      "padding": [
+                        16,
+                        32
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "JS8P9",
+                          "name": "title1Text",
+                          "fill": "#D97706",
+                          "content": "😴 混子",
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "bold"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cUIAI",
+                      "name": "title2",
+                      "fill": "rgba(37,99,235,0.2)",
+                      "cornerRadius": 20,
+                      "padding": [
+                        16,
+                        32
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "d5aW3",
+                          "name": "title2Text",
+                          "fill": "#2563EB",
+                          "content": "🎖️ 躺王",
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "bold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DOrEg",
+              "name": "canteen",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "xZLSr",
+                  "name": "canteenTitle",
+                  "fill": "#0F172A",
+                  "content": "🍽️ 食堂集锦",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "frame",
+                  "id": "nrkIV",
+                  "name": "videoGrid",
+                  "width": "fill_container",
+                  "height": 180,
+                  "gap": 24,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "nrYnh",
+                      "name": "video1",
+                      "width": 280,
+                      "height": 180,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "s2pCH",
+                          "name": "video1Thumb",
+                          "width": "fill_container",
+                          "height": 100,
+                          "fill": "#F1F5F9",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "OPVsy",
+                              "name": "video1Text",
+                              "content": "🎬",
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 40,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "xZClG",
+                          "name": "video1Title",
+                          "fill": "#0F172A",
+                          "content": "混子时刻 #1",
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "bold"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ElPpb",
+                      "name": "video2",
+                      "width": 280,
+                      "height": 180,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Fhe2s",
+                          "name": "video2Thumb",
+                          "width": "fill_container",
+                          "height": 100,
+                          "fill": "#F1F5F9",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "s9J5Q",
+                              "name": "video2Text",
+                              "content": "🎮",
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 40,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "In31r",
+                          "name": "video2Title",
+                          "fill": "#0F172A",
+                          "content": "高光集锦",
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "bold"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ay8Jf",
+                      "name": "video3",
+                      "width": 280,
+                      "height": 180,
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 16,
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "2XmLc",
+                          "name": "video3Thumb",
+                          "width": "fill_container",
+                          "height": 100,
+                          "fill": "#F1F5F9",
+                          "cornerRadius": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "248fI",
+                              "name": "video3Text",
+                              "content": "⚔️",
+                              "textAlign": "center",
+                              "fontFamily": "Inter",
+                              "fontSize": 40,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "NQOP9",
+                          "name": "video3Title",
+                          "fill": "#0F172A",
+                          "content": "经典战役",
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "bold"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8xnQh",
+              "name": "archive",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "GKgJz",
+                  "name": "archiveTitle",
+                  "fill": "#0F172A",
+                  "content": "🎵 C音档案馆",
+                  "fontFamily": "Inter",
+                  "fontSize": 28,
+                  "fontWeight": "bold"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zyyJ7",
+              "name": "danmakuTower",
+              "width": 320,
+              "height": 400,
+              "fill": "#FFFFFF",
+              "cornerRadius": 16,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ddA3Z",
+                  "name": "towerTitle",
+                  "fill": "#0F172A",
+                  "content": "💬 弹幕塔",
+                  "fontFamily": "Inter",
+                  "fontSize": 20,
+                  "fontWeight": "bold"
+                },
+                {
+                  "type": "text",
+                  "id": "Aec8M",
+                  "name": "towerDanmaku1",
+                  "fill": "#D97706",
+                  "content": "😴 混就完事了",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "uCwoD",
+                  "name": "towerDanmaku2",
+                  "fill": "#2563EB",
+                  "content": "🎖️ 太能混了！",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gtgUG",
+          "name": "footer",
+          "width": "fill_container",
+          "fill": "rgba(0,0,0,0.05)",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "frame",
+              "id": "Vnv0s",
+              "name": "decoLine2",
+              "width": 200,
+              "height": 2,
+              "fill": "linear-gradient(90deg, transparent, #D97706, transparent)"
+            },
+            {
+              "type": "text",
+              "id": "nWtEH",
+              "name": "footerText1",
+              "fill": "#0F172A",
+              "content": "C皇驾到 · 混与躺的艺术哲学",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "bold"
+            },
+            {
+              "type": "text",
+              "id": "BlxFX",
+              "name": "footerText2",
+              "fill": "#64748B",
+              "content": "本站点为粉丝自制，仅供娱乐",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

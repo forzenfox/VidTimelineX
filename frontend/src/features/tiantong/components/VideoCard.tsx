@@ -1,5 +1,5 @@
 import React from "react";
-import { Play, Eye, Calendar, Heart, Music, Smile } from "lucide-react";
+import { Play, Eye, Calendar, User } from "lucide-react";
 import { VideoCover } from "../../../components/figma/ImageWithFallback";
 import type { Video } from "../data/types";
 
@@ -16,19 +16,6 @@ interface VideoCardProps {
  * 封面图优先从B站CDN加载，失败时回退到本地懒加载图片
  */
 const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick, index = 0 }) => {
-  const getIconComponent = () => {
-    switch (video.icon) {
-      case "Heart":
-        return <Heart size={12} className="mr-1" aria-hidden="true" />;
-      case "Music":
-        return <Music size={12} className="mr-1" aria-hidden="true" />;
-      case "Smile":
-        return <Smile size={12} className="mr-1" aria-hidden="true" />;
-      default:
-        return <Heart size={12} className="mr-1" aria-hidden="true" />;
-    }
-  };
-
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClick(video);
@@ -66,20 +53,6 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick, index 
             <Play fill="var(--primary)" className="text-primary ml-1" size={28} />
           </div>
         </div>
-
-        <div
-          className="absolute top-2.5 left-2.5 px-2.5 py-1 bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-bold rounded-lg flex items-center shadow-md"
-          role="badge"
-        >
-          {getIconComponent()}
-          {video.category === "sing"
-            ? "甜筒天籁"
-            : video.category === "dance"
-              ? "霸总热舞"
-              : video.category === "funny"
-                ? "反差萌"
-                : "224日常"}
-        </div>
       </div>
 
       <div className="p-4 sm:p-4.5">
@@ -91,16 +64,20 @@ const VideoCard: React.FC<VideoCardProps> = React.memo(({ video, onClick, index 
         </h3>
 
         <div
-          className="flex items-center justify-between mt-3 text-xs sm:text-sm text-muted-foreground"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-3 text-xs sm:text-sm text-muted-foreground gap-2 sm:gap-0"
           aria-label="视频信息"
         >
+          <div className="flex items-center gap-1.5">
+            <User size={13} className="flex-shrink-0" aria-hidden="true" />
+            <span>{video.author || "未知作者"}</span>
+          </div>
           <div className="flex items-center gap-1.5">
             <Calendar size={13} className="flex-shrink-0" aria-hidden="true" />
             <span>{video.date}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Eye size={13} className="flex-shrink-0" aria-hidden="true" />
-            <span>{video.views}</span>
+            <span>{video.views || "未知"}</span>
           </div>
         </div>
       </div>

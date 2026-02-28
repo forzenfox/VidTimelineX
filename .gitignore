@@ -53,7 +53,7 @@ Thumbs.db
 ehthumbs.db
 
 # Trae AI files
-.trae/
+# .trae/
 
 # Package manager files
 yarn.lock
@@ -117,3 +117,6 @@ dmypy.json
 
 # Backend test data
 backend/data/test/
+
+# Danmaku processed files
+danmaku-processed.json

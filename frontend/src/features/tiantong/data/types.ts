@@ -10,11 +10,8 @@ export interface Video {
   cover_url?: string; // B站CDN封面图URL（前端优先加载）
   tags: string[];
   duration: string;
-  category?: string;
-  views?: string;
-  icon?: string;
   author?: string; // 视频作者（UP主）
-  bvid?: string; // 兼容旧字段
+  views?: number | string; // 观看次数（兼容 number 和 string 类型）
 }
 
 export interface Danmu {

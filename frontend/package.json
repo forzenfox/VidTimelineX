@@ -97,7 +97,7 @@
   },
   "scripts": {
     "dev": "vite --host",
-    "prebuild": "node scripts/process-danmaku.js",
+    "prebuild": "node scripts/process-danmaku.js && node scripts/build-danmaku-yuxiaoc.js",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",

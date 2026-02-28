@@ -21,6 +21,12 @@ import {
   getCurrentCdnConfig,
   getCdnDiagnostics,
   resetLocationCache,
+  checkImageAccessibility,
+  checkImagesAccessibility,
+  testCdnConnection,
+  testJsdelivrConnection,
+  testJsdMirrorConnection,
+  preloadImage as cdnPreloadImage,
 } from "@/utils/cdn";
 
 // 扩展 Window 接口以包含测试所需的属性
@@ -771,6 +777,219 @@ describe("CDN 工具模块测试", () => {
       const url = getOptimizedImageUrl("test.webp", "/app");
 
       expect(url).toBe("/app/thumbs/test.webp");
+    });
+  });
+
+  describe("图片访问性检查", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    test("checkImageAccessibility 处理成功响应", async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: {
+          get: (key: string) => {
+            if (key === "content-type") return "image/webp";
+            if (key === "content-length") return "12345";
+            return null;
+          },
+        },
+      } as unknown as Response;
+      jest.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse);
+
+      const result = await checkImageAccessibility("https://example.com/image.webp");
+
+      expect(result.accessible).toBe(true);
+      expect(result.statusCode).toBe(200);
+      expect(result.isImage).toBe(true);
+      expect(result.contentLength).toBe(12345);
+    });
+
+    test("checkImageAccessibility 处理 404 错误", async () => {
+      const mockResponse = {
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+        headers: { get: () => null },
+      } as unknown as Response;
+      jest.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse);
+
+      const result = await checkImageAccessibility("https://example.com/missing.webp");
+
+      expect(result.accessible).toBe(false);
+      expect(result.statusCode).toBe(404);
+      expect(result.error).toContain("HTTP 404");
+    });
+
+    test("checkImageAccessibility 处理网络错误", async () => {
+      jest.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("Network error"));
+
+      const result = await checkImageAccessibility("https://example.com/image.webp");
+
+      expect(result.accessible).toBe(false);
+      expect(result.error).toContain("Network error");
+    });
+
+    test("checkImageAccessibility 验证非图片类型", async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: {
+          get: (key: string) => (key === "content-type" ? "text/html" : null),
+        },
+      } as unknown as Response;
+      jest.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse);
+
+      const result = await checkImageAccessibility("https://example.com/page.html");
+
+      expect(result.accessible).toBe(true);
+      expect(result.isImage).toBe(false);
+    });
+  });
+
+  describe("批量图片访问性检查", () => {
+    test("checkImagesAccessibility 处理多个 URL", async () => {
+      const urls = ["https://example.com/1.webp", "https://example.com/2.webp"];
+
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: { get: (key: string) => (key === "content-type" ? "image/webp" : null) },
+      } as unknown as Response;
+
+      jest
+        .spyOn(globalThis, "fetch")
+        .mockResolvedValueOnce(mockResponse)
+        .mockResolvedValueOnce(mockResponse);
+
+      const results = await checkImagesAccessibility(urls);
+
+      expect(results.size).toBe(2);
+      expect(results.get(urls[0])?.accessible).toBe(true);
+      expect(results.get(urls[1])?.accessible).toBe(true);
+    });
+
+    test("checkImagesAccessibility 处理空数组", async () => {
+      const results = await checkImagesAccessibility([]);
+      expect(results.size).toBe(0);
+    });
+  });
+
+  describe("CDN 连接测试", () => {
+    beforeEach(() => {
+      resetLocationCache();
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      resetLocationCache();
+    });
+
+    test("testCdnConnection 返回成功结果", async () => {
+      jest.spyOn(Intl, "DateTimeFormat").mockImplementation(
+        () =>
+          ({
+            resolvedOptions: () => ({ timeZone: "America/New_York" }),
+          }) as Intl.DateTimeFormat
+      );
+
+      Object.defineProperty(window, "navigator", {
+        value: { language: "en-us" },
+        writable: true,
+        configurable: true,
+      });
+
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: { get: (key: string) => (key === "content-type" ? "image/x-icon" : null) },
+      } as unknown as Response;
+      jest.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse);
+
+      const result = await testCdnConnection();
+
+      expect(["jsdelivr", "jsdmirror"]).toContain(result.cdn);
+      expect(result.success).toBe(true);
+      expect(result.message).toContain("连接正常");
+    });
+
+    test("testJsdelivrConnection 返回成功结果", async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: { get: (key: string) => (key === "content-type" ? "image/x-icon" : null) },
+      } as unknown as Response;
+      jest.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse);
+
+      const result = await testJsdelivrConnection();
+
+      expect(result.success).toBe(true);
+    });
+
+    test("testJsdMirrorConnection 返回成功结果", async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        statusText: "OK",
+        headers: { get: (key: string) => (key === "content-type" ? "image/x-icon" : null) },
+      } as unknown as Response;
+      jest.spyOn(globalThis, "fetch").mockResolvedValueOnce(mockResponse);
+
+      const result = await testJsdMirrorConnection();
+
+      expect(result.success).toBe(true);
+    });
+
+    test("CDN 连接测试处理失败情况", async () => {
+      jest.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("Connection failed"));
+
+      const result = await testJsdelivrConnection();
+
+      expect(result.success).toBe(false);
+      expect(result.message).toContain("连接失败");
+    });
+  });
+
+  describe("cdnPreloadImage 函数测试", () => {
+    test("preloadImage 处理图片加载成功", async () => {
+      const mockImg = {
+        crossOrigin: "",
+        onload: () => {},
+        onerror: () => {},
+        set src(url: string) {
+          setTimeout(() => this.onload(), 10);
+        },
+      };
+      jest
+        .spyOn(globalThis, "Image")
+        .mockImplementation(() => mockImg as unknown as HTMLImageElement);
+
+      await expect(cdnPreloadImage("https://example.com/image.webp")).resolves.toBeDefined();
+    });
+
+    test("preloadImage 处理图片加载失败", async () => {
+      const mockImg = {
+        crossOrigin: "",
+        onload: () => {},
+        onerror: () => {},
+        set src(url: string) {
+          setTimeout(() => this.onerror(), 10);
+        },
+      };
+      jest
+        .spyOn(globalThis, "Image")
+        .mockImplementation(() => mockImg as unknown as HTMLImageElement);
+
+      await expect(cdnPreloadImage("https://example.com/image.webp")).rejects.toThrow(
+        "Failed to load image"
+      );
     });
   });
 });

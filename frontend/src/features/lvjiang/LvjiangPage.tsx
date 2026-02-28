@@ -1,13 +1,26 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { LoadingAnimation } from "./components/LoadingAnimation";
 import { Header } from "./components/Header";
 import { VideoTimeline } from "./components/VideoTimeline";
-import { VideoModal } from "./components/VideoModal";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { SideDanmaku } from "./components/SideDanmaku";
-import type { Video } from "./data";
+import VideoModal from "../../components/video/VideoModal";
 import { videos } from "./data";
+import type { Video } from "./data";
+import { useViewPreferences } from "@/hooks/useViewPreferences";
+import { useVideoFilter } from "@/hooks/useVideoFilter";
+import type { Video as VideoType } from "@/components/video/types";
+import VideoGrid from "@/components/video-view/VideoGrid";
+import VideoList from "@/components/video-view/VideoList";
+import { IconToolbar } from "@/components/video-view/IconToolbar";
+import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
+import EmptyState from "@/components/video-view/EmptyState";
 import "./styles/index.css";
+
+const convertToVideoType = (video: Video): VideoType => ({
+  ...video,
+  views: 0,
+});
 
 // 生成随机装饰位置（仅执行一次）
 const generateFootprintDecorations = (() => {
@@ -47,7 +60,49 @@ const Lvjiang = () => {
   const [theme, setTheme] = useState<"dongzhu" | "kaige">("dongzhu");
   const [isLoading, setIsLoading] = useState(true);
   const [showDanmaku, setShowDanmaku] = useState(false);
-  const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
+
+  // 搜索相关状态
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const timeoutIdRef = useRef<number | null>(null);
+
+  const { viewMode, setViewMode } = useViewPreferences();
+
+  // 根据搜索词过滤视频
+  const filteredBySearch = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return videos;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+
+    return videos
+      .map(video => {
+        let score = 0;
+
+        if (video.title.toLowerCase().includes(query)) {
+          score += 10;
+          if (video.title.toLowerCase() === query) {
+            score += 10;
+          }
+        }
+
+        if (video.tags && video.tags.some(tag => tag.toLowerCase().includes(query))) {
+          score += 5;
+        }
+
+        return { video, score };
+      })
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(({ video }) => video);
+  }, [searchQuery]);
+
+  const { filter, setFilter, resetFilter, filteredVideos } = useVideoFilter<VideoType>(
+    searchQuery ? filteredBySearch.map(convertToVideoType) : (videos as unknown as VideoType[])
+  );
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -63,12 +118,73 @@ const Lvjiang = () => {
     setTheme(prev => (prev === "dongzhu" ? "kaige" : "dongzhu"));
   }, []);
 
-  const handleVideoClick = useCallback((video: Video) => {
+  const handleVideoClick = useCallback((video: VideoType) => {
     setSelectedVideo(video);
   }, []);
 
   const handleCloseModal = useCallback(() => {
     setSelectedVideo(null);
+  }, []);
+
+  // 搜索处理函数
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
+    if (query.trim()) {
+      setSearchHistory(prev => {
+        const newHistory = [query.trim(), ...prev.filter(item => item !== query.trim())].slice(
+          0,
+          5
+        );
+        return newHistory;
+      });
+    }
+  }, []);
+
+  // 防抖搜索建议
+  const debouncedSearch = useCallback((query: string) => {
+    if (timeoutIdRef.current) {
+      clearTimeout(timeoutIdRef.current);
+    }
+    timeoutIdRef.current = window.setTimeout(() => {
+      if (query.trim()) {
+        const videoTitles = videos.map(video => video.title);
+        const filteredSuggestions = videoTitles
+          .filter(title => title.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 5);
+        setSuggestions(filteredSuggestions);
+      } else {
+        setSuggestions([]);
+      }
+    }, 300);
+  }, []);
+
+  // 处理搜索输入变化
+  const handleSearchChange = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      debouncedSearch(query);
+    },
+    [debouncedSearch]
+  );
+
+  // 清除搜索
+  const handleClearSearch = useCallback(() => {
+    setSearchQuery("");
+    setSuggestions([]);
+  }, []);
+
+  // 清除搜索历史
+  const clearSearchHistory = useCallback(() => {
+    setSearchHistory([]);
+  }, []);
+
+  // 清理定时器
+  useEffect(() => {
+    return () => {
+      if (timeoutIdRef.current) {
+        clearTimeout(timeoutIdRef.current);
+      }
+    };
   }, []);
 
   if (isLoading) {
@@ -93,7 +209,7 @@ const Lvjiang = () => {
 
         <Header theme={theme} onThemeToggle={handleThemeToggle} />
 
-        <main className="relative">
+        <main className="relative main-content" style={{ paddingRight: "0" }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
             {theme === "dongzhu" ? (
               <div className="relative w-full h-full">
@@ -129,7 +245,53 @@ const Lvjiang = () => {
           </div>
 
           <div className="relative z-10">
-            <VideoTimeline theme={theme} onVideoClick={handleVideoClick} />
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-6 md:pt-8 main-content-inner">
+              {/* 移动端显示 IconToolbar（纯图标） */}
+              <div className="sm:hidden">
+                <IconToolbar
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  filter={filter}
+                  onFilterChange={setFilter}
+                  onSearch={handleSearch}
+                  theme={theme}
+                  searchSuggestions={suggestions}
+                  searchHistory={searchHistory}
+                  onClearHistory={clearSearchHistory}
+                  searchQuery={searchQuery}
+                  onClearSearch={handleClearSearch}
+                />
+              </div>
+
+              {/* PC端显示 VideoViewToolbar（图标+文字） */}
+              <div className="hidden sm:block">
+                <VideoViewToolbar
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                  filter={filter}
+                  onFilterChange={setFilter}
+                  theme={theme}
+                  onSearch={handleSearch}
+                  searchQuery={searchQuery}
+                  searchSuggestions={suggestions}
+                  searchHistory={searchHistory}
+                  onClearHistory={clearSearchHistory}
+                  onClearSearch={handleClearSearch}
+                />
+              </div>
+              {filteredVideos.length === 0 ? (
+                <EmptyState onClearFilter={resetFilter} />
+              ) : viewMode === "timeline" ? (
+                <VideoTimeline
+                  theme={theme}
+                  onVideoClick={video => handleVideoClick(convertToVideoType(video))}
+                />
+              ) : viewMode === "grid" ? (
+                <VideoGrid videos={filteredVideos} onVideoClick={handleVideoClick} theme={theme} />
+              ) : (
+                <VideoList videos={filteredVideos} onVideoClick={handleVideoClick} theme={theme} />
+              )}
+            </div>
           </div>
 
           <div className="max-w-5xl mx-auto px-6 py-12 text-center">
@@ -241,6 +403,23 @@ const Lvjiang = () => {
         <SideDanmaku theme={theme} />
 
         <VideoModal video={selectedVideo} theme={theme} onClose={handleCloseModal} />
+
+        {/* 响应式样式：为弹幕侧边栏预留空间 */}
+        <style>{`
+          /* 桌面端（>=1024px）：为主内容区添加padding-right避让侧边栏 */
+          @media (min-width: 1024px) {
+            .main-content {
+              padding-right: 320px !important;
+            }
+          }
+          
+          /* 移动端（<1024px）：移除padding */
+          @media (max-width: 1023px) {
+            .main-content {
+              padding-right: 0 !important;
+            }
+          }
+        `}</style>
       </div>
     </>
   );

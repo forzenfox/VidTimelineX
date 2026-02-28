@@ -104,3 +104,62 @@ textarea:focus {
     line-clamp: 2;
   }
 }
+
+/* ========== 选中状态样式 ========== */
+
+/* 基础选中状态 */
+[data-active="true"],
+[aria-pressed="true"] {
+  background-color: var(--selected-bg);
+  color: var(--selected-foreground);
+  border-color: var(--selected-border);
+  box-shadow: 0 2px 8px var(--selected-shadow-color);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 选中状态悬停效果 */
+[data-active="true"]:hover,
+[aria-pressed="true"]:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 4px 12px var(--selected-shadow-color);
+}
+
+/* 选中状态按下效果 */
+[data-active="true"]:active,
+[aria-pressed="true"]:active {
+  transform: scale(0.98);
+  filter: brightness(0.95);
+}
+
+/* 选中状态焦点效果 */
+[data-active="true"]:focus-visible,
+[aria-pressed="true"]:focus-visible {
+  outline: 2px solid var(--selected-ring);
+  outline-offset: 2px;
+}
+
+/* 选中状态过渡动画 */
+@keyframes selected-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 选中状态指示器（可选） */
+[data-selected-indicator="true"]::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background-color: var(--selected-indicator);
+  border-radius: 1px;
+}

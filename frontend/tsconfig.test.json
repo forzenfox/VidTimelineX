@@ -16,7 +16,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": false,
-    "types": ["jest", "@testing-library/jest-dom", "vite/client"],
+    "types": ["jest", "@testing-library/jest-dom", "vite/client", "node"],
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "typeRoots": ["./node_modules/@types"],

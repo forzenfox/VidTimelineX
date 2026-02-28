@@ -39,6 +39,18 @@
   --shadow-blur: 10px;
   --shadow-spread: 0px;
 
+  /* ========== 首页主题色 (Homepage Theme) ========== */
+  --home-primary: #ec4899;
+  --home-secondary: #f97316;
+  --home-accent: #8b5cf6;
+  --home-background-start: #fdf2f8;
+  --home-background-end: #fff7ed;
+  --home-text-primary: #1f2937;
+  --home-text-secondary: #6b7280;
+  --home-glass-bg: rgba(255, 255, 255, 0.7);
+  --home-glass-border: rgba(255, 255, 255, 0.5);
+  --home-glass-shadow: rgba(0, 0, 0, 0.1);
+
   /* ========== 侧边栏变量 ========== */
   --sidebar-width: 280px;
   --sidebar-width-icon: 60px;
@@ -46,6 +58,14 @@
   --sidebar-accent: var(--accent);
   --sidebar-background: var(--card);
   --sidebar-foreground: var(--card-foreground);
+
+  /* ========== 选中状态变量 ========== */
+  --selected-bg: var(--primary);
+  --selected-foreground: var(--primary-foreground);
+  --selected-border: var(--primary);
+  --selected-shadow-color: rgba(230, 126, 34, 0.2);
+  --selected-ring: var(--primary);
+  --selected-indicator: var(--primary);
 }
 
 /* ========== 默认主题（Tiger） ========== */
@@ -65,6 +85,12 @@
   --border: var(--tiger-border);
   --shadow-color: var(--tiger-shadow-color);
   --card-rgb: var(--tiger-card-rgb);
+
+  /* Tiger主题选中状态 */
+  --selected-bg: var(--tiger-primary);
+  --selected-foreground: #fff;
+  --selected-border: var(--tiger-primary);
+  --selected-shadow-color: rgba(230, 126, 34, 0.2);
 }
 
 /* ========== 甜筒时刻 (Sweet Mode) ========== */
@@ -84,4 +110,110 @@
   --border: var(--sweet-border);
   --shadow-color: var(--sweet-shadow-color);
   --card-rgb: var(--sweet-card-rgb);
+
+  /* Sweet主题选中状态 */
+  --selected-bg: var(--sweet-primary);
+  --selected-foreground: #fff;
+  --selected-border: var(--sweet-primary);
+  --selected-shadow-color: rgba(255, 140, 180, 0.2);
+}
+
+/* ========== C皇驾到 - 血怒模式 (Blood Mode) ========== */
+[data-theme="blood"] {
+  --background: #0f0f23;
+  --foreground: #e2e8f0;
+  --primary: #e11d48;
+  --primary-foreground: #fff;
+  --secondary: #f59e0b;
+  --secondary-foreground: #0f172a;
+  --accent: #e11d48;
+  --accent-foreground: #fff;
+  --card: #1e1b4b;
+  --card-foreground: #e2e8f0;
+  --muted: #0f0f23;
+  --muted-foreground: #94a3b8;
+  --border: rgba(225, 29, 72, 0.5);
+  --shadow-color: rgba(225, 29, 72, 0.3);
+  --card-rgb: 30, 27, 75;
+
+  /* Blood主题选中状态 */
+  --selected-bg: #e11d48;
+  --selected-foreground: #fff;
+  --selected-border: #e11d48;
+  --selected-shadow-color: rgba(225, 29, 72, 0.2);
+}
+
+/* ========== C皇驾到 - 混躺模式 (Mix Mode) ========== */
+[data-theme="mix"] {
+  --background: #fef3c7;
+  --foreground: #78350f;
+  --primary: #f59e0b;
+  --primary-foreground: #fff;
+  --secondary: #b45309;
+  --secondary-foreground: #78350f;
+  --accent: #b45309;
+  --accent-foreground: #fff;
+  --card: #fffbeb;
+  --card-foreground: #78350f;
+  --muted: #fef3c7;
+  --muted-foreground: #92400e;
+  --border: rgba(245, 158, 11, 0.5);
+  --shadow-color: rgba(245, 158, 11, 0.3);
+  --card-rgb: 255, 251, 235;
+
+  /* Mix主题选中状态 */
+  --selected-bg: #f59e0b;
+  --selected-foreground: #fff;
+  --selected-border: #f59e0b;
+  --selected-shadow-color: rgba(245, 158, 11, 0.2);
+}
+
+/* ========== 驴酱 - 洞主主题 (Dongzhu Mode) ========== */
+[data-theme="dongzhu"] {
+  --background: #fffef7;
+  --foreground: #5d6d7e;
+  --primary: #5dade2;
+  --primary-foreground: #fff;
+  --secondary: #aed6f1;
+  --secondary-foreground: #5d6d7e;
+  --accent: #3498db;
+  --accent-foreground: #fff;
+  --card: rgba(255, 254, 247, 0.9);
+  --card-foreground: #5d6d7e;
+  --muted: #f0f8ff;
+  --muted-foreground: #85929e;
+  --border: #aed6f1;
+  --shadow-color: rgba(93, 173, 226, 0.3);
+  --card-rgb: 255, 254, 247;
+
+  /* Dongzhu主题选中状态 */
+  --selected-bg: #5dade2;
+  --selected-foreground: #fff;
+  --selected-border: #5dade2;
+  --selected-shadow-color: rgba(93, 173, 226, 0.2);
+}
+
+/* ========== 驴酱 - 凯哥主题 (Kaige Mode) ========== */
+[data-theme="kaige"] {
+  --background: #1a1a2e;
+  --foreground: #ecf0f1;
+  --primary: #e74c3c;
+  --primary-foreground: #fff;
+  --secondary: #c0392b;
+  --secondary-foreground: #fff;
+  --accent: #e74c3c;
+  --accent-foreground: #fff;
+  --card: rgba(26, 26, 46, 0.9);
+  --card-foreground: #ecf0f1;
+  --muted: #16213e;
+  --muted-foreground: #bdc3c7;
+  --border: #e74c3c;
+  --shadow-color: rgba(231, 76, 60, 0.3);
+  --card-rgb: 26, 26, 46;
+
+  /* Kaige主题选中状态 */
+  --selected-bg: #e74c3c;
+  --selected-foreground: #fff;
+  --selected-border: #e74c3c;
+  --selected-shadow-color: rgba(231, 76, 60, 0.2);
 }
