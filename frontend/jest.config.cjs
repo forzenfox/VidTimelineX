@@ -9,6 +9,7 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "\\.(css|less|scss|sass)$": "<rootDir>/tests/__mocks__/style-mock.js",
+    "\\.(txt|raw)(\\?.*)?$": "<rootDir>/tests/__mocks__/file-mock.js",
   },
 
   // 转换规则
@@ -30,6 +31,7 @@ module.exports = {
   testMatch: [
     "**/tests/unit/**/*.test.(ts|tsx|js|jsx)",
     "**/tests/integration/**/*.test.(ts|tsx|js|jsx)",
+    "**/src/**/*.test.(ts|tsx|js|jsx)",
   ],
   // 排除Playwright测试文件
   testPathIgnorePatterns: [

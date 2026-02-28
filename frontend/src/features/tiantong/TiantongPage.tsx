@@ -65,6 +65,7 @@ const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
 
 const TiantongPage = () => {
   const [theme, setTheme] = useState<"tiger" | "sweet">("tiger");
+  const [danmakuKey, setDanmakuKey] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
@@ -150,7 +151,7 @@ const TiantongPage = () => {
 
   const toggleTheme = React.useCallback((newTheme: "tiger" | "sweet") => {
     setTheme(newTheme);
-    // 使用data属性切换主题，优化性能
+    setDanmakuKey(prev => prev + 1); // 强制重新渲染弹幕组件
     document.documentElement.setAttribute("data-theme", newTheme);
   }, []);
 
@@ -229,7 +230,7 @@ const TiantongPage = () => {
               {theme === "tiger" ? "🐯" : "🍦"}
             </div>
 
-            <HorizontalDanmaku theme={theme} />
+            <HorizontalDanmaku key={danmakuKey} theme={theme} />
 
             <header
               className="fixed top-0 left-0 right-0 z-40 w-full bg-card/90 backdrop-blur-md border-b border-border shadow-sm transition-all duration-300 ease-in-out"

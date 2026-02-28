@@ -58,6 +58,7 @@ const generateFootprintDecorations = (() => {
 
 const Lvjiang = () => {
   const [theme, setTheme] = useState<"dongzhu" | "kaige">("dongzhu");
+  const [danmakuKey, setDanmakuKey] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showDanmaku, setShowDanmaku] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoType | null>(null);
@@ -116,6 +117,7 @@ const Lvjiang = () => {
 
   const handleThemeToggle = useCallback(() => {
     setTheme(prev => (prev === "dongzhu" ? "kaige" : "dongzhu"));
+    setDanmakuKey(prev => prev + 1); // 强制重新渲染弹幕组件
   }, []);
 
   const handleVideoClick = useCallback((video: VideoType) => {
@@ -205,7 +207,7 @@ const Lvjiang = () => {
               : "linear-gradient(to bottom, #1A1A2E, #0F3460)",
         }}
       >
-        <HorizontalDanmaku theme={theme} isVisible={showDanmaku} />
+        <HorizontalDanmaku key={danmakuKey} theme={theme} isVisible={showDanmaku} />
 
         <Header theme={theme} onThemeToggle={handleThemeToggle} />
 
