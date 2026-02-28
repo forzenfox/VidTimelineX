@@ -121,7 +121,7 @@ export function SearchButton({
   const renderSearchInput = () => (
     <div ref={containerRef} className="relative">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -134,9 +134,9 @@ export function SearchButton({
           data-theme={theme}
           data-testid={dataTestId}
           className={cn(
-            "w-full h-10 pl-10 pr-10 rounded-lg",
+            "w-full h-12 pl-11 pr-11 rounded-xl",
             "bg-card/60 border border-border/50",
-            "text-sm text-foreground placeholder:text-muted-foreground",
+            "text-base text-foreground placeholder:text-muted-foreground",
             "outline-none focus:border-ring focus:bg-card",
             "transition-colors duration-200",
             "cursor-text",
@@ -151,13 +151,13 @@ export function SearchButton({
             onClick={handleReset}
             style={{
               position: "absolute",
-              right: "12px",
+              right: "16px",
               top: "50%",
               transform: "translateY(-50%)",
               zIndex: 10,
             }}
             className={cn(
-              "w-5 h-5 flex items-center justify-center rounded-full",
+              "w-6 h-6 flex items-center justify-center rounded-full",
               "text-muted-foreground hover:text-foreground hover:bg-muted",
               "active:scale-95 active:bg-muted-foreground/20",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -258,11 +258,13 @@ export function SearchButton({
       {open && (
         <div
           className={cn(
-            "absolute top-full right-0 mt-2 w-80 rounded-xl shadow-xl border backdrop-blur-md",
+            "absolute top-full mt-2 rounded-xl shadow-xl border backdrop-blur-md",
             "bg-card/95 border-border/50",
             "max-h-[500px] overflow-y-auto",
             "animate-in fade-in zoom-in-95 duration-200",
-            "z-[1000]"
+            "z-[1000]",
+            "left-4 right-4 sm:left-auto sm:right-0",
+            "sm:w-80"
           )}
         >
           <div className="p-4 space-y-4">

@@ -3,6 +3,16 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { CanteenHall } from "@/features/yuxiaoc/components/CanteenHall";
 import "@testing-library/jest-dom";
 
+// 模拟桌面端视口
+Object.defineProperty(window, "innerWidth", {
+  writable: true,
+  configurable: true,
+  value: 1024,
+});
+
+// 触发resize事件
+window.dispatchEvent(new Event("resize"));
+
 // 模拟视频数据
 jest.mock("@/features/yuxiaoc/data/videos", () => ({
   videos: [
@@ -98,8 +108,10 @@ describe("CanteenHall组件测试", () => {
     const searchButton = screen.getByTestId("search-button");
     fireEvent.click(searchButton);
 
-    // 验证搜索框存在（在弹窗中）
-    const searchInput = screen.getByPlaceholderText("搜索视频...");
+    // 验证搜索框存在（在弹窗中）- 使用getAllByPlaceholderText选择第一个
+    const searchInputs = screen.getAllByPlaceholderText("搜索视频...");
+    expect(searchInputs.length).toBeGreaterThan(0);
+    const searchInput = searchInputs[0];
     expect(searchInput).toBeInTheDocument();
     expect(searchInput).toHaveAttribute("type", "text");
   });
@@ -115,7 +127,8 @@ describe("CanteenHall组件测试", () => {
     const searchButton = screen.getByTestId("search-button");
     fireEvent.click(searchButton);
 
-    const searchInput = screen.getByPlaceholderText("搜索视频...");
+    const searchInputs = screen.getAllByPlaceholderText("搜索视频...");
+    const searchInput = searchInputs[0];
 
     // 输入搜索词
     fireEvent.change(searchInput, { target: { value: "血怒" } });
@@ -135,14 +148,16 @@ describe("CanteenHall组件测试", () => {
     const searchButton = screen.getByTestId("search-button");
     fireEvent.click(searchButton);
 
-    const searchInput = screen.getByPlaceholderText("搜索视频...");
+    const searchInputs = screen.getAllByPlaceholderText("搜索视频...");
+    const searchInput = searchInputs[0];
 
     // 输入搜索词
     fireEvent.change(searchInput, { target: { value: "血怒" } });
 
-    // 验证清空按钮出现（输入后才有清空按钮）
-    const clearButton = screen.getByLabelText("清空");
-    expect(clearButton).toBeInTheDocument();
+    // 验证清空按钮出现（输入后才有清空按钮）- 使用getAllByLabelText选择第一个
+    const clearButtons = screen.getAllByLabelText("清空");
+    expect(clearButtons.length).toBeGreaterThan(0);
+    expect(clearButtons[0]).toBeInTheDocument();
   });
 
   /**
@@ -223,8 +238,9 @@ describe("CanteenHall组件测试", () => {
     const searchButton = screen.getByTestId("search-button");
     fireEvent.click(searchButton);
 
-    // 验证搜索框存在（在弹窗中）
-    const searchInput = screen.getByPlaceholderText("搜索视频...");
+    // 验证搜索框存在（在弹窗中）- 使用getAllByPlaceholderText选择第一个
+    const searchInputs = screen.getAllByPlaceholderText("搜索视频...");
+    const searchInput = searchInputs[0];
     expect(searchInput).toBeInTheDocument();
 
     // 验证视频列表初始显示
@@ -242,17 +258,19 @@ describe("CanteenHall组件测试", () => {
     const searchButton = screen.getByTestId("search-button");
     fireEvent.click(searchButton);
 
-    // 验证搜索框存在（在弹窗中）
-    const searchInput = screen.getByPlaceholderText("搜索视频...");
+    // 验证搜索框存在（在弹窗中）- 使用getAllByPlaceholderText选择第一个
+    const searchInputs = screen.getAllByPlaceholderText("搜索视频...");
+    const searchInput = searchInputs[0];
     expect(searchInput).toBeInTheDocument();
 
     // 输入搜索词
     fireEvent.change(searchInput, { target: { value: "测试" } });
 
-    // 验证清空按钮出现（使用 waitFor 等待状态更新）
+    // 验证清空按钮出现（使用 waitFor 等待状态更新）- 使用getAllByLabelText选择第一个
     await waitFor(() => {
-      const clearButton = screen.getByLabelText("清空");
-      expect(clearButton).toBeInTheDocument();
+      const clearButtons = screen.getAllByLabelText("清空");
+      expect(clearButtons.length).toBeGreaterThan(0);
+      expect(clearButtons[0]).toBeInTheDocument();
     });
   });
 

@@ -206,7 +206,7 @@ export const TitleHall: React.FC<TitleHallProps> = ({ theme }) => {
                   <h3 className="text-xs font-bold mb-0.5" style={{ color: title.color }}>
                     {title.name}
                   </h3>
-                  <p className="text-[10px]" style={{ color: themeColors.textMuted }}>
+                  <p className="text-xs" style={{ color: themeColors.textMuted }}>
                     {title.description}
                   </p>
                 </div>

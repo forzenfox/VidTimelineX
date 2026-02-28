@@ -222,7 +222,7 @@ export const CVoiceArchive: React.FC<CVoiceArchiveProps> = ({ theme }) => {
               >
                 {/* Category Badge */}
                 <div
-                  className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                  className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full text-xs font-bold"
                   style={{
                     background: categoryColors.bg,
                     color: categoryColors.text,
