@@ -3,8 +3,8 @@
  * 提供弹幕管理和弹幕池管理的 React Hooks
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import type { DanmakuMessage, DanmakuPoolConfig, UseDanmakuConfig } from './types';
+import { useState, useEffect, useMemo, useCallback } from "react";
+import type { DanmakuMessage, DanmakuPoolConfig, UseDanmakuConfig } from "./types";
 
 /**
  * 弹幕管理 Hook
@@ -14,11 +14,11 @@ import type { DanmakuMessage, DanmakuPoolConfig, UseDanmakuConfig } from './type
 export function useDanmaku(config: UseDanmakuConfig) {
   const {
     poolConfig,
-    defaultTheme = 'mix',
-    defaultSize = 'medium',
+    defaultTheme = "mix",
+    defaultSize = "medium",
     autoPlay = false,
     loop = false,
-    danmakuType = 'sidebar'
+    danmakuType = "sidebar",
   } = config;
 
   // 弹幕列表状态
@@ -28,35 +28,44 @@ export function useDanmaku(config: UseDanmakuConfig) {
   // 当前播放进度（毫秒）
   const [currentTime, setCurrentTime] = useState<number>(0);
 
+  // 缓存最大容量值以避免不必要的重渲染
+  const maxCapacity = poolConfig?.maxCapacity;
+
   /**
    * 添加单条弹幕
    * @param message 弹幕消息
    */
-  const addDanmaku = useCallback((message: DanmakuMessage) => {
-    setDanmakuList(prev => {
-      const newList = [...prev, message];
-      // 如果配置了弹幕池最大容量，超过时移除最早的弹幕
-      if (poolConfig?.maxCapacity && newList.length > poolConfig.maxCapacity) {
-        return newList.slice(newList.length - poolConfig.maxCapacity);
-      }
-      return newList;
-    });
-  }, [poolConfig?.maxCapacity]);
+  const addDanmaku = useCallback(
+    (message: DanmakuMessage) => {
+      setDanmakuList(prev => {
+        const newList = [...prev, message];
+        // 如果配置了弹幕池最大容量，超过时移除最早的弹幕
+        if (maxCapacity && newList.length > maxCapacity) {
+          return newList.slice(newList.length - maxCapacity);
+        }
+        return newList;
+      });
+    },
+    [maxCapacity]
+  );
 
   /**
    * 批量添加弹幕
    * @param messages 弹幕消息数组
    */
-  const addDanmakuBatch = useCallback((messages: DanmakuMessage[]) => {
-    setDanmakuList(prev => {
-      const newList = [...prev, ...messages];
-      // 如果配置了弹幕池最大容量，超过时移除最早的弹幕
-      if (poolConfig?.maxCapacity && newList.length > poolConfig.maxCapacity) {
-        return newList.slice(newList.length - poolConfig.maxCapacity);
-      }
-      return newList;
-    });
-  }, [poolConfig?.maxCapacity]);
+  const addDanmakuBatch = useCallback(
+    (messages: DanmakuMessage[]) => {
+      setDanmakuList(prev => {
+        const newList = [...prev, ...messages];
+        // 如果配置了弹幕池最大容量，超过时移除最早的弹幕
+        if (maxCapacity && newList.length > maxCapacity) {
+          return newList.slice(newList.length - maxCapacity);
+        }
+        return newList;
+      });
+    },
+    [maxCapacity]
+  );
 
   /**
    * 移除指定弹幕
@@ -95,20 +104,23 @@ export function useDanmaku(config: UseDanmakuConfig) {
    * @param endTime 结束时间（毫秒）
    * @returns 时间范围内的弹幕列表
    */
-  const getDanmakuByTimeRange = useCallback((startTime: number, endTime: number): DanmakuMessage[] => {
-    return danmakuList.filter(item => {
-      if (!item.timestamp) {
-        return false;
-      }
-      // 将时间戳 "HH:MM:SS" 转换为毫秒
-      const parts = item.timestamp.split(':');
-      const hours = parseInt(parts[0]) || 0;
-      const minutes = parseInt(parts[1]) || 0;
-      const seconds = parseInt(parts[2]) || 0;
-      const itemTimeInMs = (hours * 3600 + minutes * 60 + seconds) * 1000;
-      return itemTimeInMs >= startTime && itemTimeInMs <= endTime;
-    });
-  }, [danmakuList]);
+  const getDanmakuByTimeRange = useCallback(
+    (startTime: number, endTime: number): DanmakuMessage[] => {
+      return danmakuList.filter(item => {
+        if (!item.timestamp) {
+          return false;
+        }
+        // 将时间戳 "HH:MM:SS" 转换为毫秒
+        const parts = item.timestamp.split(":");
+        const hours = parseInt(parts[0]) || 0;
+        const minutes = parseInt(parts[1]) || 0;
+        const seconds = parseInt(parts[2]) || 0;
+        const itemTimeInMs = (hours * 3600 + minutes * 60 + seconds) * 1000;
+        return itemTimeInMs >= startTime && itemTimeInMs <= endTime;
+      });
+    },
+    [danmakuList]
+  );
 
   /**
    * 获取当前应该显示的弹幕
@@ -120,7 +132,7 @@ export function useDanmaku(config: UseDanmakuConfig) {
     }
 
     // 对于飘屏模式，根据延迟和持续时间判断是否显示
-    if (danmakuType === 'horizontal') {
+    if (danmakuType === "horizontal") {
       return danmakuList.filter(item => {
         if (item.delay === undefined || item.duration === undefined) {
           return true;
@@ -185,7 +197,7 @@ export function useDanmaku(config: UseDanmakuConfig) {
     clearDanmaku,
     setPlaying,
     setCurrentTime: setCurrentTimeCallback,
-    getDanmakuByTimeRange
+    getDanmakuByTimeRange,
   };
 }
 
@@ -201,50 +213,55 @@ export function useDanmakuPool(config: DanmakuPoolConfig) {
     enableMerge = false,
     enableFilter = false,
     trackCount = 5,
-    opacity = 1
+    opacity = 1,
   } = config;
 
   // 弹幕池队列
   const [pool, setPool] = useState<DanmakuMessage[]>([]);
   // 当前轨道占用情况
-  const [trackOccupancy, setTrackOccupancy] = useState<boolean[]>(new Array(trackCount).fill(false));
-  // 可用轨道列表
-  const [availableTracks, setAvailableTracks] = useState<number[]>([]);
-
-  // 初始化可用轨道
-  useEffect(() => {
-    setAvailableTracks(new Array(trackCount).fill(0).map((_, i) => i));
+  const [trackOccupancy, setTrackOccupancy] = useState<boolean[]>(
+    new Array(trackCount).fill(false)
+  );
+  // 可用轨道列表 - 使用 useMemo 避免在 effect 中设置状态
+  const availableTracks = useMemo(() => {
+    return new Array(trackCount).fill(0).map((_, i) => i);
   }, [trackCount]);
 
   /**
    * 向弹幕池添加弹幕
    * @param message 弹幕消息
    */
-  const addToPool = useCallback((message: DanmakuMessage) => {
-    setPool(prev => {
-      const newPool = [...prev, message];
-      // 超过最大容量时，移除最早的弹幕
-      if (newPool.length > maxCapacity) {
-        return newPool.slice(newPool.length - maxCapacity);
-      }
-      return newPool;
-    });
-  }, [maxCapacity]);
+  const addToPool = useCallback(
+    (message: DanmakuMessage) => {
+      setPool(prev => {
+        const newPool = [...prev, message];
+        // 超过最大容量时，移除最早的弹幕
+        if (newPool.length > maxCapacity) {
+          return newPool.slice(newPool.length - maxCapacity);
+        }
+        return newPool;
+      });
+    },
+    [maxCapacity]
+  );
 
   /**
    * 批量添加弹幕到弹幕池
    * @param messages 弹幕消息数组
    */
-  const addToPoolBatch = useCallback((messages: DanmakuMessage[]) => {
-    setPool(prev => {
-      const newPool = [...prev, ...messages];
-      // 超过最大容量时，移除最早的弹幕
-      if (newPool.length > maxCapacity) {
-        return newPool.slice(newPool.length - maxCapacity);
-      }
-      return newPool;
-    });
-  }, [maxCapacity]);
+  const addToPoolBatch = useCallback(
+    (messages: DanmakuMessage[]) => {
+      setPool(prev => {
+        const newPool = [...prev, ...messages];
+        // 超过最大容量时，移除最早的弹幕
+        if (newPool.length > maxCapacity) {
+          return newPool.slice(newPool.length - maxCapacity);
+        }
+        return newPool;
+      });
+    },
+    [maxCapacity]
+  );
 
   /**
    * 从弹幕池移除弹幕
@@ -300,72 +317,84 @@ export function useDanmakuPool(config: DanmakuPoolConfig) {
    * @param messages 弹幕消息数组
    * @returns 合并后的弹幕数组
    */
-  const mergeDuplicateDanmaku = useCallback((messages: DanmakuMessage[]): DanmakuMessage[] => {
-    if (!enableMerge) {
-      return messages;
-    }
-
-    // 只根据文本内容合并，相同文本的弹幕只保留第一条
-    const map = new Map<string, DanmakuMessage>();
-    messages.forEach(message => {
-      const key = message.text;
-      if (!map.has(key)) {
-        map.set(key, message);
+  const mergeDuplicateDanmaku = useCallback(
+    (messages: DanmakuMessage[]): DanmakuMessage[] => {
+      if (!enableMerge) {
+        return messages;
       }
-    });
 
-    return Array.from(map.values());
-  }, [enableMerge]);
+      // 只根据文本内容合并，相同文本的弹幕只保留第一条
+      const map = new Map<string, DanmakuMessage>();
+      messages.forEach(message => {
+        const key = message.text;
+        if (!map.has(key)) {
+          map.set(key, message);
+        }
+      });
+
+      return Array.from(map.values());
+    },
+    [enableMerge]
+  );
 
   /**
    * 过滤弹幕
    * @param messages 弹幕消息数组
    * @returns 过滤后的弹幕数组
    */
-  const filterDanmaku = useCallback((messages: DanmakuMessage[]): DanmakuMessage[] => {
-    if (!enableFilter) {
-      return messages;
-    }
-
-    // 过滤掉空文本或包含敏感词的弹幕
-    return messages.filter(message => {
-      if (!message.text || message.text.trim() === '') {
-        return false;
+  const filterDanmaku = useCallback(
+    (messages: DanmakuMessage[]): DanmakuMessage[] => {
+      if (!enableFilter) {
+        return messages;
       }
-      // 这里可以添加更多的过滤逻辑
-      return true;
-    });
-  }, [enableFilter]);
+
+      // 过滤掉空文本或包含敏感词的弹幕
+      return messages.filter(message => {
+        if (!message.text || message.text.trim() === "") {
+          return false;
+        }
+        // 这里可以添加更多的过滤逻辑
+        return true;
+      });
+    },
+    [enableFilter]
+  );
 
   /**
    * 处理弹幕（合并和过滤）
    * @param messages 弹幕消息数组
    * @returns 处理后的弹幕数组
    */
-  const processDanmaku = useCallback((messages: DanmakuMessage[]): DanmakuMessage[] => {
-    let processed = messages;
+  const processDanmaku = useCallback(
+    (messages: DanmakuMessage[]): DanmakuMessage[] => {
+      let processed = messages;
 
-    if (enableFilter) {
-      processed = filterDanmaku(processed);
-    }
+      if (enableFilter) {
+        processed = filterDanmaku(processed);
+      }
 
-    if (enableMerge) {
-      processed = mergeDuplicateDanmaku(processed);
-    }
+      if (enableMerge) {
+        processed = mergeDuplicateDanmaku(processed);
+      }
 
-    return processed;
-  }, [enableFilter, enableMerge, filterDanmaku, mergeDuplicateDanmaku]);
+      return processed;
+    },
+    [enableFilter, enableMerge, filterDanmaku, mergeDuplicateDanmaku]
+  );
 
   /**
    * 获取弹幕池状态
    */
-  const getPoolStatus = useMemo(() => ({
-    currentSize: pool.length,
-    maxCapacity,
-    isFull: pool.length >= maxCapacity,
-    availableTracks: trackOccupancy.filter(t => !t).length,
-    occupancyRate: trackOccupancy.filter(t => t).length / trackCount
-  }), [pool.length, maxCapacity, trackOccupancy, trackCount]);
+  const getPoolStatus = useMemo(
+    () => ({
+      currentSize: pool.length,
+      maxCapacity,
+      isFull: pool.length >= maxCapacity,
+      availableTracks: trackOccupancy.filter(t => !t).length,
+      occupancyRate: trackOccupancy.filter(t => t).length / trackCount,
+    }),
+    [pool.length, maxCapacity, trackOccupancy, trackCount]
+  );
 
   // 根据显示速度自动从弹幕池中取出弹幕
   useEffect(() => {
@@ -399,6 +428,6 @@ export function useDanmakuPool(config: DanmakuPoolConfig) {
     getNextAvailableTrack,
     processDanmaku,
     mergeDuplicateDanmaku,
-    filterDanmaku
+    filterDanmaku,
   };
 }

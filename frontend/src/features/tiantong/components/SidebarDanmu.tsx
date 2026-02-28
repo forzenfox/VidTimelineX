@@ -3,6 +3,7 @@ import { Zap, Gift, Crown } from "lucide-react";
 import { users } from "../data";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DanmakuGenerator, DanmakuUser, DanmakuMessage } from "@/shared/danmaku";
+import danmakuText from "../data/danmaku.txt?raw";
 
 interface SidebarDanmuProps {
   theme?: "tiger" | "sweet";
@@ -23,16 +24,20 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
     }));
   }, []);
 
+  const danmakuPool = useMemo(() => {
+    return danmakuText.split("\n").filter(line => line.trim());
+  }, [danmakuText]);
+
   const generator = useMemo(() => {
     return new DanmakuGenerator({
-      textPool: [],
+      textPool: danmakuPool,
       users: usersList,
       theme: theme,
       danmakuType: "sidebar",
       randomColor: false,
       randomSize: false,
     });
-  }, [usersList, theme]);
+  }, [danmakuPool, usersList, theme]);
 
   // 根据设计文档设置主题颜色
   const themeColors = {
@@ -90,7 +95,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
 
   return (
     <div
-      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-30 border-t border-b" : "h-[calc(100vh-180px)] sticky top-20 z-30"} flex flex-col relative ${theme === "tiger" ? "bg-[#2C3E50] tiger-stripe-primary border-2 border-[#E67E22] shadow-tiger" : "bg-card rounded-xl shadow-custom"} overflow-hidden`}
+      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-20 border-t border-b" : "h-[calc(100vh-180px)] sticky top-20 z-20"} flex flex-col relative ${theme === "tiger" ? "bg-[#2C3E50] tiger-stripe-primary border-2 border-[#E67E22] shadow-tiger" : "bg-card rounded-xl shadow-custom"} overflow-hidden`}
       style={theme === "tiger" ? { boxShadow: "inset 0 0 0 1px #2C3E50" } : {}}
     >
       {/* 顶部标签栏 - 设计文档优化版 */}
@@ -273,11 +278,15 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
     ],
   };
 
-  const getRandomSuperDanmakuColor = (theme: "tiger" | "sweet") => {
-    const colors = superDanmakuColors[theme];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-  };
+  // 使用 useMemo 缓存随机颜色选择器，避免在 render 中调用 Math.random
+  const getRandomSuperDanmakuColor = useMemo(() => {
+    return (themeName: "tiger" | "sweet") => {
+      const colors = superDanmakuColors[themeName];
+      // 使用当前时间戳作为种子来避免每次 render 都产生不同的随机值
+      const seed = Date.now() % colors.length;
+      return colors[seed];
+    };
+  }, []);
 
   // 根据设计文档设置弹幕颜色
   const danmuTheme = {

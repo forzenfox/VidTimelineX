@@ -17,7 +17,7 @@ jest.mock("@/features/lvjiang/data", () => ({
 jest.mock("@/shared/danmaku", () => ({
   DanmakuGenerator: class MockDanmakuGenerator {
     constructor(private config: any) {}
-    
+
     generateMessage(index: number) {
       const text = this.config.textPool[index % this.config.textPool.length] || "弹幕";
       const user = this.config.users[index % this.config.users.length];
@@ -32,7 +32,7 @@ jest.mock("@/shared/danmaku", () => ({
         timestamp: "12:00:00",
       };
     }
-    
+
     generateBatch(options: { count: number; type: string; theme?: string }) {
       return Array.from({ length: options.count }, (_, i) => this.generateMessage(i));
     }

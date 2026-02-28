@@ -21,35 +21,35 @@ export interface ThemeColorConfig {
  */
 export const THEME_COLORS: Record<string, ThemeColorConfig> = {
   blood: {
-    primary: '#FF4444',
-    secondary: '#FF8888',
-    accent: '#CC0000'
+    primary: "#FF4444",
+    secondary: "#FF8888",
+    accent: "#CC0000",
   },
   mix: {
-    primary: '#9B59B6',
-    secondary: '#BE93D4',
-    accent: '#8E44AD'
+    primary: "#9B59B6",
+    secondary: "#BE93D4",
+    accent: "#8E44AD",
   },
   dongzhu: {
-    primary: '#3498DB',
-    secondary: '#85C1E9',
-    accent: '#2980B9'
+    primary: "#3498DB",
+    secondary: "#85C1E9",
+    accent: "#2980B9",
   },
   kaige: {
-    primary: '#F39C12',
-    secondary: '#F9E79F',
-    accent: '#D68910'
+    primary: "#F39C12",
+    secondary: "#F9E79F",
+    accent: "#D68910",
   },
   tiger: {
-    primary: '#E67E22',
-    secondary: '#F5CBA7',
-    accent: '#D35400'
+    primary: "#E67E22",
+    secondary: "#F5CBA7",
+    accent: "#D35400",
   },
   sweet: {
-    primary: '#FF69B4',
-    secondary: '#FFB6C1',
-    accent: '#FF1493'
-  }
+    primary: "#FF69B4",
+    secondary: "#FFB6C1",
+    accent: "#FF1493",
+  },
 };
 
 /**
@@ -57,11 +57,11 @@ export const THEME_COLORS: Record<string, ThemeColorConfig> = {
  * 用于计算弹幕的优先级和显示权重
  */
 export const DANMAKU_TYPE_WEIGHTS: Record<string, number> = {
-  normal: 1,      // 普通弹幕
-  top: 2,         // 顶部弹幕
-  bottom: 2,      // 底部弹幕
-  special: 3,     // 特殊弹幕
-  premium: 4      // 高级弹幕
+  normal: 1, // 普通弹幕
+  top: 2, // 顶部弹幕
+  bottom: 2, // 底部弹幕
+  special: 3, // 特殊弹幕
+  premium: 4, // 高级弹幕
 };
 
 /**
@@ -72,8 +72,8 @@ export const DANMAKU_TYPE_WEIGHTS: Record<string, number> = {
  * - large（大）: <= 3
  */
 export const SIZE_THRESHOLDS = {
-  small: 8,   // 大于 8 为小尺寸
-  medium: 4   // 4-8 为中尺寸，小于等于 3 为大尺寸
+  small: 8, // 大于 8 为小尺寸
+  medium: 4, // 4-8 为中尺寸，小于等于 3 为大尺寸
 };
 
 /**
@@ -86,7 +86,7 @@ export const THEME_CONFIG_MAP: Record<string, ThemeColorConfig> = {
   dongzhu: THEME_COLORS.dongzhu,
   kaige: THEME_COLORS.kaige,
   tiger: THEME_COLORS.tiger,
-  sweet: THEME_COLORS.sweet
+  sweet: THEME_COLORS.sweet,
 };
 
 /**
@@ -103,13 +103,13 @@ export function getThemeColors(themeName: string): ThemeColorConfig {
  * @param value 尺寸数值
  * @returns 尺寸等级：'small' | 'medium' | 'large'
  */
-export function getSizeLevel(value: number): 'small' | 'medium' | 'large' {
+export function getSizeLevel(value: number): "small" | "medium" | "large" {
   if (value > SIZE_THRESHOLDS.small) {
-    return 'small';
+    return "small";
   } else if (value > SIZE_THRESHOLDS.medium) {
-    return 'medium';
+    return "medium";
   } else {
-    return 'large';
+    return "large";
   }
 }
 

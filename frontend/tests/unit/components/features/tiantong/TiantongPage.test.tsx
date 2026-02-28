@@ -32,11 +32,18 @@ jest.mock("@/features/tiantong/components/VideoTimeline", () => ({
   ),
 }));
 
-// Mock HorizontalDanmaku
+// Mock HorizontalDanmaku - 添加渲染次数追踪
+let renderCount = 0;
+const mockHorizontalDanmaku = jest.fn(({ theme }: any) => {
+  renderCount += 1;
+  return (
+    <div data-testid="horizontal-danmaku" data-render-count={renderCount}>
+      Horizontal danmaku - {theme} (render #{renderCount})
+    </div>
+  );
+});
 jest.mock("@/features/tiantong/components/HorizontalDanmaku", () => ({
-  HorizontalDanmaku: ({ theme }: any) => (
-    <div data-testid="horizontal-danmaku">Horizontal danmaku - {theme}</div>
-  ),
+  HorizontalDanmaku: (props: any) => mockHorizontalDanmaku(props),
 }));
 
 // Mock SidebarDanmu
@@ -185,6 +192,12 @@ describe("TiantongPage 组件测试", () => {
   });
 
   describe("TC-002: 主题切换测试", () => {
+    beforeEach(() => {
+      // 重置渲染计数器
+      renderCount = 0;
+      mockHorizontalDanmaku.mockClear();
+    });
+
     test("初始主题应该是 tiger", () => {
       render(<TiantongPage />);
       expect(screen.getByText("Current theme: tiger")).toBeInTheDocument();
@@ -208,6 +221,55 @@ describe("TiantongPage 组件测试", () => {
     test("IconToolbar 应该接收正确的主题", () => {
       render(<TiantongPage />);
       expect(screen.getByTestId("toolbar-theme")).toHaveTextContent("tiger");
+    });
+
+    test("TC-010: 主题切换时弹幕组件应该重新渲染（通过 key 强制重新挂载）", () => {
+      render(<TiantongPage />);
+
+      // 获取初始渲染次数
+      const initialRenderCount = Number(
+        screen.getByTestId("horizontal-danmaku").getAttribute("data-render-count")
+      );
+
+      // 切换主题
+      const toggleButton = screen.getByTestId("toggle-button");
+      fireEvent.click(toggleButton);
+
+      // 验证弹幕组件重新渲染了
+      const updatedRenderCount = Number(
+        screen.getByTestId("horizontal-danmaku").getAttribute("data-render-count")
+      );
+
+      // 渲染次数应该增加（key 变化导致重新挂载）
+      expect(updatedRenderCount).toBeGreaterThan(initialRenderCount);
+    });
+
+    test("TC-011: 多次切换主题时弹幕应该每次都重新渲染", () => {
+      render(<TiantongPage />);
+
+      const toggleButton = screen.getByTestId("toggle-button");
+
+      // 第一次切换
+      fireEvent.click(toggleButton);
+      const renderCount1 = Number(
+        screen.getByTestId("horizontal-danmaku").getAttribute("data-render-count")
+      );
+
+      // 第二次切换
+      fireEvent.click(toggleButton);
+      const renderCount2 = Number(
+        screen.getByTestId("horizontal-danmaku").getAttribute("data-render-count")
+      );
+
+      // 第三次切换
+      fireEvent.click(toggleButton);
+      const renderCount3 = Number(
+        screen.getByTestId("horizontal-danmaku").getAttribute("data-render-count")
+      );
+
+      // 每次切换都应该重新渲染
+      expect(renderCount2).toBeGreaterThan(renderCount1);
+      expect(renderCount3).toBeGreaterThan(renderCount2);
     });
   });
 

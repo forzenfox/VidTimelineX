@@ -9,7 +9,7 @@ module.exports = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
     "\\.(css|less|scss|sass)$": "<rootDir>/tests/__mocks__/style-mock.js",
-    "\\.(txt|raw)$": "<rootDir>/tests/__mocks__/file-mock.js",
+    "\\.(txt|raw)(\\?.*)?$": "<rootDir>/tests/__mocks__/file-mock.js",
   },
 
   // 转换规则

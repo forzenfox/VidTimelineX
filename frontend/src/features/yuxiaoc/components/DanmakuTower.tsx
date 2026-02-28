@@ -9,8 +9,6 @@ interface DanmakuTowerProps {
   theme: Theme;
 }
 
-
-
 /**
  * 弹幕天梯组件 - 右侧固定侧边栏样式（桌面端/平板端）/ 底部抽屉（移动端）
  */
@@ -68,7 +66,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
       type: "sidebar",
       theme: theme,
     });
-    
+
     // 调整时间戳，使其按顺序递减
     return messages.map((msg, i) => ({
       ...msg,

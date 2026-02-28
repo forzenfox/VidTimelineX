@@ -4,8 +4,8 @@
  */
 
 import { describe, it, expect } from "@jest/globals";
-import { DanmakuGenerator } from "./generator";
-import type { DanmakuUser } from "./types";
+import { DanmakuGenerator } from "@/shared/danmaku/generator";
+import type { DanmakuUser } from "@/shared/danmaku/types";
 
 describe("DanmakuGenerator", () => {
   const mockTextPool = [
@@ -175,7 +175,9 @@ describe("DanmakuGenerator", () => {
       expect(message.top).toBeGreaterThanOrEqual(0);
       expect(message.top).toBeLessThanOrEqual(1);
       expect(message.delay).toBeGreaterThanOrEqual(0);
-      expect(message.duration).toBeGreaterThanOrEqual(6000);
+      // duration 现在以秒为单位，合理范围是 8-12 秒
+      expect(message.duration).toBeGreaterThanOrEqual(8);
+      expect(message.duration).toBeLessThanOrEqual(12);
     });
 
     it("侧边栏弹幕不应包含位置信息", () => {
@@ -189,6 +191,59 @@ describe("DanmakuGenerator", () => {
       expect(message.top).toBeUndefined();
       expect(message.delay).toBeUndefined();
       expect(message.duration).toBeUndefined();
+    });
+
+    /**
+     * 测试用例：验证横向弹幕的delay单位是秒（不是毫秒）
+     * 这是关键测试，确保CSS动画能正确使用delay值
+     */
+    it("横向弹幕的delay应该以秒为单位（不是毫秒）", () => {
+      const generator = new DanmakuGenerator({
+        textPool: mockTextPool,
+        danmakuType: "horizontal",
+      });
+
+      // 测试第0条弹幕
+      const message0 = generator.generateMessage(0);
+      // delay应该是0秒（第0条没有延迟）
+      expect(message0.delay).toBe(0);
+
+      // 测试第5条弹幕
+      const message5 = generator.generateMessage(5);
+      // delay应该是1秒（5 * 0.2 = 1），而不是5000毫秒
+      expect(message5.delay).toBeGreaterThanOrEqual(0.5);
+      expect(message5.delay).toBeLessThanOrEqual(2);
+
+      // 测试第10条弹幕
+      const message10 = generator.generateMessage(10);
+      // delay应该是2秒（10 * 0.2 = 2），而不是10000毫秒
+      expect(message10.delay).toBeGreaterThanOrEqual(1);
+      expect(message10.delay).toBeLessThanOrEqual(3);
+    });
+
+    /**
+     * 测试用例：验证批量生成时delay递增且单位为秒
+     */
+    it("批量生成横向弹幕时delay应该递增且单位为秒", () => {
+      const generator = new DanmakuGenerator({
+        textPool: mockTextPool,
+      });
+
+      const messages = generator.generateBatch({
+        count: 10,
+        type: "horizontal",
+      });
+
+      // 验证每条弹幕的delay在合理范围内（秒）
+      messages.forEach((message, index) => {
+        // delay应该是index * 0.2秒左右
+        const expectedDelay = index * 0.2;
+        // 允许一定误差
+        expect(message.delay).toBeGreaterThanOrEqual(expectedDelay - 0.1);
+        expect(message.delay).toBeLessThanOrEqual(expectedDelay + 0.5);
+        // 确保不是毫秒值（如果是毫秒，会大1000倍）
+        expect(message.delay).toBeLessThan(10);
+      });
     });
   });
 

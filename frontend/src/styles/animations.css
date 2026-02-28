@@ -15,26 +15,13 @@
 }
 
 /* ========== 弹幕动画 ========== */
+/* 通用水平弹幕动画 - 甜筒、驴酱等模块共用 */
 @keyframes danmaku {
   from {
     transform: translateX(100vw);
   }
   to {
     transform: translateX(-100%);
-  }
-}
-
-/* ========== 驴酱模块动画 ========== */
-
-/* 驴酱弹幕水平动画 */
-@keyframes lvjiang-danmaku-horizontal {
-  from {
-    transform: translateX(100vw);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(-100%);
-    opacity: 1;
   }
 }
 

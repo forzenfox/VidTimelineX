@@ -33,9 +33,7 @@ const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => 
               ? "rgba(255, 254, 247, 0.4)"
               : "rgba(52, 73, 94, 0.3)",
         border:
-          theme === "dongzhu"
-            ? `1px solid ${message.color}40`
-            : `1px solid ${message.color}30`,
+          theme === "dongzhu" ? `1px solid ${message.color}40` : `1px solid ${message.color}30`,
         borderRadius: theme === "dongzhu" ? "12px" : "4px",
         position: "relative",
         minHeight: "40px",
@@ -76,10 +74,7 @@ const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => 
             className="w-full h-full object-cover"
           />
         </div>
-        <span
-          className="text-xs font-medium truncate flex-1"
-          style={{ color: message.color }}
-        >
+        <span className="text-xs font-medium truncate flex-1" style={{ color: message.color }}>
           {message.userName}
         </span>
         <span className="text-xs text-gray-500">{message.timestamp}</span>
@@ -90,8 +85,7 @@ const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => 
         className="leading-relaxed break-words"
         style={{
           color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
-          fontSize:
-            message.size === "large" ? "15px" : message.size === "small" ? "12px" : "13px",
+          fontSize: message.size === "large" ? "15px" : message.size === "small" ? "12px" : "13px",
           fontWeight: message.size === "large" ? 700 : 500,
           lineHeight: "1.4",
           wordWrap: "break-word",

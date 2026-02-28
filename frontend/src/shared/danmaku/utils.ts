@@ -3,8 +3,8 @@
  * 提供弹幕相关的通用工具函数
  */
 
-import type { DanmakuSize, DanmakuTheme, DanmakuType, ColorType } from './types';
-import { THEME_COLORS } from './config';
+import type { DanmakuSize, DanmakuTheme, DanmakuType, ColorType } from "./types";
+import { THEME_COLORS } from "./config";
 
 /**
  * 根据文本长度判断弹幕尺寸
@@ -13,13 +13,13 @@ import { THEME_COLORS } from './config';
  */
 export function getSizeByTextLength(text: string): DanmakuSize {
   const length = text.length;
-  
+
   if (length <= 3) {
-    return 'large';
+    return "large";
   } else if (length <= 8) {
-    return 'medium';
+    return "medium";
   } else {
-    return 'small';
+    return "small";
   }
 }
 
@@ -39,7 +39,7 @@ export function getThemeColor(theme: DanmakuTheme, type: ColorType): string {
  * @returns 随机的弹幕类型（sidebar 或 horizontal）
  */
 export function getRandomDanmakuType(): DanmakuType {
-  const types: DanmakuType[] = ['sidebar', 'horizontal'];
+  const types: DanmakuType[] = ["sidebar", "horizontal"];
   const randomIndex = Math.floor(Math.random() * types.length);
   return types[randomIndex];
 }
@@ -51,11 +51,11 @@ export function getRandomDanmakuType(): DanmakuType {
  */
 export function generateTimestamp(date?: Date): string {
   const targetDate = date || new Date();
-  
-  const hours = targetDate.getHours().toString().padStart(2, '0');
-  const minutes = targetDate.getMinutes().toString().padStart(2, '0');
-  const seconds = targetDate.getSeconds().toString().padStart(2, '0');
-  
+
+  const hours = targetDate.getHours().toString().padStart(2, "0");
+  const minutes = targetDate.getMinutes().toString().padStart(2, "0");
+  const seconds = targetDate.getSeconds().toString().padStart(2, "0");
+
   return `${hours}:${minutes}:${seconds}`;
 }
 
@@ -66,7 +66,7 @@ export function generateTimestamp(date?: Date): string {
  */
 export function getDanmakuColor(theme: DanmakuTheme): string {
   const themeConfig = THEME_COLORS[theme] || THEME_COLORS.mix;
-  const colorTypes: ColorType[] = ['primary', 'secondary', 'accent'];
+  const colorTypes: ColorType[] = ["primary", "secondary", "accent"];
   const randomIndex = Math.floor(Math.random() * colorTypes.length);
   return themeConfig[colorTypes[randomIndex]];
 }

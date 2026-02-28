@@ -19,11 +19,11 @@ export interface DanmakuMessage {
   userAvatar?: string;
   /** 发送时间戳（侧边栏模式需要） */
   timestamp?: string;
-  /** 弹幕在轨道中的位置（飘屏模式需要） */
+  /** 弹幕在轨道中的位置（飘屏模式需要，0-1之间的小数） */
   top?: number;
-  /** 延迟显示时间（飘屏模式需要，毫秒） */
+  /** 延迟显示时间（飘屏模式需要，秒） */
   delay?: number;
-  /** 显示持续时间（飘屏模式需要，毫秒） */
+  /** 显示持续时间（飘屏模式需要，秒） */
   duration?: number;
 }
 
@@ -67,19 +67,19 @@ export interface DanmakuPoolConfig {
  * 主题类型
  * 定义弹幕的主题样式
  */
-export type DanmakuTheme = 'blood' | 'mix' | 'dongzhu' | 'kaige' | 'tiger' | 'sweet';
+export type DanmakuTheme = "blood" | "mix" | "dongzhu" | "kaige" | "tiger" | "sweet";
 
 /**
  * 尺寸类型
  * 定义弹幕的显示尺寸
  */
-export type DanmakuSize = 'small' | 'medium' | 'large';
+export type DanmakuSize = "small" | "medium" | "large";
 
 /**
  * 弹幕类型
  * 定义弹幕的显示模式
  */
-export type DanmakuType = 'sidebar' | 'horizontal';
+export type DanmakuType = "sidebar" | "horizontal";
 
 /**
  * 批量生成选项接口
@@ -144,4 +144,4 @@ export interface GeneratorConfig {
  * 颜色类型
  * 定义弹幕颜色的预设类型
  */
-export type ColorType = 'primary' | 'secondary' | 'accent';
+export type ColorType = "primary" | "secondary" | "accent";

@@ -96,8 +96,10 @@ export class DanmakuGenerator {
 
     if (this.danmakuType === "horizontal") {
       message.top = this.getRandomTop();
-      message.delay = index * 300;
-      message.duration = 6000 + Math.random() * 4000;
+      // delay以秒为单位，便于CSS动画直接使用（index * 0.2秒）
+      message.delay = index * 0.2;
+      // 水平弹幕动画持续时间（秒）：8-12秒
+      message.duration = 8 + Math.random() * 4;
     }
 
     return message;
