@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from "react";
-import { dongzhuDanmaku, kaigeDanmaku } from "../data";
-import { MessageCircle, X } from "lucide-react";
+import { dongzhuDanmaku, kaigeDanmaku, users } from "../data";
+import {
+  getDanmakuColor,
+  getSizeByTextLength,
+} from "../data/danmakuColors";
+import { MessageCircle, X, MessageSquare } from "lucide-react";
 
 interface SideDanmakuProps {
   theme: "dongzhu" | "kaige";
@@ -9,6 +13,11 @@ interface SideDanmakuProps {
 interface DanmakuMessage {
   id: string;
   text: string;
+  color: string;
+  size: "small" | "medium" | "large";
+  userId: string;
+  userName: string;
+  userAvatar: string;
   timestamp: string;
 }
 
@@ -22,20 +31,20 @@ const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => 
   return (
     <div
       key={message.id}
-      className={`theme-transition rounded-lg px-3 py-2 ${theme === "dongzhu" ? "border-1" : "border-1"}`}
+      className="danmaku-item rounded-lg px-3 py-2 theme-transition"
       style={{
         background:
-          theme === "dongzhu"
-            ? index % 2 === 0
+          index % 2 === 0
+            ? theme === "dongzhu"
               ? "rgba(93, 173, 226, 0.15)"
-              : "rgba(255, 254, 247, 0.4)"
-            : index % 2 === 0
-              ? "rgba(44, 62, 80, 0.4)"
+              : "rgba(44, 62, 80, 0.4)"
+            : theme === "dongzhu"
+              ? "rgba(255, 254, 247, 0.4)"
               : "rgba(52, 73, 94, 0.3)",
         border:
           theme === "dongzhu"
-            ? "1px solid rgba(174, 214, 241, 0.5)"
-            : "1px solid rgba(231, 76, 60, 0.3)",
+            ? `1px solid ${message.color}40`
+            : `1px solid ${message.color}30`,
         borderRadius: theme === "dongzhu" ? "12px" : "4px",
         position: "relative",
         minHeight: "40px",
@@ -43,8 +52,10 @@ const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => 
         padding: "8px 12px",
         boxSizing: "border-box",
         marginBottom: "8px",
+        animation: `fadeInUp 0.3s ease-out ${index * 0.05}s both`,
       }}
     >
+      {/* 主题装饰元素 */}
       {theme === "dongzhu" && (
         <div className="absolute top-1 right-1 text-xs opacity-20" style={{ color: "#5DADE2" }}>
           🐾
@@ -54,17 +65,43 @@ const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => 
         <div
           className="absolute top-0 right-0 w-8 h-8 opacity-10"
           style={{
-            background:
-              "linear-gradient(135deg, transparent 40%, #E74C3C 40%, #E74C3C 60%, transparent 60%)",
+            background: `linear-gradient(135deg, transparent 40%, ${message.color} 40%, ${message.color} 60%, transparent 60%)`,
           }}
         />
       )}
 
+      {/* 用户信息行 */}
+      <div className="flex items-center gap-2 mb-1.5">
+        <div
+          className="w-6 h-6 rounded-full overflow-hidden flex-shrink-0 border"
+          style={{
+            borderColor: message.color,
+            boxShadow: `0 0 8px ${message.color}40`,
+          }}
+        >
+          <img
+            src={message.userAvatar}
+            alt={message.userName}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <span
+          className="text-xs font-medium truncate flex-1"
+          style={{ color: message.color }}
+        >
+          {message.userName}
+        </span>
+        <span className="text-xs text-gray-500">{message.timestamp}</span>
+      </div>
+
+      {/* 弹幕文本 */}
       <div
-        className="font-medium"
+        className="leading-relaxed break-words"
         style={{
           color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
-          fontSize: "14px",
+          fontSize:
+            message.size === "large" ? "15px" : message.size === "small" ? "12px" : "13px",
+          fontWeight: message.size === "large" ? 700 : 500,
           lineHeight: "1.4",
           wordWrap: "break-word",
           whiteSpace: "normal",
@@ -82,22 +119,40 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
   const pool = useMemo(() => (theme === "dongzhu" ? dongzhuDanmaku : kaigeDanmaku), [theme]);
   const contentRef = useRef<HTMLDivElement>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>([]);
 
+  // 用户列表
+  const usersList = useMemo(() => users, []);
+
+  // 初始化弹幕消息
   const initialMessages = useMemo(() => {
-    const seed = 12345; // 固定种子值确保纯度
     const now = new Date();
-    return Array.from({ length: 16 }, (_, i) => ({
-      id: `msg-${seed}-${i}`,
-      text: pool[i % pool.length], // 使用索引确保一致性
-      timestamp: new Date(now.getTime() - (16 - i) * 1000).toLocaleTimeString("zh-CN", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }),
-    }));
-  }, [pool]);
+    return Array.from({ length: 12 }, (_, i) => {
+      const text = pool[i % pool.length];
+      const user = usersList[i % usersList.length];
+      const size = getSizeByTextLength(text);
+      const color = getDanmakuColor(theme);
 
-  const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>(initialMessages);
+      return {
+        id: `initial-${i}`,
+        text: text || "弹幕",
+        color: color,
+        size,
+        userId: user?.id || "user1",
+        userName: user?.name || "用户",
+        userAvatar: user?.avatar || "",
+        timestamp: new Date(now.getTime() - (12 - i) * 2000).toLocaleTimeString("zh-CN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      };
+    });
+  }, [pool, usersList, theme]);
+
+  useEffect(() => {
+    setDisplayMessages(initialMessages);
+  }, [initialMessages]);
 
   // 智能滚动到最新消息
   useLayoutEffect(() => {
@@ -106,36 +161,48 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
     }
   }, [displayMessages]);
 
+  // 定期添加新弹幕
   useEffect(() => {
-    const interval = setInterval(
-      () => {
-        const newMessage: DanmakuMessage = {
-          id: `msg-${Date.now()}-${Math.random()}`,
-          text: pool[Math.floor(Math.random() * pool.length)],
-          timestamp: new Date().toLocaleTimeString("zh-CN", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }),
-        };
+    const interval = setInterval(() => {
+      const randomIndex = Math.floor(Math.random() * pool.length);
+      const randomText = pool[randomIndex];
+      const randomUser = usersList[Math.floor(Math.random() * usersList.length)];
 
-        setDisplayMessages(prev => {
-          const updated = [...prev, newMessage];
-          return updated.length > 16 ? updated.slice(-16) : updated;
-        });
-      },
-      2000 + Math.random() * 2000
-    );
+      if (!randomText || !randomUser) return;
+
+      const size = getSizeByTextLength(randomText);
+      const color = getDanmakuColor(theme);
+
+      const newMessage: DanmakuMessage = {
+        id: `msg-${Date.now()}-${Math.random()}`,
+        text: randomText,
+        color,
+        size,
+        userId: randomUser.id,
+        userName: randomUser.name,
+        userAvatar: randomUser.avatar,
+        timestamp: new Date().toLocaleTimeString("zh-CN", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      };
+
+      setDisplayMessages(prev => {
+        const updated = [...prev, newMessage];
+        return updated.length > 16 ? updated.slice(-16) : updated;
+      });
+    }, 2500);
 
     return () => clearInterval(interval);
-  }, [pool]);
+  }, [pool, usersList, theme]);
 
   // 弹幕内容渲染
   const renderDanmakuContent = (isInDrawer: boolean) => (
     <>
       {/* Header - 聊天室标题 */}
       <div
-        className="flex items-center gap-2 px-4 py-3 font-bold theme-transition"
+        className="flex items-center gap-3 px-4 py-3 font-bold theme-transition"
         style={{
           background:
             theme === "dongzhu"
@@ -145,23 +212,21 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
           color: theme === "dongzhu" ? "#5D6D7E" : "#ECF0F1",
         }}
       >
-        {theme === "dongzhu" ? (
-          <>
-            <div className="text-2xl">🐷</div>
-            <div className="flex-1">
-              <div className="text-sm">聊天室</div>
-              <div className="text-xs opacity-70">家猪·洞主专区</div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="text-2xl">🐗</div>
-            <div className="flex-1">
-              <div className="text-sm">聊天室</div>
-              <div className="text-xs opacity-70">野猪·凯哥专区</div>
-            </div>
-          </>
-        )}
+        <MessageSquare className="w-5 h-5" />
+        <div className="flex-1">
+          <div className="text-sm">聊天室</div>
+          <div className="text-xs opacity-70">
+            {theme === "dongzhu" ? "家猪·洞主专区" : "野猪·凯哥专区"}
+          </div>
+        </div>
+        {/* LIVE 状态指示器 */}
+        <div className="flex items-center gap-1">
+          <span
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ backgroundColor: theme === "dongzhu" ? "#5DADE2" : "#E74C3C" }}
+          />
+          <span className="text-xs">LIVE</span>
+        </div>
         {/* 移动端关闭按钮 */}
         {isInDrawer && (
           <button
@@ -177,7 +242,7 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
       {/* Danmaku Content - 弹幕内容区 */}
       <div
         ref={contentRef}
-        className="flex-1 overflow-y-auto p-2 scrollbar-hide side-danmaku-content"
+        className="flex-1 overflow-y-auto p-3 scrollbar-hide side-danmaku-content"
         style={{
           scrollBehavior: "smooth",
           overflowX: "hidden",
@@ -190,6 +255,21 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
           {`
             .scrollbar-hide::-webkit-scrollbar {
               display: none;
+            }
+            
+            @keyframes fadeInUp {
+              from {
+                opacity: 0;
+                transform: translateY(10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            
+            .danmaku-item {
+              animation: fadeInUp 0.3s ease-out both;
             }
           `}
         </style>
@@ -328,10 +408,10 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
         </>
       )}
 
-      {/* 使用style标签添加响应式样式 */}
+      {/* 使用 style 标签添加响应式样式 */}
       <style>{`
-        /* 桌面端/平板端（>=1024px）：显示侧边栏，隐藏移动端按钮 */
-        @media (min-width: 1024px) {
+        /* 桌面端/平板端（>=768px）：显示侧边栏，隐藏移动端按钮 */
+        @media (min-width: 768px) {
           .side-danmaku-sidebar {
             display: flex !important;
           }
@@ -340,8 +420,8 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
           }
         }
         
-        /* 移动端（<1024px）：隐藏侧边栏，显示移动端按钮 */
-        @media (max-width: 1023px) {
+        /* 移动端（<768px）：隐藏侧边栏，显示移动端按钮 */
+        @media (max-width: 767px) {
           .side-danmaku-sidebar {
             display: none !important;
           }
