@@ -1,7 +1,11 @@
 /**
  * 弹幕颜色系统模块
- * 为洞主和凯哥主题提供专属颜色配置
+ * 已弃用：请使用共享弹幕库中的工具函数
+ * @deprecated 使用 @/shared/danmaku 中的 getThemeColor 和 getSizeByTextLength 替代
  */
+
+// 此文件已弃用，保留仅用于向后兼容
+// 新代码请使用共享弹幕库：import { getThemeColor, getSizeByTextLength } from '@/shared/danmaku';
 
 /** 洞主主题弹幕颜色池（蓝色系） */
 const dongzhuColors = [
@@ -25,6 +29,7 @@ const kaigeColors = [
  * 获取指定主题的随机弹幕颜色
  * @param theme - 主题类型："dongzhu" | "kaige"
  * @returns 颜色值（十六进制字符串）
+ * @deprecated 使用共享弹幕库的 getThemeColor 替代
  */
 export function getDanmakuColor(theme: "dongzhu" | "kaige"): string {
   const colors = theme === "dongzhu" ? dongzhuColors : kaigeColors;
@@ -34,6 +39,7 @@ export function getDanmakuColor(theme: "dongzhu" | "kaige"): string {
 /**
  * 获取洞主主题的随机颜色
  * @returns 颜色值（十六进制字符串）
+ * @deprecated 使用共享弹幕库的 getThemeColor 替代
  */
 export function getDongzhuColor(): string {
   return dongzhuColors[Math.floor(Math.random() * dongzhuColors.length)];
@@ -42,6 +48,7 @@ export function getDongzhuColor(): string {
 /**
  * 获取凯哥主题的随机颜色
  * @returns 颜色值（十六进制字符串）
+ * @deprecated 使用共享弹幕库的 getThemeColor 替代
  */
 export function getKaigeColor(): string {
   return kaigeColors[Math.floor(Math.random() * kaigeColors.length)];
@@ -51,6 +58,7 @@ export function getKaigeColor(): string {
  * 根据文本长度分配弹幕大小
  * @param text - 弹幕文本
  * @returns 大小等级："small" | "medium" | "large"
+ * @deprecated 使用共享弹幕库的 getSizeByTextLength 替代
  */
 export function getSizeByTextLength(text: string): "small" | "medium" | "large" {
   const length = text.length;

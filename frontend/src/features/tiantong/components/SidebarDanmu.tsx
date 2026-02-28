@@ -1,8 +1,8 @@
 import React, { useState, useRef, useMemo } from "react";
 import { Zap, Gift, Crown } from "lucide-react";
-import { danmuPool, Danmu, users } from "../data";
-import { getRandomSuperDanmakuColor } from "../data/danmakuColors";
+import { users } from "../data";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DanmakuGenerator, DanmakuUser, DanmakuMessage } from "@/shared/danmaku";
 
 interface SidebarDanmuProps {
   theme?: "tiger" | "sweet";
@@ -13,9 +13,26 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
   const [vipCount] = useState(1314);
   const [diamondCount] = useState(1000);
   const [isPlaying] = useState(true);
-  const [localDanmuPool] = useState<Danmu[]>(danmuPool as Danmu[]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<HTMLDivElement>(null);
+
+  const usersList = useMemo(() => {
+    return users.map(user => ({
+      ...user,
+      badge: [user.badge],
+    }));
+  }, []);
+
+  const generator = useMemo(() => {
+    return new DanmakuGenerator({
+      textPool: [],
+      users: usersList,
+      theme: theme,
+      danmakuType: "sidebar",
+      randomColor: false,
+      randomSize: false,
+    });
+  }, [usersList, theme]);
 
   // 根据设计文档设置主题颜色
   const themeColors = {
@@ -49,46 +66,25 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
 
   const colors = themeColors[theme];
 
-  // 生成随机替换映射
-  const [randomReplaceMap] = useState(() => {
-    const map = new Map<string, string>();
-    users.forEach(user => {
-      if (user.badge === "火箭筒") {
-        map.set(user.id, Math.random() > 0.5 ? "甜筒" : "爱心");
-      }
-    });
-    return map;
-  });
-
-  // 根据主题动态生成用户数据
-  const mockUsers = useMemo(() => {
-    return users.map(user => {
-      let badge = user.badge;
-      if (theme === "sweet" && badge === "火箭筒") {
-        badge = randomReplaceMap.get(user.id) || badge;
-      }
-      return {
-        ...user,
-        badge,
-      };
-    });
-  }, [theme, randomReplaceMap]);
-
-  // 为每个弹幕项生成随机用户索引
-  const [danmuUserMap] = useState(() => {
-    const map = new Map<string, number>();
-    localDanmuPool.forEach(item => {
-      map.set(item.id, Math.floor(Math.random() * users.length));
-    });
-    return map;
-  });
-
   const displayItems = useMemo(() => {
-    return localDanmuPool.map(item => ({
-      ...item,
-      user: mockUsers[danmuUserMap.get(item.id) || 0],
+    const messages = generator.generateBatch({
+      count: usersList.length,
+      type: "sidebar",
+      theme: theme,
+    });
+    return messages.map(msg => ({
+      id: msg.id,
+      text: msg.text,
+      type: "normal" as const,
+      user: {
+        id: msg.userId || "",
+        name: msg.userName || "游客",
+        level: 1,
+        badge: "火箭筒",
+        avatar: msg.userAvatar || "",
+      },
     }));
-  }, [localDanmuPool, mockUsers, danmuUserMap]);
+  }, [generator, usersList, theme]);
 
   const repeatedItems = [...displayItems, ...displayItems, ...displayItems];
 
@@ -173,7 +169,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
         className={`flex-1 overflow-hidden ${colors.chatBg} ${colors.chatText} p-4 relative ${theme === "tiger" ? "border-t border-b border-[#E67E22]" : ""}`}
         ref={scrollRef}
       >
-        {localDanmuPool.length === 0 ? (
+        {displayItems.length === 0 ? (
           <div
             className={`flex flex-col items-center justify-center p-6 text-center h-full ${theme === "tiger" ? "text-[#7F8C8D]" : "text-[#F4729C]/70"}`}
           >
@@ -250,9 +246,7 @@ interface User {
 }
 
 interface DanmuItemProps {
-  item:
-    | Danmu
-    | { id: string; text: string; type: "normal" | "gift" | "super"; user: User; color?: string };
+  item: { id: string; text: string; type: "normal" | "gift" | "super"; user: User; color?: string };
   theme?: "tiger" | "sweet";
 }
 
@@ -261,6 +255,29 @@ const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
   const isSuper = item.type === "super";
 
   const user = typeof item.user === "string" ? null : item.user;
+
+  const superDanmakuColors = {
+    tiger: [
+      "rgb(255, 95, 0)",
+      "rgb(255, 215, 0)",
+      "rgb(255, 165, 0)",
+      "rgb(255, 140, 0)",
+      "rgb(255, 190, 40)",
+    ],
+    sweet: [
+      "rgb(255, 140, 180)",
+      "rgb(255, 192, 203)",
+      "rgb(255, 105, 180)",
+      "rgb(255, 127, 80)",
+      "rgb(255, 20, 147)",
+    ],
+  };
+
+  const getRandomSuperDanmakuColor = (theme: "tiger" | "sweet") => {
+    const colors = superDanmakuColors[theme];
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
 
   // 根据设计文档设置弹幕颜色
   const danmuTheme = {

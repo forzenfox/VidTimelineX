@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import danmakuData from "../data/danmaku-processed.json";
+import danmakuText from "../data/danmaku.txt?raw";
 
 interface HorizontalDanmakuProps {
   theme: "tiger" | "sweet";
@@ -19,11 +19,14 @@ interface DanmakuItem {
  * 参照驴酱页面实现，改为受控组件模式
  */
 export function HorizontalDanmaku({ theme }: HorizontalDanmakuProps) {
-  // 生成随机持续时间映射，只在组件挂载时执行一次
+  const textPool = useMemo(() => {
+    return danmakuText.split('\n').filter(line => line.trim());
+  }, [danmakuText]);
+
   const [durationMap] = useState(() => {
     const map = new Map<number, number>();
-    if (danmakuData && danmakuData.length > 0) {
-      for (let i = 0; i < danmakuData.length; i++) {
+    if (textPool && textPool.length > 0) {
+      for (let i = 0; i < textPool.length; i++) {
         map.set(i, 6 + Math.random() * 4);
       }
     }
@@ -31,8 +34,7 @@ export function HorizontalDanmaku({ theme }: HorizontalDanmakuProps) {
   });
 
   const danmakuList = useMemo(() => {
-    // 确保 danmakuData 存在且不是空数组
-    if (!danmakuData || danmakuData.length === 0) {
+    if (!textPool || textPool.length === 0) {
       console.warn("Danmaku data is empty or undefined");
       return [];
     }
@@ -40,26 +42,24 @@ export function HorizontalDanmaku({ theme }: HorizontalDanmakuProps) {
     const items: DanmakuItem[] = [];
     const trackCount = 8;
 
-    // 使用所有弹幕数据，不再限制20条
-    for (let i = 0; i < danmakuData.length; i++) {
+    for (let i = 0; i < textPool.length; i++) {
       const trackIndex = i % trackCount;
-      const danmaku = danmakuData[i];
+      const text = textPool[i];
 
-      // 为每个主题使用固定颜色，与背景形成明显对比
       const color = theme === "tiger" ? "rgb(255, 95, 0)" : "rgb(255, 105, 180)";
 
       items.push({
-        id: `${danmaku.id}-${i}`,
-        text: danmaku.text,
+        id: `danmaku-${i}`,
+        text,
         top: 10 + trackIndex * 10,
-        delay: i * 0.2, // 减少延迟，使弹幕更密集
-        duration: durationMap.get(i) || 8, // 使用预生成的随机持续时间
+        delay: i * 0.2,
+        duration: durationMap.get(i) || 8,
         color: color,
       });
     }
 
     return items;
-  }, [theme, durationMap]);
+  }, [theme, textPool, durationMap]);
 
   // 即使没有弹幕数据，也渲染组件结构
   return (

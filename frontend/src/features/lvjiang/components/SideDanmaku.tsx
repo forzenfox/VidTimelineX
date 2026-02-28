@@ -1,30 +1,21 @@
 import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from "react";
 import { dongzhuDanmaku, kaigeDanmaku, users } from "../data";
 import {
-  getDanmakuColor,
-  getSizeByTextLength,
-} from "../data/danmakuColors";
+  DanmakuGenerator,
+  type DanmakuUser,
+  type DanmakuMessage,
+  getThemeColor,
+} from "@/shared/danmaku";
 import { MessageCircle, X, MessageSquare } from "lucide-react";
-
-interface SideDanmakuProps {
-  theme: "dongzhu" | "kaige";
-}
-
-interface DanmakuMessage {
-  id: string;
-  text: string;
-  color: string;
-  size: "small" | "medium" | "large";
-  userId: string;
-  userName: string;
-  userAvatar: string;
-  timestamp: string;
-}
 
 interface DanmakuItemProps {
   message: DanmakuMessage;
   theme: "dongzhu" | "kaige";
   index: number;
+}
+
+interface SideDanmakuProps {
+  theme: "dongzhu" | "kaige";
 }
 
 const DanmakuItem = React.memo(({ message, theme, index }: DanmakuItemProps) => {
@@ -121,34 +112,28 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [displayMessages, setDisplayMessages] = useState<DanmakuMessage[]>([]);
 
-  // 用户列表
-  const usersList = useMemo(() => users, []);
+  const usersList = useMemo(() => users as DanmakuUser[], []);
 
-  // 初始化弹幕消息
-  const initialMessages = useMemo(() => {
-    const now = new Date();
-    return Array.from({ length: 12 }, (_, i) => {
-      const text = pool[i % pool.length];
-      const user = usersList[i % usersList.length];
-      const size = getSizeByTextLength(text);
-      const color = getDanmakuColor(theme);
-
-      return {
-        id: `initial-${i}`,
-        text: text || "弹幕",
-        color: color,
-        size,
-        userId: user?.id || "user1",
-        userName: user?.name || "用户",
-        userAvatar: user?.avatar || "",
-        timestamp: new Date(now.getTime() - (12 - i) * 2000).toLocaleTimeString("zh-CN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-      };
+  const generator = useMemo(() => {
+    const themeKey = theme === "dongzhu" ? "dongzhu" : "kaige";
+    return new DanmakuGenerator({
+      theme: themeKey,
+      textPool: pool,
+      users: usersList,
+      colorType: "primary",
+      danmakuType: "sidebar",
+      randomColor: false,
+      randomSize: false,
     });
   }, [pool, usersList, theme]);
+
+  const initialMessages = useMemo(() => {
+    return generator.generateBatch({
+      count: 12,
+      type: "sidebar",
+      theme: theme as "dongzhu" | "kaige",
+    });
+  }, [generator, theme]);
 
   useEffect(() => {
     setDisplayMessages(initialMessages);
@@ -164,29 +149,8 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
   // 定期添加新弹幕
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * pool.length);
-      const randomText = pool[randomIndex];
-      const randomUser = usersList[Math.floor(Math.random() * usersList.length)];
-
-      if (!randomText || !randomUser) return;
-
-      const size = getSizeByTextLength(randomText);
-      const color = getDanmakuColor(theme);
-
-      const newMessage: DanmakuMessage = {
-        id: `msg-${Date.now()}-${Math.random()}`,
-        text: randomText,
-        color,
-        size,
-        userId: randomUser.id,
-        userName: randomUser.name,
-        userAvatar: randomUser.avatar,
-        timestamp: new Date().toLocaleTimeString("zh-CN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-      };
+      const newIndex = displayMessages.length;
+      const newMessage = generator.generateMessage(newIndex);
 
       setDisplayMessages(prev => {
         const updated = [...prev, newMessage];
@@ -195,7 +159,7 @@ export function SideDanmaku({ theme }: SideDanmakuProps) {
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [pool, usersList, theme]);
+  }, [generator, displayMessages.length]);
 
   // 弹幕内容渲染
   const renderDanmakuContent = (isInDrawer: boolean) => (

@@ -1,26 +1,14 @@
 import React, { useMemo, useEffect, useState } from "react";
 import type { Theme } from "../data/types";
 import danmakuData from "../data/danmaku.json";
-import { getDanmakuColor, getCommonDanmakuColor } from "../data/danmakuColors";
+import { DanmakuGenerator, type DanmakuMessage } from "@/shared/danmaku";
 
 interface HorizontalDanmakuProps {
   theme: Theme;
   isVisible: boolean;
 }
 
-interface DanmakuItem {
-  id: string;
-  text: string;
-  color: string;
-  top: number;
-  delay: number;
-  duration: number;
-  fontSize: number;
-  fontWeight: number;
-}
 
-// 预生成的随机数数组，避免在 render 中使用 Math.random
-const RANDOM_SEEDS = Array.from({ length: 60 }, () => Math.random());
 
 /**
  * 水平飘屏弹幕组件
@@ -59,44 +47,40 @@ export const HorizontalDanmaku: React.FC<HorizontalDanmakuProps> = ({ theme, isV
 
     if (pool.length === 0) return [];
 
-    const items: DanmakuItem[] = [];
-    // 移动端使用5条轨道，桌面端使用8条轨道
+    // 创建弹幕生成器
+    const generator = new DanmakuGenerator({
+      textPool: pool,
+      theme: theme,
+      danmakuType: "horizontal",
+      randomColor: true,
+      randomSize: true,
+    });
+
+    // 移动端使用 5 条轨道，桌面端使用 8 条轨道
     const trackCount = isMobile ? 5 : 8;
     // 移动端弹幕数量减少
     const danmakuCount = isMobile ? 20 : 30;
 
-    for (let i = 0; i < danmakuCount; i++) {
-      const text = pool[i % pool.length];
+    // 生成弹幕
+    const messages = generator.generateBatch({
+      count: danmakuCount,
+      type: "horizontal",
+      theme: theme,
+      randomColor: true,
+      randomSize: true,
+    });
 
-      // 根据主题统一分配颜色
-      const isCommon = i >= themeDanmaku.length;
-      const color = isCommon ? getCommonDanmakuColor() : getDanmakuColor(theme);
-
-      // 随机分配速度
-      const randomDuration = RANDOM_SEEDS[i % RANDOM_SEEDS.length];
-      // 移动端：10-18秒（更慢），桌面端：6-14秒
-      const duration = isMobile ? 10 + randomDuration * 8 : 6 + randomDuration * 8;
-
-      // 随机字体大小
-      // 移动端：12px（固定最小值），桌面端：14-20px
-      const fontSize = isMobile ? 12 : 14 + Math.floor(randomDuration * 6);
-      const fontWeight = randomDuration > 0.7 ? 800 : 600;
-
-      // 使用预生成的随机种子
-      const randomDelay = RANDOM_SEEDS[(i + 30) % RANDOM_SEEDS.length];
-
-      items.push({
-        id: `danmaku-${theme}-${i}`,
-        text,
-        color,
-        top: 10 + (i % trackCount) * (isMobile ? 16 : 10), // 移动端轨道间距更大
-        delay: i * 0.3 + randomDelay * 2, // 随机延迟，避免同时出现
-        duration,
-        fontSize,
-        fontWeight,
-      });
-    }
-    return items;
+    // 映射为组件需要的格式
+    return messages.map((msg, i) => ({
+      id: msg.id,
+      text: msg.text,
+      color: msg.color,
+      top: 10 + (i % trackCount) * (isMobile ? 16 : 10),
+      delay: msg.delay || i * 300,
+      duration: msg.duration || (isMobile ? 10000 + Math.random() * 8000 : 6000 + Math.random() * 8000),
+      fontSize: msg.size === "large" ? 20 : msg.size === "medium" ? 17 : 14,
+      fontWeight: msg.size === "large" ? 800 : 600,
+    }));
   }, [theme, isVisible, mounted, isMobile]);
 
   if (!isVisible || !mounted) return null;

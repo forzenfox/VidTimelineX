@@ -4,6 +4,11 @@ import TiantongPage from "@/features/tiantong/TiantongPage";
 import "@testing-library/jest-dom";
 import { safeAsync, withTimeout, wrapAsync } from "../../utils/error-handling";
 
+// Mock TXT file import
+jest.mock("@/features/tiantong/data/danmaku.txt?raw", () => {
+  return "测试弹幕 1\n测试弹幕 2\n测试弹幕 3\n测试弹幕 4\n测试弹幕 5";
+});
+
 describe("甜筒模块页面集成测试", () => {
   test("TC-001: 页面渲染测试", async () => {
     await withTimeout(

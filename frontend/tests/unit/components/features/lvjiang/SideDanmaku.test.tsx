@@ -8,14 +8,36 @@ jest.mock("@/features/lvjiang/data", () => ({
   dongzhuDanmaku: ["测试弹幕 1", "测试弹幕 2", "测试弹幕 3"],
   kaigeDanmaku: ["凯哥弹幕 1", "凯哥弹幕 2", "凯哥弹幕 3"],
   users: [
-    { id: "1", name: "测试用户 1", avatar: "https://example.com/avatar1.jpg" },
-    { id: "2", name: "测试用户 2", avatar: "https://example.com/avatar2.jpg" },
+    { id: "1", name: "测试用户 1", avatar: "https://example.com/avatar1.jpg", level: 1, badge: [] },
+    { id: "2", name: "测试用户 2", avatar: "https://example.com/avatar2.jpg", level: 2, badge: [] },
   ],
 }));
 
-// 模拟颜色模块
-jest.mock("@/features/lvjiang/data/danmakuColors", () => ({
-  getDanmakuColor: () => "#5DADE2",
+// 模拟共享弹幕库
+jest.mock("@/shared/danmaku", () => ({
+  DanmakuGenerator: class MockDanmakuGenerator {
+    constructor(private config: any) {}
+    
+    generateMessage(index: number) {
+      const text = this.config.textPool[index % this.config.textPool.length] || "弹幕";
+      const user = this.config.users[index % this.config.users.length];
+      return {
+        id: `danmaku-${Date.now()}-${index}`,
+        text,
+        color: "#3498DB",
+        size: "medium" as const,
+        userId: user?.id,
+        userName: user?.name,
+        userAvatar: user?.avatar,
+        timestamp: "12:00:00",
+      };
+    }
+    
+    generateBatch(options: { count: number; type: string; theme?: string }) {
+      return Array.from({ length: options.count }, (_, i) => this.generateMessage(i));
+    }
+  },
+  getThemeColor: () => "#3498DB",
   getSizeByTextLength: (text: string) => {
     if (text.length <= 3) return "large";
     if (text.length <= 8) return "medium";

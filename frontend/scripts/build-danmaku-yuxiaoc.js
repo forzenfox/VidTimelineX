@@ -1,3 +1,13 @@
+/**
+ * ⚠️ 已弃用：弹幕数据构建脚本
+ * 此脚本已不再使用，因为 yuxiaoc 项目已迁移到共享弹幕库
+ * 
+ * @deprecated 请使用共享弹幕库中的 DanmakuGenerator 生成弹幕
+ * @see frontend/src/shared/danmaku/generator.ts
+ * 
+ * 保留此文件仅作为参考，未来可能会完全删除
+ */
+
 import fs from "fs";
 import path from "path";
 
@@ -7,6 +17,8 @@ const __dirname = path.dirname(__filename);
 
 // 修复 Windows 路径问题
 const normalizedDirname = __dirname.replace(/^\//, "").replace(/\//g, "\\");
+
+console.warn("⚠️ 警告：此构建脚本已弃用，请使用共享弹幕库的 DanmakuGenerator");
 
 // 弹幕类型权重配置
 const danmakuTypeWeights = {

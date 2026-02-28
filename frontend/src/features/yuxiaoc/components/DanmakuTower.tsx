@@ -2,23 +2,14 @@ import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from "re
 import type { Theme } from "../data/types";
 import danmakuData from "../data/danmaku.json";
 import users from "../data/users.json";
-import { getDanmakuColor, getCommonDanmakuColor } from "../data/danmakuColors";
+import { DanmakuGenerator, type DanmakuMessage, type DanmakuUser } from "@/shared/danmaku";
 import { MessageSquare, Users, X, MessageCircle } from "lucide-react";
 
 interface DanmakuTowerProps {
   theme: Theme;
 }
 
-interface DanmakuMessage {
-  id: string;
-  text: string;
-  color: string;
-  size: "small" | "medium" | "large";
-  userId: string;
-  userName: string;
-  userAvatar: string;
-  timestamp: string;
-}
+
 
 /**
  * 弹幕天梯组件 - 右侧固定侧边栏样式（桌面端/平板端）/ 底部抽屉（移动端）
@@ -47,7 +38,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
   }, [isBlood]);
 
   // 用户列表（直接从 JSON 导入）
-  const usersList = useMemo(() => users, []);
+  const usersList = useMemo(() => users as DanmakuUser[], []);
 
   // 获取当前主题的弹幕数据（主题专属 + 公共弹幕）
   const danmakuPool = useMemo(() => {
@@ -57,46 +48,37 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
     return [...themeDanmaku, ...commonDanmaku];
   }, [theme]);
 
-  // 辅助函数：根据文本长度分配大小
-  const getSizeByTextLength = (text: string): "small" | "medium" | "large" => {
-    const length = text.length;
-    if (length <= 3) return "large";
-    if (length <= 8) return "medium";
-    return "small";
-  };
-
-  // 辅助函数：获取弹幕颜色
-  const getMessageColor = (text: string, index: number): string => {
-    const themeDanmaku = theme === "blood" ? danmakuData.bloodDanmaku : danmakuData.mixDanmaku;
-    const isCommon = index >= themeDanmaku.length;
-    return isCommon ? getCommonDanmakuColor() : getDanmakuColor(theme);
-  };
+  // 创建弹幕生成器
+  const generator = useMemo(() => {
+    return new DanmakuGenerator({
+      textPool: danmakuPool,
+      users: usersList,
+      theme: theme,
+      danmakuType: "sidebar",
+      randomColor: false,
+      randomSize: true,
+    });
+  }, [danmakuPool, usersList, theme]);
 
   // 初始化弹幕消息
   const initialMessages = useMemo(() => {
     const now = new Date();
-    return Array.from({ length: 12 }, (_, i) => {
-      const text = danmakuPool[i % danmakuPool.length];
-      const user = usersList[i % usersList.length];
-      const size = getSizeByTextLength(text);
-      const color = getMessageColor(text, i);
-
-      return {
-        id: `initial-${i}`,
-        text: text || "弹幕",
-        color: color || (isBlood ? "#E11D48" : "#F59E0B"),
-        size,
-        userId: user?.id || "user1",
-        userName: user?.name || "用户",
-        userAvatar: user?.avatar || "",
-        timestamp: new Date(now.getTime() - (12 - i) * 2000).toLocaleTimeString("zh-CN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-      };
+    const messages = generator.generateBatch({
+      count: 12,
+      type: "sidebar",
+      theme: theme,
     });
-  }, [danmakuPool, usersList, isBlood, theme]);
+    
+    // 调整时间戳，使其按顺序递减
+    return messages.map((msg, i) => ({
+      ...msg,
+      timestamp: new Date(now.getTime() - (12 - i) * 2000).toLocaleTimeString("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
+    }));
+  }, [generator, theme]);
 
   useEffect(() => {
     setDisplayMessages(initialMessages);
@@ -112,29 +94,15 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
   // 定期添加新弹幕
   useEffect(() => {
     const interval = setInterval(() => {
-      const randomIndex = Math.floor(Math.random() * danmakuPool.length);
-      const randomText = danmakuPool[randomIndex];
-      const randomUser = usersList[Math.floor(Math.random() * usersList.length)];
+      const messages = generator.generateBatch({
+        count: 1,
+        type: "sidebar",
+        theme: theme,
+      });
 
-      if (!randomText || !randomUser) return;
+      if (messages.length === 0) return;
 
-      const size = getSizeByTextLength(randomText);
-      const color = getMessageColor(randomText, randomIndex);
-
-      const newMessage: DanmakuMessage = {
-        id: `msg-${Date.now()}-${Math.random()}`,
-        text: randomText,
-        color,
-        size,
-        userId: randomUser.id,
-        userName: randomUser.name,
-        userAvatar: randomUser.avatar,
-        timestamp: new Date().toLocaleTimeString("zh-CN", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        }),
-      };
+      const newMessage = messages[0];
 
       setDisplayMessages(prev => {
         const updated = [...prev, newMessage];
@@ -143,7 +111,7 @@ export const DanmakuTower: React.FC<DanmakuTowerProps> = ({ theme }) => {
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [danmakuPool, usersList, theme]);
+  }, [generator, theme]);
 
   // 弹幕内容渲染
   const renderDanmakuContent = (isInDrawer: boolean) => (
