@@ -162,7 +162,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
               }}
             >
               <img
-                src="https://apic.douyucdn.cn/upload/avatar_v3/202107/7ba332e29d5a4210804b39d23fd56ea5_middle.jpg"
+                src="https://apic.douyucdn.cn/upload/avatar_v3/202107/7ba332e29d5a4210804b39d23fd56ea5_big.jpg"
                 alt="C皇头像"
                 className="w-full h-full object-cover"
                 onError={e => {
