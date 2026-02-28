@@ -316,9 +316,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             style={{
               background: isBlood ? "rgba(30, 27, 75, 0.6)" : "#FFFFFF",
               color: isBlood ? "#E2E8F0" : "#0F172A",
-              border: isBlood
-                ? "1px solid rgba(225, 29, 72, 0.4)"
-                : "1px solid #D97706",
+              border: isBlood ? "1px solid rgba(225, 29, 72, 0.4)" : "1px solid #D97706",
               boxShadow: isBlood
                 ? "0 4px 15px rgba(225, 29, 72, 0.2)"
                 : "0 4px 15px rgba(217, 119, 6, 0.15)",
@@ -336,9 +334,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ theme }) => {
             style={{
               background: isBlood ? "rgba(30, 27, 75, 0.6)" : "#FFFFFF",
               color: isBlood ? "#E2E8F0" : "#0F172A",
-              border: isBlood
-                ? "1px solid rgba(225, 29, 72, 0.4)"
-                : "1px solid #D97706",
+              border: isBlood ? "1px solid rgba(225, 29, 72, 0.4)" : "1px solid #D97706",
               boxShadow: isBlood
                 ? "0 4px 15px rgba(225, 29, 72, 0.2)"
                 : "0 4px 15px rgba(217, 119, 6, 0.15)",
