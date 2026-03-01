@@ -75,7 +75,9 @@ describe("useVideoView Hook 新增测试", () => {
     });
 
     test("视图切换 - 从timeline切换回grid", () => {
-      const { result } = renderHook(() => useVideoView(mockVideos, { initialViewMode: "timeline" }));
+      const { result } = renderHook(() =>
+        useVideoView(mockVideos, { initialViewMode: "timeline" })
+      );
 
       expect(result.current.viewMode).toBe("timeline");
 
@@ -170,9 +172,11 @@ describe("useVideoView Hook 新增测试", () => {
         mockVideos[2],
       ];
 
-      const { result } = renderHook(() => useVideoView(invalidVideos, {
-        initialFilter: { duration: "short" }
-      }));
+      const { result } = renderHook(() =>
+        useVideoView(invalidVideos, {
+          initialFilter: { duration: "short" },
+        })
+      );
 
       // 异常时长的视频应该被跳过，只返回有效数据
       expect(result.current.filteredVideos.length).toBeGreaterThanOrEqual(0);
@@ -193,9 +197,11 @@ describe("useVideoView Hook 新增测试", () => {
         mockVideos[2],
       ];
 
-      const { result } = renderHook(() => useVideoView(invalidVideos, {
-        initialFilter: { timeRange: "week" }
-      }));
+      const { result } = renderHook(() =>
+        useVideoView(invalidVideos, {
+          initialFilter: { timeRange: "week" },
+        })
+      );
 
       // 异常日期的视频应该被跳过
       expect(result.current.filteredVideos.length).toBeGreaterThanOrEqual(0);
@@ -225,9 +231,11 @@ describe("useVideoView Hook 新增测试", () => {
   // ==================== 综合功能测试 ====================
   describe("TC-VIEW-004: 综合功能测试", () => {
     test("综合 - 视图模式切换不影响筛选结果", () => {
-      const { result } = renderHook(() => useVideoView(mockVideos, {
-        initialFilter: { duration: "short" }
-      }));
+      const { result } = renderHook(() =>
+        useVideoView(mockVideos, {
+          initialFilter: { duration: "short" },
+        })
+      );
 
       const filteredCountBefore = result.current.filteredVideos.length;
 
@@ -242,10 +250,12 @@ describe("useVideoView Hook 新增测试", () => {
     });
 
     test("综合 - resetFilters同时重置搜索和筛选", () => {
-      const { result } = renderHook(() => useVideoView(mockVideos, {
-        initialViewMode: "list",
-        initialFilter: { duration: "short", sortBy: "oldest" }
-      }));
+      const { result } = renderHook(() =>
+        useVideoView(mockVideos, {
+          initialViewMode: "list",
+          initialFilter: { duration: "short", sortBy: "oldest" },
+        })
+      );
 
       act(() => {
         result.current.setSearchQuery("测试");
