@@ -161,12 +161,7 @@ describe("VideoCard组件测试", () => {
   describe("TC-006: 自定义类名测试", () => {
     test("应该正确应用自定义类名", () => {
       const { container } = render(
-        <VideoCard
-          video={mockVideo}
-          onClick={mockOnClick}
-          theme="tiger"
-          className="custom-class"
-        />
+        <VideoCard video={mockVideo} onClick={mockOnClick} theme="tiger" className="custom-class" />
       );
       const card = container.querySelector("[data-testid='video-card']");
       expect(card).toHaveClass("custom-class");
@@ -201,7 +196,7 @@ describe("VideoCard组件测试", () => {
       "kaige",
     ];
 
-    themes.forEach((theme) => {
+    themes.forEach(theme => {
       test(`${theme}主题应该正确渲染`, () => {
         const { container } = render(
           <VideoCard video={mockVideo} onClick={mockOnClick} theme={theme} />

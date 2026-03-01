@@ -12,9 +12,10 @@ const path = require("path");
 // 配置（默认使用冒烟测试配置以加快执行速度）
 const CONFIG = {
   // 可以通过环境变量 MOBILE_TEST_TYPE=full 切换到完整测试
-  configFile: process.env.MOBILE_TEST_TYPE === "full" 
-    ? "playwright.mobile.config.ts" 
-    : "playwright.mobile-smoke.config.ts",
+  configFile:
+    process.env.MOBILE_TEST_TYPE === "full"
+      ? "playwright.mobile.config.ts"
+      : "playwright.mobile-smoke.config.ts",
   reportDir: "playwright-report/mobile",
   screenshotsDir: "playwright-report/mobile/screenshots",
 };
@@ -74,9 +75,9 @@ function generateReportSummary() {
       duration: 0,
     };
 
-    results.suites?.forEach((suite) => {
-      suite.specs?.forEach((spec) => {
-        spec.tests?.forEach((test) => {
+    results.suites?.forEach(suite => {
+      suite.specs?.forEach(spec => {
+        spec.tests?.forEach(test => {
           stats.total++;
           stats.duration += test.results?.[0]?.duration || 0;
 
@@ -131,11 +132,15 @@ function generateMarkdownReport(stats, results) {
 ## 测试环境
 
 ### 测试设备
-${process.env.MOBILE_TEST_TYPE === "full" ? `
+${
+  process.env.MOBILE_TEST_TYPE === "full"
+    ? `
 - iPhone 12 - Safari
 - Pixel 7 - Chrome
-- iPad Pro 11 - Safari` : `
-- iPhone 12 - Safari (冒烟测试模式)`}
+- iPad Pro 11 - Safari`
+    : `
+- iPhone 12 - Safari (冒烟测试模式)`
+}
 
 ### 测试页面
 - /lvjiang
@@ -244,7 +249,7 @@ async function main() {
   const testMode = process.env.MOBILE_TEST_TYPE === "full" ? "完整测试" : "冒烟测试";
   console.log(`\n🧪 执行移动端${testMode}...\n`);
   console.log(`📋 配置文件: ${CONFIG.configFile}\n`);
-  
+
   const testCommand = `npx playwright test --config=${CONFIG.configFile}`;
   const testSuccess = runCommand(testCommand);
 
@@ -267,7 +272,7 @@ async function main() {
 }
 
 // 运行主函数
-main().catch((error) => {
+main().catch(error => {
   console.error("执行测试时出错:", error);
   process.exit(1);
 });

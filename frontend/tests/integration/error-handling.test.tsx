@@ -118,7 +118,7 @@ const FormWithValidation = () => {
         data-testid="email-input"
         type="text"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
         placeholder="请输入邮箱"
       />
       {error && <div data-testid="form-error">{error}</div>}

@@ -2,10 +2,10 @@
 
 /**
  * 导入元数据环境变量接口
- * 
+ *
  * @description 定义项目中所有可用的环境变量
  * 所有环境变量必须使用 VITE_ 前缀
- * 
+ *
  * @example
  * ```typescript
  * const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -80,12 +80,12 @@ interface ImportMetaEnv {
 
 /**
  * 导入元数据接口
- * 
+ *
  * @description 提供环境变量和构建信息的类型定义
  */
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-  
+
   /**
    * 构建信息
    */
@@ -94,17 +94,17 @@ interface ImportMeta {
      * 当前模式
      */
     readonly MODE: string;
-    
+
     /**
      * 是否为开发环境
      */
     readonly DEV: boolean;
-    
+
     /**
      * 是否为生产环境
      */
     readonly PROD: boolean;
-    
+
     /**
      * 基础 URL
      */

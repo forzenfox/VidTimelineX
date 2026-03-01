@@ -363,7 +363,7 @@ describe("useVideoFilter Hook", () => {
       const testVideos = [
         createVideo({ id: "1", duration: "1:30:00" }), // 90分钟
         createVideo({ id: "2", duration: "2:00:00" }), // 120分钟
-        createVideo({ id: "3", duration: "00:30" }),   // 30秒
+        createVideo({ id: "3", duration: "00:30" }), // 30秒
       ];
       const { result } = renderHook(() => useVideoFilter(testVideos, { duration: "long" }));
 

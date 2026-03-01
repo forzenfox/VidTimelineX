@@ -54,31 +54,40 @@ tests/
 ### 单元测试命名规范
 
 ```
+
 格式：[ComponentName].test.tsx
 示例：
+
 - ThemeToggle.test.tsx
 - VideoCard.test.tsx
 - Header.test.tsx
+
 ```
 
 ### 集成测试命名规范
 
 ```
+
 格式：[FeatureName]-[TestType].test.tsx
 示例：
+
 - visual-baseline.test.tsx
 - core-flow.test.tsx
 - content-area.test.tsx
+
 ```
 
 ### E2E测试命名规范
 
 ```
+
 格式：[FeatureName]-[Scenario].e2e.tsx
 示例：
+
 - video-playback.e2e.tsx
 - theme-switching.e2e.tsx
-```
+
+````
 
 ## 测试类型说明
 
@@ -182,7 +191,7 @@ export const mockDanmaku: Danmu[] = [
     color: "#FF5F00",
   },
 ];
-```
+````
 
 ### Mock使用原则
 

@@ -163,8 +163,8 @@ test.describe("移动端兼容性测试 - 渲染一致性", () => {
         const images = Array.from(document.querySelectorAll("img"));
         return {
           totalImages: images.length,
-          loadedImages: images.filter((img) => img.complete).length,
-          failedImages: images.filter((img) => !img.complete && img.naturalWidth === 0).length,
+          loadedImages: images.filter(img => img.complete).length,
+          failedImages: images.filter(img => !img.complete && img.naturalWidth === 0).length,
         };
       });
 
@@ -285,7 +285,7 @@ test.describe("移动端兼容性测试 - 主题与颜色", () => {
         const elements = document.querySelectorAll("p, span, h1, h2, h3, h4, h5, h6, a, button");
         const results: Array<{ tag: string; color: string; backgroundColor: string }> = [];
 
-        elements.forEach((el) => {
+        elements.forEach(el => {
           const style = window.getComputedStyle(el);
           results.push({
             tag: el.tagName.toLowerCase(),
@@ -313,10 +313,12 @@ test.describe("移动端兼容性测试 - 输入与交互", () => {
 
       // 检查输入框
       const inputMetrics = await page.evaluate(() => {
-        const inputs = document.querySelectorAll('input[type="text"], input[type="search"], textarea');
+        const inputs = document.querySelectorAll(
+          'input[type="text"], input[type="search"], textarea'
+        );
         return {
           inputCount: inputs.length,
-          types: Array.from(inputs).map((input) => (input as HTMLInputElement).type),
+          types: Array.from(inputs).map(input => (input as HTMLInputElement).type),
         };
       });
 
@@ -426,8 +428,12 @@ test.describe("移动端兼容性测试 - 无障碍支持", () => {
 
       // 检查ARIA属性
       const ariaMetrics = await page.evaluate(() => {
-        const elementsWithAria = document.querySelectorAll("[aria-label], [aria-describedby], [role]");
-        const landmarks = document.querySelectorAll("[role='navigation'], [role='main'], [role='contentinfo']");
+        const elementsWithAria = document.querySelectorAll(
+          "[aria-label], [aria-describedby], [role]"
+        );
+        const landmarks = document.querySelectorAll(
+          "[role='navigation'], [role='main'], [role='contentinfo']"
+        );
 
         return {
           ariaElementsCount: elementsWithAria.length,
@@ -499,14 +505,14 @@ test.describe("移动端兼容性测试 - 错误处理", () => {
       const errors: string[] = [];
 
       // 监听console错误
-      page.on("console", (msg) => {
+      page.on("console", msg => {
         if (msg.type() === "error") {
           errors.push(msg.text());
         }
       });
 
       // 监听页面错误
-      page.on("pageerror", (error) => {
+      page.on("pageerror", error => {
         errors.push(error.message);
       });
 
@@ -518,10 +524,8 @@ test.describe("移动端兼容性测试 - 错误处理", () => {
 
       // 过滤掉非关键错误
       const criticalErrors = errors.filter(
-        (error) =>
-          !error.includes("favicon") &&
-          !error.includes("source map") &&
-          !error.includes("chunk")
+        error =>
+          !error.includes("favicon") && !error.includes("source map") && !error.includes("chunk")
       );
 
       // 验证没有关键错误
@@ -537,12 +541,12 @@ test.describe("移动端兼容性测试 - 错误处理", () => {
       const failedRequests: string[] = [];
 
       // 监听失败的请求
-      page.on("requestfailed", (request) => {
+      page.on("requestfailed", request => {
         failedRequests.push(request.url());
       });
 
       // 监听响应状态
-      page.on("response", (response) => {
+      page.on("response", response => {
         if (response.status() === 404) {
           failedRequests.push(response.url());
         }
@@ -556,7 +560,7 @@ test.describe("移动端兼容性测试 - 错误处理", () => {
 
       // 过滤掉非关键404
       const critical404s = failedRequests.filter(
-        (url) => !url.includes("favicon") && !url.includes("source map")
+        url => !url.includes("favicon") && !url.includes("source map")
       );
 
       // 验证没有关键404错误

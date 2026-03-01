@@ -218,7 +218,7 @@ describe("VideoModal组件测试", () => {
       "kaige",
     ];
 
-    themes.forEach((theme) => {
+    themes.forEach(theme => {
       test(`${theme}主题应该正确渲染`, () => {
         const { container } = render(
           <VideoModal video={mockVideo} onClose={mockOnClose} theme={theme} />

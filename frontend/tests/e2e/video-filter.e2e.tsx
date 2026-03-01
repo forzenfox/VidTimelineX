@@ -15,14 +15,16 @@ test.describe("视频筛选流程测试", () => {
     await page.waitForLoadState("networkidle");
 
     // 查找筛选下拉菜单
-    const filterDropdown = page.locator('[data-testid="filter-dropdown"], select, [placeholder*="筛选"]').first();
+    const filterDropdown = page
+      .locator('[data-testid="filter-dropdown"], select, [placeholder*="筛选"]')
+      .first();
 
     if (await filterDropdown.isVisible().catch(() => false)) {
       // 点击筛选下拉菜单
       await filterDropdown.click();
 
       // 选择短视频选项（0-5分钟）
-      const shortVideoOption = page.locator('text=/短|0-5|5分钟/i').first();
+      const shortVideoOption = page.locator("text=/短|0-5|5分钟/i").first();
       if (await shortVideoOption.isVisible().catch(() => false)) {
         await shortVideoOption.click();
 
@@ -45,7 +47,9 @@ test.describe("视频筛选流程测试", () => {
     await page.waitForLoadState("networkidle");
 
     // 查找日期筛选器
-    const dateFilter = page.locator('[data-testid="date-filter"], [placeholder*="日期"], input[type="date"]').first();
+    const dateFilter = page
+      .locator('[data-testid="date-filter"], [placeholder*="日期"], input[type="date"]')
+      .first();
 
     if (await dateFilter.isVisible().catch(() => false)) {
       // 设置日期范围
@@ -69,14 +73,16 @@ test.describe("视频筛选流程测试", () => {
     await page.waitForLoadState("networkidle");
 
     // 查找排序下拉菜单
-    const sortDropdown = page.locator('[data-testid="sort-dropdown"], select, [placeholder*="排序"]').first();
+    const sortDropdown = page
+      .locator('[data-testid="sort-dropdown"], select, [placeholder*="排序"]')
+      .first();
 
     if (await sortDropdown.isVisible().catch(() => false)) {
       // 点击排序下拉菜单
       await sortDropdown.click();
 
       // 选择按日期排序
-      const dateSortOption = page.locator('text=/日期|时间|最新/i').first();
+      const dateSortOption = page.locator("text=/日期|时间|最新/i").first();
       if (await dateSortOption.isVisible().catch(() => false)) {
         await dateSortOption.click();
 
@@ -102,7 +108,7 @@ test.describe("视频筛选流程测试", () => {
     const filterDropdown = page.locator('[data-testid="filter-dropdown"]').first();
     if (await filterDropdown.isVisible().catch(() => false)) {
       await filterDropdown.click();
-      const option = page.locator('text=/短/i').first();
+      const option = page.locator("text=/短/i").first();
       if (await option.isVisible().catch(() => false)) {
         await option.click();
         await page.waitForTimeout(500);
@@ -113,7 +119,7 @@ test.describe("视频筛选流程测试", () => {
     const sortDropdown = page.locator('[data-testid="sort-dropdown"]').first();
     if (await sortDropdown.isVisible().catch(() => false)) {
       await sortDropdown.click();
-      const sortOption = page.locator('text=/日期/i').first();
+      const sortOption = page.locator("text=/日期/i").first();
       if (await sortOption.isVisible().catch(() => false)) {
         await sortOption.click();
         await page.waitForTimeout(500);
@@ -137,7 +143,7 @@ test.describe("视频筛选流程测试", () => {
     const filterDropdown = page.locator('[data-testid="filter-dropdown"]').first();
     if (await filterDropdown.isVisible().catch(() => false)) {
       await filterDropdown.click();
-      const option = page.locator('text=/短/i').first();
+      const option = page.locator("text=/短/i").first();
       if (await option.isVisible().catch(() => false)) {
         await option.click();
         await page.waitForTimeout(500);
@@ -145,7 +151,9 @@ test.describe("视频筛选流程测试", () => {
     }
 
     // 查找清除按钮
-    const clearButton = page.locator('[data-testid="clear-filter"], button:has-text("清除"), button:has-text("重置")').first();
+    const clearButton = page
+      .locator('[data-testid="clear-filter"], button:has-text("清除"), button:has-text("重置")')
+      .first();
 
     if (await clearButton.isVisible().catch(() => false)) {
       await clearButton.click();

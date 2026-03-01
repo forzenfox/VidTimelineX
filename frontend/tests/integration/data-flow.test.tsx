@@ -22,13 +22,19 @@ interface DataFlowContextType {
 
 const DataFlowContext = createContext<DataFlowContextType | undefined>(undefined);
 
-const DataFlowProvider = ({ children, initialVideos }: { children: ReactNode; initialVideos: VideoData[] }) => {
+const DataFlowProvider = ({
+  children,
+  initialVideos,
+}: {
+  children: ReactNode;
+  initialVideos: VideoData[];
+}) => {
   const [videos] = useState<VideoData[]>(initialVideos);
   const [filteredVideos, setFilteredVideos] = useState<VideoData[]>(initialVideos);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filterByDuration = (min: number, max: number) => {
-    const filtered = videos.filter((video) => {
+    const filtered = videos.filter(video => {
       const durationInSeconds = parseDuration(video.duration);
       return durationInSeconds >= min && durationInSeconds <= max;
     });
@@ -48,7 +54,7 @@ const DataFlowProvider = ({ children, initialVideos }: { children: ReactNode; in
       setFilteredVideos(videos);
       return;
     }
-    const filtered = videos.filter((video) =>
+    const filtered = videos.filter(video =>
       video.title.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredVideos(filtered);
@@ -91,14 +97,15 @@ function parseDuration(duration: string): number {
 
 // 测试组件
 const TestVideoList = () => {
-  const { filteredVideos, searchQuery, setSearchQuery, filterByDuration, sortByDate } = useDataFlow();
+  const { filteredVideos, searchQuery, setSearchQuery, filterByDuration, sortByDate } =
+    useDataFlow();
 
   return (
     <div>
       <input
         data-testid="search-input"
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={e => setSearchQuery(e.target.value)}
         placeholder="搜索视频..."
       />
       <button data-testid="filter-short" onClick={() => filterByDuration(0, 300)}>
@@ -115,7 +122,7 @@ const TestVideoList = () => {
       </button>
       <div data-testid="video-count">{filteredVideos.length} 个视频</div>
       <ul data-testid="video-list">
-        {filteredVideos.map((video) => (
+        {filteredVideos.map(video => (
           <li key={video.id} data-testid={`video-${video.id}`}>
             {video.title} - {video.duration}
           </li>

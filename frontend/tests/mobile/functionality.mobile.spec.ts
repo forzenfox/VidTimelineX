@@ -30,19 +30,14 @@ async function waitForPageLoad(page: Page): Promise<void> {
  * @param page - Playwright页面对象
  * @param selector - 元素选择器
  */
-async function checkElementClickable(
-  page: Page,
-  selector: string
-): Promise<boolean> {
+async function checkElementClickable(page: Page, selector: string): Promise<boolean> {
   const element = await page.locator(selector).first();
   try {
     await element.waitFor({ state: "visible", timeout: 5000 });
     const isEnabled = await element.isEnabled();
     const box = await element.boundingBox();
     // 检查触摸目标尺寸（最小44x44px）
-    const hasProperSize = box
-      ? box.width >= 44 && box.height >= 44
-      : false;
+    const hasProperSize = box ? box.width >= 44 && box.height >= 44 : false;
     return isEnabled && hasProperSize;
   } catch {
     return false;
@@ -86,9 +81,7 @@ test.describe("移动端功能测试 - 导航与主题切换", () => {
       await waitForPageLoad(page);
 
       // 查找Logo链接
-      const logo = page.locator(
-        'a[href="/"], [data-testid="logo"], header a:first-child'
-      );
+      const logo = page.locator('a[href="/"], [data-testid="logo"], header a:first-child');
 
       // 验证Logo存在
       const logoCount = await logo.count();
@@ -187,9 +180,7 @@ test.describe("移动端功能测试 - 视频列表交互", () => {
       await waitForPageLoad(page);
 
       // 查找视频卡片
-      const videoCards = page.locator(
-        '[data-testid="video-card"], .video-card, a[href*="video"]'
-      );
+      const videoCards = page.locator('[data-testid="video-card"], .video-card, a[href*="video"]');
 
       // 验证至少有一个视频卡片
       const cardCount = await videoCards.count();
@@ -233,9 +224,7 @@ test.describe("移动端功能测试 - 视频列表交互", () => {
         await page.waitForTimeout(300);
 
         // 验证页面没有错误
-        const errorElements = await page
-          .locator(".error, [role='alert']")
-          .count();
+        const errorElements = await page.locator(".error, [role='alert']").count();
         expect(errorElements).toBe(0);
       }
     });

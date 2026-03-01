@@ -48,7 +48,9 @@ async function setViewport(page: Page, width: number, height: number): Promise<v
 test.describe("响应式布局测试 - 断点验证", () => {
   for (const { path, name } of PAGES) {
     for (const [key, breakpoint] of Object.entries(BREAKPOINTS)) {
-      test(`${name}页面 - ${breakpoint.name} (${breakpoint.width}x${breakpoint.height})`, async ({ page }) => {
+      test(`${name}页面 - ${breakpoint.name} (${breakpoint.width}x${breakpoint.height})`, async ({
+        page,
+      }) => {
         await page.goto(path);
         await setViewport(page, breakpoint.width, breakpoint.height);
         await waitForPageLoad(page);
@@ -384,7 +386,9 @@ test.describe("响应式布局测试 - 断点切换", () => {
 
       // 获取移动端布局
       const mobileLayout = await page.evaluate(() => {
-        const sidebar = document.querySelector('[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]');
+        const sidebar = document.querySelector(
+          '[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]'
+        );
         const fab = document.querySelector('[data-testid="danmaku-fab"], .fixed.bottom-4.right-4');
         return {
           sidebarVisible: sidebar !== null && (sidebar as HTMLElement).offsetWidth > 0,
@@ -398,7 +402,9 @@ test.describe("响应式布局测试 - 断点切换", () => {
 
       // 获取桌面端布局
       const desktopLayout = await page.evaluate(() => {
-        const sidebar = document.querySelector('[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]');
+        const sidebar = document.querySelector(
+          '[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]'
+        );
         const fab = document.querySelector('[data-testid="danmaku-fab"], .fixed.bottom-4.right-4');
         return {
           sidebarVisible: sidebar !== null && (sidebar as HTMLElement).offsetWidth > 0,
@@ -427,7 +433,9 @@ test.describe("响应式布局测试 - 断点切换", () => {
 
       // 获取桌面端布局
       const desktopLayout = await page.evaluate(() => {
-        const sidebar = document.querySelector('[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]');
+        const sidebar = document.querySelector(
+          '[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]'
+        );
         const fab = document.querySelector('[data-testid="danmaku-fab"], .fixed.bottom-4.right-4');
         return {
           sidebarVisible: sidebar !== null && (sidebar as HTMLElement).offsetWidth > 0,
@@ -441,7 +449,9 @@ test.describe("响应式布局测试 - 断点切换", () => {
 
       // 获取移动端布局
       const mobileLayout = await page.evaluate(() => {
-        const sidebar = document.querySelector('[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]');
+        const sidebar = document.querySelector(
+          '[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]'
+        );
         const fab = document.querySelector('[data-testid="danmaku-fab"], .fixed.bottom-4.right-4');
         return {
           sidebarVisible: sidebar !== null && (sidebar as HTMLElement).offsetWidth > 0,
@@ -470,14 +480,10 @@ test.describe("响应式布局测试 - 元素可见性", () => {
       // 检查应该在移动端隐藏的元素
       const hiddenElements = await page.evaluate(() => {
         // 常见的应该在移动端隐藏的元素
-        const selectors = [
-          '[class*="hidden"]',
-          '[class*="md:"]',
-          '[class*="lg:"]',
-        ];
+        const selectors = ['[class*="hidden"]', '[class*="md:"]', '[class*="lg:"]'];
 
         const results: Array<{ selector: string; count: number }> = [];
-        selectors.forEach((selector) => {
+        selectors.forEach(selector => {
           const elements = document.querySelectorAll(selector);
           results.push({ selector, count: elements.length });
         });
@@ -498,7 +504,9 @@ test.describe("响应式布局测试 - 元素可见性", () => {
 
       // 检查桌面端应该显示的元素
       const visibleElements = await page.evaluate(() => {
-        const sidebar = document.querySelector('[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]');
+        const sidebar = document.querySelector(
+          '[data-testid="danmaku-sidebar"], aside, [class*="sidebar"]'
+        );
         const navLinks = document.querySelectorAll("nav a, header nav a");
         const externalLinks = document.querySelectorAll('a[target="_blank"], a[href^="http"]');
 

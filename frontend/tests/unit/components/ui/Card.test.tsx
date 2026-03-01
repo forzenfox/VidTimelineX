@@ -57,11 +57,7 @@ describe("Card组件测试", () => {
    * 测试目标：验证CardDescription组件能够正确渲染
    */
   test("TC-004: CardDescription组件渲染测试", () => {
-    render(
-      <CardDescription data-testid="card-description">
-        卡片描述内容
-      </CardDescription>
-    );
+    render(<CardDescription data-testid="card-description">卡片描述内容</CardDescription>);
 
     const description = screen.getByTestId("card-description");
     expect(description).toBeInTheDocument();
@@ -152,10 +148,7 @@ describe("Card组件测试", () => {
 
     // 验证data-slot属性
     expect(screen.getByText("卡片标题")).toHaveAttribute("data-slot", "card-title");
-    expect(screen.getByText("卡片描述信息")).toHaveAttribute(
-      "data-slot",
-      "card-description"
-    );
+    expect(screen.getByText("卡片描述信息")).toHaveAttribute("data-slot", "card-description");
   });
 
   /**

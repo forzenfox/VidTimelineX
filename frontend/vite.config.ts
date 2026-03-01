@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
 
   // 是否启用 jsDelivr CDN 加速
   const useJsdelivrCdn = env.VITE_USE_JSDELIVR_CDN === "true";
-  
+
   // 构建配置
   const analyzeBuild = env.VITE_ANALYZE_BUILD === "true";
   const enableMinification = env.VITE_ENABLE_MINIFICATION !== "false";

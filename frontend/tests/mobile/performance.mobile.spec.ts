@@ -50,15 +50,13 @@ async function collectPerformanceMetrics(page: Page): Promise<{
 
   // 获取性能指标
   const metrics = await page.evaluate(() => {
-    const navigation = performance.getEntriesByType(
-      "navigation"
-    )[0] as PerformanceNavigationTiming;
+    const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
     const paintEntries = performance.getEntriesByType("paint");
     const lcpEntries = performance.getEntriesByType("largest-contentful-paint");
     const layoutShiftEntries = performance.getEntriesByType("layout-shift");
 
     // 计算FCP
-    const fcpEntry = paintEntries.find((entry) => entry.name === "first-contentful-paint");
+    const fcpEntry = paintEntries.find(entry => entry.name === "first-contentful-paint");
     const fcp = fcpEntry ? fcpEntry.startTime : 0;
 
     // 计算LCP
@@ -108,17 +106,16 @@ async function getWebVitals(page: Page): Promise<{
   ttfb: number;
 }> {
   return await page.evaluate(() => {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       // 使用web-vitals库或手动计算
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         // 处理性能条目
       });
 
       // 收集FCP
       const paintEntries = performance.getEntriesByType("paint");
-      const fcp =
-        paintEntries.find((e) => e.name === "first-contentful-paint")?.startTime || 0;
+      const fcp = paintEntries.find(e => e.name === "first-contentful-paint")?.startTime || 0;
 
       // 收集LCP
       const lcpEntries = performance.getEntriesByType("largest-contentful-paint");
@@ -134,7 +131,9 @@ async function getWebVitals(page: Page): Promise<{
       });
 
       // 收集TTFB
-      const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
+      const navigation = performance.getEntriesByType(
+        "navigation"
+      )[0] as PerformanceNavigationTiming;
       const ttfb = navigation ? navigation.responseStart : 0;
 
       resolve({ fcp, lcp, cls, ttfb });
@@ -278,7 +277,9 @@ test.describe("移动端性能测试 - 资源加载效率", () => {
       expect(
         metrics.resourceSize,
         `资源总大小应该小于${maxResourceSize / 1024 / 1024}MB，实际为${(
-          metrics.resourceSize / 1024 / 1024
+          metrics.resourceSize /
+          1024 /
+          1024
         ).toFixed(2)}MB`
       ).toBeLessThan(maxResourceSize);
 
@@ -419,8 +420,8 @@ test.describe("移动端性能测试 - 运行时性能", () => {
         window.scrollTo(0, document.body.scrollHeight / 2);
 
         // 等待渲染
-        await new Promise((resolve) => requestAnimationFrame(resolve));
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise(resolve => requestAnimationFrame(resolve));
+        await new Promise(resolve => setTimeout(resolve, 100));
 
         const endTime = performance.now();
         const scrollDuration = endTime - startTime;
@@ -448,7 +449,7 @@ test.describe("移动端性能测试 - 运行时性能", () => {
 
         // 测量1秒内的帧数
         const measureFrames = () => {
-          return new Promise<number>((resolve) => {
+          return new Promise<number>(resolve => {
             const countFrames = () => {
               frameCount++;
               if (performance.now() - startTime < 1000) {
@@ -529,8 +530,7 @@ test.describe("移动端性能测试 - 缓存策略", () => {
         return {
           totalResources: resources.length,
           cachedResources: cachedResources.length,
-          cacheHitRate:
-            resources.length > 0 ? cachedResources.length / resources.length : 0,
+          cacheHitRate: resources.length > 0 ? cachedResources.length / resources.length : 0,
         };
       });
 

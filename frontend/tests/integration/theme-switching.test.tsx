@@ -20,7 +20,14 @@ const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
     // 模拟更新 document class
-    document.documentElement.classList.remove("light", "dark", "tiger", "sweet", "dongzhu", "kaige");
+    document.documentElement.classList.remove(
+      "light",
+      "dark",
+      "tiger",
+      "sweet",
+      "dongzhu",
+      "kaige"
+    );
     document.documentElement.classList.add(newTheme);
   };
 

@@ -3,7 +3,7 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * Playwright 移动端测试配置（优化版）
  * 用于测试移动端网页的功能、性能、兼容性和响应式布局
- * 
+ *
  * 优化策略：
  * 1. 减少设备数量（保留代表性设备）
  * 2. 减少重试次数

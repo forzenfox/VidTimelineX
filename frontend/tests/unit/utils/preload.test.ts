@@ -269,10 +269,7 @@ describe("图片预加载功能", () => {
     });
 
     it("任意一张图片加载失败时应该 reject", async () => {
-      const urls = [
-        "https://example.com/1.webp",
-        "https://example.com/2.webp",
-      ];
+      const urls = ["https://example.com/1.webp", "https://example.com/2.webp"];
 
       const mockImages: Array<{
         onload: (() => void) | null;
@@ -306,11 +303,7 @@ describe("图片预加载功能", () => {
     });
 
     it("应该自动预加载首屏图片", () => {
-      const images = [
-        { filename: "1.webp" },
-        { filename: "2.webp" },
-        { filename: "3.webp" },
-      ];
+      const images = [{ filename: "1.webp" }, { filename: "2.webp" }, { filename: "3.webp" }];
 
       preloadAboveFoldImages(images);
 

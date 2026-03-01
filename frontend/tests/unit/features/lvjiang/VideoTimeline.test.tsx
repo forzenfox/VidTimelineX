@@ -107,9 +107,7 @@ describe("VideoTimeline 组件测试", () => {
    * 测试目标：验证中心时间线元素存在
    */
   test("TC-VT-006: 中心时间线显示测试", () => {
-    const { container } = render(
-      <VideoTimeline theme="dongzhu" onVideoClick={mockOnVideoClick} />
-    );
+    const { container } = render(<VideoTimeline theme="dongzhu" onVideoClick={mockOnVideoClick} />);
 
     // 验证中心线元素存在（桌面端显示）
     // 使用属性选择器避免 CSS 类名中的特殊字符问题
@@ -122,9 +120,7 @@ describe("VideoTimeline 组件测试", () => {
    * 测试目标：验证时间线节点图标正确渲染
    */
   test("TC-VT-007: 节点图标显示测试", () => {
-    const { container } = render(
-      <VideoTimeline theme="dongzhu" onVideoClick={mockOnVideoClick} />
-    );
+    const { container } = render(<VideoTimeline theme="dongzhu" onVideoClick={mockOnVideoClick} />);
 
     // 验证节点图标存在
     const nodeIcons = container.querySelectorAll(".rounded-full");
@@ -136,9 +132,7 @@ describe("VideoTimeline 组件测试", () => {
    * 测试目标：验证洞主主题下显示猪图标
    */
   test("TC-VT-008: 洞主主题节点图标测试", () => {
-    const { container } = render(
-      <VideoTimeline theme="dongzhu" onVideoClick={mockOnVideoClick} />
-    );
+    const { container } = render(<VideoTimeline theme="dongzhu" onVideoClick={mockOnVideoClick} />);
 
     // 验证洞主主题显示猪表情
     expect(container.textContent).toContain("🐷");
@@ -149,9 +143,7 @@ describe("VideoTimeline 组件测试", () => {
    * 测试目标：验证凯哥主题下显示野猪图标
    */
   test("TC-VT-009: 凯哥主题节点图标测试", () => {
-    const { container } = render(
-      <VideoTimeline theme="kaige" onVideoClick={mockOnVideoClick} />
-    );
+    const { container } = render(<VideoTimeline theme="kaige" onVideoClick={mockOnVideoClick} />);
 
     // 验证凯哥主题显示野猪表情
     expect(container.textContent).toContain("🐗");
