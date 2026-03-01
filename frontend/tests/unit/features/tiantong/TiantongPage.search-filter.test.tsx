@@ -45,7 +45,7 @@ jest.mock("@/features/tiantong/components/SidebarDanmu", () => ({
 }));
 
 // Mock VideoModal
-jest.mock("@/components/video/VideoModal", () => ({
+jest.mock("@/components/business/video/VideoModal", () => ({
   __esModule: true,
   default: ({ video, theme, onClose }: any) => (
     <div data-testid="video-modal">
@@ -59,8 +59,8 @@ jest.mock("@/components/video/VideoModal", () => ({
 }));
 
 // 使用真实的VideoViewToolbar，但不使用mock
-jest.mock("@/components/video-view/VideoViewToolbar", () => {
-  const actual = jest.requireActual("@/components/video-view/VideoViewToolbar");
+jest.mock("@/components/business/video-view/VideoViewToolbar", () => {
+  const actual = jest.requireActual("@/components/business/video-view/VideoViewToolbar");
   return actual;
 });
 
@@ -79,12 +79,12 @@ jest.mock("@/hooks/useViewPreferences", () => ({
 }));
 
 // Mock IconToolbar
-jest.mock("@/components/video-view/IconToolbar", () => ({
+jest.mock("@/components/business/video-view/IconToolbar", () => ({
   IconToolbar: () => <div data-testid="icon-toolbar" />,
 }));
 
 // Mock VideoGrid
-jest.mock("@/components/video-view/VideoGrid", () => ({
+jest.mock("@/components/business/video-view/VideoGrid", () => ({
   __esModule: true,
   default: ({ videos, onVideoClick, theme }: any) => (
     <div data-testid="video-grid">
@@ -95,7 +95,7 @@ jest.mock("@/components/video-view/VideoGrid", () => ({
 }));
 
 // Mock VideoList
-jest.mock("@/components/video-view/VideoList", () => ({
+jest.mock("@/components/business/video-view/VideoList", () => ({
   __esModule: true,
   default: ({ videos, onVideoClick, theme }: any) => (
     <div data-testid="video-list">
@@ -106,7 +106,7 @@ jest.mock("@/components/video-view/VideoList", () => ({
 }));
 
 // Mock EmptyState
-jest.mock("@/components/video-view/EmptyState", () => ({
+jest.mock("@/components/business/video-view/EmptyState", () => ({
   __esModule: true,
   default: ({ onClearFilter }: any) => (
     <div data-testid="empty-state">

@@ -20,7 +20,6 @@ tests/
 │   │   ├── features/             # 功能模块组件测试
 │   │   │   ├── tiantong/         # 甜筒模块组件测试
 │   │   │   └── lvjiang/          # 驴酱模块组件测试
-│   │   ├── MobileNotSupported.test.tsx
 │   │   └── ui/                   # UI组件测试
 │   ├── hooks/                    # Hooks单元测试
 │   └── utils/                    # 工具函数单元测试
@@ -48,38 +47,47 @@ tests/
 ├── setup-global.ts               # 全局测试配置
 ├── performance-test.ts           # 性能测试
 └── docs/                         # 测试文档
-```
+    └── testing-guidelines.md     # 测试代码编写规范
 
 ## 命名规范
 
 ### 单元测试命名规范
 
 ```
+
 格式：[ComponentName].test.tsx
 示例：
+
 - ThemeToggle.test.tsx
 - VideoCard.test.tsx
 - Header.test.tsx
+
 ```
 
 ### 集成测试命名规范
 
 ```
+
 格式：[FeatureName]-[TestType].test.tsx
 示例：
+
 - visual-baseline.test.tsx
 - core-flow.test.tsx
 - content-area.test.tsx
+
 ```
 
 ### E2E测试命名规范
 
 ```
+
 格式：[FeatureName]-[Scenario].e2e.tsx
 示例：
+
 - video-playback.e2e.tsx
 - theme-switching.e2e.tsx
-```
+
+````
 
 ## 测试类型说明
 
@@ -183,7 +191,7 @@ export const mockDanmaku: Danmu[] = [
     color: "#FF5F00",
   },
 ];
-```
+````
 
 ### Mock使用原则
 

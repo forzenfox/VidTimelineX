@@ -1,10 +1,10 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import VideoGrid from "../../../../src/components/video-view/VideoGrid";
-import type { Video } from "../../../../src/components/video/types";
+import VideoGrid from "../../../../src/components/business/video-view/VideoGrid";
+import type { Video } from "../../../../src/components/business/video/types";
 
 // Mock VideoCard component
-jest.mock("../../../../src/components/video/VideoCard", () => ({
+jest.mock("../../../../src/components/business/video/VideoCard", () => ({
   __esModule: true,
   default: ({ video, layout, className }: { video: Video; layout: string; className?: string }) => (
     <div data-testid="video-card" data-layout={layout} className={className}>

@@ -1,1 +1,32 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 定义颜色输出
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+echo "🔍 开始代码检查..."
+
+# 1. 运行 lint-staged 进行代码格式化和 ESLint 检查
+echo "📝 步骤 1/2: 代码格式化和 ESLint 检查..."
 npx lint-staged
+if [ $? -ne 0 ]; then
+    echo "${RED}❌ 代码检查失败，请修复错误后重新提交${NC}"
+    exit 1
+fi
+echo "${GREEN}✅ 代码格式化检查通过${NC}"
+
+# 2. TypeScript 类型检查
+echo "🔷 步骤 2/2: TypeScript 类型检查..."
+npx tsc --noEmit --project tsconfig.app.json
+if [ $? -ne 0 ]; then
+    echo "${RED}❌ TypeScript 类型检查失败，请修复类型错误后重新提交${NC}"
+    exit 1
+fi
+echo "${GREEN}✅ TypeScript 类型检查通过${NC}"
+
+echo ""
+echo "${GREEN}🎉 所有检查通过，准备提交代码${NC}"
+echo "${NC}💡 注：单元测试已在 CI 中执行，本地可使用 npm test 运行测试${NC}"
+exit 0

@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import VideoCard from "../../../../src/components/video/VideoCard";
-import type { Video } from "../../../../src/components/video/types";
+import VideoCard from "../../../../src/components/business/video/VideoCard";
+import type { Video } from "../../../../src/components/business/video/types";
 
 // Mock VideoCover component
 jest.mock("../../../../src/components/figma/ImageWithFallback", () => ({

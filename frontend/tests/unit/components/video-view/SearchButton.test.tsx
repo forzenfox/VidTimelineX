@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { SearchButton } from "@/components/video-view/SearchButton";
+import { SearchButton } from "@/components/business/video-view/SearchButton";
 import "@testing-library/jest-dom";
 
 describe("SearchButton 组件测试", () => {

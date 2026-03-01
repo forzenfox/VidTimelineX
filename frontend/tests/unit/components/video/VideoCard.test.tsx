@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import VideoCard from "@/components/video/VideoCard";
-import type { Video } from "@/components/video/types";
+import VideoCard from "@/components/business/video/VideoCard";
+import type { Video } from "@/components/business/video/types";
 import "@testing-library/jest-dom";
 
 // Mock VideoCover component

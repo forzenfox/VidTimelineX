@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import VideoGrid from "@/components/video-view/VideoGrid";
-import type { Video, Theme } from "@/components/video/types";
+import VideoGrid from "@/components/business/video-view/VideoGrid";
+import type { Video, Theme } from "@/components/business/video/types";
 import "@testing-library/jest-dom";
 
 const mockVideos: Video[] = [

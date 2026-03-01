@@ -6,17 +6,24 @@ import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 
 export default defineConfig(({ mode }) => {
+  // 加载环境变量
   const env = loadEnv(mode, process.cwd(), "");
 
+  // 使用类型化的环境变量访问
   const customDomain = env.VITE_CUSTOM_DOMAIN;
   const baseUrl = customDomain ? `https://${customDomain}/` : env.VITE_BASE_URL || "/";
 
   // 是否启用 jsDelivr CDN 加速
   const useJsdelivrCdn = env.VITE_USE_JSDELIVR_CDN === "true";
 
-  console.log(`[Vite Config] 构建模式: ${mode}`);
+  // 构建配置
+  const analyzeBuild = env.VITE_ANALYZE_BUILD === "true";
+  const enableMinification = env.VITE_ENABLE_MINIFICATION !== "false";
+
+  console.log(`[Vite Config] 构建模式：${mode}`);
   console.log(`[Vite Config] jsDelivr CDN: ${useJsdelivrCdn ? "启用" : "禁用"}`);
   console.log(`[Vite Config] 基础 URL: ${baseUrl}`);
+  console.log(`[Vite Config] 代码压缩：${enableMinification ? "启用" : "禁用"}`);
 
   return {
     base: baseUrl,
@@ -143,9 +150,9 @@ export default defineConfig(({ mode }) => {
           entryFileNames: "entry/[name]-[hash:8].js",
         },
       },
-      minify: "esbuild",
+      minify: enableMinification ? "esbuild" : false,
       cssCodeSplit: true,
-      brotliSize: true,
+      brotliSize: analyzeBuild, // 仅在分析构建时启用 brotli 大小报告
       sourcemap: false,
       emptyOutDir: true,
     },

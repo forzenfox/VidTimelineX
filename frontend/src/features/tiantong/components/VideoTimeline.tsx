@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Search } from "lucide-react";
 import { videos, type Video } from "../data/data";
-import VideoCard from "../../../components/video/VideoCard";
+import VideoCard from "@/components/business/video/VideoCard";
 
 interface VideoTimelineProps {
   theme: "tiger" | "sweet";
@@ -37,8 +37,18 @@ const VideoItem: React.FC<{
   return (
     <div
       key={video.id}
-      className={`relative mb-8 sm:mb-16 flex items-center ${isLeft ? "sm:justify-start" : "sm:justify-end"} justify-center`}
+      className={`relative mb-8 sm:mb-16 flex items-center ${isLeft ? "sm:justify-start" : "sm:justify-end"} justify-start pl-8 sm:pl-0`}
     >
+      {/* 移动端简化节点 - 小圆点 */}
+      <div
+        className="sm:hidden absolute left-4 w-3 h-3 rounded-full -ml-1.5 z-10"
+        style={{
+          background: theme === "tiger" ? "#FF9500" : "#FF8CA0",
+          border: `2px solid ${theme === "tiger" ? "#FFFDF9" : "#FFFDF9"}`,
+          top: "24px",
+        }}
+      />
+
       {/* 节点图标 - 桌面端显示在中心，移动端隐藏 */}
       <div
         className="hidden sm:flex absolute left-1/2 -ml-8 w-16 h-16 rounded-full items-center justify-center cursor-pointer hover:scale-125 z-10 transition-all duration-300"
@@ -49,7 +59,7 @@ const VideoItem: React.FC<{
       </div>
 
       {/* 视频卡片 - 移动端全宽，桌面端固定宽度 */}
-      <div className={`w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-16" : "sm:pl-16"} px-4 sm:px-0`}>
+      <div className={`w-full max-w-sm sm:w-5/12 ${isLeft ? "sm:pr-16" : "sm:pl-16"} sm:px-0`}>
         <VideoCard
           video={video}
           onClick={onVideoClick}
@@ -153,6 +163,18 @@ export const VideoTimeline = React.memo(
             <div
               className="hidden sm:block absolute left-1/2 top-0 bottom-0 w-1 -ml-0.5 transition-all duration-300"
               style={centerLineStyle}
+            />
+
+            {/* 移动端简化时间轴线 */}
+            <div
+              className="sm:hidden absolute left-4 top-0 bottom-0 w-0.5 rounded-full"
+              style={{
+                background:
+                  theme === "tiger"
+                    ? "linear-gradient(to bottom, #FF9500, #FFBE28)"
+                    : "linear-gradient(to bottom, #FF8CA0, #FFC0CB)",
+                opacity: 0.5,
+              }}
             />
 
             {/* 视频节点 */}

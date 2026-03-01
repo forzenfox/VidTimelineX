@@ -4,22 +4,32 @@ import { videos, Video } from "./data";
 import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
-import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
-import VideoModal from "../../components/video/VideoModal";
+import VideoModal from "@/components/business/video/VideoModal";
 import { useViewPreferences } from "@/hooks/useViewPreferences";
 import { useVideoFilter } from "@/hooks/useVideoFilter";
-import type { Video as VideoType } from "@/components/video/types";
-import VideoGrid from "@/components/video-view/VideoGrid";
-import VideoList from "@/components/video-view/VideoList";
-import { IconToolbar } from "@/components/video-view/IconToolbar";
-import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
-import EmptyState from "@/components/video-view/EmptyState";
+import type { Video as VideoType } from "@/components/business/video/types";
+import VideoGrid from "@/components/business/video-view/VideoGrid";
+import VideoList from "@/components/business/video-view/VideoList";
+import { IconToolbar } from "@/components/business/video-view/IconToolbar";
+import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
+import EmptyState from "@/components/business/video-view/EmptyState";
+import SidebarDanmu from "./components/SidebarDanmu";
 
+/**
+ * 将Video类型转换为VideoType类型
+ * @param video - 原始Video对象
+ * @returns 转换后的VideoType对象
+ */
 const convertToVideoType = (video: Video): VideoType => ({
   ...video,
   views: typeof video.views === "string" ? parseInt(video.views, 10) || 0 : video.views,
 });
 
+/**
+ * 将VideoType类型转换回Video类型
+ * @param video - VideoType对象
+ * @returns 转换后的Video对象
+ */
 const convertFromVideoType = (video: VideoType): Video => ({
   ...video,
   views: String(video.views || 0),
@@ -27,8 +37,6 @@ const convertFromVideoType = (video: VideoType): Video => ({
 
 // 导入甜筒模块样式
 import "./styles/tiantong.css";
-
-const DesktopSidebarDanmu = React.lazy(() => import("./components/SidebarDanmu"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,23 +54,12 @@ const queryClient = new QueryClient({
   },
 });
 
-const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
-  tablet: (props: { theme: "tiger" | "sweet" }) => (
-    <Suspense
-      fallback={<div className="bg-card rounded-xl border border-border h-64 animate-pulse"></div>}
-    >
-      <DesktopSidebarDanmu {...props} />
-    </Suspense>
-  ),
-  desktop: (props: { theme: "tiger" | "sweet" }) => (
-    <Suspense
-      fallback={<div className="bg-card rounded-xl border border-border h-64 animate-pulse"></div>}
-    >
-      <DesktopSidebarDanmu {...props} />
-    </Suspense>
-  ),
-});
-
+/**
+ * 亿口甜筒主页面组件
+ * 实现移动端适配：
+ * - 桌面端（>=1024px）：显示固定侧边栏，主内容区padding-right: 320px
+ * - 移动端（<1024px）：隐藏侧边栏，使用SidebarDanmu的浮动按钮
+ */
 const TiantongPage = () => {
   const [theme, setTheme] = useState<"tiger" | "sweet">("tiger");
   const [danmakuKey, setDanmakuKey] = useState(0);
@@ -124,6 +121,9 @@ const TiantongPage = () => {
   }, [theme]);
 
   React.useEffect(() => {
+    /**
+     * 处理滚动事件，动态调整Header背景透明度
+     */
     const handleScroll = () => {
       const scrollY = window.scrollY;
       const opacity = Math.min(1, 0.9 + scrollY / 500);
@@ -133,13 +133,9 @@ const TiantongPage = () => {
         if (scrollY > 30) {
           headerRef.current.classList.add("shadow-md");
           headerRef.current.classList.remove("shadow-sm");
-          headerRef.current.classList.add("py-2");
-          headerRef.current.classList.remove("py-3");
         } else {
           headerRef.current.classList.add("shadow-sm");
           headerRef.current.classList.remove("shadow-md");
-          headerRef.current.classList.remove("py-2");
-          headerRef.current.classList.add("py-3");
         }
       }
     };
@@ -149,6 +145,10 @@ const TiantongPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /**
+   * 切换主题
+   * @param newTheme - 新主题类型
+   */
   const toggleTheme = React.useCallback((newTheme: "tiger" | "sweet") => {
     setTheme(newTheme);
     setDanmakuKey(prev => prev + 1); // 强制重新渲染弹幕组件
@@ -164,7 +164,10 @@ const TiantongPage = () => {
   // 使用useRef存储timeoutId，避免违反不可变性规则
   const timeoutIdRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 使用useCallback创建防抖搜索函数
+  /**
+   * 防抖搜索函数
+   * @param query - 搜索关键词
+   */
   const debouncedSearch = React.useCallback((query: string) => {
     if (timeoutIdRef.current) {
       clearTimeout(timeoutIdRef.current);
@@ -182,7 +185,10 @@ const TiantongPage = () => {
     }, 300);
   }, []);
 
-  // 处理搜索 - 由 IconToolbar 的 SearchButton 触发
+  /**
+   * 处理搜索
+   * @param query - 搜索关键词
+   */
   const handleSearch = React.useCallback((query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
@@ -196,12 +202,17 @@ const TiantongPage = () => {
     }
   }, []);
 
-  // 清除搜索
+  /**
+   * 清除搜索
+   */
   const handleClearSearch = React.useCallback(() => {
     setSearchQuery("");
     setSuggestions([]);
   }, []);
 
+  /**
+   * 清除搜索历史
+   */
   const clearSearchHistory = React.useCallback(() => {
     setSearchHistory([]);
   }, []);
@@ -332,9 +343,14 @@ const TiantongPage = () => {
               </div>
             </header>
 
+            {/* 主内容区域 - 使用CSS媒体查询控制padding */}
             <main
-              className="max-w-[1440px] lg:max-w-[1600px] mx-auto px-6 py-8 flex flex-col md:flex-row gap-8 pt-40"
+              className="main-content max-w-[1440px] lg:max-w-[1600px] mx-auto px-6 py-8 flex flex-col gap-8 pt-40"
               role="main"
+              style={{
+                // 默认移动端无padding
+                paddingRight: "24px",
+              }}
             >
               <section className="flex-1 w-full min-w-0" aria-labelledby="timeline-title">
                 {/* 移动端显示 IconToolbar（纯图标） */}
@@ -402,13 +418,8 @@ const TiantongPage = () => {
                 )}
               </section>
 
-              <aside
-                className="w-full md:w-80 lg:w-96 shrink-0"
-                role="complementary"
-                aria-label="互动区域"
-              >
-                <ResponsiveSidebarDanmu theme={theme} />
-              </aside>
+              {/* 弹幕侧边栏组件 - 内部处理响应式逻辑（桌面端侧边栏/移动端抽屉） */}
+              <SidebarDanmu theme={theme} />
             </main>
 
             <footer
@@ -440,6 +451,30 @@ const TiantongPage = () => {
             )}
           </div>
         </Suspense>
+
+        {/* 响应式样式 - 控制主内容区padding和侧边栏显示 */}
+        <style>{`
+          /* 平板端和桌面端（>=1024px）：为弹幕侧边栏留出空间 */
+          @media (min-width: 1024px) {
+            .main-content {
+              padding-right: 344px !important; /* 320px + 24px padding */
+            }
+          }
+          
+          /* 移动端（<1024px）：恢复正常padding */
+          @media (max-width: 1023px) {
+            .main-content {
+              padding-right: 24px !important;
+            }
+          }
+          
+          /* 移动端（<768px）：隐藏侧边栏区域 */
+          @media (max-width: 767px) {
+            .tiantong-sidebar {
+              display: none !important;
+            }
+          }
+        `}</style>
       </>
     </QueryClientProvider>
   );

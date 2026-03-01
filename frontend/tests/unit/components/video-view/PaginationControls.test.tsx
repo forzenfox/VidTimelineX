@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { PaginationControls } from "@/components/video-view/PaginationControls";
+import { PaginationControls } from "@/components/business/video-view/PaginationControls";
 import "@testing-library/jest-dom";
 
 describe("PaginationControls 组件测试", () => {

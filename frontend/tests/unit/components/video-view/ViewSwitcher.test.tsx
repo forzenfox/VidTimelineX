@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ViewSwitcher } from "@/components/video-view/ViewSwitcher";
+import { ViewSwitcher } from "@/components/business/video-view/ViewSwitcher";
 import type { ViewMode } from "@/hooks/types";
 import "@testing-library/jest-dom";
 

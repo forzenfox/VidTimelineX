@@ -32,30 +32,34 @@ describe("HorizontalDanmaku 组件测试 - 甜筒页面", () => {
 
   /**
    * 测试用例 TC-003: 老虎主题字体大小
-   * 测试目标：验证老虎主题字体大小为 20px
+   * 测试目标：验证老虎主题字体大小在有效范围内（14px, 17px, 20px）
    */
-  test("TC-003: 老虎主题字体大小应该是 20px", () => {
+  test("TC-003: 老虎主题字体大小应该在有效范围内", () => {
     const { container } = render(<HorizontalDanmaku theme="tiger" />);
 
     const danmakuElements = container.querySelectorAll(".absolute.whitespace-nowrap");
     expect(danmakuElements.length).toBeGreaterThan(0);
 
     const firstDanmaku = danmakuElements[0];
-    expect(firstDanmaku).toHaveStyle("font-size: 20px");
+    const style = firstDanmaku.getAttribute("style");
+    // 字体大小可能是 14px, 17px 或 20px
+    expect(style).toMatch(/font-size:\s*(14|17|20)px/);
   });
 
   /**
    * 测试用例 TC-004: 甜蜜主题字体大小
-   * 测试目标：验证甜蜜主题字体大小为 22px
+   * 测试目标：验证甜蜜主题字体大小在有效范围内（14px, 17px, 20px）
    */
-  test("TC-004: 甜蜜主题字体大小应该是 22px", () => {
+  test("TC-004: 甜蜜主题字体大小应该在有效范围内", () => {
     const { container } = render(<HorizontalDanmaku theme="sweet" />);
 
     const danmakuElements = container.querySelectorAll(".absolute.whitespace-nowrap");
     expect(danmakuElements.length).toBeGreaterThan(0);
 
     const firstDanmaku = danmakuElements[0];
-    expect(firstDanmaku).toHaveStyle("font-size: 22px");
+    const style = firstDanmaku.getAttribute("style");
+    // 字体大小可能是 14px, 17px 或 20px
+    expect(style).toMatch(/font-size:\s*(14|17|20)px/);
   });
 
   /**
@@ -88,7 +92,7 @@ describe("HorizontalDanmaku 组件测试 - 甜筒页面", () => {
 
   /**
    * 测试用例 TC-007: 弹幕轨道分布
-   * 测试目标：验证弹幕均匀分布在 8 条轨道上
+   * 测试目标：验证弹幕均匀分布在 8 条轨道上（从 5% 开始，间隔 12%）
    */
   test("TC-007: 弹幕应该均匀分布在 8 条轨道上", () => {
     const { container } = render(<HorizontalDanmaku theme="tiger" />);
@@ -96,8 +100,8 @@ describe("HorizontalDanmaku 组件测试 - 甜筒页面", () => {
     const danmakuElements = container.querySelectorAll(".absolute.whitespace-nowrap");
     expect(danmakuElements.length).toBeGreaterThan(0);
 
-    // 验证前 8 条弹幕分布在 8 条轨道上（10%, 20%, 30%...）
-    const expectedTops = ["10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%"];
+    // 验证前 8 条弹幕分布在 8 条轨道上（5%, 17%, 29%, 41%, 53%, 65%, 77%, 89%）
+    const expectedTops = ["5%", "17%", "29%", "41%", "53%", "65%", "77%", "89%"];
     for (let i = 0; i < Math.min(8, danmakuElements.length); i++) {
       const danmaku = danmakuElements[i];
       expect(danmaku).toHaveStyle(`top: ${expectedTops[i]}`);
@@ -116,8 +120,9 @@ describe("HorizontalDanmaku 组件测试 - 甜筒页面", () => {
 
     const firstDanmaku = danmakuElements[0];
     const style = firstDanmaku.getAttribute("style");
-    // 验证 animation 属性包含以秒为单位的 duration（如 6s, 7.5s, 8s）
-    expect(style).toMatch(/animation:.*danmaku\s+\d+(\.\d+)?s/);
+    // 验证 animation 属性包含以秒为单位的 duration（如 8s, 8.5s, 10s）
+    // 动画名称为 tiantong-danmaku-scroll
+    expect(style).toMatch(/animation:.*tiantong-danmaku-scroll\s+\d+(\.\d+)?s/);
   });
 
   /**

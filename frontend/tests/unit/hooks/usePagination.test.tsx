@@ -263,4 +263,146 @@ describe("usePagination Hook 测试", () => {
       expect(result.current.paginatedItems[3].id).toBe("100");
     });
   });
+
+  describe("TC-006: 边界情况测试", () => {
+    test("边界情况 - 只有一条数据时正确显示", () => {
+      const singleItem = [{ id: "1", title: "唯一视频" }];
+      const { result } = renderHook(() => usePagination(singleItem));
+
+      expect(result.current.totalPages).toBe(1);
+      expect(result.current.paginatedItems).toHaveLength(1);
+      expect(result.current.hasNextPage).toBe(false);
+      expect(result.current.hasPrevPage).toBe(false);
+      expect(result.current.startIndex).toBe(0);
+      expect(result.current.endIndex).toBe(1);
+    });
+
+    test("边界情况 - 页码为负数时自动修正为第一页", () => {
+      const { result } = renderHook(() => usePagination(mockItems));
+
+      act(() => {
+        result.current.setPage(-5);
+      });
+
+      expect(result.current.currentPage).toBe(1);
+    });
+
+    test("边界情况 - 数据清空后页码重置", () => {
+      const { result, rerender } = renderHook(({ items }) => usePagination(items), {
+        initialProps: { items: mockItems },
+      });
+
+      act(() => {
+        result.current.setPage(5);
+      });
+
+      expect(result.current.currentPage).toBe(5);
+
+      // 清空数据
+      rerender({ items: [] });
+
+      // 数据为空时，setPage应该处理边界情况
+      act(() => {
+        result.current.setPage(1);
+      });
+
+      expect(result.current.currentPage).toBe(1);
+      expect(result.current.totalPages).toBe(0);
+    });
+  });
+
+  describe("TC-007: 错误处理测试", () => {
+    test("错误处理 - 无效页码字符串转换", () => {
+      const { result } = renderHook(() => usePagination(mockItems));
+
+      // 测试Infinity情况
+      act(() => {
+        result.current.setPage(Infinity);
+      });
+
+      // Infinity会被Math.min处理为最大页码
+      expect(result.current.currentPage).toBe(9);
+    });
+
+    test("错误处理 - 超大页码数处理", () => {
+      const { result } = renderHook(() => usePagination(mockItems));
+
+      act(() => {
+        result.current.setPage(Number.MAX_SAFE_INTEGER);
+      });
+
+      // 应该被限制在最大页码
+      expect(result.current.currentPage).toBe(9);
+    });
+
+    test("错误处理 - 设置不在选项中的pageSize时使用默认值", () => {
+      const { result } = renderHook(() =>
+        usePagination(mockItems, {
+          pageSizeOptions: [12, 24, 48],
+        })
+      );
+
+      act(() => {
+        result.current.setPageSize(999);
+      });
+
+      // 不在选项中时应该使用第一个选项
+      expect(result.current.pageSize).toBe(12);
+      expect(result.current.currentPage).toBe(1);
+    });
+  });
+
+  describe("TC-008: 性能测试", () => {
+    test("性能测试 - 大数据集分页性能", () => {
+      // 创建10万条数据
+      const largeItems = Array.from({ length: 100000 }, (_, i) => ({
+        id: String(i + 1),
+        title: `视频 ${i + 1}`,
+      }));
+
+      const startTime = performance.now();
+      const { result } = renderHook(() => usePagination(largeItems, { initialPageSize: 24 }));
+      const endTime = performance.now();
+
+      // 初始化应该在100ms内完成
+      expect(endTime - startTime).toBeLessThan(100);
+      expect(result.current.totalItems).toBe(100000);
+      expect(result.current.totalPages).toBe(4167);
+    });
+
+    test("性能测试 - 频繁切换页码性能", () => {
+      const { result } = renderHook(() => usePagination(mockItems));
+
+      const startTime = performance.now();
+
+      // 快速切换100次页码
+      for (let i = 0; i < 100; i++) {
+        act(() => {
+          result.current.setPage((i % 9) + 1);
+        });
+      }
+
+      const endTime = performance.now();
+
+      // 100次切换应该在100ms内完成（根据实际运行环境调整阈值）
+      expect(endTime - startTime).toBeLessThan(100);
+      expect(result.current.currentPage).toBe((99 % 9) + 1);
+    });
+
+    test("性能测试 - 分页数据使用useMemo缓存", () => {
+      const { result, rerender } = renderHook(({ items }) => usePagination(items), {
+        initialProps: { items: mockItems },
+      });
+
+      const firstPaginatedItems = result.current.paginatedItems;
+
+      // 重新渲染但数据不变
+      rerender({ items: mockItems });
+
+      const secondPaginatedItems = result.current.paginatedItems;
+
+      // 应该是同一个引用（useMemo缓存）
+      expect(firstPaginatedItems).toBe(secondPaginatedItems);
+    });
+  });
 });

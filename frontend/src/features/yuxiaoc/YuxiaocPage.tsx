@@ -10,7 +10,7 @@ import {
   DanmakuTower,
   HorizontalDanmaku,
 } from "./components";
-import VideoModal from "../../components/video/VideoModal";
+import VideoModal from "@/components/business/video/VideoModal";
 import "./styles/yuxiaoc.css";
 
 const YuxiaocPage = () => {

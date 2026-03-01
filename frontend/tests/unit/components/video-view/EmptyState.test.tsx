@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import EmptyState from "@/components/video-view/EmptyState";
+import EmptyState from "@/components/business/video-view/EmptyState";
 import "@testing-library/jest-dom";
 
 describe("EmptyState组件测试", () => {

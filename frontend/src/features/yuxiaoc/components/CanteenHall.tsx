@@ -2,9 +2,9 @@ import React, { useMemo, useState, useEffect } from "react";
 import type { Theme, Video } from "../data/types";
 import { videos } from "../data/videos";
 import { Search } from "lucide-react";
-import VideoCard from "../../../components/video/VideoCard";
-import { VideoViewToolbar } from "../../../components/video-view/VideoViewToolbar";
-import { IconToolbar } from "../../../components/video-view/IconToolbar";
+import VideoCard from "@/components/business/video/VideoCard";
+import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
+import { IconToolbar } from "@/components/business/video-view/IconToolbar";
 import { useVideoView } from "../hooks/useVideoView";
 
 interface CanteenHallProps {
@@ -367,7 +367,6 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             searchQuery={searchQuery}
             onClearSearch={handleClearSearch}
             theme={theme}
-            isMobile={true}
           />
         </div>
 

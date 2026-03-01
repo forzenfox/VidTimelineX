@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { SortDropdown } from "@/components/video-view/SortDropdown";
+import { SortDropdown } from "@/components/business/video-view/SortDropdown";
 import "@testing-library/jest-dom";
 
 describe("SortDropdown 组件测试", () => {

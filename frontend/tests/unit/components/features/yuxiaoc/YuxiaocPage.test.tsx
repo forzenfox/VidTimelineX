@@ -61,7 +61,7 @@ jest.mock("@/features/yuxiaoc/components/HorizontalDanmaku", () => ({
   ),
 }));
 
-jest.mock("@/components/video/VideoModal", () => ({
+jest.mock("@/components/business/video/VideoModal", () => ({
   __esModule: true,
   default: ({
     video,

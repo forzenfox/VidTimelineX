@@ -46,14 +46,19 @@ jest.mock("@/features/tiantong/components/HorizontalDanmaku", () => ({
   HorizontalDanmaku: (props: any) => mockHorizontalDanmaku(props),
 }));
 
-// Mock SidebarDanmu
+// Mock SidebarDanmu - 更新为新的移动端适配版本
 jest.mock("@/features/tiantong/components/SidebarDanmu", () => ({
   __esModule: true,
-  default: ({ theme }: any) => <div data-testid="sidebar-danmu">Sidebar danmu - {theme}</div>,
+  default: ({ theme }: any) => (
+    <div data-testid="sidebar-danmu" className="danmaku-sidebar danmaku-mobile-button">
+      <div className="danmaku-sidebar">Sidebar danmu - {theme}</div>
+      <button className="danmaku-mobile-button">Mobile Button</button>
+    </div>
+  ),
 }));
 
 // Mock VideoModal - 注意：实际组件只在 selectedVideo 存在时渲染
-jest.mock("@/components/video/VideoModal", () => ({
+jest.mock("@/components/business/video/VideoModal", () => ({
   __esModule: true,
   default: ({ video, theme, onClose }: any) => (
     <div data-testid="video-modal">
@@ -67,7 +72,7 @@ jest.mock("@/components/video/VideoModal", () => ({
 }));
 
 // Mock IconToolbar
-jest.mock("@/components/video-view/IconToolbar", () => ({
+jest.mock("@/components/business/video-view/IconToolbar", () => ({
   IconToolbar: ({
     viewMode,
     onViewModeChange,
@@ -104,7 +109,7 @@ jest.mock("@/components/video-view/IconToolbar", () => ({
 }));
 
 // Mock VideoGrid
-jest.mock("@/components/video-view/VideoGrid", () => ({
+jest.mock("@/components/business/video-view/VideoGrid", () => ({
   __esModule: true,
   default: ({ videos, onVideoClick, theme }: any) => (
     <div data-testid="video-grid">
@@ -120,7 +125,7 @@ jest.mock("@/components/video-view/VideoGrid", () => ({
 }));
 
 // Mock VideoList
-jest.mock("@/components/video-view/VideoList", () => ({
+jest.mock("@/components/business/video-view/VideoList", () => ({
   __esModule: true,
   default: ({ videos, onVideoClick, theme }: any) => (
     <div data-testid="video-list">
@@ -131,7 +136,7 @@ jest.mock("@/components/video-view/VideoList", () => ({
 }));
 
 // Mock EmptyState
-jest.mock("@/components/video-view/EmptyState", () => ({
+jest.mock("@/components/business/video-view/EmptyState", () => ({
   __esModule: true,
   default: ({ onClearFilter }: any) => (
     <div data-testid="empty-state">
@@ -441,6 +446,71 @@ describe("TiantongPage 组件测试", () => {
       render(<TiantongPage />);
       // 初始搜索历史为空
       expect(screen.getByTestId("toolbar-history")).toHaveTextContent("[]");
+    });
+  });
+
+  describe("TC-020: 移动端适配测试", () => {
+    test("应该包含响应式样式标签", () => {
+      const { container } = render(<TiantongPage />);
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+    });
+
+    test("应该包含移动端媒体查询（<1024px）", () => {
+      const { container } = render(<TiantongPage />);
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+      if (styleTag) {
+        expect(styleTag.textContent).toContain("@media (max-width: 1023px)");
+      }
+    });
+
+    test("应该包含桌面端媒体查询（>=1024px）", () => {
+      const { container } = render(<TiantongPage />);
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+      if (styleTag) {
+        expect(styleTag.textContent).toContain("@media (min-width: 1024px)");
+      }
+    });
+
+    test("应该包含移动端侧边栏隐藏媒体查询（<768px）", () => {
+      const { container } = render(<TiantongPage />);
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+      if (styleTag) {
+        expect(styleTag.textContent).toContain("@media (max-width: 767px)");
+        expect(styleTag.textContent).toContain(".tiantong-sidebar");
+      }
+    });
+
+    test("主内容区应该有正确的className", () => {
+      const { container } = render(<TiantongPage />);
+      const mainContent = container.querySelector(".main-content");
+      expect(mainContent).toBeTruthy();
+    });
+
+    test("弹幕组件应该正确渲染", () => {
+      const { container } = render(<TiantongPage />);
+      // 检查是否包含弹幕侧边栏的样式（通过 style 标签中的媒体查询）
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+      if (styleTag) {
+        // 检查是否包含响应式样式
+        expect(styleTag.textContent).toContain("@media");
+      }
+    });
+  });
+
+  describe("TC-021: 主内容区padding测试", () => {
+    test("主内容区默认padding应该为24px", () => {
+      const { container } = render(<TiantongPage />);
+      const mainContent = container.querySelector(".main-content");
+      expect(mainContent).toBeTruthy();
+      if (mainContent) {
+        const style = mainContent.getAttribute("style");
+        expect(style).toContain("24px");
+      }
     });
   });
 });

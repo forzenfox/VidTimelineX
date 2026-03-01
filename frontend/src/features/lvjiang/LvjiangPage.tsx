@@ -4,17 +4,17 @@ import { Header } from "./components/Header";
 import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { SideDanmaku } from "./components/SideDanmaku";
-import VideoModal from "../../components/video/VideoModal";
+import VideoModal from "@/components/business/video/VideoModal";
 import { videos } from "./data";
 import type { Video } from "./data";
 import { useViewPreferences } from "@/hooks/useViewPreferences";
 import { useVideoFilter } from "@/hooks/useVideoFilter";
-import type { Video as VideoType } from "@/components/video/types";
-import VideoGrid from "@/components/video-view/VideoGrid";
-import VideoList from "@/components/video-view/VideoList";
-import { IconToolbar } from "@/components/video-view/IconToolbar";
-import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
-import EmptyState from "@/components/video-view/EmptyState";
+import type { Video as VideoType } from "@/components/business/video/types";
+import VideoGrid from "@/components/business/video-view/VideoGrid";
+import VideoList from "@/components/business/video-view/VideoList";
+import { IconToolbar } from "@/components/business/video-view/IconToolbar";
+import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
+import EmptyState from "@/components/business/video-view/EmptyState";
 import "./styles/index.css";
 
 const convertToVideoType = (video: Video): VideoType => ({
@@ -408,15 +408,15 @@ const Lvjiang = () => {
 
         {/* 响应式样式：为弹幕侧边栏预留空间 */}
         <style>{`
-          /* 桌面端（>=1024px）：为主内容区添加padding-right避让侧边栏 */
-          @media (min-width: 1024px) {
+          /* 桌面端和平板端（>=768px）：为主内容区添加padding-right避让侧边栏 */
+          @media (min-width: 768px) {
             .main-content {
               padding-right: 320px !important;
             }
           }
-          
-          /* 移动端（<1024px）：移除padding */
-          @media (max-width: 1023px) {
+
+          /* 移动端（<768px）：移除padding */
+          @media (max-width: 767px) {
             .main-content {
               padding-right: 0 !important;
             }

@@ -2,9 +2,16 @@
 
 > **📁 项目文档导航**
 >
-> - **根目录README**：项目全局说明、架构概览、部署指南 → [查看](../README.md)
+> - **根目录 README**：项目全局说明、架构概览、部署指南 → [查看](../README.md)
 > - **本文档**：前端详细技术文档、安装指南、测试说明
 > - **测试文档**：前端测试结构说明、测试指南 → [查看](./tests/README.md)
+> - **📚 开发规范文档**：
+>   - [项目结构规范](../docs/standards/frontend/project-structure.md) - 目录结构、文件组织、导入路径规范
+>   - [命名规范](../docs/standards/frontend/naming-conventions.md) - 文件命名、代码命名、测试命名规范
+>   - [组件组织规范](../docs/standards/frontend/component-guide.md) - 组件分类、编写规范、最佳实践
+>   - [环境变量规范](../docs/standards/frontend/environment-guide.md) - 环境变量管理、类型定义、安全实践
+>   - [Git 提交规范](../docs/standards/frontend/commit-conventions.md) - Commit Message、分支管理、PR 规范
+>   - [Hooks 使用说明](../docs/standards/frontend/git-hooks.md) - Git Hooks 配置说明
 
 ## 项目概述
 
@@ -74,7 +81,6 @@ frontend/
 │   │   │   └── ...          # 共30+ UI 组件
 │   │   ├── figma/            # Figma相关组件
 │   │   │   └── ImageWithFallback.tsx
-│   │   ├── MobileNotSupported.tsx  # 移动端提示组件
 │   │   └── PerformanceMonitor.tsx  # 性能监控组件
 │   ├── features/             # 功能模块（按业务划分）
 │   │   ├── lvjiang/          # 驴酱模块
@@ -150,7 +156,6 @@ frontend/
 
 - **ui/**：基于 Radix UI 构建的基础 UI 组件（30+组件），遵循统一接口设计，包含完整的类型定义和无障碍支持
 - **figma/**：Figma 设计系统相关组件
-- **MobileNotSupported.tsx**：移动端访问提示组件
 - **PerformanceMonitor.tsx**：性能监控组件
 
 **src/features/** 目录按业务功能组织模块，每个子目录对应一个独立的功能模块。这种模块化设计使得代码更加清晰，便于维护和扩展。每个功能模块包含：
@@ -400,22 +405,25 @@ npm run test:regression
 npm run test:performance
 ```
 
-### MobileNotSupported 组件测试
+### 组件测试
 
-MobileNotSupported 组件是移动端访问提示组件，提供了全面的测试用例和自动化测试脚本：
+项目包含完整的组件测试覆盖，包括单元测试、集成测试和端到端测试。测试文件位于 `tests/` 目录下，按照测试类型分层组织。
 
 ```bash
-# 运行 MobileNotSupported 组件测试
-npm run test:mobile-not-supported
+# 运行所有测试
+npm test
+
+# 运行单元测试
+npm run test:unit
+
+# 运行集成测试
+npm run test:integration
+
+# 运行 E2E 测试
+npm run test:e2e
 ```
 
-测试脚本会自动执行所有测试用例并生成详细的 HTML 和 JSON 格式报告。测试报告包含：
-
-- 测试执行时间和时长
-- 测试摘要（总测试数、通过、失败、跳过、通过率）
-- 详细的测试用例列表（状态、ID、名称）
-
-详细的测试文档请参考：[tests/docs/mobile-not-supported-test-doc.md](tests/docs/mobile-not-supported-test-doc.md)
+详细的测试规范请参考：[tests/docs/testing-guidelines.md](tests/docs/testing-guidelines.md)
 
 ### 测试覆盖率目标
 

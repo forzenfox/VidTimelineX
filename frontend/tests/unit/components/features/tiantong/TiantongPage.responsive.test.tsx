@@ -46,7 +46,7 @@ jest.mock("@/features/tiantong/components/SidebarDanmu", () => ({
 }));
 
 // Mock VideoModal
-jest.mock("@/components/video/VideoModal", () => ({
+jest.mock("@/components/business/video/VideoModal", () => ({
   __esModule: true,
   default: ({ video, theme, onClose }: any) => (
     <div data-testid="video-modal">
@@ -60,7 +60,7 @@ jest.mock("@/components/video/VideoModal", () => ({
 }));
 
 // Mock IconToolbar - 移动端工具栏
-jest.mock("@/components/video-view/IconToolbar", () => ({
+jest.mock("@/components/business/video-view/IconToolbar", () => ({
   IconToolbar: ({
     viewMode,
     onViewModeChange,
@@ -97,7 +97,7 @@ jest.mock("@/components/video-view/IconToolbar", () => ({
 }));
 
 // Mock VideoViewToolbar - PC端工具栏
-jest.mock("@/components/video-view/VideoViewToolbar", () => ({
+jest.mock("@/components/business/video-view/VideoViewToolbar", () => ({
   VideoViewToolbar: ({ viewMode, onViewModeChange, filter, onFilterChange, theme }: any) => (
     <div data-testid="video-view-toolbar" role="toolbar" className="video-view-toolbar-pc">
       <span data-testid="pc-toolbar-view-mode">{viewMode}</span>
@@ -116,7 +116,7 @@ jest.mock("@/components/video-view/VideoViewToolbar", () => ({
 }));
 
 // Mock VideoGrid
-jest.mock("@/components/video-view/VideoGrid", () => ({
+jest.mock("@/components/business/video-view/VideoGrid", () => ({
   __esModule: true,
   default: ({ videos, onVideoClick, theme }: any) => (
     <div data-testid="video-grid">
@@ -132,7 +132,7 @@ jest.mock("@/components/video-view/VideoGrid", () => ({
 }));
 
 // Mock VideoList
-jest.mock("@/components/video-view/VideoList", () => ({
+jest.mock("@/components/business/video-view/VideoList", () => ({
   __esModule: true,
   default: ({ videos, onVideoClick, theme }: any) => (
     <div data-testid="video-list">
@@ -143,7 +143,7 @@ jest.mock("@/components/video-view/VideoList", () => ({
 }));
 
 // Mock EmptyState
-jest.mock("@/components/video-view/EmptyState", () => ({
+jest.mock("@/components/business/video-view/EmptyState", () => ({
   __esModule: true,
   default: ({ onClearFilter }: any) => (
     <div data-testid="empty-state">
