@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { CycleViewButton } from "@/components/video-view/CycleViewButton";
+import { CycleViewButton } from "@/components/business/video-view/CycleViewButton";
 import type { ViewMode } from "@/hooks/types";
 import "@testing-library/jest-dom";
 

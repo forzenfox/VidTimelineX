@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { videos } from "../data";
 import type { Video } from "../data";
-import VideoCard from "../../../components/video/VideoCard";
+import VideoCard from "@/components/business/video/VideoCard";
 
 interface VideoTimelineProps {
   theme: "dongzhu" | "kaige";

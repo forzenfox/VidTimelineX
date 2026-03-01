@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
+import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
 import type { FilterState } from "@/hooks/types";
 import "@testing-library/jest-dom";
 

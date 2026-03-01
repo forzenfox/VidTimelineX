@@ -48,7 +48,7 @@ jest.mock("@/features/lvjiang/components/SideDanmaku", () => ({
   SideDanmaku: ({ theme }: { theme: string }) => <aside data-testid="side-danmaku">{theme}</aside>,
 }));
 
-jest.mock("@/components/video/VideoModal", () => ({
+jest.mock("@/components/business/video/VideoModal", () => ({
   __esModule: true,
   default: ({ video, theme, onClose }: { video: any; theme: string; onClose: () => void }) => {
     if (!video) return null;
@@ -63,7 +63,7 @@ jest.mock("@/components/video/VideoModal", () => ({
 }));
 
 // 模拟 IconToolbar 组件
-jest.mock("@/components/video-view/IconToolbar", () => ({
+jest.mock("@/components/business/video-view/IconToolbar", () => ({
   IconToolbar: ({
     viewMode,
     onViewModeChange,
@@ -122,17 +122,17 @@ jest.mock("@/components/video-view/IconToolbar", () => ({
   ),
 }));
 
-jest.mock("@/components/video-view/VideoGrid", () => ({
+jest.mock("@/components/business/video-view/VideoGrid", () => ({
   __esModule: true,
   default: ({ theme }: { theme: string }) => <div data-testid="video-grid">{theme}</div>,
 }));
 
-jest.mock("@/components/video-view/VideoList", () => ({
+jest.mock("@/components/business/video-view/VideoList", () => ({
   __esModule: true,
   default: ({ theme }: { theme: string }) => <div data-testid="video-list">{theme}</div>,
 }));
 
-jest.mock("@/components/video-view/EmptyState", () => ({
+jest.mock("@/components/business/video-view/EmptyState", () => ({
   __esModule: true,
   default: ({ onClearFilter }: { onClearFilter: () => void }) => (
     <div data-testid="empty-state">

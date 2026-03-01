@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { FilterDropdown } from "@/components/video-view/FilterDropdown";
+import { FilterDropdown } from "@/components/business/video-view/FilterDropdown";
 import type { FilterState } from "@/hooks/types";
 import "@testing-library/jest-dom";
 

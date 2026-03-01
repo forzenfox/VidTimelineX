@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import VideoList from "@/components/video-view/VideoList";
-import type { Video, Theme } from "@/components/video/types";
+import VideoList from "@/components/business/video-view/VideoList";
+import type { Video, Theme } from "@/components/business/video/types";
 import "@testing-library/jest-dom";
 
 const mockVideos: Video[] = [

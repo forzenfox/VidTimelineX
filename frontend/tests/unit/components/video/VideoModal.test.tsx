@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import VideoModal from "@/components/video/VideoModal";
-import type { Video } from "@/components/video/types";
+import VideoModal from "@/components/business/video/VideoModal";
+import type { Video } from "@/components/business/video/types";
 import "@testing-library/jest-dom";
 
 const mockVideo: Video = {

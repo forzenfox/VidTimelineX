@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { IconToolbar } from "@/components/video-view/IconToolbar";
+import { IconToolbar } from "@/components/business/video-view/IconToolbar";
 import type { ViewMode, FilterState } from "@/hooks/types";
 import "@testing-library/jest-dom";
 

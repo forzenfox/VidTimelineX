@@ -64,7 +64,7 @@ jest.mock("@/features/yuxiaoc/components/HorizontalDanmaku", () => ({
   HorizontalDanmaku: () => <div data-testid="horizontal-danmaku" />,
 }));
 
-jest.mock("@/components/video/VideoModal", () => ({
+jest.mock("@/components/business/video/VideoModal", () => ({
   __esModule: true,
   default: () => null,
 }));

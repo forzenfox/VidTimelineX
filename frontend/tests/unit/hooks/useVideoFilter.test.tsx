@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react";
 import { useVideoFilter } from "@/hooks/useVideoFilter";
 import type { DurationFilter } from "@/hooks/types";
-import type { Video } from "@/components/video/types";
+import type { Video } from "@/components/business/video/types";
 
 const createVideo = (overrides: Partial<Video> = {}): Video => ({
   id: "1",

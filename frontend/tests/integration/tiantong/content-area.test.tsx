@@ -6,7 +6,7 @@
 
 import React from "react";
 import { render, screen, cleanup } from "@testing-library/react";
-import VideoCard from "@/components/video/VideoCard";
+import VideoCard from "@/components/business/video/VideoCard";
 
 import "@testing-library/jest-dom";
 import { safeSync } from "../../utils/error-handling";

@@ -4,17 +4,17 @@ import { Header } from "./components/Header";
 import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
 import { SideDanmaku } from "./components/SideDanmaku";
-import VideoModal from "../../components/video/VideoModal";
+import VideoModal from "@/components/business/video/VideoModal";
 import { videos } from "./data";
 import type { Video } from "./data";
 import { useViewPreferences } from "@/hooks/useViewPreferences";
 import { useVideoFilter } from "@/hooks/useVideoFilter";
-import type { Video as VideoType } from "@/components/video/types";
-import VideoGrid from "@/components/video-view/VideoGrid";
-import VideoList from "@/components/video-view/VideoList";
-import { IconToolbar } from "@/components/video-view/IconToolbar";
-import { VideoViewToolbar } from "@/components/video-view/VideoViewToolbar";
-import EmptyState from "@/components/video-view/EmptyState";
+import type { Video as VideoType } from "@/components/business/video/types";
+import VideoGrid from "@/components/business/video-view/VideoGrid";
+import VideoList from "@/components/business/video-view/VideoList";
+import { IconToolbar } from "@/components/business/video-view/IconToolbar";
+import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
+import EmptyState from "@/components/business/video-view/EmptyState";
 import "./styles/index.css";
 
 const convertToVideoType = (video: Video): VideoType => ({

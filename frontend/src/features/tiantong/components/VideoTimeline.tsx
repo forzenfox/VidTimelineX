@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Search } from "lucide-react";
 import { videos, type Video } from "../data/data";
-import VideoCard from "../../../components/video/VideoCard";
+import VideoCard from "@/components/business/video/VideoCard";
 
 interface VideoTimelineProps {
   theme: "tiger" | "sweet";

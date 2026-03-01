@@ -1,6 +1,6 @@
 import React from "react";
 import { Play, Calendar, User, Eye } from "lucide-react";
-import { VideoCover } from "../figma/ImageWithFallback";
+import { VideoCover } from "../../figma/ImageWithFallback";
 import type { VideoCardProps, Theme } from "./types";
 
 /**

@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import PerformanceMonitor from "@/components/PerformanceMonitor";
+import PerformanceMonitor from "@/components/business/PerformanceMonitor";
 
 jest.mock("web-vitals", () => ({
   onCLS: jest.fn(),
