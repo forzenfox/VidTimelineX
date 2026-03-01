@@ -81,7 +81,6 @@ frontend/
 │   │   │   └── ...          # 共30+ UI 组件
 │   │   ├── figma/            # Figma相关组件
 │   │   │   └── ImageWithFallback.tsx
-│   │   ├── MobileNotSupported.tsx  # 移动端提示组件
 │   │   └── PerformanceMonitor.tsx  # 性能监控组件
 │   ├── features/             # 功能模块（按业务划分）
 │   │   ├── lvjiang/          # 驴酱模块
@@ -157,7 +156,6 @@ frontend/
 
 - **ui/**：基于 Radix UI 构建的基础 UI 组件（30+组件），遵循统一接口设计，包含完整的类型定义和无障碍支持
 - **figma/**：Figma 设计系统相关组件
-- **MobileNotSupported.tsx**：移动端访问提示组件
 - **PerformanceMonitor.tsx**：性能监控组件
 
 **src/features/** 目录按业务功能组织模块，每个子目录对应一个独立的功能模块。这种模块化设计使得代码更加清晰，便于维护和扩展。每个功能模块包含：

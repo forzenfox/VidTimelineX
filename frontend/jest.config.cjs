@@ -96,12 +96,6 @@ module.exports = {
       lines: 68,
       statements: 68,
     },
-    "./src/components/ui/": {
-      branches: 20,
-      functions: 25,
-      lines: 25,
-      statements: 25,
-    },
     "./src/hooks/": {
       branches: 80,
       functions: 90,

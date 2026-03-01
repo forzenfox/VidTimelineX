@@ -20,7 +20,6 @@ tests/
 │   │   ├── features/             # 功能模块组件测试
 │   │   │   ├── tiantong/         # 甜筒模块组件测试
 │   │   │   └── lvjiang/          # 驴酱模块组件测试
-│   │   ├── MobileNotSupported.test.tsx
 │   │   └── ui/                   # UI组件测试
 │   ├── hooks/                    # Hooks单元测试
 │   └── utils/                    # 工具函数单元测试
