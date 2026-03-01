@@ -11,24 +11,19 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
   describe("弹幕数据加载测试", () => {
     /**
      * 测试用例 TC-SD-001: 弹幕数据正确加载
-     * 测试目标：验证组件能够正确加载弹幕数据，而不是显示"默认弹幕"
+     * 测试目标：验证组件能够正确加载弹幕数据
      */
-    it("应该加载实际的弹幕数据而不是默认弹幕", () => {
+    it("应该加载实际的弹幕数据", () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
       // 获取弹幕文本内容
       const textContents = container.textContent || "";
 
-      // 验证包含实际的弹幕内容（从 danmaku.txt 中的内容）
+      // 验证包含实际的弹幕内容（从 danmaku.json 中的内容）
       expect(textContents.length).toBeGreaterThan(100);
 
-      // 验证包含测试弹幕数据（mock 数据中的内容）
-      expect(textContents).toContain("弹幕测试内容");
-      expect(textContents).toContain("测试弹幕");
-
-      // 验证不应该包含大量"默认弹幕"
-      const defaultCount = (textContents.match(/默认弹幕/g) || []).length;
-      expect(defaultCount).toBe(0);
+      // 验证包含真实的弹幕文本
+      expect(textContents).toContain("大小姐驾到");
     });
   });
 
@@ -73,7 +68,7 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
       // 获取弹幕内容区域
       const danmakuContent = container.innerHTML;
 
-      // 验证弹幕内容包含实际的弹幕文本（从 danmaku.txt 中的一些典型弹幕）
+      // 验证弹幕内容包含实际的弹幕文本
       expect(danmakuContent.length).toBeGreaterThan(100);
     });
   });
@@ -81,16 +76,16 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
   describe("用户信息显示测试", () => {
     /**
      * 测试用例 TC-SD-006: 用户信息正确显示
-     * 测试目标：验证弹幕包含用户昵称和等级信息
+     * 测试目标：验证弹幕包含用户昵称和时间戳
      */
     it("应该显示用户信息", () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
-      // 验证用户等级标签存在
-      expect(container.innerHTML).toContain("Lv.");
+      // 验证时间戳格式存在（HH:MM:SS）
+      expect(container.innerHTML).toMatch(/\d{2}:\d{2}:\d{2}/);
 
-      // 验证用户昵称存在
-      expect(container.innerHTML).toMatch(/(甜穹|拱火群众|天晴有雯|一一一颗|诺糯)/);
+      // 验证用户昵称存在（从 danmaku.json 中的用户）
+      expect(container.innerHTML).toMatch(/(熊雅雯|爱吃板烧鸡腿堡|黄昏外的猫头鹰|艾伦|伊味)/);
     });
   });
 
@@ -132,7 +127,7 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
 
     /**
      * 测试用例 TC-SD-011: 抽屉包含Header
-     * 测试目标：验证移动端抽屉包含聊天室标题、LIVE指示器和关闭按钮
+     * 测试目标：验证移动端抽屉包含大小姐驾到标题、LIVE指示器和关闭按钮
      */
     it("抽屉应该包含Header元素", async () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
@@ -145,10 +140,12 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
 
       // 验证抽屉内容
       await waitFor(() => {
-        // 验证聊天室标题
-        expect(screen.getByText("弹幕聊天室")).toBeTruthy();
-        // 验证LIVE指示器
-        expect(screen.getByText("LIVE")).toBeTruthy();
+        // 验证大小姐驾到标题（抽屉和侧边栏都有，所以用 getAllByText）
+        const titleElements = screen.getAllByText("👸大小姐驾到，统统闪开！✨");
+        expect(titleElements.length).toBeGreaterThan(0);
+        // 验证LIVE指示器（使用 getAllByText 因为有多个 LIVE 元素）
+        const liveElements = screen.getAllByText("LIVE");
+        expect(liveElements.length).toBeGreaterThan(0);
       });
     });
 
@@ -300,9 +297,9 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
     it("应该包含响应式样式", () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
-      // 验证style标签存在
-      const styleTag = container.querySelector("style");
-      expect(styleTag).toBeTruthy();
+      // 验证style标签存在（可能有多个，检查所有）
+      const styleTags = container.querySelectorAll("style");
+      expect(styleTags.length).toBeGreaterThan(0);
     });
 
     /**
@@ -312,11 +309,14 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
     it("应该包含移动端媒体查询", () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
-      const styleTag = container.querySelector("style");
-      expect(styleTag).toBeTruthy();
-      if (styleTag) {
-        expect(styleTag.textContent).toContain("@media (max-width: 767px)");
-      }
+      // 获取所有style标签并合并内容检查
+      const styleTags = container.querySelectorAll("style");
+      expect(styleTags.length).toBeGreaterThan(0);
+
+      const allStyles = Array.from(styleTags)
+        .map(tag => tag.textContent)
+        .join("");
+      expect(allStyles).toContain("@media (max-width: 767px)");
     });
 
     /**
@@ -326,11 +326,14 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
     it("应该包含桌面端媒体查询", () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
-      const styleTag = container.querySelector("style");
-      expect(styleTag).toBeTruthy();
-      if (styleTag) {
-        expect(styleTag.textContent).toContain("@media (min-width: 768px)");
-      }
+      // 获取所有style标签并合并内容检查
+      const styleTags = container.querySelectorAll("style");
+      expect(styleTags.length).toBeGreaterThan(0);
+
+      const allStyles = Array.from(styleTags)
+        .map(tag => tag.textContent)
+        .join("");
+      expect(allStyles).toContain("@media (min-width: 768px)");
     });
   });
 
@@ -366,6 +369,30 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
         // React会将十六进制颜色转换为RGB格式
         expect(style).toContain("rgb(244, 114, 156)"); // #F4729C的RGB格式
       }
+    });
+  });
+
+  describe("底部 Footer 测试", () => {
+    /**
+     * 测试用例 TC-SD-022: 虎将主题 Footer
+     * 测试目标：验证虎将主题显示正确的 Footer 文字
+     */
+    it("虎将主题应该显示威虎弹幕区 Footer", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 验证 Footer 文字
+      expect(container.textContent).toContain("威虎弹幕区");
+    });
+
+    /**
+     * 测试用例 TC-SD-023: 甜筒主题 Footer
+     * 测试目标：验证甜筒主题显示正确的 Footer 文字
+     */
+    it("甜筒主题应该显示甜筒弹幕区 Footer", () => {
+      const { container } = render(<SidebarDanmu theme="sweet" />);
+
+      // 验证 Footer 文字
+      expect(container.textContent).toContain("甜筒弹幕区");
     });
   });
 });

@@ -15,7 +15,7 @@ export default defineConfig({
   /* 工作进程数 */
   workers: 2,
   /* 测试报告配置 */
-  reporter: [["html", { outputFolder: "playwright-report/mobile-smoke" }], ["list"]],
+  reporter: [["html", { outputFolder: "playwright-report/mobile-smoke", open: "never" }], ["list"]],
   /* 共享配置 */
   use: {
     baseURL: "http://localhost:3000",

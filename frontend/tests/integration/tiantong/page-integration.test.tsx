@@ -5,10 +5,12 @@ import TiantongPage from "@/features/tiantong/TiantongPage";
 import "@testing-library/jest-dom";
 import { withTimeout, wrapAsync } from "../../utils/error-handling";
 
-// Mock TXT file import
-jest.mock("@/features/tiantong/data/danmaku.txt?raw", () => {
-  return "测试弹幕 1\n测试弹幕 2\n测试弹幕 3\n测试弹幕 4\n测试弹幕 5";
-});
+// Mock JSON file import
+jest.mock("@/features/tiantong/data/danmaku.json", () => ({
+  tigerDanmaku: ["老虎测试弹幕 1", "老虎测试弹幕 2", "老虎测试弹幕 3"],
+  sweetDanmaku: ["甜筒测试弹幕 1", "甜筒测试弹幕 2", "甜筒测试弹幕 3"],
+  commonDanmaku: ["公共测试弹幕 1", "公共测试弹幕 2"],
+}));
 
 // Mock 动态导入组件 - 避免 React.lazy 加载延迟
 jest.mock("@/features/tiantong/components/SidebarDanmu", () => {

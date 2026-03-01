@@ -4,7 +4,6 @@ import { videos, Video } from "./data";
 import ThemeToggle from "./components/ThemeToggle";
 import { VideoTimeline } from "./components/VideoTimeline";
 import { HorizontalDanmaku } from "./components/HorizontalDanmaku";
-import { withDeviceSpecificComponent } from "@/hooks/use-dynamic-component";
 import VideoModal from "@/components/business/video/VideoModal";
 import { useViewPreferences } from "@/hooks/useViewPreferences";
 import { useVideoFilter } from "@/hooks/useVideoFilter";
@@ -14,6 +13,7 @@ import VideoList from "@/components/business/video-view/VideoList";
 import { IconToolbar } from "@/components/business/video-view/IconToolbar";
 import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
 import EmptyState from "@/components/business/video-view/EmptyState";
+import SidebarDanmu from "./components/SidebarDanmu";
 
 /**
  * 将Video类型转换为VideoType类型
@@ -38,8 +38,6 @@ const convertFromVideoType = (video: VideoType): Video => ({
 // 导入甜筒模块样式
 import "./styles/tiantong.css";
 
-const DesktopSidebarDanmu = React.lazy(() => import("./components/SidebarDanmu"));
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -54,23 +52,6 @@ const queryClient = new QueryClient({
       retry: 1,
     },
   },
-});
-
-const ResponsiveSidebarDanmu = withDeviceSpecificComponent({
-  tablet: (props: { theme: "tiger" | "sweet" }) => (
-    <Suspense
-      fallback={<div className="bg-card rounded-xl border border-border h-64 animate-pulse"></div>}
-    >
-      <DesktopSidebarDanmu {...props} />
-    </Suspense>
-  ),
-  desktop: (props: { theme: "tiger" | "sweet" }) => (
-    <Suspense
-      fallback={<div className="bg-card rounded-xl border border-border h-64 animate-pulse"></div>}
-    >
-      <DesktopSidebarDanmu {...props} />
-    </Suspense>
-  ),
 });
 
 /**
@@ -152,13 +133,9 @@ const TiantongPage = () => {
         if (scrollY > 30) {
           headerRef.current.classList.add("shadow-md");
           headerRef.current.classList.remove("shadow-sm");
-          headerRef.current.classList.add("py-2");
-          headerRef.current.classList.remove("py-3");
         } else {
           headerRef.current.classList.add("shadow-sm");
           headerRef.current.classList.remove("shadow-md");
-          headerRef.current.classList.remove("py-2");
-          headerRef.current.classList.add("py-3");
         }
       }
     };
@@ -441,14 +418,8 @@ const TiantongPage = () => {
                 )}
               </section>
 
-              {/* 桌面端侧边栏 - 使用CSS媒体查询控制显示 */}
-              <aside
-                className="tiantong-sidebar w-full md:w-80 lg:w-96 shrink-0"
-                role="complementary"
-                aria-label="互动区域"
-              >
-                <ResponsiveSidebarDanmu theme={theme} />
-              </aside>
+              {/* 弹幕侧边栏组件 - 内部处理响应式逻辑（桌面端侧边栏/移动端抽屉） */}
+              <SidebarDanmu theme={theme} />
             </main>
 
             <footer

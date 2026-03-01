@@ -23,7 +23,7 @@ export default defineConfig({
   workers: process.env.CI ? 2 : 4,
   /* 测试报告配置 */
   reporter: [
-    ["html", { outputFolder: "playwright-report/mobile" }],
+    ["html", { outputFolder: "playwright-report/mobile", open: "never" }],
     ["json", { outputFile: "playwright-report/mobile-results.json" }],
     ["junit", { outputFile: "playwright-report/mobile-results.xml" }],
   ],

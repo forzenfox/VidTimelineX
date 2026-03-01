@@ -4,10 +4,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import "@testing-library/jest-dom";
 
-// Mock 数据导入
-jest.mock("@/features/tiantong/data/danmaku.txt?raw", () => {
-  return "测试弹幕 1\n测试弹幕 2\n测试弹幕 3";
-});
+// Mock 数据导入 - 使用更通用的方式
+jest.mock("@/features/tiantong/data/danmaku.json", () => ({
+  tigerDanmaku: ["测试弹幕 1", "测试弹幕 2", "测试弹幕 3"],
+  sweetDanmaku: ["甜蜜弹幕 1", "甜蜜弹幕 2", "甜蜜弹幕 3"],
+  commonDanmaku: ["公共弹幕 1", "公共弹幕 2"],
+}));
 
 jest.mock("@/features/lvjiang/data/danmaku.json", () => ({
   default: [
