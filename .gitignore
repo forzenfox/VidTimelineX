@@ -53,7 +53,7 @@ Thumbs.db
 ehthumbs.db
 
 # Trae AI files
-# .trae/
+.trae/
 
 # Package manager files
 yarn.lock
