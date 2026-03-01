@@ -2,7 +2,7 @@ name: 定时更新时间线并部署
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # 每天UTC时间12点执行（对应北京时间20点）
+    - cron: '0 16 * * *'  # 每天UTC时间16点执行（对应北京时间0点）
   workflow_dispatch:  # 允许手动触发
 
 jobs:
