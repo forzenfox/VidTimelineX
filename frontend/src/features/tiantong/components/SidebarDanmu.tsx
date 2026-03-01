@@ -1,7 +1,6 @@
-import React, { useState, useRef, useMemo } from "react";
-import { Zap, Gift, Crown } from "lucide-react";
+import React, { useState, useRef, useMemo, useLayoutEffect, useEffect } from "react";
+import { Zap, Gift, Crown, MessageCircle, X } from "lucide-react";
 import { users } from "../data";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { DanmakuGenerator, DanmakuUser, DanmakuMessage } from "@/shared/danmaku";
 import danmakuText from "../data/danmaku.txt?raw";
 
@@ -9,13 +8,18 @@ interface SidebarDanmuProps {
   theme?: "tiger" | "sweet";
 }
 
+/**
+ * 侧边弹幕组件 - 桌面端固定侧边栏 / 移动端底部抽屉
+ * @param theme - 主题类型：tiger（虎将）或 sweet（甜筒）
+ */
 const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
-  const isMobile = useIsMobile();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [vipCount] = useState(1314);
   const [diamondCount] = useState(1000);
   const [isPlaying] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const usersList = useMemo(() => {
     return users.map(user => ({
@@ -53,6 +57,8 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       onlineBadge: "bg-[#E67E22] text-white",
       vipButton: "bg-gradient-to-r from-[#E67E22] to-[#2C3E50] text-white border-[#E67E22]",
       normalButton: "bg-transparent text-[#BDC3C7] border-[#7F8C8D]",
+      accentColor: "#E67E22",
+      secondaryColor: "#F39C12",
     },
     sweet: {
       headerBg: "bg-gradient-to-r from-[#FFFDF9] to-[#FDE6E0]/80",
@@ -66,6 +72,8 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       onlineBadge: "bg-[#FDE6E0] text-[#F4729C]",
       vipButton: "bg-gradient-to-r from-[#FDE6E0] to-[#FFFDF9] text-[#F4729C] border-[#F4729C]/30",
       normalButton: "bg-transparent text-[#F793B1] border-[#FDE6E0]",
+      accentColor: "#F4729C",
+      secondaryColor: "#FDE6E0",
     },
   };
 
@@ -93,11 +101,19 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
 
   const repeatedItems = [...displayItems, ...displayItems, ...displayItems];
 
-  return (
-    <div
-      className={`${isMobile ? "fixed bottom-0 left-0 right-0 h-64 z-20 border-t border-b" : "h-[calc(100vh-180px)] sticky top-20 z-20"} flex flex-col relative ${theme === "tiger" ? "bg-[#2C3E50] tiger-stripe-primary border-2 border-[#E67E22] shadow-tiger" : "bg-card rounded-xl shadow-custom"} overflow-hidden`}
-      style={theme === "tiger" ? { boxShadow: "inset 0 0 0 1px #2C3E50" } : {}}
-    >
+  // 移动端抽屉打开时滚动到最新消息
+  useLayoutEffect(() => {
+    if (isDrawerOpen && contentRef.current) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [isDrawerOpen]);
+
+  /**
+   * 渲染弹幕内容
+   * @param isInDrawer - 是否在抽屉中显示（移动端）
+   */
+  const renderDanmakuContent = (isInDrawer: boolean) => (
+    <>
       {/* 顶部标签栏 - 设计文档优化版 */}
       <div
         className={`h-8 md:h-10 ${theme === "tiger" ? "bg-[#2C3E50] tiger-stripe-primary border-b border-[#E67E22]" : "bg-gradient-to-r from-[#FFFDF9] to-[#FDE6E0]/80 border-b border-[#FDE6E0]"} flex items-center justify-between px-4`}
@@ -172,7 +188,8 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
       {/* 弹幕互动区 - 设计文档优化版 */}
       <div
         className={`flex-1 overflow-hidden ${colors.chatBg} ${colors.chatText} p-4 relative ${theme === "tiger" ? "border-t border-b border-[#E67E22]" : ""}`}
-        ref={scrollRef}
+        ref={isInDrawer ? contentRef : scrollRef}
+        style={isInDrawer ? { overflowY: "auto", scrollBehavior: "smooth" } : {}}
       >
         {displayItems.length === 0 ? (
           <div
@@ -190,7 +207,7 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
             className="absolute top-0 left-0 w-full"
             ref={animationRef}
             style={{
-              animation: isPlaying ? `scroll-up 120s linear infinite` : "none",
+              animation: !isInDrawer && isPlaying ? `scroll-up 120s linear infinite` : "none",
             }}
           >
             <div className={`space-y-3 ${theme === "sweet" ? "space-y-4" : "space-y-3"} py-4`}>
@@ -238,7 +255,194 @@ const SidebarDanmu: React.FC<SidebarDanmuProps> = ({ theme = "tiger" }) => {
           </button>
         </div>
       </div>
+    </>
+  );
+
+  /**
+   * 渲染Header（移动端抽屉专用）
+   */
+  const renderDrawerHeader = () => (
+    <div
+      className="flex items-center gap-3 px-4 py-3 font-bold shrink-0"
+      style={{
+        background:
+          theme === "tiger"
+            ? "linear-gradient(135deg, rgba(230, 126, 34, 0.3), rgba(44, 62, 80, 0.2))"
+            : "linear-gradient(135deg, rgba(244, 114, 156, 0.15), rgba(253, 230, 224, 0.08))",
+        borderBottom: theme === "tiger" ? "2px solid #E67E22" : "2px solid #F4729C",
+        color: theme === "tiger" ? "#E67E22" : "#F4729C",
+      }}
+    >
+      <MessageCircle className="w-5 h-5" />
+      <div className="flex-1">
+        <div className="text-sm">弹幕聊天室</div>
+      </div>
+      <div className="flex items-center gap-1">
+        <span
+          className="w-2 h-2 rounded-full animate-pulse"
+          style={{ backgroundColor: theme === "tiger" ? "#E67E22" : "#F4729C" }}
+        />
+        <span className="text-xs">LIVE</span>
+      </div>
+      {/* 移动端关闭按钮 */}
+      <button
+        onClick={() => setIsDrawerOpen(false)}
+        aria-label="关闭弹幕"
+        className="p-1 rounded-full hover:bg-white/10 transition-colors"
+      >
+        <X className="w-5 h-5" />
+      </button>
     </div>
+  );
+
+  return (
+    <>
+      {/* 桌面端/平板端：右侧固定侧边栏 - 使用CSS媒体查询控制显示 */}
+      <div
+        className="danmaku-sidebar"
+        style={{
+          position: "fixed",
+          right: 0,
+          top: "64px",
+          bottom: 0,
+          width: "320px",
+          display: "none", // 默认隐藏，媒体查询控制显示
+          flexDirection: "column",
+          zIndex: 20,
+          background: theme === "tiger" ? "#2C3E50" : "rgba(255, 253, 249, 0.98)",
+          borderLeft: theme === "tiger" ? "3px solid #E67E22" : "3px solid #F4729C",
+          boxShadow:
+            theme === "tiger"
+              ? "-5px 0 20px rgba(230, 126, 34, 0.3)"
+              : "-5px 0 20px rgba(244, 114, 156, 0.25)",
+        }}
+      >
+        {renderDanmakuContent(false)}
+      </div>
+
+      {/* 移动端：浮动按钮 - 使用CSS媒体查询控制显示 */}
+      <button
+        onClick={() => setIsDrawerOpen(true)}
+        aria-label="打开弹幕"
+        className="danmaku-mobile-button"
+        style={{
+          position: "fixed",
+          right: "16px",
+          bottom: "96px",
+          zIndex: 30,
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          display: "none", // 默认隐藏，媒体查询控制显示
+          alignItems: "center",
+          justifyContent: "center",
+          background:
+            theme === "tiger"
+              ? "linear-gradient(135deg, #E67E22 0%, #D35400 100%)"
+              : "linear-gradient(135deg, #F4729C 0%, #FDE6E0 100%)",
+          boxShadow:
+            theme === "tiger"
+              ? "0 4px 15px rgba(230, 126, 34, 0.4)"
+              : "0 4px 15px rgba(244, 114, 156, 0.4)",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        <MessageCircle style={{ width: "24px", height: "24px", color: "white" }} />
+      </button>
+
+      {/* 移动端抽屉 */}
+      {isDrawerOpen && (
+        <>
+          {/* 遮罩层 */}
+          <div
+            data-testid="danmaku-drawer-overlay"
+            className="danmaku-drawer-overlay"
+            onClick={() => setIsDrawerOpen(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              zIndex: 40,
+            }}
+          />
+          {/* 抽屉内容 */}
+          <div
+            className="danmaku-drawer"
+            data-testid="danmaku-drawer"
+            style={{
+              position: "fixed",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 50,
+              height: "60vh",
+              display: "flex",
+              flexDirection: "column",
+              borderRadius: "16px 16px 0 0",
+              overflow: "hidden",
+              background: theme === "tiger" ? "#2C3E50" : "rgba(255, 253, 249, 0.98)",
+              borderTop: theme === "tiger" ? "3px solid #E67E22" : "3px solid #F4729C",
+              boxShadow:
+                theme === "tiger"
+                  ? "0 -5px 20px rgba(230, 126, 34, 0.3)"
+                  : "0 -5px 20px rgba(244, 114, 156, 0.25)",
+            }}
+          >
+            {/* 拖动条 */}
+            <div
+              className="w-full h-6 flex items-center justify-center cursor-pointer shrink-0"
+              onClick={() => setIsDrawerOpen(false)}
+              style={{
+                background: theme === "tiger" ? "#2C3E50" : "rgba(255, 253, 249, 0.98)",
+              }}
+            >
+              <div
+                className="w-12 h-1 rounded-full"
+                style={{
+                  backgroundColor:
+                    theme === "tiger" ? "rgba(230, 126, 34, 0.5)" : "rgba(244, 114, 156, 0.5)",
+                }}
+              />
+            </div>
+            {renderDrawerHeader()}
+            {renderDanmakuContent(true)}
+          </div>
+        </>
+      )}
+
+      {/* 使用style标签添加响应式样式 */}
+      <style>{`
+        /* 桌面端/平板端（>=768px）：显示侧边栏，隐藏移动端按钮 */
+        @media (min-width: 768px) {
+          .danmaku-sidebar {
+            display: flex !important;
+          }
+          .danmaku-mobile-button {
+            display: none !important;
+          }
+        }
+        
+        /* 移动端（<768px）：隐藏侧边栏，显示移动端按钮 */
+        @media (max-width: 767px) {
+          .danmaku-sidebar {
+            display: none !important;
+          }
+          .danmaku-mobile-button {
+            display: flex !important;
+          }
+        }
+        
+        @keyframes scroll-up {
+          from {
+            transform: translateY(0);
+          }
+          to {
+            transform: translateY(-50%);
+          }
+        }
+      `}</style>
+    </>
   );
 };
 
@@ -255,6 +459,11 @@ interface DanmuItemProps {
   theme?: "tiger" | "sweet";
 }
 
+/**
+ * 单个弹幕项组件
+ * @param item - 弹幕数据
+ * @param theme - 主题类型
+ */
 const DanmuItem: React.FC<DanmuItemProps> = ({ item, theme = "tiger" }) => {
   const isGift = item.type === "gift";
   const isSuper = item.type === "super";

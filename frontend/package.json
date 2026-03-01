@@ -123,7 +123,14 @@
     "test:smoke": "jest --testPathPattern=smoke",
     "test:regression": "jest --testPathPattern=regression",
     "test:performance": "jest --testPathPattern=performance",
-    "test:mobile-not-supported": "node scripts/test-mobile-not-supported.cjs"
+    "test:mobile-not-supported": "node scripts/test-mobile-not-supported.cjs",
+    "test:mobile": "node scripts/run-mobile-tests.cjs",
+    "test:mobile:smoke": "npx playwright test --config=playwright.mobile-smoke.config.ts",
+    "test:mobile:full": "cross-env MOBILE_TEST_TYPE=full node scripts/run-mobile-tests.cjs",
+    "test:mobile:full:direct": "npx playwright test --config=playwright.mobile.config.ts",
+    "test:mobile:ui": "npx playwright test --config=playwright.mobile-smoke.config.ts --ui",
+    "test:mobile:debug": "npx playwright test --config=playwright.mobile-smoke.config.ts --debug",
+    "test:mobile:headed": "npx playwright test --config=playwright.mobile-smoke.config.ts --headed"
   },
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx}": [

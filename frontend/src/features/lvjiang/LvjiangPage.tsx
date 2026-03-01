@@ -408,15 +408,15 @@ const Lvjiang = () => {
 
         {/* 响应式样式：为弹幕侧边栏预留空间 */}
         <style>{`
-          /* 桌面端（>=1024px）：为主内容区添加padding-right避让侧边栏 */
-          @media (min-width: 1024px) {
+          /* 桌面端和平板端（>=768px）：为主内容区添加padding-right避让侧边栏 */
+          @media (min-width: 768px) {
             .main-content {
               padding-right: 320px !important;
             }
           }
-          
-          /* 移动端（<1024px）：移除padding */
-          @media (max-width: 1023px) {
+
+          /* 移动端（<768px）：移除padding */
+          @media (max-width: 767px) {
             .main-content {
               padding-right: 0 !important;
             }

@@ -492,4 +492,62 @@ describe("LvjiangPage 响应式工具栏测试", () => {
       });
     });
   });
+
+  describe("TC-Responsive-LP-008: 主内容区响应式padding测试", () => {
+    test("应该包含响应式样式标签", async () => {
+      const { container } = render(<LvjiangPage />);
+      fireEvent.click(screen.getByText("完成加载"));
+
+      await waitFor(() => {
+        // 验证 style 标签存在
+        const styleTags = container.querySelectorAll("style");
+        expect(styleTags.length).toBeGreaterThan(0);
+      });
+    });
+
+    test("响应式样式应该包含 768px 断点", async () => {
+      const { container } = render(<LvjiangPage />);
+      fireEvent.click(screen.getByText("完成加载"));
+
+      await waitFor(() => {
+        // 验证样式标签中包含 768px 断点
+        const styleTags = container.querySelectorAll("style");
+        let has768pxBreakpoint = false;
+        styleTags.forEach(tag => {
+          if (tag.textContent?.includes("768px")) {
+            has768pxBreakpoint = true;
+          }
+        });
+        expect(has768pxBreakpoint).toBe(true);
+      });
+    });
+
+    test("响应式样式应该包含 320px 的 padding-right", async () => {
+      const { container } = render(<LvjiangPage />);
+      fireEvent.click(screen.getByText("完成加载"));
+
+      await waitFor(() => {
+        // 验证样式标签中包含 320px 的 padding-right
+        const styleTags = container.querySelectorAll("style");
+        let has320pxPadding = false;
+        styleTags.forEach(tag => {
+          if (tag.textContent?.includes("320px")) {
+            has320pxPadding = true;
+          }
+        });
+        expect(has320pxPadding).toBe(true);
+      });
+    });
+
+    test("主内容区应该包含 main-content 类名", async () => {
+      const { container } = render(<LvjiangPage />);
+      fireEvent.click(screen.getByText("完成加载"));
+
+      await waitFor(() => {
+        // 验证主内容区有 main-content 类名
+        const mainContent = container.querySelector(".main-content");
+        expect(mainContent).toBeInTheDocument();
+      });
+    });
+  });
 });

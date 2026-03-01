@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "@jest/globals";
 import SidebarDanmu from "@/features/tiantong/components/SidebarDanmu";
 import "@testing-library/jest-dom";
@@ -94,6 +94,169 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
     });
   });
 
+  describe("移动端抽屉功能测试", () => {
+    /**
+     * 测试用例 TC-SD-009: 移动端浮动按钮渲染
+     * 测试目标：验证移动端显示浮动按钮
+     */
+    it("应该渲染移动端浮动按钮", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 验证浮动按钮存在
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      expect(mobileButton).toBeTruthy();
+    });
+
+    /**
+     * 测试用例 TC-SD-010: 点击浮动按钮打开抽屉
+     * 测试目标：验证点击浮动按钮后显示抽屉
+     */
+    it("点击浮动按钮应该打开抽屉", async () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 获取浮动按钮
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      expect(mobileButton).toBeTruthy();
+
+      // 点击按钮
+      if (mobileButton) {
+        fireEvent.click(mobileButton);
+      }
+
+      // 验证抽屉打开（遮罩层存在）
+      await waitFor(() => {
+        const drawerOverlay = screen.queryByTestId("danmaku-drawer-overlay");
+        expect(drawerOverlay).toBeTruthy();
+      });
+    });
+
+    /**
+     * 测试用例 TC-SD-011: 抽屉包含Header
+     * 测试目标：验证移动端抽屉包含聊天室标题、LIVE指示器和关闭按钮
+     */
+    it("抽屉应该包含Header元素", async () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 打开抽屉
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      if (mobileButton) {
+        fireEvent.click(mobileButton);
+      }
+
+      // 验证抽屉内容
+      await waitFor(() => {
+        // 验证聊天室标题
+        expect(screen.getByText("弹幕聊天室")).toBeTruthy();
+        // 验证LIVE指示器
+        expect(screen.getByText("LIVE")).toBeTruthy();
+      });
+    });
+
+    /**
+     * 测试用例 TC-SD-012: 点击遮罩层关闭抽屉
+     * 测试目标：验证点击遮罩层可以关闭抽屉
+     */
+    it("点击遮罩层应该关闭抽屉", async () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 打开抽屉
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      if (mobileButton) {
+        fireEvent.click(mobileButton);
+      }
+
+      // 等待抽屉打开
+      await waitFor(() => {
+        expect(screen.queryByTestId("danmaku-drawer-overlay")).toBeTruthy();
+      });
+
+      // 点击遮罩层
+      const overlay = screen.queryByTestId("danmaku-drawer-overlay");
+      if (overlay) {
+        fireEvent.click(overlay);
+      }
+
+      // 验证抽屉关闭
+      await waitFor(() => {
+        expect(screen.queryByTestId("danmaku-drawer-overlay")).not.toBeTruthy();
+      });
+    });
+
+    /**
+     * 测试用例 TC-SD-013: 抽屉高度正确
+     * 测试目标：验证移动端抽屉高度为60vh
+     */
+    it("抽屉应该有正确的高度样式", async () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 打开抽屉
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      if (mobileButton) {
+        fireEvent.click(mobileButton);
+      }
+
+      // 验证抽屉
+      await waitFor(() => {
+        const drawer = screen.queryByTestId("danmaku-drawer");
+        expect(drawer).toBeTruthy();
+        if (drawer) {
+          expect(drawer.getAttribute("style")).toContain("60vh");
+        }
+      });
+    });
+
+    /**
+     * 测试用例 TC-SD-014: 抽屉圆角样式
+     * 测试目标：验证移动端抽屉顶部有圆角
+     */
+    it("抽屉应该有正确的圆角样式", async () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 打开抽屉
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      if (mobileButton) {
+        fireEvent.click(mobileButton);
+      }
+
+      // 验证抽屉样式
+      await waitFor(() => {
+        const drawer = screen.queryByTestId("danmaku-drawer");
+        expect(drawer).toBeTruthy();
+        if (drawer) {
+          expect(drawer.getAttribute("style")).toContain("16px 16px 0 0");
+        }
+      });
+    });
+  });
+
+  describe("桌面端侧边栏测试", () => {
+    /**
+     * 测试用例 TC-SD-015: 桌面端侧边栏渲染
+     * 测试目标：验证桌面端显示固定侧边栏
+     */
+    it("应该渲染桌面端侧边栏", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 验证侧边栏存在
+      const sidebar = container.querySelector(".danmaku-sidebar");
+      expect(sidebar).toBeTruthy();
+    });
+
+    /**
+     * 测试用例 TC-SD-016: 侧边栏宽度正确
+     * 测试目标：验证桌面端侧边栏宽度为320px
+     */
+    it("侧边栏应该有正确的宽度", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      const sidebar = container.querySelector(".danmaku-sidebar");
+      expect(sidebar).toBeTruthy();
+      if (sidebar) {
+        expect(sidebar.getAttribute("style")).toContain("320px");
+      }
+    });
+  });
+
   describe("z-index 层级测试", () => {
     /**
      * 测试用例 TC-SD-007: 侧边弹幕 z-index 层级
@@ -103,7 +266,7 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
       // 验证容器包含 z-20 类名
-      const sidebarElement = container.querySelector(".z-20");
+      const sidebarElement = container.querySelector(".danmaku-sidebar");
       expect(sidebarElement).not.toBeNull();
       expect(sidebarElement).toBeTruthy();
     });
@@ -122,10 +285,87 @@ describe("SidebarDanmu 侧边弹幕组件测试", () => {
 
       const { container } = render(<SidebarDanmu theme="tiger" />);
 
-      // 验证容器包含 z-20 类名
-      const sidebarElement = container.querySelector(".z-20");
-      expect(sidebarElement).not.toBeNull();
-      expect(sidebarElement).toBeTruthy();
+      // 验证浮动按钮存在
+      const mobileButton = container.querySelector(".danmaku-mobile-button");
+      expect(mobileButton).not.toBeNull();
+      expect(mobileButton).toBeTruthy();
+    });
+  });
+
+  describe("响应式样式测试", () => {
+    /**
+     * 测试用例 TC-SD-017: CSS媒体查询存在
+     * 测试目标：验证响应式样式标签存在
+     */
+    it("应该包含响应式样式", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      // 验证style标签存在
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+    });
+
+    /**
+     * 测试用例 TC-SD-018: 移动端媒体查询
+     * 测试目标：验证包含移动端媒体查询（<768px）
+     */
+    it("应该包含移动端媒体查询", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+      if (styleTag) {
+        expect(styleTag.textContent).toContain("@media (max-width: 767px)");
+      }
+    });
+
+    /**
+     * 测试用例 TC-SD-019: 桌面端媒体查询
+     * 测试目标：验证包含桌面端媒体查询（>=768px）
+     */
+    it("应该包含桌面端媒体查询", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      const styleTag = container.querySelector("style");
+      expect(styleTag).toBeTruthy();
+      if (styleTag) {
+        expect(styleTag.textContent).toContain("@media (min-width: 768px)");
+      }
+    });
+  });
+
+  describe("主题颜色测试", () => {
+    /**
+     * 测试用例 TC-SD-020: 虎将主题颜色
+     * 测试目标：验证虎将主题使用正确的颜色值（React会将十六进制转为RGB）
+     */
+    it("虎将主题应该使用正确的颜色", () => {
+      const { container } = render(<SidebarDanmu theme="tiger" />);
+
+      const sidebar = container.querySelector(".danmaku-sidebar");
+      expect(sidebar).toBeTruthy();
+      if (sidebar) {
+        const style = sidebar.getAttribute("style");
+        // React会将十六进制颜色转换为RGB格式
+        expect(style).toContain("rgb(44, 62, 80)"); // #2C3E50的RGB格式
+        expect(style).toContain("rgb(230, 126, 34)"); // #E67E22的RGB格式
+      }
+    });
+
+    /**
+     * 测试用例 TC-SD-021: 甜筒主题颜色
+     * 测试目标：验证甜筒主题使用正确的颜色值（React会将十六进制转为RGB）
+     */
+    it("甜筒主题应该使用正确的颜色", () => {
+      const { container } = render(<SidebarDanmu theme="sweet" />);
+
+      const sidebar = container.querySelector(".danmaku-sidebar");
+      expect(sidebar).toBeTruthy();
+      if (sidebar) {
+        const style = sidebar.getAttribute("style");
+        // React会将十六进制颜色转换为RGB格式
+        expect(style).toContain("rgb(244, 114, 156)"); // #F4729C的RGB格式
+      }
     });
   });
 });
