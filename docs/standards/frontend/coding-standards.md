@@ -1,0 +1,1014 @@
+# 哔哩哔哩时间线项目前端编码规程文档
+
+## 一、文档概述
+
+本文档基于对现有项目代码库的全面扫描分析，系统性地提取了团队在实际开发过程中遵循的前端编码规范、风格约定及最佳实践。文档涵盖代码风格指南、TypeScript规范、React开发规范、样式规范、测试规范、版本控制规范、代码审查流程及质量检查标准等内容，旨在为团队成员提供统一、可操作的编码指导，确保代码库的一致性和可维护性。
+
+本项目前端基于 React 19 与 TypeScript 5 构建，使用 Vite 7 作为构建工具，Tailwind CSS 4 实现样式管理，并通过 shadcn/ui 组件库（基于 Radix UI）提供无障碍支持的 UI 组件。团队在开发过程中形成了具有特色的前缀式组件命名规范、模块化的目录结构以及完善的测试体系，这些实践已在实际项目中得到验证。
+
+---
+
+## 二、代码风格指南
+
+### 2.1 文件编码与格式规范
+
+项目统一采用 UTF-8 编码格式，确保跨平台兼容性和中文字符的正确显示。所有源代码文件必须以 UTF-8 编码保存，不得使用其他编码格式，以避免中文注释和数据出现乱码问题。文件换行符统一使用 LF（Line Feed）格式，在 Windows 环境下开发时需特别注意编辑器的换行符配置，建议将编辑器设置为自动转换或使用 .editorconfig 文件进行统一管理。
+
+文件末尾必须保留一个空行，这是许多静态检查工具和版本控制系统推荐的最佳实践。文件末尾的空行有助于避免某些版本控制工具报告的差异问题，同时也能让文件在终端查看时显示更加规范。每个文件应该只包含一个主要导出（如组件、函数或类），如果需要导出多个相关内容，应将它们组织在同一个文件中并使用命名导出。
+
+```typescript
+// 标准文件结构示例
+import React from "react";
+import { Button } from "@/components/ui/button";
+
+interface Props {
+  title: string;
+  onClick: () => void;
+}
+
+export function Component({ title, onClick }: Props) {
+  return (
+    <Button onClick={onClick}>{title}</Button>
+  );
+}
+
+// 文件末尾保留空行
+```
+
+### 2.2 缩进与空格规范
+
+项目采用 2 空格缩进，不使用 Tab 字符。这一规范在 .prettierrc.json 配置文件中明确定义，确保所有开发者使用统一的缩进风格。2 空格缩进在保持代码层次清晰的同时，也能有效减少行宽，避免横向滚动条的出现。在 JSX 代码中，标签的换行和对齐应保持一致的开括号位置，推荐将开括号放在父元素的同一行。
+
+```typescript
+// 缩进规范示例
+export function VideoCard({ video, onClick }: VideoCardProps) {
+  return (
+    <div 
+      className="card"
+      onClick={() => onClick(video)}
+    >
+      <img src={video.cover} alt={video.title} />
+      <div className="content">
+        <h3>{video.title}</h3>
+      </div>
+    </div>
+  );
+}
+```
+
+大括号采用「埃及式」风格，即开括号放在同一行的末尾，关括号单独占一行。在函数定义、类定义、控制流语句等场景中，都应遵循这一风格。二元运算符两侧必须添加空格，一元运算符和类型断言两侧不加空格。逗号后面必须添加空格，逗号前面不加空格。冒号两侧根据上下文添加适当的空格，在 TypeScript 类型定义中冒号后加空格，在对象字面量中根据情况调整。
+
+```typescript
+// 空格规范示例
+const sum = a + b;
+const arr = [1, 2, 3, 4, 5];
+const obj = { key: "value", label: "标签" };
+
+for (let i = 0; i < length; i++) {
+  // 处理逻辑
+}
+
+type UserProps = {
+  name: string;
+  age: number;
+};
+```
+
+### 2.3 行宽与换行规范
+
+代码行的最大宽度设置为 100 个字符，这一限制在 .prettierrc.json 的 printWidth 配置项中定义。当代码行超过此限制时，应在合理的断点处进行换行，优先在逗号后、运算符前进行换行，以保持代码的可读性。对于超长的字符串文本，可以使用模板字符串或字符串数组的方式进行组织。
+
+```typescript
+// 行宽控制示例
+const longString = "这是一段很长的文本，需要在适当位置进行换行处理，以确保代码行宽不超过100个字符的限制";
+
+const longUrl = 
+  "https://www.example.com/api/v1/users/profile/data?format=json&version=2.0&type=advanced";
+
+const queryParams = {
+  page: 1,
+  pageSize: 20,
+  orderBy: "createdAt",
+  orderDirection: "desc",
+  filter: JSON.stringify({
+    status: "active",
+    category: "premium"
+  })
+};
+```
+
+### 2.4 分号与引号规范
+
+项目要求在所有语句末尾使用分号，这一规范在 .prettierrc.json 的 semi 配置项中设置为 true。虽然 JavaScript 引擎具有自动分号插入（ASI）机制，但显式添加分号可以避免一些边缘情况下的错误，同时也能让代码的边界更加清晰。引号使用方面，项目采用双引号而非单引号，这一设置在 .prettierrc.json 的 singleQuote 配置项中明确指定。
+
+```typescript
+// 分号与引号规范示例
+const message: string = "Hello, World!";
+const items: string[] = ["apple", "banana", "orange"];
+
+function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+
+interface Config {
+  url: string;
+  method: "GET" | "POST" | "PUT" | "DELETE";
+}
+```
+
+在 JSX 语法中，属性值必须使用双引号包裹。在极少数需要使用单引号的场景（如字符串内部包含双引号），可以临时使用转义或模板字符串。字符串拼接和模板字符串应保持一致性，避免在同一文件中混用不同的字符串定义方式。
+
+### 2.5 命名规范
+
+命名规范是保证代码可读性和可维护性的基础。项目对不同类型的标识符采用不同的命名约定，以确保代码的一致性和表达力。组件文件名使用 PascalCase 命名法，如 VideoCard.tsx、Header.tsx、VideoModal.tsx。普通 TypeScript 文件使用 camelCase 命名法，如 useMobile.ts、utils.ts、danmaku.ts。测试文件使用与被测试组件相同的名称加上 .test.tsx 或 .spec.tsx 后缀。
+
+```typescript
+// 文件命名示例
+// 组件文件
+Header.tsx
+VideoCard.tsx
+VideoModal.tsx
+SidebarDanmu.tsx
+LoadingAnimation.tsx
+
+// 工具函数文件
+useMobile.ts
+utils.ts
+useDynamicComponent.tsx
+
+// 测试文件
+hu_VideoCard.test.tsx
+lv_Header.test.tsx
+integration.test.tsx
+```
+
+组件内部命名遵循以下规则：React 组件名称使用 PascalCase 命名法，如 `export function Header()` 或 `const VideoCard: React.FC<Props>()`。普通函数和变量使用 camelCase 命名法，如 `const handleClick = () => {}`、`const isLoading = true`。常量使用全大写加下划线命名法，如 `const MAX_PAGE_SIZE = 100`，或使用 camelCase 命名的大写常量（视具体场景而定）。布尔值变量使用 is、has、should 等前缀以提高语义清晰度。
+
+```typescript
+// 命名规范示例
+// 组件命名
+export function Header({ theme, onThemeToggle }: HeaderProps) {
+  // 函数命名
+  const handleThemeChange = () => {
+    onThemeToggle();
+  };
+
+  // 布尔值命名
+  const isLoading = false;
+  const hasError = false;
+  const shouldUpdate = true;
+
+  // 常量命名
+  const MAX_RETRY_COUNT = 3;
+  const DEFAULT_TIMEOUT = 5000;
+
+  return <header>...</header>;
+}
+```
+
+项目采用特色的前缀式组件命名规范，根据功能模块使用前缀区分不同来源的组件。lv_ 前缀用于「驴酱」功能模块的组件，如 lv_Header、lv_VideoModal、lv_HorizontalDanmaku。hu_ 前缀用于「甜筒」功能模块的组件，如 hu_VideoCard、hu_VideoModal、hu_ThemeToggle。这一命名规范使得在多模块项目中能够快速识别组件的归属和用途，提高了代码的组织性和可维护性。
+
+```typescript
+// 前缀式组件命名示例
+// 驴酱模块组件
+import { lv_Header } from "@/components/lv_Header";
+import { lv_VideoModal } from "@/components/lv_VideoModal";
+import { lv_HorizontalDanmaku } from "@/components/lv_HorizontalDanmaku";
+
+// 甜筒模块组件
+import { hu_VideoCard } from "@/components/hu/hu_VideoCard";
+import { hu_ThemeToggle } from "@/components/hu/hu_ThemeToggle";
+import { hu_SidebarDanmu } from "@/components/hu/hu_SidebarDanmu";
+
+// 通用UI组件（无前缀）
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Dialog } from "@/components/ui/dialog";
+```
+
+### 2.6 注释规范
+
+项目要求所有函数、组件和复杂逻辑必须添加中文注释，注释语言应与项目整体语言保持一致。注释使用中文编写，包括函数说明、参数说明、返回值说明和代码逻辑说明。注释格式采用 JSDoc 风格，对于导出的函数和接口尤为重要。注释应位于被注释代码的上方，对于行内简短注释可使用行尾注释。
+
+```typescript
+/**
+ * 设备检测钩子，支持平板和桌面设备检测
+ * @returns 当前设备类型
+ */
+export function useDeviceDetect() {
+  const [device, setDevice] = React.useState<DeviceType | undefined>(undefined);
+
+  React.useEffect(() => {
+    // 设备检测逻辑 - 只支持平板和桌面设备
+    const detectDevice = (): DeviceType => {
+      const width = window.innerWidth;
+      if (width < BREAKPOINTS.tablet) return "tablet";
+      return "desktop";
+    };
+
+    setDevice(detectDevice());
+    // ...
+  }, []);
+
+  return device;
+}
+```
+
+对于 TypeScript 接口和类型定义，应添加清晰的注释说明其用途和字段含义。测试用例应使用 describe 块组织，并为每个测试用例添加中文描述，说明测试的目的和预期结果。测试用例标识采用 TC-模块-序号 的格式，如 TC-VIDEO-001、TC-VIDEO-002 等，便于追踪和管理。
+
+```typescript
+/**
+ * VideoCard 组件单元测试
+ * 测试视频卡片组件的渲染和交互
+ */
+describe("VideoCard 组件测试", () => {
+  /**
+   * 测试用例 TC-VIDEO-001: 视频卡片基础渲染
+   * 测试视频卡片正确显示视频信息
+   */
+  test("正确渲染视频卡片内容", () => {
+    const mockVideo = {
+      id: "1",
+      title: "测试视频标题",
+      category: "sing",
+      // ...
+    };
+
+    const onClick = jest.fn();
+    render(<VideoCard video={mockVideo} onClick={onClick} />);
+
+    expect(screen.getByText("测试视频标题")).toBeInTheDocument();
+  });
+});
+```
+
+注释应保持简洁明了，避免冗余解释。对于明显的代码逻辑无需添加注释，注释应聚焦于解释「为什么」而非「是什么」。代码修改时，应同步更新相关的注释内容，确保注释与代码的一致性。废弃代码应及时删除或标记，而非使用大量注释进行说明。
+
+---
+
+## 三、TypeScript 规范
+
+### 3.1 类型定义规范
+
+项目全面使用 TypeScript 进行类型检查，类型定义是保证代码健壮性的关键。所有接口和类型定义应具有明确的语义，命名应清晰表达其用途。推荐使用 interface 定义对象类型，使用 type 定义联合类型、交叉类型或工具类型。导出所有需要被外部使用的类型定义，避免使用 any 类型，在确实无法确定类型时使用 unknown 替代。
+
+```typescript
+// 类型定义规范示例
+export interface Video {
+  id: string;
+  title: string;
+  category: string;
+  tags: string[];
+  cover: string;
+  date: string;
+  views: string;
+  icon: React.ElementType;
+}
+
+export interface Danmu {
+  id: string;
+  text: string;
+  type: "normal" | "gift" | "super";
+  user?: string;
+  color?: string;
+}
+
+export type DeviceType = "tablet" | "desktop";
+```
+
+对于复杂的类型逻辑，应提取为独立的类型定义或工具类型，避免在组件内部定义类型。使用泛型提高代码的复用性和类型安全性，泛型参数的命名应具有描述性。对于频繁使用的类型组合，应定义类型别名进行复用。
+
+```typescript
+// 泛型和工具类型示例
+export type BaseResponse<T> = {
+  code: number;
+  message: string;
+  data: T;
+};
+
+export type AsyncResult<T> = {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+};
+
+export function useAsyncData<T>(
+  fetcher: () => Promise<T>
+): AsyncResult<T> {
+  // 实现逻辑
+}
+```
+
+### 3.2 组件类型定义
+
+React 组件的类型定义应清晰分离 Props 接口，使用统一的命名约定。Props 接口命名采用组件名称加上 Props 后缀的形式，如 HeaderProps、VideoCardProps。对于函数式组件，推荐使用 React.FC 类型或直接定义函数签名，函数签名能够更清晰地表达参数和返回值类型。
+
+```typescript
+// 组件类型定义示例
+interface HeaderProps {
+  theme: "dongzhu" | "kaige";
+  onThemeToggle: () => void;
+}
+
+interface VideoCardProps {
+  video: Video;
+  onClick: (video: Video) => void;
+}
+
+export function Header({ theme, onThemeToggle }: HeaderProps) {
+  return <header>...</header>;
+}
+
+const VideoCard: React.FC<VideoCardProps> = ({ video, onClick }) => {
+  return <div onClick={() => onClick(video)}>...</div>;
+};
+```
+
+对于事件处理器类型，应优先使用 React 原生的事件类型或项目自定义的事件类型。避免使用 any 类型处理事件对象，应根据实际使用情况定义具体的事件类型。可选属性使用问号（?）标记，并提供合理的默认值。
+
+### 3.3 ESLint 配置规范
+
+项目使用 ESLint 进行代码静态检查，配置在 eslint.config.js 文件中。主要规则包括：@typescript-eslint/no-unused-vars 设置为 warn 级别，未使用的变量会给出警告而非错误；prettier/prettier 设置为 error 级别，格式问题会阻止代码提交。这些规则与 Prettier 配置协同工作，确保代码风格的一致性。
+
+```javascript
+// ESLint 配置示例
+export default tseslint.config(
+  { ignores: ["dist", "build", "node_modules"] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended, prettierConfig],
+    files: ["**/*.{ts,tsx,js,jsx}"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
+      prettier: prettier,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "@typescript-eslint/no-unused-vars": "warn",
+      "prettier/prettier": "error",
+    },
+  }
+);
+```
+
+在代码编写过程中，应遵循 ESLint 规则的指导，及时修复警告和错误。对于需要禁用规则的特殊情况，应在行内使用注释禁用，并说明禁用的原因，以确保代码的透明性和可追溯性。
+
+---
+
+## 四、React 开发规范
+
+### 4.1 组件设计原则
+
+项目采用函数式组件作为主要的组件形式，利用 React 19 的新特性和 hooks 进行状态管理和副作用处理。组件应遵循单一职责原则，每个组件只负责一个明确的功能或UI元素。大型组件应拆分为多个小型、可复用的子组件，以提高代码的可维护性和可测试性。组件的 Props 接口应保持最小化，只传递组件真正需要的数据。
+
+```typescript
+// 组件拆分示例
+// 拆分前的大型组件
+function VideoPage() {
+  // 状态管理
+  const [videos, setVideos] = useState<Video[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  // 渲染逻辑
+  return (
+    <div>
+      <Header />          <Sidebar />          <VideoGrid videos={videos} loading={loading} />          <VideoModal />          <Footer />    </div>
+  );
+}
+
+// 拆分为独立组件
+function VideoPage() {
+  return (
+    <div>
+      <Header />      <div className="main-layout">          <Sidebar />          <VideoGrid />      </div>      <VideoModal />      <Footer />    </div>
+  );
+}
+```
+
+组件应尽量保持无状态（stateless），将状态提升到合适的父组件中进行管理。对于需要在多个组件间共享的状态，使用 Context API 或状态管理库（如 React Query）进行管理。组件的渲染逻辑应尽量简洁，将复杂的业务逻辑提取到自定义 Hook 或工具函数中。
+
+### 4.2 Hooks 使用规范
+
+项目广泛使用 React Hooks 进行状态管理和副作用处理。自定义 Hook 的命名必须以 use 开头，这是 React 官方的约定，也是 ESLint 插件 react-hooks 的规则要求。自定义 Hook 应提取可复用的逻辑，封装状态管理和副作用处理，提供清晰的 API 供组件使用。
+
+```typescript
+// 自定义 Hook 规范示例
+/**
+ * 设备检测钩子，支持平板和桌面设备检测
+ * @returns 当前设备类型
+ */
+export function useDeviceDetect() {
+  const [device, setDevice] = React.useState<DeviceType | undefined>(undefined);
+
+  React.useEffect(() => {
+    const detectDevice = (): DeviceType => {
+      const width = window.innerWidth;
+      if (width < BREAKPOINTS.tablet) return "tablet";
+      return "desktop";
+    };
+
+    setDevice(detectDevice());
+
+    const tabletMql = window.matchMedia(`(max-width: ${BREAKPOINTS.tablet - 1}px)`);
+    const mqlHandler = () => {
+      setDevice(detectDevice());
+    };
+
+    tabletMql.addEventListener("change", mqlHandler);
+
+    return () => {
+      tabletMql.removeEventListener("change", mqlHandler);
+    };
+  }, []);
+
+  return device;
+}
+```
+
+Hook 的依赖数组应准确包含所有在回调中使用的外部变量和函数，避免遗漏依赖或添加不必要的依赖。对于复杂的依赖关系，考虑使用 useMemo 和 useCallback 进行优化。Hook 的返回值应保持稳定，避免在渲染过程中创建新的对象或函数引用。
+
+### 4.3 性能优化规范
+
+项目使用 React.lazy 和 Suspense 进行代码分割和按需加载，这在 App.tsx 中有明确的示例。主入口文件通过动态导入各个功能模块，避免将所有代码打包到一个文件中，提高初始加载性能。对于大型组件和第三方库，应评估是否需要进行代码分割。
+
+```typescript
+// 代码分割示例
+import React, { Suspense } from "react";
+
+const Lvjiang = React.lazy(() => import("../pages/lvjiang/lvjiang"));
+const Tiantong = React.lazy(() => import("../pages/tiantong/tiantong"));
+
+// 加载中组件
+const Loading = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+      <p className="text-gray-600">加载中...</p>
+    </div>
+  </div>
+);
+```
+
+对于列表渲染，应使用合适的 key 值来帮助 React 进行高效的 diff 算法。避免使用数组索引作为 key 值，应使用唯一的 ID 字段。对于需要计算的数据，使用 useMemo 进行缓存，避免在每次渲染时重新计算。对于稳定的回调函数，使用 useCallback 进行包装，避免不必要的子组件重新渲染。
+
+---
+
+## 五、样式规范
+
+### 5.1 Tailwind CSS 使用规范
+
+项目使用 Tailwind CSS 4 作为主要的样式解决方案，配置在 tailwind.config.js 文件中。Tailwind CSS 的原子化设计理念能够有效地减少 CSS 文件体积，同时保证样式的可维护性。在使用 Tailwind 类名时，应保持类名的顺序一致性，推荐按照布局、尺寸、颜色、交互等顺序排列类名。
+
+```typescript
+// Tailwind 类名顺序示例
+<div 
+  className="
+    flex items-center justify-between
+    w-full h-full
+    bg-white dark:bg-gray-800
+    rounded-lg shadow-md
+    hover:shadow-lg
+    transition-all duration-300
+  "
+>
+```
+
+自定义样式配置在 tailwind.config.js 中管理，包括字体定义、颜色变量、动画等。项目定义了多个自定义字体族，包括 Noto Sans SC（无衬线）、Noto Serif SC（衬线）、Poppins（英文无衬线）、Fredoka One（标题字体）、ZCOOLKuaiLe 和 ZCOOLQingKeHuangYou（创意字体）。在选择字体时，应根据UI设计规范选择合适的字体族。
+
+```javascript
+// Tailwind 配置示例
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ["Noto Sans SC", "sans-serif"],
+        serif: ["Noto Serif SC", "serif"],
+        poppins: ["Poppins", "sans-serif"],
+        fredoka: ["Fredoka One", "cursive"],
+        zcool: ["ZCOOLKuaiLe", "cursive"],
+        "zcool-huangyou": ["ZCOOLQingKeHuangYou", "cursive"],
+      },
+    },
+  },
+  plugins: [],
+};
+```
+
+### 5.2 样式组织规范
+
+项目采用模块化的样式组织方式。全局样式在 styles/globals.css 中定义，包括 CSS 变量、全局重置样式和通用工具类。组件级别的样式可以在组件同目录下创建 index.css 文件进行管理，或者使用 Tailwind 的 @apply 指令在 CSS 文件中定义可复用的样式组合。
+
+```typescript
+// 样式使用示例
+// 使用 Tailwind 类名
+function Button({ children, variant = "primary" }) {
+  return (
+    <button
+      className={`
+        px-4 py-2 rounded-lg font-medium
+        transition-all duration-200
+        ${variant === "primary" 
+          ? "bg-blue-500 text-white hover:bg-blue-600" 
+          : "bg-gray-200 text-gray-800 hover:bg-gray-300"}
+      `}
+    >
+      {children}
+    </button>
+  );
+}
+```
+
+对于复杂的样式逻辑，可以使用 CSS 变量进行动态样式设置，这在实现主题切换功能时尤为重要。项目中的主题切换通过 CSS 变量和 Tailwind 类名相结合的方式实现，支持亮色主题（dongzhu）和暗色主题（kaige）之间的切换。
+
+### 5.3 类名合并工具
+
+项目使用 clsx 和 tailwind-merge 工具函数来安全地合并类名，这在 utils.ts 文件中定义。clsx 用于根据条件添加类名，tailwind-merge 用于处理 Tailwind 类名的冲突问题。通过 cn 工具函数，可以安全地组合静态类名和动态类名。
+
+```typescript
+// 类名合并工具示例
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+// 使用示例
+function Card({ className, children }) {
+  return (
+    <div className={cn(
+      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      className
+    )}>
+      {children}
+    </div>
+  );
+}
+```
+
+---
+
+## 六、测试规范
+
+### 6.1 单元测试规范
+
+项目使用 Jest 作为测试框架，React Testing Library 作为组件测试工具。测试配置在 jest.config.js 文件中定义，包括模块解析路径、转换规则、覆盖率阈值等。测试覆盖率阈值设置为 50%，即全局的分支覆盖率、函数覆盖率、行覆盖率和语句覆盖率都需要达到 50% 以上。
+
+```javascript
+// Jest 配置示例
+module.exports = {
+  testEnvironment: "jest-environment-jsdom",
+  modulePaths: ["<rootDir>/src"],
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+  },
+  transform: {
+    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "<rootDir>/tsconfig.test.json" }],
+  },
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 50,
+    },
+  },
+};
+```
+
+每个组件应配套编写单元测试，测试文件放在 __tests__ 目录下或与组件同目录。测试用例应覆盖组件的主要功能和边界情况，包括渲染测试、交互测试、状态测试和属性测试。测试代码应保持简洁，使用有意义的测试描述，并遵循 AAA 模式（Arrange-Act-Assert）。
+
+```typescript
+// 测试用例示例
+/**
+ * VideoCard 组件单元测试
+ * 测试视频卡片组件的渲染和交互
+ */
+describe("VideoCard 组件测试", () => {
+  /**
+   * 测试用例 TC-VIDEO-001: 视频卡片基础渲染
+   * 测试视频卡片正确显示视频信息
+   */
+  test("正确渲染视频卡片内容", () => {
+    const mockVideo = {
+      id: "1",
+      title: "测试视频标题",
+      category: "sing",
+      tags: ["test"],
+      cover: "https://example.com/cover.jpg",
+      date: "2024-01-01",
+      views: "10万",
+      icon: Heart,
+    };
+
+    const onClick = jest.fn();
+    render(<VideoCard video={mockVideo} onClick={onClick} />);
+
+    expect(screen.getByText("测试视频标题")).toBeInTheDocument();
+    expect(screen.getByText("2024-01-01")).toBeInTheDocument();
+    expect(screen.getByText("10万")).toBeInTheDocument();
+  });
+
+  /**
+   * 测试用例 TC-VIDEO-003: 点击事件处理
+   * 测试点击卡片时触发正确的回调
+   */
+  test("点击卡片时触发回调", () => {
+    const mockVideo = {
+      id: "1",
+      title: "测试视频",
+      category: "sing",
+      // ...
+    };
+
+    const onClick = jest.fn();
+    render(<VideoCard video={mockVideo} onClick={onClick} />);
+
+    const card = screen.getByRole("article");
+    fireEvent.click(card);
+
+    expect(onClick).toHaveBeenCalledWith(mockVideo);
+  });
+});
+```
+
+### 6.2 测试组织规范
+
+测试文件应与被测试的组件或模块放在相近的位置，便于维护和查找。测试用例应按照功能模块组织在 describe 块中，每个 describe 块描述一个测试套件的主题。测试用例描述应清晰表达测试的目的，使用中文描述以便团队成员理解。
+
+每个测试用例应有明确的预期，使用 expect 语句明确断言期望的结果。测试应避免依赖外部资源和网络请求，对于异步操作应使用 waitFor 或 findBy 等查询方法。测试完成后应进行必要的清理工作，使用 cleanup 函数清除测试产生的副作用。
+
+### 6.3 集成测试规范
+
+除了单元测试外，项目还应编写集成测试，验证多个组件或模块之间的协作。集成测试文件放在 __tests__ 目录下，命名为 integration.test.tsx。集成测试应模拟真实的用户交互场景，验证完整的业务流程是否正常。
+
+---
+
+## 七、版本控制规范
+
+### 7.1 Git 提交规范
+
+项目使用 Git 进行版本控制，提交信息应遵循统一的格式规范。提交信息应清晰地描述本次提交的内容和目的，包含类型标识、简要描述和详细说明（可选）。推荐使用 Conventional Commits 格式，但不强求完全遵循。
+
+```bash
+# 提交类型示例
+feat: 添加视频卡片组件
+fix: 修复主题切换闪烁问题
+docs: 更新README文档
+style: 代码格式调整
+refactor: 重构视频播放器逻辑
+test: 添加视频卡片测试用例
+chore: 更新依赖版本
+```
+
+每次提交应保持原子性，即一次提交只包含一个完整的改动。避免在一次提交中混入多个不相关的修改，也不要将一个完整的修改拆分成多次不完整的提交。提交信息应使用中文或英文，团队应统一使用同一种语言。
+
+### 7.2 分支管理规范
+
+项目应采用清晰的分支管理策略，推荐使用 Git Flow 或类似的工作流程。主要分支包括 main 或 master（主分支，始终保持稳定可发布状态）、develop（开发分支，集成最新的开发成果）和 feature/*（功能分支，开发新功能时创建）、hotfix/*（热修复分支，紧急修复生产问题时创建）。
+
+```bash
+# 分支命名规范
+feature/video-player    # 新功能开发
+feature/theme-toggle    # 新功能开发
+hotfix/critical-bug     # 紧急修复
+release/v1.0.0          # 发布准备
+```
+
+功能开发应在独立的分支上进行，完成后通过 Pull Request 合并到开发分支或主分支。分支名称应清晰表达其用途，使用小写字母和连字符命名。长期存在的分支应定期与主分支同步，避免产生大量的合并冲突。
+
+### 7.3 预提交钩子规范
+
+项目使用 Husky 和 lint-staged 配置预提交钩子，在 git commit 时自动运行代码检查。配置在 .husky/pre-commit 文件中，内容为 npx lint-staged。lint-staged 配置在 package.json 中定义，针对不同类型的文件运行相应的检查工具。
+
+```json
+// lint-staged 配置
+"lint-staged": {
+  "**/*.{ts,tsx,js,jsx}": [
+    "eslint --fix",
+    "prettier --write"
+  ],
+  "**/*.{css,scss,json,md}": [
+    "prettier --write"
+  ]
+}
+```
+
+预提交钩子能够自动修复格式问题和 ESLint 可修复的错误，确保提交到仓库的代码符合规范。对于无法自动修复的问题，提交将被阻止，开发者需要手动修复后才能提交。
+
+---
+
+## 八、构建与部署规范
+
+### 8.1 构建配置规范
+
+项目使用 Vite 作为构建工具，配置在 vite.config.ts 文件中。构建配置包括目标环境设置、输出目录配置、代码分割策略、压缩选项等。构建目标设置为 esnext，以支持最新的 JavaScript 特性。输出文件采用哈希命名策略，包括资源文件、代码块和入口文件，便于缓存管理。
+
+```typescript
+// 构建配置示例
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  build: {
+    target: "esnext",
+    outDir: "build",
+    rollupOptions: {
+      output: {
+        assetFileNames: "assets/[name]-[hash:8].[ext]",
+        chunkFileNames: "chunks/[name]-[hash:8].js",
+        entryFileNames: "entry/[name]-[hash:8].js",
+      },
+    },
+    minify: "esbuild",
+    cssCodeSplit: true,
+    sourcemap: false,
+  },
+});
+```
+
+### 8.2 依赖管理规范
+
+项目的依赖管理通过 npm 进行，主要依赖和开发依赖在 package.json 中清晰区分。主要依赖包括 React、React DOM、React Router DOM、React Query 等核心库，以及 Tailwind CSS、Radix UI 组件库等样式和UI库。开发依赖包括 TypeScript、ESLint、Prettier、Jest 等开发工具。
+
+```json
+// 依赖版本规范示例
+{
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.10.0",
+    "@tanstack/react-query": "^5.83.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "eslint": "^9.39.1",
+    "prettier": "^3.8.1"
+  }
+}
+```
+
+依赖版本使用语义化版本控制（SemVer），^ 表示允许次要版本和补丁版本的更新，~ 表示只允许补丁版本的更新。应定期检查依赖的安全漏洞，使用 npm audit 进行安全检查。添加新依赖时应评估其必要性、维护状态和体积影响。
+
+### 8.3 环境变量规范
+
+项目使用 .env 文件管理环境变量，开发环境配置在 .env.development 文件中。环境变量以 VITE_ 前缀开头，以便 Vite 正确识别并注入到客户端代码中。敏感信息（如 API 密钥）不应提交到版本控制系统中，应在 .env.example 文件中提供模板并在团队内部安全地分享实际的配置值。
+
+```bash
+# 环境变量示例
+VITE_APP_TITLE=哔哩哔哩时间线
+VITE_API_BASE_URL=https://api.example.com
+VITE_ANALYTICS_ID=UA-XXXXXXXXX-X
+```
+
+---
+
+## 九、架构设计原则
+
+### 9.1 目录结构规范
+
+项目采用清晰的目录结构组织代码，前端源码在 frontend/src 目录下。主要目录包括：components（组件目录，包含功能组件和通用UI组件）、pages（页面目录，按功能模块组织页面组件）、hooks（自定义 Hook 目录）、data（数据文件目录）、styles（样式文件目录）。这种结构使得代码易于定位和维护。
+
+```
+src/
+├── components/          # 组件目录
+│   ├── __tests__/       # 测试文件
+│   ├── figma/           # Figma 设计稿组件
+│   ├── hu/              # 甜筒模块组件
+│   └── ui/              # 通用UI组件
+├── hooks/               # 自定义 Hook
+├── data/                # 数据文件
+├── styles/              # 样式文件
+├── App.tsx              # 应用入口组件
+├── main.tsx             # 应用启动文件
+└── index.css            # 全局样式
+```
+
+每个功能模块的组件组织在独立的目录下，如 lvjiang 模块在 pages/lvjiang 目录下，tiantong 模块在 pages/tiantong 目录下。模块内部的组件放在 components 子目录下，数据文件放在同目录下。这种模块化的组织方式使得代码结构清晰，便于团队协作和代码复用。
+
+### 9.2 组件职责分离
+
+项目遵循组件职责分离的设计原则，将 UI 逻辑、数据逻辑和业务逻辑分离。组件负责 UI 渲染，自定义 Hook 负责状态管理和副作用处理，工具函数负责纯计算和数据处理。这种分离使得组件更加简洁，逻辑更加清晰，也便于单元测试。
+
+```typescript
+// 组件职责分离示例
+// 组件：只负责 UI 渲染
+function VideoCard({ video, onClick }: VideoCardProps) {
+  return (
+    <div onClick={() => onClick(video)}>
+      <img src={video.cover} alt={video.title} />
+      <h3>{video.title}</h3>
+    </div>
+  );
+}
+
+// Hook：负责状态管理和数据获取
+function useVideoList(category: string) {
+  const { data, loading, error } = useQuery({
+    queryKey: ["videos", category],
+    queryFn: () => fetchVideos(category),
+  });
+  return { videos: data, loading, error };
+}
+
+// 工具函数：负责纯计算
+export function formatViews(views: number): string {
+  if (views >= 10000) {
+    return `${(views / 10000).toFixed(1)}万`;
+  }
+  return views.toString();
+}
+```
+
+### 9.3 数据流管理
+
+项目使用 React Query（@tanstack/react-query）进行服务器状态管理，React 内置的 useState 和 useReducer 进行本地状态管理。对于跨组件共享的状态，使用 Context API 进行管理。数据流应保持单向流动，从父组件向子组件传递，避免在兄弟组件或子组件中直接修改父组件的状态。
+
+```typescript
+// 数据流管理示例
+// 使用 React Query 管理服务器状态
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/videos" element={<VideoList />} />
+        </Routes>
+      </Router>
+    </QueryClientProvider>
+  );
+}
+
+// 使用 Context 管理主题状态
+const ThemeContext = createContext<ThemeContextType | null>(null);
+
+function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState<Theme>("light");
+  
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+```
+
+---
+
+## 十、错误处理规范
+
+### 10.1 异常捕获规范
+
+项目应在适当的层级进行异常捕获和处理，避免未捕获的错误导致应用崩溃。异步操作应使用 try-catch 块捕获可能的错误，并进行合理的错误处理。错误信息应清晰表达问题的原因，便于调试和用户理解。
+
+```typescript
+// 错误处理示例
+async function fetchVideoData(bvid: string): Promise<Video | null> {
+  try {
+    const response = await fetch(`/api/videos/${bvid}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("获取视频数据失败:", error);
+    
+    if (error instanceof TypeError) {
+      // 网络错误处理
+      showNotification("网络连接失败，请检查网络设置");
+    } else {
+      // 其他错误处理
+      showNotification("获取视频数据失败，请稍后重试");
+    }
+    
+    return null;
+  }
+}
+```
+
+### 10.2 边界情况处理
+
+组件应处理各种边界情况，包括空数据、加载状态、错误状态等。使用条件渲染显示不同的 UI 反馈，引导用户了解当前状态并采取适当的行动。加载状态应显示明确的加载指示器，错误状态应显示友好的错误信息并提供重试选项。
+
+```typescript
+// 边界情况处理示例
+function VideoList({ category }) {
+  const { data: videos, loading, error } = useVideoList(category);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <ErrorDisplay 
+        message="加载视频列表失败"
+        onRetry={() => refetch()}
+      />
+    );
+  }
+
+  if (!videos || videos.length === 0) {
+    return <EmptyDisplay message="暂无视频数据" />;
+  }
+
+  return (
+    <div className="video-grid">
+      {videos.map(video => (
+        <VideoCard key={video.id} video={video} />
+      ))}
+    </div>
+  );
+}
+```
+
+---
+
+## 十一、无障碍规范
+
+### 11.1 ARIA 属性规范
+
+项目应遵循 Web 无障碍标准（WCAG），确保应用对屏幕阅读器用户友好。语义化 HTML 元素应正确使用，交互元素应添加适当的 ARIA 属性。按钮应使用 button 元素或 role="button"，表单元素应关联对应的标签，图片应添加 alt 属性描述。
+
+```typescript
+// 无障碍规范示例
+function VideoCard({ video, onClick }: VideoCardProps) {
+  return (
+    <div
+      className="card"
+      onClick={() => onClick(video)}
+      role="article"
+      aria-labelledby={`video-title-${video.id}`}
+      tabIndex={0}
+      onKeyDown={e => e.key === "Enter" && onClick(video)}
+    >
+      <img
+        src={video.cover}
+        alt={video.title}
+        loading="lazy"
+      />
+      <div aria-label="视频信息">
+        <h3 id={`video-title-${video.id}`}>{video.title}</h3>
+        <span aria-label="播放日期">{video.date}</span>
+        <span aria-label="播放量">{video.views}</span>
+      </div>
+    </div>
+  );
+}
+```
+
+### 11.2 键盘导航规范
+
+所有交互功能应支持键盘操作，用户应能够使用 Tab 键导航到所有可聚焦元素，使用 Enter 或 Space 键触发操作。焦点状态应有清晰的视觉指示，焦点环或高亮不应被禁用。模态框和弹出层应管理焦点陷阱，防止焦点逃逸到外部元素。
+
+---
+
+## 十二、代码审查流程
+
+### 12.1 审查标准
+
+所有代码变更在合并到主分支前必须经过代码审查。审查重点包括：代码逻辑的正确性、设计决策的合理性、代码风格的一致性、性能影响、安全性问题、测试覆盖情况。审查者应提供建设性的反馈，既要指出问题，也要给出改进建议。
+
+### 12.2 审查流程
+
+开发者完成功能开发后，创建 Pull Request 并请求审查。审查者应在规定时间内完成审查，提供详细的反馈。开发者根据反馈进行修改，修改完成后再次请求审查。通过审查后，由具备合并权限的成员将代码合并到目标分支。
+
+---
+
+## 十三、文档与注释规范
+
+### 13.1 代码内注释规范
+
+代码中的注释应清晰、有价值，避免显而易见的注释。注释应解释「为什么」而非「是什么」，即解释代码的设计决策和业务逻辑，而非重复代码本身。复杂的算法和数据结构应添加注释说明其原理和思路。
+
+### 13.2 外部文档规范
+
+项目应维护必要的外部文档，包括 README 文件（项目概述、安装步骤、使用说明）、API 文档（接口说明、数据格式）、开发文档（架构设计、技术选型）。文档应与代码保持同步更新，避免文档与实际实现脱节。
+
+---
+
+## 十四、总结与执行
+
+本文档系统性地梳理了团队在哔哩哔哩时间线项目中形成的前端编码规范和最佳实践，涵盖代码风格、TypeScript 规范、React 开发规范、样式规范、测试规范、版本控制、构建部署、架构设计、错误处理、无障碍支持、代码审查和文档规范等方面。
+
+团队成员应熟悉并遵循本文档的规定，在日常开发中保持代码风格的一致性。新加入团队的成员应在入职培训中学习本文档的内容，并在实际开发中逐步掌握各项规范。规范不是一成不变的，团队可以根据实际情况进行调整和优化，但任何修改都应经过讨论并更新本文档。
+
+通过遵循统一的编码规范，团队可以提高代码的可读性、可维护性和协作效率，减少代码审查的时间和成本，提升整体开发体验和产品质量。
+
+---
+
+**文档版本**：1.0  
+**创建日期**：2024年  
+**适用项目**：bilibili-timeline  
+**最后更新**：2024年

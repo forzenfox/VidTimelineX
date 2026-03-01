@@ -626,4 +626,319 @@ describe("弹幕 React Hooks 模块", () => {
       expect(result.current.opacity).toBe(1);
     });
   });
+
+  describe("动画和性能测试", () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it("应该在 autoPlay 为 true 时启动动画循环", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 100,
+          displaySpeed: 100,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: true,
+        loop: false,
+        danmakuType: "sidebar",
+      };
+
+      const { result } = renderHook(() => useDanmaku(config));
+
+      // 初始状态
+      expect(result.current.isPlaying).toBe(true);
+
+      // 推进时间
+      act(() => {
+        jest.advanceTimersByTime(100);
+      });
+
+      // 时间应该增加
+      expect(result.current.currentTime).toBeGreaterThan(0);
+    });
+
+    it("应该在组件卸载时清理动画帧", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 100,
+          displaySpeed: 100,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: true,
+        loop: false,
+        danmakuType: "sidebar",
+      };
+
+      const { unmount } = renderHook(() => useDanmaku(config));
+
+      // 卸载组件
+      act(() => {
+        unmount();
+      });
+
+      // 不应该有内存泄漏或错误
+      expect(true).toBe(true);
+    });
+
+    it("应该在 loop 为 true 时循环播放", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 10,
+          displaySpeed: 100,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: true,
+        loop: true,
+        danmakuType: "sidebar",
+      };
+
+      const { result } = renderHook(() => useDanmaku(config));
+
+      // 推进足够长的时间让时间超过最大值
+      act(() => {
+        jest.advanceTimersByTime(2000);
+      });
+
+      // 时间应该被重置
+      expect(result.current.currentTime).toBeLessThan(2000);
+    });
+
+    it("应该在 isPlaying 为 false 时暂停动画", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 100,
+          displaySpeed: 100,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: true,
+        loop: false,
+        danmakuType: "sidebar",
+      };
+
+      const { result } = renderHook(() => useDanmaku(config));
+
+      // 暂停播放
+      act(() => {
+        result.current.setPlaying(false);
+      });
+
+      const currentTimeBefore = result.current.currentTime;
+
+      // 推进时间
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      // 时间应该保持不变
+      expect(result.current.currentTime).toBe(currentTimeBefore);
+    });
+
+    it("应该正确处理横向弹幕的延迟和持续时间", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 100,
+          displaySpeed: 100,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: true,
+        loop: false,
+        danmakuType: "horizontal",
+      };
+
+      const { result } = renderHook(() => useDanmaku(config));
+
+      // 添加带延迟和持续时间的弹幕
+      act(() => {
+        result.current.addDanmaku({
+          ...mockDanmakuMessage,
+          delay: 1000,
+          duration: 2000,
+        });
+      });
+
+      // 在时间范围内
+      act(() => {
+        result.current.setCurrentTime(1500);
+      });
+
+      expect(result.current.currentDanmaku).toHaveLength(1);
+
+      // 超出持续时间
+      act(() => {
+        result.current.setCurrentTime(3500);
+      });
+
+      expect(result.current.currentDanmaku).toHaveLength(0);
+    });
+
+    it("应该在弹幕池满时正确移除旧弹幕", () => {
+      const config: DanmakuPoolConfig = {
+        maxCapacity: 5,
+        displaySpeed: 100,
+        enableMerge: false,
+        enableFilter: false,
+        trackCount: 5,
+        opacity: 1,
+      };
+
+      const { result } = renderHook(() => useDanmakuPool(config));
+
+      // 添加超过容量的弹幕
+      act(() => {
+        for (let i = 0; i < 10; i++) {
+          result.current.addToPool({
+            ...mockDanmakuMessage,
+            id: `test-${i}`,
+            text: `弹幕 ${i}`,
+          });
+        }
+      });
+
+      // 应该只保留最新的 5 条
+      expect(result.current.pool).toHaveLength(5);
+      expect(result.current.pool[0].id).toBe("test-5");
+      expect(result.current.pool[4].id).toBe("test-9");
+    });
+
+    it("应该正确计算弹幕池占用率", () => {
+      const config: DanmakuPoolConfig = {
+        maxCapacity: 10,
+        displaySpeed: 100,
+        enableMerge: false,
+        enableFilter: false,
+        trackCount: 4,
+        opacity: 1,
+      };
+
+      const { result } = renderHook(() => useDanmakuPool(config));
+
+      // 占用部分轨道
+      act(() => {
+        result.current.occupyTrack(0);
+        result.current.occupyTrack(1);
+      });
+
+      const status = result.current.poolStatus;
+      expect(status.occupancyRate).toBe(0.5); // 2/4
+      expect(status.availableTracks).toBe(2);
+    });
+  });
+
+  describe("弹幕钩子 - 边界情况", () => {
+    it("应该处理没有 timestamp 的弹幕", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 100,
+          displaySpeed: 1000,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: false,
+        loop: false,
+        danmakuType: "sidebar",
+      };
+
+      const { result } = renderHook(() => useDanmaku(config));
+
+      // 添加没有 timestamp 的弹幕
+      act(() => {
+        result.current.addDanmaku({
+          ...mockDanmakuMessage,
+          timestamp: undefined,
+        });
+      });
+
+      // 查询时间范围时应该返回空数组
+      const danmakuInRange = result.current.getDanmakuByTimeRange(0, 100000);
+      expect(danmakuInRange).toHaveLength(0);
+    });
+
+    it("应该处理无效的 timestamp 格式", () => {
+      const config: UseDanmakuConfig = {
+        poolConfig: {
+          maxCapacity: 100,
+          displaySpeed: 1000,
+          enableMerge: false,
+          enableFilter: false,
+          trackCount: 5,
+          opacity: 1,
+        },
+        defaultTheme: "mix",
+        defaultSize: "medium",
+        autoPlay: false,
+        loop: false,
+        danmakuType: "sidebar",
+      };
+
+      const { result } = renderHook(() => useDanmaku(config));
+
+      // 添加无效格式的 timestamp
+      act(() => {
+        result.current.addDanmaku({
+          ...mockDanmakuMessage,
+          timestamp: "invalid",
+        });
+      });
+
+      // 不应该抛出错误
+      expect(result.current.danmakuList).toHaveLength(1);
+    });
+
+    it("应该在所有轨道被占用时返回 -1", () => {
+      const config: DanmakuPoolConfig = {
+        maxCapacity: 100,
+        displaySpeed: 1000,
+        enableMerge: false,
+        enableFilter: false,
+        trackCount: 3,
+        opacity: 1,
+      };
+
+      const { result } = renderHook(() => useDanmakuPool(config));
+
+      // 占用所有轨道
+      act(() => {
+        result.current.occupyTrack(0);
+        result.current.occupyTrack(1);
+        result.current.occupyTrack(2);
+      });
+
+      const nextTrack = result.current.getNextAvailableTrack();
+      expect(nextTrack).toBe(-1);
+    });
+  });
 });

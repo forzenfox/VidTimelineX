@@ -6,11 +6,12 @@
 > - **本文档**：前端详细技术文档、安装指南、测试说明
 > - **测试文档**：前端测试结构说明、测试指南 → [查看](./tests/README.md)
 > - **📚 开发规范文档**：
->   - [项目结构规范](./STRUCTURE.md) - 目录结构、文件组织、导入路径规范
->   - [命名规范](./NAMING_CONVENTION.md) - 文件命名、代码命名、测试命名规范
->   - [组件组织规范](./COMPONENT_GUIDE.md) - 组件分类、编写规范、最佳实践
->   - [环境变量规范](./ENV_GUIDE.md) - 环境变量管理、类型定义、安全实践
->   - [Git 提交规范](./COMMIT_CONVENTION.md) - Commit Message、分支管理、PR 规范
+>   - [项目结构规范](../docs/standards/frontend/project-structure.md) - 目录结构、文件组织、导入路径规范
+>   - [命名规范](../docs/standards/frontend/naming-conventions.md) - 文件命名、代码命名、测试命名规范
+>   - [组件组织规范](../docs/standards/frontend/component-guide.md) - 组件分类、编写规范、最佳实践
+>   - [环境变量规范](../docs/standards/frontend/environment-guide.md) - 环境变量管理、类型定义、安全实践
+>   - [Git 提交规范](../docs/standards/frontend/commit-conventions.md) - Commit Message、分支管理、PR 规范
+>   - [Hooks 使用说明](../docs/standards/frontend/git-hooks.md) - Git Hooks 配置说明
 
 ## 项目概述
 
@@ -406,22 +407,25 @@ npm run test:regression
 npm run test:performance
 ```
 
-### MobileNotSupported 组件测试
+### 组件测试
 
-MobileNotSupported 组件是移动端访问提示组件，提供了全面的测试用例和自动化测试脚本：
+项目包含完整的组件测试覆盖，包括单元测试、集成测试和端到端测试。测试文件位于 `tests/` 目录下，按照测试类型分层组织。
 
 ```bash
-# 运行 MobileNotSupported 组件测试
-npm run test:mobile-not-supported
+# 运行所有测试
+npm test
+
+# 运行单元测试
+npm run test:unit
+
+# 运行集成测试
+npm run test:integration
+
+# 运行 E2E 测试
+npm run test:e2e
 ```
 
-测试脚本会自动执行所有测试用例并生成详细的 HTML 和 JSON 格式报告。测试报告包含：
-
-- 测试执行时间和时长
-- 测试摘要（总测试数、通过、失败、跳过、通过率）
-- 详细的测试用例列表（状态、ID、名称）
-
-详细的测试文档请参考：[tests/docs/mobile-not-supported-test-doc.md](tests/docs/mobile-not-supported-test-doc.md)
+详细的测试规范请参考：[tests/docs/testing-guidelines.md](tests/docs/testing-guidelines.md)
 
 ### 测试覆盖率目标
 

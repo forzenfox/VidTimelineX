@@ -48,7 +48,7 @@ tests/
 ├── setup-global.ts               # 全局测试配置
 ├── performance-test.ts           # 性能测试
 └── docs/                         # 测试文档
-```
+    └── testing-guidelines.md     # 测试代码编写规范
 
 ## 命名规范
 
