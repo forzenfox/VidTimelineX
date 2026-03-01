@@ -367,7 +367,6 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
             searchQuery={searchQuery}
             onClearSearch={handleClearSearch}
             theme={theme}
-            isMobile={true}
           />
         </div>
 

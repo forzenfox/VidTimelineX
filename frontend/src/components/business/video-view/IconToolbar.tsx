@@ -26,10 +26,6 @@ interface IconToolbarProps {
    * 清除搜索回调
    */
   onClearSearch?: () => void;
-  /**
-   * 是否为移动端
-   */
-  isMobile?: boolean;
 }
 
 export function IconToolbar({
@@ -45,7 +41,6 @@ export function IconToolbar({
   onClearHistory,
   searchQuery,
   onClearSearch,
-  isMobile = false,
 }: IconToolbarProps) {
   return (
     <>
@@ -82,19 +77,13 @@ export function IconToolbar({
           </div>
         )}
 
-        {/* 按钮行 */}
-        <div className="w-full flex items-center justify-between">
+        {/* 按钮行 - 优化布局：视图切换 | 搜索栏 | 筛选排序 */}
+        <div className="w-full flex items-center gap-3">
           {/* 左侧：视图切换按钮 */}
-          <div className="flex items-center gap-2">
-            <CycleViewButton
-              viewMode={viewMode}
-              onViewModeChange={onViewModeChange}
-              theme={theme}
-            />
-          </div>
+          <CycleViewButton viewMode={viewMode} onViewModeChange={onViewModeChange} theme={theme} />
 
-          {/* 右侧：搜索、筛选、排序按钮 */}
-          <div className="flex items-center gap-2">
+          {/* 中间：搜索栏（占据剩余空间） */}
+          <div className="flex-1 min-w-0">
             <SearchButton
               onSearch={onSearch}
               theme={theme}
@@ -103,8 +92,12 @@ export function IconToolbar({
               onClearHistory={onClearHistory}
               currentQuery={searchQuery}
               onClear={onClearSearch}
-              variant={isMobile ? "expanded" : "icon"}
+              variant="expanded"
             />
+          </div>
+
+          {/* 右侧：筛选、排序按钮 */}
+          <div className="flex items-center gap-2 flex-shrink-0">
             <FilterDropdown filter={filter} onFilterChange={onFilterChange} variant="icon" />
             <SortDropdown
               sortBy={filter.sortBy}
