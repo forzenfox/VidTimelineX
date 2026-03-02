@@ -38,10 +38,7 @@ jobs:
 
   frontend-ci:
     needs: changes
-    if: ${{ 
-      !contains(github.event.head_commit.message, 'Merge pull request') && 
-      needs.changes.outputs.frontend == 'true'
-    }}
+    if: ${{ !contains(github.event.head_commit.message, 'Merge pull request') && needs.changes.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,10 +71,7 @@ jobs:
 
   backend-ci:
     needs: changes
-    if: ${{ 
-      !contains(github.event.head_commit.message, 'Merge pull request') && 
-      needs.changes.outputs.backend == 'true'
-    }}
+    if: ${{ !contains(github.event.head_commit.message, 'Merge pull request') && needs.changes.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
