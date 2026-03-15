@@ -249,16 +249,13 @@ export function useVideoView(
   );
 
   // 设置每页数量（同时重置到第一页）
-  const setPageSize = useCallback(
-    (size: number) => {
-      // 验证是否在允许的选项中
-      const validSize = PAGE_SIZE_OPTIONS.includes(size) ? size : PAGE_SIZE_OPTIONS[0];
-      setPageSizeState(validSize);
-      // 重置到第一页，避免数据错位
-      setCurrentPage(1);
-    },
-    []
-  );
+  const setPageSize = useCallback((size: number) => {
+    // 验证是否在允许的选项中
+    const validSize = PAGE_SIZE_OPTIONS.includes(size) ? size : PAGE_SIZE_OPTIONS[0];
+    setPageSizeState(validSize);
+    // 重置到第一页，避免数据错位
+    setCurrentPage(1);
+  }, []);
 
   // 下一页
   const goToNextPage = useCallback(() => {
