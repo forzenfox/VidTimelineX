@@ -1,10 +1,11 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import type { ViewMode, FilterState } from "@/hooks/types";
 import type { Video } from "../data/types";
 
 interface UseVideoViewOptions {
   initialViewMode?: ViewMode;
   initialFilter?: Partial<FilterState>;
+  initialPageSize?: number;
 }
 
 interface UseVideoViewReturn {
@@ -16,6 +17,20 @@ interface UseVideoViewReturn {
   setSearchQuery: (query: string) => void;
   filteredVideos: Video[];
   resetFilters: () => void;
+  // 分页相关
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  totalItems: number;
+  paginatedItems: Video[];
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+  setPage: (page: number) => void;
+  setPageSize: (size: number) => void;
+  goToNextPage: () => void;
+  goToPrevPage: () => void;
+  goToFirstPage: () => void;
+  goToLastPage: () => void;
 }
 
 const defaultFilter: FilterState = {
@@ -137,6 +152,9 @@ function filterBySearch(videos: Video[], searchQuery: string): Video[] {
   );
 }
 
+const DEFAULT_PAGE_SIZE = 12;
+const PAGE_SIZE_OPTIONS = [12, 24, 48];
+
 export function useVideoView(
   videos: Video[],
   options: UseVideoViewOptions = {}
@@ -146,15 +164,27 @@ export function useVideoView(
     ...defaultFilter,
     ...options.initialFilter,
   });
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQueryState] = useState("");
+  // 分页状态
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSizeState] = useState(options.initialPageSize || DEFAULT_PAGE_SIZE);
 
   const setFilter = useCallback((newFilter: Partial<FilterState>) => {
     setFilterState(prev => ({ ...prev, ...newFilter }));
+    // 筛选条件变化时重置到第一页
+    setCurrentPage(1);
+  }, []);
+
+  const setSearchQuery = useCallback((query: string) => {
+    setSearchQueryState(query);
+    // 搜索词变化时重置到第一页
+    setCurrentPage(1);
   }, []);
 
   const resetFilters = useCallback(() => {
     setFilterState(defaultFilter);
-    setSearchQuery("");
+    setSearchQueryState("");
+    setCurrentPage(1);
   }, []);
 
   const filteredVideos = useMemo(() => {
@@ -175,6 +205,87 @@ export function useVideoView(
     return result;
   }, [videos, searchQuery, filter]);
 
+  // 分页计算
+  const totalItems = filteredVideos.length;
+  const totalPages = useMemo(() => {
+    if (totalItems === 0) return 0;
+    return Math.ceil(totalItems / pageSize);
+  }, [totalItems, pageSize]);
+
+  // 计算当前页的数据范围
+  const startIndex = useMemo(() => {
+    return (currentPage - 1) * pageSize;
+  }, [currentPage, pageSize]);
+
+  const endIndex = useMemo(() => {
+    return Math.min(startIndex + pageSize, totalItems);
+  }, [startIndex, pageSize, totalItems]);
+
+  // 获取当前页的数据
+  const paginatedItems = useMemo(() => {
+    return filteredVideos.slice(startIndex, endIndex);
+  }, [filteredVideos, startIndex, endIndex]);
+
+  // 是否有上一页/下一页
+  const hasNextPage = useMemo(() => {
+    return currentPage < totalPages;
+  }, [currentPage, totalPages]);
+
+  const hasPrevPage = useMemo(() => {
+    return currentPage > 1;
+  }, [currentPage]);
+
+  // 设置页码（带边界检查）
+  const setPage = useCallback(
+    (page: number) => {
+      if (totalPages === 0) {
+        setCurrentPage(1);
+        return;
+      }
+      const validPage = Math.max(1, Math.min(page, totalPages));
+      setCurrentPage(validPage);
+    },
+    [totalPages]
+  );
+
+  // 设置每页数量（同时重置到第一页）
+  const setPageSize = useCallback(
+    (size: number) => {
+      // 验证是否在允许的选项中
+      const validSize = PAGE_SIZE_OPTIONS.includes(size) ? size : PAGE_SIZE_OPTIONS[0];
+      setPageSizeState(validSize);
+      // 重置到第一页，避免数据错位
+      setCurrentPage(1);
+    },
+    []
+  );
+
+  // 下一页
+  const goToNextPage = useCallback(() => {
+    if (hasNextPage) {
+      setCurrentPage(prev => prev + 1);
+    }
+  }, [hasNextPage]);
+
+  // 上一页
+  const goToPrevPage = useCallback(() => {
+    if (hasPrevPage) {
+      setCurrentPage(prev => prev - 1);
+    }
+  }, [hasPrevPage]);
+
+  // 回到首页
+  const goToFirstPage = useCallback(() => {
+    setCurrentPage(1);
+  }, []);
+
+  // 跳到末页
+  const goToLastPage = useCallback(() => {
+    if (totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages]);
+
   return {
     viewMode,
     setViewMode,
@@ -184,5 +295,19 @@ export function useVideoView(
     setSearchQuery,
     filteredVideos,
     resetFilters,
+    // 分页相关
+    currentPage,
+    pageSize,
+    totalPages,
+    totalItems,
+    paginatedItems,
+    hasNextPage,
+    hasPrevPage,
+    setPage,
+    setPageSize,
+    goToNextPage,
+    goToPrevPage,
+    goToFirstPage,
+    goToLastPage,
   };
 }
