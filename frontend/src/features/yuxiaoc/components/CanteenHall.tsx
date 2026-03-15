@@ -5,6 +5,7 @@ import { Search } from "lucide-react";
 import VideoCard from "@/components/business/video/VideoCard";
 import { VideoViewToolbar } from "@/components/business/video-view/VideoViewToolbar";
 import { IconToolbar } from "@/components/business/video-view/IconToolbar";
+import { PaginationControls } from "@/components/business/video-view/PaginationControls";
 import { useVideoView } from "../hooks/useVideoView";
 
 interface CanteenHallProps {
@@ -223,6 +224,14 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
     setSearchQuery,
     filteredVideos,
     resetFilters,
+    // 分页相关
+    currentPage,
+    pageSize,
+    totalPages,
+    totalItems,
+    paginatedItems,
+    setPage,
+    setPageSize,
   } = useVideoView(videos);
 
   // 主题配色
@@ -277,38 +286,60 @@ export const CanteenHall: React.FC<CanteenHallProps> = ({ theme, onVideoClick })
     switch (viewMode) {
       case "list":
         return (
-          <div className="space-y-4">
-            {filteredVideos.map((video, index) => (
-              <VideoCard
-                key={video.id}
-                video={video}
-                onClick={onVideoClick}
-                theme={theme}
-                index={index}
-                size="medium"
-                layout="horizontal"
-              />
-            ))}
+          <div className="flex flex-col gap-6">
+            <div className="space-y-4">
+              {paginatedItems.map((video, index) => (
+                <VideoCard
+                  key={video.id}
+                  video={video}
+                  onClick={onVideoClick}
+                  theme={theme}
+                  index={index}
+                  size="medium"
+                  layout="horizontal"
+                />
+              ))}
+            </div>
+            {/* 列表视图分页控件 */}
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              totalItems={totalItems}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
           </div>
         );
       case "timeline":
-        // 时间轴视图 - 使用新的TimelineView组件
+        // 时间轴视图 - 使用新的TimelineView组件，不分页
         return <TimelineView videos={filteredVideos} theme={theme} onVideoClick={onVideoClick} />;
       case "grid":
       default:
         return (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {filteredVideos.map((video, index) => (
-              <VideoCard
-                key={video.id}
-                video={video}
-                onClick={onVideoClick}
-                theme={theme}
-                index={index}
-                size="small"
-                layout="vertical"
-              />
-            ))}
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+              {paginatedItems.map((video, index) => (
+                <VideoCard
+                  key={video.id}
+                  video={video}
+                  onClick={onVideoClick}
+                  theme={theme}
+                  index={index}
+                  size="small"
+                  layout="vertical"
+                />
+              ))}
+            </div>
+            {/* 网格视图分页控件 */}
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              totalItems={totalItems}
+              onPageChange={setPage}
+              onPageSizeChange={setPageSize}
+            />
           </div>
         );
     }
