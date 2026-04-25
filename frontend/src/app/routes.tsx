@@ -7,6 +7,9 @@ const LvjiangPage = React.lazy(() => import("../features/lvjiang/LvjiangPage"));
 const TiantongPage = React.lazy(() => import("../features/tiantong/TiantongPage"));
 const YuxiaocPage = React.lazy(() => import("../features/yuxiaoc/YuxiaocPage"));
 
+// 百度统计路由监听
+import BaiduAnalytics from "../components/business/BaiduAnalytics";
+
 // 加载中组件
 const Loading = () => (
   <div className="min-h-screen flex items-center justify-center">
@@ -21,6 +24,7 @@ const Loading = () => (
 const AppRoutes = () => {
   return (
     <React.Suspense fallback={<Loading />}>
+      <BaiduAnalytics />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/lvjiang" element={<LvjiangPage />} />

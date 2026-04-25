@@ -279,7 +279,7 @@ class FavoritesCrawler:
             return bv_codes
         
         # 提取媒体数据
-        medias = response_data.get('data', {}).get('medias', [])
+        medias = response_data.get('data', {}).get('medias') or []
         
         for media in medias:
             bvid = media.get('bvid')
